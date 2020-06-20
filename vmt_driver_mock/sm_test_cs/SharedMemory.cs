@@ -30,9 +30,10 @@ using System.Text;
 public class SharedMemory : IDisposable
 {
     const string SHARED_MEMORY_M2D = "VirtualMotionTracker_M2D";
-    const string SHARED_MEMORY_D2M = "VirtualMotionTracker_D2M";//デバッグ用に同じにしている。
+    const string SHARED_MEMORY_D2M = "VirtualMotionTracker_D2M";
 
-    const int SHARED_MEMORY_ADDRESS_SIZE = 1 * 1024 * 1024; //1MB
+    const int SHARED_MEMORY_SIZE = 1 * 1024 * 1024; //1MB
+    const int SHARED_MEMORY_STRING_AREA_SIZE = SHARED_MEMORY_SIZE - SHARED_MEMORY_ADDRESS_STRING_AREA -1; //1MB
 
     const int SHARED_MEMORY_ADDRESS_COUNTER_SEND = 0x00;
     const int SHARED_MEMORY_ADDRESS_COUNTER_HANDSHAKE = 0x01;
@@ -49,10 +50,10 @@ public class SharedMemory : IDisposable
     public SharedMemory()
 	{
         //オープン
-        memoryMappedFileM2D = MemoryMappedFile.CreateOrOpen(SHARED_MEMORY_M2D, SHARED_MEMORY_ADDRESS_SIZE);
+        memoryMappedFileM2D = MemoryMappedFile.CreateOrOpen(SHARED_MEMORY_M2D, SHARED_MEMORY_SIZE);
         memoryMappedViewAccessorM2D = memoryMappedFileM2D.CreateViewAccessor();
 
-        memoryMappedFileD2M = MemoryMappedFile.CreateOrOpen(SHARED_MEMORY_D2M, SHARED_MEMORY_ADDRESS_SIZE);
+        memoryMappedFileD2M = MemoryMappedFile.CreateOrOpen(SHARED_MEMORY_D2M, SHARED_MEMORY_SIZE);
         memoryMappedViewAccessorD2M = memoryMappedFileD2M.CreateViewAccessor();
 
         //カウンタの初期化
@@ -98,7 +99,7 @@ public class SharedMemory : IDisposable
 
         //送信データ更新
         byte[] stringArray = ASCIIEncoding.ASCII.GetBytes(msg);
-        if (stringArray.Length > SHARED_MEMORY_ADDRESS_SIZE)
+        if (stringArray.Length > SHARED_MEMORY_STRING_AREA_SIZE)
         {
             Console.WriteLine("例外: 文字列が大きすぎる");
             throw new ArgumentOutOfRangeException("string too large");
@@ -158,7 +159,7 @@ public class SharedMemory : IDisposable
         uint ulen = (((uint)len[0]) & 0x000000FF) | (((uint)len[1] << 8) & 0x0000FF00) | (((uint)len[2] << 16) & 0x00FF0000) | (((uint)len[3] << 24) & 0xFF000000);
         int length = (int)(ulen & 0x7FFFFFFF);
 
-        if (length > SHARED_MEMORY_ADDRESS_SIZE)
+        if (length > SHARED_MEMORY_STRING_AREA_SIZE)
         {
             Console.WriteLine("例外: サイズが破損している");
             throw new InvalidDataException("size is corrupted");
@@ -170,7 +171,6 @@ public class SharedMemory : IDisposable
         string msg = ASCIIEncoding.ASCII.GetString(stringArray);
 
         //ハンドシェイクカウンタ更新
-        handshakecnt = (byte)((((int)sendcnt) + 1) & 0xFF);
         memoryMappedViewAccessor.Write(SHARED_MEMORY_ADDRESS_COUNTER_HANDSHAKE, (byte)sendcnt);
         Console.WriteLine("+handshakecnt:" + sendcnt);
 
