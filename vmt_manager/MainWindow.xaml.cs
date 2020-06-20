@@ -26,6 +26,8 @@ using System.IO;
 using System.IO.MemoryMappedFiles;
 using System.Linq;
 using System.Text;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 using System.Collections;
 using System.Collections.ObjectModel;
 using System.Collections.Generic;
@@ -80,8 +82,23 @@ public partial class MainWindow : Window
 
         private void GenericTimer(object sender, EventArgs e)
         {
-            Console.WriteLine(">>>" + sharedMemory.ReadStringD2M());
-            sharedMemory.WriteStringM2D("Hello World"+cnt);
+            var read = sharedMemory.ReadStringD2M();
+            if (read.Length > 0) {
+                var baseObject = JsonSerializer.Deserialize<Communication.Base>(read);
+                if (baseObject.type == "Hello")
+                {
+                    var hello = JsonSerializer.Deserialize<Communication.Hello>(baseObject.json);
+                    Console.WriteLine("[" + baseObject.type + "]" + hello.msg);
+                }
+            }
+
+            sharedMemory.WriteStringM2D(JsonSerializer.Serialize(new Communication.Base
+            {
+                type = "Hello",
+                json = JsonSerializer.Serialize(new Communication.Hello {
+                    msg = "Hello from C#"
+                })
+            }));
             cnt++;
         }
 

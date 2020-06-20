@@ -69,6 +69,7 @@ public class SharedMemory : IDisposable
         memoryMappedFileM2D.Dispose();
         memoryMappedFileD2M.Dispose();
     }
+
     public bool WriteStringM2D(string msg)
     {
         return WriteString(msg, memoryMappedViewAccessorM2D);
@@ -147,7 +148,7 @@ public class SharedMemory : IDisposable
         {
             //受信中止
             Console.WriteLine("受信中止: 更新なし");
-            return null;
+            return "";
         }
 
         //データサイズ取得

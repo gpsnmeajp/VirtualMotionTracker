@@ -25,6 +25,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -35,12 +37,28 @@ namespace sm_test_cs
         static void Main(string[] args)
         {
             int cnt = 0;
-            SharedMemory sm = new SharedMemory();
+            SharedMemory sharedMemory = new SharedMemory();
 
             while (!Console.KeyAvailable) {
-                sm.WriteStringD2M("Done"+cnt);
-                sm.ReadStringM2D();
+                var read = sharedMemory.ReadStringM2D();
+                if (read.Length > 0)
+                {
+                    var baseObject = JsonSerializer.Deserialize<Communication.Base>(read);
+                    if (baseObject.type == "Hello")
+                    {
+                        var hello = JsonSerializer.Deserialize<Communication.Hello>(baseObject.json);
+                        Console.WriteLine("[" + baseObject.type + "]" + hello.msg);
+                    }
+                }
 
+                sharedMemory.WriteStringD2M(JsonSerializer.Serialize(new Communication.Base
+                {
+                    type = "Hello",
+                    json = JsonSerializer.Serialize(new Communication.Hello
+                    {
+                        msg = "Hello from C# mock"
+                    })
+                }));
                 cnt++;
                 Thread.Sleep(500);
             }
