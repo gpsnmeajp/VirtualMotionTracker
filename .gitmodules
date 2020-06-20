@@ -1,6 +1,3 @@
 [submodule "openvr"]
 	path = openvr
 	url = git@github.com:ValveSoftware/openvr.git
-[submodule "picojson"]
-	path = picojson
-	url = git@github.com:kazuho/picojson.git
