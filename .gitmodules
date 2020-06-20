@@ -1,3 +1,0 @@
-[submodule "openvr"]
-	path = openvr
-	url = git@github.com:ValveSoftware/openvr.git

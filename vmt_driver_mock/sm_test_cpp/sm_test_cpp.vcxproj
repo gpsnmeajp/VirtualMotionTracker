@@ -143,6 +143,7 @@
     <ClCompile Include="sm_test_cpp.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\..\json.hpp" />
     <ClInclude Include="SharedMemory.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

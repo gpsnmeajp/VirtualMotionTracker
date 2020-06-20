@@ -25,15 +25,29 @@ SOFTWARE.
 #include <stdio.h>
 #include <conio.h>
 #include "SharedMemory.h"
+#include "..\..\json.hpp"
 
+using std::string;
+using json = nlohmann::json;
 int main(void)
 {
 	SharedMemory::SharedMemory sm;
 
 	sm.open();
 	while (!_kbhit()) {
-		sm.readM2D();
-		sm.writeD2M("Hello Wooooo");
+		string r = sm.readM2D();
+		if (!r.empty()) {
+			json j = json::parse(r);
+			string type = j["type"];
+
+			printf("%s\n", type.c_str());
+		}
+
+		json jw;
+
+		jw["type"] = "Hello";
+		jw["json"] = json{ {"msg","Hello from cpp"} }.dump();
+		sm.writeD2M(jw.dump());
 		Sleep(800);
 	}
 	sm.close();
