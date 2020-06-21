@@ -1,6 +1,9 @@
-﻿// dllmain.cpp : DLL アプリケーションのエントリ ポイントを定義します。
-#include "pch.h"
-#include "..\openvr\headers\openvr_driver.h"
+﻿#include "dllmain.h"
+
+//OpenVRから参照されるため
+VMTDriver::ServerTrackedDeviceProvider g_ServerTrackedDeviceProvider;
+VMTDriver::VRWatchdogProvider g_VRWatchdogProvider;
+
 
 BOOL APIENTRY DllMain( HMODULE hModule,
                        DWORD  ul_reason_for_call,
@@ -18,3 +21,20 @@ BOOL APIENTRY DllMain( HMODULE hModule,
     return TRUE;
 }
 
+//ファクトリ関数。これによりOpenVR側からクラスが参照されるようになる
+HMD_DLL_EXPORT void* HmdDriverFactory(const char* pInterfaceName, int* pReturnCode)
+{
+    if (0 == strcmp(IServerTrackedDeviceProvider_Version, pInterfaceName))
+    {
+        return &g_ServerTrackedDeviceProvider;
+    }
+    if (0 == strcmp(IVRWatchdogProvider_Version, pInterfaceName))
+    {
+        return &g_VRWatchdogProvider;
+    }
+
+    if (pReturnCode)
+        *pReturnCode = VRInitError_Init_InterfaceNotFound;
+
+    return NULL;
+}
