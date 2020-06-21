@@ -22,29 +22,24 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 #pragma once
-#include "framework.h"
-#include <string>
-#include <vector>
-#include "..\openvr\headers\openvr_driver.h"
+#include "dllmain.h"
+#include "..\json.hpp"
 
-
-#define HMD_DLL_EXPORT extern "C" __declspec( dllexport )
-
+using std::string;
+using json = nlohmann::json;
 using namespace vr;
+
 namespace VMTDriver {
-	class ServerTrackedDeviceProvider;
-	class TrackedDeviceServerDriver;
-	class VRWatchdogProvider;
-	class Log;
-}
+	class CommunicationManager {
+	private:
+		SharedMemory::SharedMemory *m_sm;
 
-namespace SharedMemory {
-	class SharedMemory;
-}
+	public:
+		static CommunicationManager* GetInstance();
 
-#include "SharedMemory.h"
-#include "ServerTrackedDeviceProvider.h"
-#include "TrackedDeviceServerDriver.h"
-#include "VRWatchdogProvider.h"
-#include "Log.h"
-#include "CommunicationManager.h"
+		void Open();
+		void Close();
+		void Process();
+
+	};
+}
