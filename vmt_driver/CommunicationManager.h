@@ -38,6 +38,8 @@ namespace VMTDriver {
 	public:
 		static CommunicationManager* GetInstance();
 
+		SharedMemory::SharedMemory* GetSM();
+
 		void Open();
 		void Close();
 		void Process(ServerTrackedDeviceProvider* server);

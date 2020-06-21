@@ -26,7 +26,9 @@ SOFTWARE.
 #include <string>
 #include <vector>
 #include "..\openvr\headers\openvr_driver.h"
-
+#include <thread>
+#include <mutex>
+#include <deque>
 
 #define HMD_DLL_EXPORT extern "C" __declspec( dllexport )
 
