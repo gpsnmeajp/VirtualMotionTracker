@@ -81,20 +81,20 @@ public class SharedMemory : IDisposable
 
     public bool WriteString(string msg, MemoryMappedViewAccessor memoryMappedViewAccessor)
     {
-        Console.WriteLine(">WriteString");
+        //Console.WriteLine(">WriteString");
 
         //ハンドシェイクカウンタチェック
         memoryMappedViewAccessor.Read(SHARED_MEMORY_ADDRESS_COUNTER_SEND, out byte sendcnt);
         memoryMappedViewAccessor.Read(SHARED_MEMORY_ADDRESS_COUNTER_HANDSHAKE, out byte handshakecnt);
 
-        Console.WriteLine("sendcnt:" + sendcnt);
-        Console.WriteLine("handshakecnt:" + handshakecnt);
+        //Console.WriteLine("sendcnt:" + sendcnt);
+        //Console.WriteLine("handshakecnt:" + handshakecnt);
 
         //ハンドシェイクと送信が一致していない = 相手が受け取れていない
         if (sendcnt != handshakecnt)
         {
             //送信中止
-            Console.WriteLine("送信中止: 相手待機中");
+            //Console.WriteLine("送信中止: 相手待機中");
             return false;
         }
 
@@ -116,11 +116,11 @@ public class SharedMemory : IDisposable
         sendcnt = (byte)((((int)sendcnt) + 1) & 0xFF);
         memoryMappedViewAccessor.Write(SHARED_MEMORY_ADDRESS_COUNTER_SEND, (byte)sendcnt);
 
-        Console.WriteLine("+sendcnt:" + sendcnt);
+        //Console.WriteLine("+sendcnt:" + sendcnt);
 
         //送信成功
-        Console.WriteLine("送信完了: " + msg);
-        Console.WriteLine("<WriteString\n");
+        //Console.WriteLine("送信完了: " + msg);
+        //Console.WriteLine("<WriteString\n");
         return true;
     }
 
@@ -134,20 +134,20 @@ public class SharedMemory : IDisposable
     }
     public string ReadString(MemoryMappedViewAccessor memoryMappedViewAccessor)
     {
-        Console.WriteLine(">ReadString");
+        //Console.WriteLine(">ReadString");
 
         //ハンドシェイクカウンタチェック
         memoryMappedViewAccessor.Read(SHARED_MEMORY_ADDRESS_COUNTER_SEND, out byte sendcnt);
         memoryMappedViewAccessor.Read(SHARED_MEMORY_ADDRESS_COUNTER_HANDSHAKE, out byte handshakecnt);
 
-        Console.WriteLine("sendcnt:" + sendcnt);
-        Console.WriteLine("handshakecnt:" + handshakecnt);
+        //Console.WriteLine("sendcnt:" + sendcnt);
+        //Console.WriteLine("handshakecnt:" + handshakecnt);
 
         //ハンドシェイクが送信と一致している = 前回受信した値のまま
         if (sendcnt == handshakecnt)
         {
             //受信中止
-            Console.WriteLine("受信中止: 更新なし");
+            //Console.WriteLine("受信中止: 更新なし");
             return "";
         }
 
@@ -173,11 +173,11 @@ public class SharedMemory : IDisposable
 
         //ハンドシェイクカウンタ更新
         memoryMappedViewAccessor.Write(SHARED_MEMORY_ADDRESS_COUNTER_HANDSHAKE, (byte)sendcnt);
-        Console.WriteLine("+handshakecnt:" + sendcnt);
+        //Console.WriteLine("+handshakecnt:" + sendcnt);
 
         //受信成功
-        Console.WriteLine("受信成功: " + msg);
-        Console.WriteLine("<ReadString\n");
+        //Console.WriteLine("受信成功: " + msg);
+        //Console.WriteLine("<ReadString\n");
         return msg;
     }
 }

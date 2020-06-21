@@ -44,7 +44,9 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.Windows.Threading;
-
+using Valve.VR;
+using EasyLazyLibrary;
+using System.Numerics;
 namespace vmt_manager
 {
     /// <summary>
@@ -63,6 +65,9 @@ public partial class MainWindow : Window
         private DispatcherTimer dispatcherTimer;
         SharedMemory sharedMemory;
         int cnt = 0;
+        Random rnd;
+
+        EasyOpenVRUtil util;
 
         public MainWindow()
         {
@@ -75,9 +80,14 @@ public partial class MainWindow : Window
             Console.WriteLine("Loaded");
 
             dispatcherTimer = new DispatcherTimer();
-            dispatcherTimer.Interval = new TimeSpan(0, 0, 0, 1, 00);
+            dispatcherTimer.Interval = new TimeSpan(0, 0, 0, 0, 100);
             dispatcherTimer.Tick += new EventHandler(GenericTimer);
             dispatcherTimer.Start();
+
+            rnd = new Random();
+
+            util = new EasyOpenVRUtil();
+            util.StartOpenVR();
         }
 
         private void GenericTimer(object sender, EventArgs e)
@@ -92,14 +102,30 @@ public partial class MainWindow : Window
                 }
             }
 
-            sharedMemory.WriteStringM2D(JsonSerializer.Serialize(new Communication.Base
-            {
-                type = "Hello",
-                json = JsonSerializer.Serialize(new Communication.Hello {
-                    msg = "Hello from C#"
-                })
-            }));
-            cnt++;
+            EasyOpenVRUtil.Transform t = util.GetLeftControllerTransform();
+            if (t != null) {
+                Console.WriteLine(t.ToString());
+
+                Vector3 rot = Vector3.Transform(Vector3.One, t.rotation);
+                Console.WriteLine(rot.ToString());
+
+
+                sharedMemory.WriteStringM2D(JsonSerializer.Serialize(new Communication.Base
+                {
+                    type = "Pos",
+                    json = JsonSerializer.Serialize(new Communication.Pos
+                    {
+                        x = t.position.X,
+                        y = t.position.Y,
+                        z = t.position.Z,
+                        qx = t.rotation.X,
+                        qy = t.rotation.Y,
+                        qz = t.rotation.Z,
+                        qw = t.rotation.W,
+                    })
+                }));;
+
+            }
         }
 
 

@@ -32,8 +32,11 @@ namespace VMTDriver {
     {
     private:
         vector<TrackedDeviceServerDriver> m_devices;
+        int m_devicesNum = 0;
 
     public:
+        vector<TrackedDeviceServerDriver>& GetDevices();
+
         virtual EVRInitError Init(IVRDriverContext* pDriverContext) override;
         virtual void Cleanup() override;
         virtual const char* const* GetInterfaceVersions() override;

@@ -32,6 +32,7 @@ using namespace vr;
 namespace VMTDriver {
 	class CommunicationManager {
 	private:
+		bool m_opened = false;
 		SharedMemory::SharedMemory *m_sm;
 
 	public:
@@ -39,7 +40,7 @@ namespace VMTDriver {
 
 		void Open();
 		void Close();
-		void Process();
+		void Process(ServerTrackedDeviceProvider* server);
 
 	};
 }

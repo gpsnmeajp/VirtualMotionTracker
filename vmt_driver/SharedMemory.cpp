@@ -35,6 +35,9 @@ namespace SharedMemory {
 
 	bool SharedMemory::open()
 	{
+		if (m_opened) {
+			return true;
+		}
 		DWORD size_high = 0;
 		DWORD size_low = SHARED_MEMORY_SIZE & 0xFFFFFFFF;
 
@@ -69,6 +72,8 @@ namespace SharedMemory {
 		pM2D[SHARED_MEMORY_ADDRESS_COUNTER_HANDSHAKE] = 0;
 		pD2M[SHARED_MEMORY_ADDRESS_COUNTER_SEND] = 0;
 		pD2M[SHARED_MEMORY_ADDRESS_COUNTER_HANDSHAKE] = 0;
+
+		m_opened = true;
 		return true;
 	}
 
@@ -90,6 +95,7 @@ namespace SharedMemory {
 			CloseHandle(m_sharedMemoryHandleD2M);
 			m_sharedMemoryHandleD2M = nullptr;
 		}
+		m_opened = false;
 		return;
 	}
 

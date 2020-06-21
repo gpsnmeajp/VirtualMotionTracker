@@ -166,6 +166,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="..\json.hpp" />
+    <ClInclude Include="..\openvr\headers\openvr_driver.h" />
     <ClInclude Include="CommunicationManager.h" />
     <ClInclude Include="framework.h" />
     <ClInclude Include="dllmain.h" />

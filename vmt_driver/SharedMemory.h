@@ -60,6 +60,7 @@ namespace SharedMemory {
 		int logError(const char* fmt, ...);
 
 	private:
+		bool m_opened = false;
 		HANDLE m_sharedMemoryHandleM2D = nullptr;
 		LPVOID m_sharedMemoryViewPointerM2D = nullptr;
 		HANDLE m_sharedMemoryHandleD2M = nullptr;

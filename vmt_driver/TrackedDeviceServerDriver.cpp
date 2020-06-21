@@ -31,13 +31,42 @@ namespace VMTDriver {
     TrackedDeviceServerDriver::~TrackedDeviceServerDriver()
     {
     }
+
+    void TrackedDeviceServerDriver::SetDeviceSerial(string serial)
+    {
+        m_serial = serial;
+    }
+
+    void TrackedDeviceServerDriver::SetObjectIndex(int idx)
+    {
+        m_index = idx;
+    }
+
+    void TrackedDeviceServerDriver::SetPose(DriverPose_t pose)
+    {
+        m_pose = pose;
+    }
+
+    void TrackedDeviceServerDriver::RegisterToVRSystem()
+    {
+        if (!m_alreadyRegistered)
+        {
+            VRServerDriverHost()->TrackedDeviceAdded(m_serial.c_str(), ETrackedDeviceClass::TrackedDeviceClass_GenericTracker, this);
+            m_alreadyRegistered = true;
+        }
+    }
+    void TrackedDeviceServerDriver::UpdatePoseToVRSystem()
+    {
+        if (!m_alreadyRegistered) { return; }
+        VRServerDriverHost()->TrackedDevicePoseUpdated(m_deviceIndex, GetPose(), sizeof(DriverPose_t));
+    }
     EVRInitError TrackedDeviceServerDriver::Activate(uint32_t unObjectId)
     {
         m_deviceIndex = unObjectId;
         m_propertyContainer = VRProperties()->TrackedDeviceToPropertyContainer(unObjectId);
 
         VRProperties()->SetStringProperty(m_propertyContainer, Prop_ModelNumber_String, m_serial.c_str());
-        VRProperties()->SetStringProperty(m_propertyContainer, Prop_RenderModelName_String, m_serial.c_str());
+        VRProperties()->SetStringProperty(m_propertyContainer, Prop_RenderModelName_String, "lh_basestation_vive");
 
         VRProperties()->SetUint64Property(m_propertyContainer, Prop_CurrentUniverseId_Uint64, 2);
         VRProperties()->SetBoolProperty(m_propertyContainer, Prop_NeverTracked_Bool, false);
@@ -64,21 +93,7 @@ namespace VMTDriver {
     }
     DriverPose_t TrackedDeviceServerDriver::GetPose()
     {
-        DriverPose_t pose{ 0 };
-        pose.deviceIsConnected = true;
-        pose.poseIsValid = true;
-        pose.result = TrackingResult_Running_OK;
-
-        pose.qWorldFromDriverRotation = HmdQuaternion_Identity;
-        pose.qDriverFromHeadRotation = HmdQuaternion_Identity;
-
-        x += 0.0001f;
-        y += index / 100000.0;
-
-        pose.vecPosition[0] = x;
-        pose.vecPosition[1] = y;
-        pose.vecPosition[2] = z;
-        return pose;
+        return m_pose;
     }
 
 }

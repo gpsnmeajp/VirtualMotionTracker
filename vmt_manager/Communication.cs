@@ -15,7 +15,16 @@ class Communication
     }
     public class Hello
     {
-        public string type { get; set; }
         public string msg { get; set; }
+    }
+    public class Pos
+    {
+        public double x { get; set; }
+        public double y { get; set; }
+        public double z { get; set; }
+        public double qx { get; set; }
+        public double qy { get; set; }
+        public double qz { get; set; }
+        public double qw { get; set; }
     }
 }

@@ -26,6 +26,11 @@ namespace VMTDriver {
     //デバイスを管理する親
     //この下に子としてデバイスがぶら下がる
 
+    vector<TrackedDeviceServerDriver>& ServerTrackedDeviceProvider::GetDevices()
+    {
+        return m_devices;
+    }
+
     //初期化
     EVRInitError ServerTrackedDeviceProvider::Init(IVRDriverContext* pDriverContext)
     {
@@ -38,12 +43,16 @@ namespace VMTDriver {
         m_devices.resize(16);
 
         //16デバイスを登録
-        for (int i = 0; i < m_devices.size(); i++)
+//        for (int i = 0; i < m_devices.size(); i++)
+        for (int i = 0; i < 1; i++)
         {
-            m_devices[i].m_serial = "Hello Device";
-            m_devices[i].m_serial.append(std::to_string(i));
-            m_devices[i].index = i;
-            VRServerDriverHost()->TrackedDeviceAdded(m_devices[i].m_serial.c_str(), ETrackedDeviceClass::TrackedDeviceClass_GenericTracker, &m_devices[i]);
+            string name = "Hello Device";
+            name.append(std::to_string(i));
+
+            m_devices[i].SetDeviceSerial(name);
+            m_devices[i].SetObjectIndex(i);
+            m_devices[i].RegisterToVRSystem();
+            m_devicesNum++;
         }
 
         return EVRInitError::VRInitError_None;
@@ -66,11 +75,13 @@ namespace VMTDriver {
     //毎フレーム処理
     void ServerTrackedDeviceProvider::RunFrame()
     {
+        
+
         //通信処理をする
-        CommunicationManager::GetInstance()->Process();
-        for (int i = 0; i < m_devices.size(); i++)
+        CommunicationManager::GetInstance()->Process(this);
+        for (int i = 0; i < m_devicesNum; i++)
         {
-            VRServerDriverHost()->TrackedDevicePoseUpdated(m_devices[i].m_deviceIndex, m_devices[i].GetPose(), sizeof(DriverPose_t));
+            m_devices[i].UpdatePoseToVRSystem();
         }
     }
 

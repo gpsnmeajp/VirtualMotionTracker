@@ -27,22 +27,31 @@ SOFTWARE.
 using namespace vr;
 using std::string;
 namespace VMTDriver {
+    const HmdQuaternion_t HmdQuaternion_Identity{ 1,0,0,0 };
+
     //個々のデバイス
     class TrackedDeviceServerDriver : public ITrackedDeviceServerDriver
     {
-    public:
-        const HmdQuaternion_t HmdQuaternion_Identity{ 1,0,0,0 };
-        int index;
+    private:
+        bool m_alreadyRegistered = false;
+        string m_serial;
         TrackedDeviceIndex_t m_deviceIndex;
         PropertyContainerHandle_t m_propertyContainer;
-        string m_serial;
+        int m_index;
 
+        DriverPose_t m_pose{ 0 };
+
+    public:
         TrackedDeviceServerDriver();
         ~TrackedDeviceServerDriver();
 
-        double x = 0;
-        double y = 0;
-        double z = 0;
+        void SetDeviceSerial(string);
+        void SetObjectIndex(int);
+        void SetPose(DriverPose_t pose);
+        void RegisterToVRSystem();
+        void UpdatePoseToVRSystem();
+
+        //---------------
 
         virtual EVRInitError Activate(uint32_t unObjectId) override;
         virtual void Deactivate() override;
