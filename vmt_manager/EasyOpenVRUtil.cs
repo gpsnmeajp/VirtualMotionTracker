@@ -27,6 +27,7 @@ namespace EasyLazyLibrary
 
         //内部保持用全デバイス姿勢
         TrackedDevicePose_t[] allDevicePose;
+        TrackedDevicePose_t[] allDevicePoseRaw;
 
         //デバイス姿勢を常にアップデートするか
         bool autoupdate = true;
@@ -45,6 +46,7 @@ namespace EasyLazyLibrary
             public Quaternion rotation = Quaternion.Identity;
             public Vector3 velocity = Vector3.Zero;
             public Vector3 angularVelocity = Vector3.Zero;
+            public Matrix4x4 matrix4X4;
 
             //デバッグ用
             public override string ToString()
@@ -85,6 +87,14 @@ namespace EasyLazyLibrary
             }
             return allDevicePose;
         }
+        public TrackedDevicePose_t[] GetAllDevicePoseRaw()
+        {
+            if (autoupdate)
+            {
+                Update();
+            }
+            return allDevicePoseRaw;
+        }
 
         public TrackedDevicePose_t GetDevicePose(uint i)
         {
@@ -93,6 +103,14 @@ namespace EasyLazyLibrary
                 return new TrackedDevicePose_t();
             }
             return allDevicePose[i];
+        }
+        public TrackedDevicePose_t GetDevicePoseRaw(uint i)
+        {
+            if (!IsDeviceValid(i))
+            {
+                return new TrackedDevicePose_t();
+            }
+            return allDevicePoseRaw[i];
         }
 
         public ETrackingResult GetDeviceTrackingResult(uint i)
@@ -187,12 +205,14 @@ namespace EasyLazyLibrary
         }
 
         //全デバイス情報を更新
-        public void Update(ETrackingUniverseOrigin origin = ETrackingUniverseOrigin.TrackingUniverseRawAndUncalibrated)
+        public void Update(ETrackingUniverseOrigin origin = ETrackingUniverseOrigin.TrackingUniverseStanding)
         {
             allDevicePose = new TrackedDevicePose_t[OpenVR.k_unMaxTrackedDeviceCount];
+            allDevicePoseRaw = new TrackedDevicePose_t[OpenVR.k_unMaxTrackedDeviceCount];
             if (!IsReady()) { return; }
             //すべてのデバイスの情報を取得
             openvr.GetDeviceToAbsoluteTrackingPose(origin, PredictedTime, allDevicePose);
+            openvr.GetDeviceToAbsoluteTrackingPose(ETrackingUniverseOrigin.TrackingUniverseRawAndUncalibrated, PredictedTime, allDevicePoseRaw);
             //最終更新フレームを更新
             LastFrameCount = DateTime.Now.Ticks;
         }
@@ -252,6 +272,25 @@ namespace EasyLazyLibrary
         {
             return GetTransform(GetDeviceIndexBySerialNumber(serial));
         }
+        public Transform GetHMDTransformRaw()
+        {
+            return GetTransformRaw(GetHMDIndex());
+        }
+
+        public Transform GetLeftControllerTransformRaw()
+        {
+            return GetTransformRaw(GetLeftControllerIndex());
+        }
+
+        public Transform GetRightControllerTransformRaw()
+        {
+            return GetTransformRaw(GetRightControllerIndex());
+        }
+
+        public Transform GetTransformBySerialNumberRaw(string serial)
+        {
+            return GetTransformRaw(GetDeviceIndexBySerialNumber(serial));
+        }
 
         //指定デバイスの姿勢情報を取得
         public Transform GetTransform(uint index)
@@ -272,6 +311,61 @@ namespace EasyLazyLibrary
             );
 
             Transform res = new Transform();
+            res.matrix4X4 = mat;
+            res.deviceid = index;
+
+            res.velocity.X = Pose.vVelocity.v0;
+            res.velocity.Y = Pose.vVelocity.v1;
+            res.velocity.Z = Pose.vVelocity.v2;
+            res.angularVelocity.X = Pose.vAngularVelocity.v0;
+            res.angularVelocity.Y = Pose.vAngularVelocity.v1;
+            res.angularVelocity.Z = Pose.vAngularVelocity.v2;
+
+            res.position = new Vector3(mat.M14, mat.M24, mat.M34);
+            res.rotation = Quaternion.CreateFromRotationMatrix(mat);
+            res.rotation.W = -res.rotation.W;
+
+            return res;
+        }
+        public Transform Matrix4x4ToTransform(Matrix4x4 mat)
+        {
+            Transform res = new Transform();
+            res.matrix4X4 = mat;
+            res.position = new Vector3(mat.M14, mat.M24, mat.M34);
+            res.rotation = Quaternion.CreateFromRotationMatrix(mat);
+            res.rotation.W = -res.rotation.W;
+            return res;
+        }
+
+        public Matrix4x4 HmdMatrix34ToMatrix4x4(HmdMatrix34_t m)
+        { 
+            return new Matrix4x4(
+                m.m0, m.m1, m.m2, m.m3,
+                m.m4, m.m5, m.m6, m.m7,
+                m.m8, m.m9, m.m10, m.m11,
+                0, 0, 0, 1
+            );
+        }
+
+        public Transform GetTransformRaw(uint index)
+        {
+            //有効なデバイスか
+            if (!IsDeviceValid(index))
+            {
+                return null;
+            }
+
+            TrackedDevicePose_t Pose = allDevicePoseRaw[index];
+            var m = Pose.mDeviceToAbsoluteTracking;
+            Matrix4x4 mat = new Matrix4x4(
+                m.m0, m.m1, m.m2, m.m3,
+                m.m4, m.m5, m.m6, m.m7,
+                m.m8, m.m9, m.m10, m.m11,
+                0, 0, 0, 1
+            );
+
+            Transform res = new Transform();
+            res.matrix4X4 = mat;
             res.deviceid = index;
 
             res.velocity.X = Pose.vVelocity.v0;
@@ -295,6 +389,22 @@ namespace EasyLazyLibrary
             rot = Quaternion.Identity;
 
             Transform t = GetTransform(index);
+            if (t == null)
+            {
+                return false;
+            }
+
+            pos = t.position;
+            rot = t.rotation;
+
+            return true;
+        }
+        public bool GetPoseRaw(uint index, out Vector3 pos, out Quaternion rot)
+        {
+            pos = Vector3.Zero;
+            rot = Quaternion.Identity;
+
+            Transform t = GetTransformRaw(index);
             if (t == null)
             {
                 return false;

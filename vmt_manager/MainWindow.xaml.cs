@@ -67,6 +67,9 @@ public partial class MainWindow : Window
         int cnt = 0;
         Random rnd;
 
+        Vector3 offsetPos;
+        Quaternion offsetRot;
+
         EasyOpenVRUtil util;
 
         public MainWindow()
@@ -88,6 +91,15 @@ public partial class MainWindow : Window
 
             util = new EasyOpenVRUtil();
             util.StartOpenVR();
+
+            EasyOpenVRUtil.Transform t = util.GetTransformBySerialNumber("Hello Device0");
+            if (t != null)
+            {
+                offsetPos = t.position;
+                offsetRot = t.rotation;
+                Console.WriteLine(t);
+            }
+
         }
 
         private void GenericTimer(object sender, EventArgs e)
@@ -104,24 +116,28 @@ public partial class MainWindow : Window
 
             EasyOpenVRUtil.Transform t = util.GetLeftControllerTransform();
             if (t != null) {
-                Console.WriteLine(t.ToString());
+                Console.WriteLine(t);
 
-                Vector3 rot = Vector3.Transform(Vector3.One, t.rotation);
-                Console.WriteLine(rot.ToString());
+                HmdMatrix34_t m3 = new HmdMatrix34_t();
+                OpenVR.ChaperoneSetup.GetWorkingStandingZeroPoseToRawTrackingPose(ref m3);
 
+                Matrix4x4 m = util.HmdMatrix34ToMatrix4x4(m3)* t.matrix4X4;
+
+                EasyOpenVRUtil.Transform t2 = util.Matrix4x4ToTransform(m);
+                Console.WriteLine(t2);
 
                 sharedMemory.WriteStringM2D(JsonSerializer.Serialize(new Communication.Base
                 {
                     type = "Pos",
                     json = JsonSerializer.Serialize(new Communication.Pos
                     {
-                        x = t.position.X,
-                        y = t.position.Y,
-                        z = t.position.Z,
-                        qx = t.rotation.X,
-                        qy = t.rotation.Y,
-                        qz = t.rotation.Z,
-                        qw = t.rotation.W,
+                        x = t2.position.X,
+                        y = t2.position.Y,
+                        z = t2.position.Z,
+                        qx = t2.rotation.X,
+                        qy = t2.rotation.Y,
+                        qz = t2.rotation.Z,
+                        qw = t2.rotation.W,
                     })
                 }));;
 
@@ -133,6 +149,22 @@ public partial class MainWindow : Window
         {
             //クローズ
             Console.WriteLine("Closed");
+
+            sharedMemory.WriteStringM2D(JsonSerializer.Serialize(new Communication.Base
+            {
+                type = "Pos",
+                json = JsonSerializer.Serialize(new Communication.Pos
+                {
+                    x = 0,
+                    y = 0,
+                    z = 0,
+                    qx = 0,
+                    qy = 0,
+                    qz = 0,
+                    qw = 1,
+                })
+            })); ;
+
         }
     }
 }
