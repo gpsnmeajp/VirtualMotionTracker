@@ -47,6 +47,7 @@ using System.Windows.Threading;
 using Valve.VR;
 using EasyLazyLibrary;
 using System.Numerics;
+using Rug.Osc;
 namespace vmt_manager
 {
     /// <summary>
@@ -70,7 +71,7 @@ public partial class MainWindow : Window
         Quaternion offsetRot;
 
         EasyOpenVRUtil util;
-
+        OSC osc;
 
         public MainWindow()
         {
@@ -92,12 +93,66 @@ public partial class MainWindow : Window
             util = new EasyOpenVRUtil();
             util.StartOpenVR();
 
-            EasyOpenVRUtil.Transform t = util.GetTransformBySerialNumber("Hello Device0");
-            if (t != null)
+            osc = new OSC(39530,OnBundle,OnMessage);
+        }
+
+        private void OnMessage(OscMessage message)
+        {
+            Console.WriteLine("## " + message);
+            if (message.Address == "/tra") {
+                int idx = (int)message[0];
+                bool enable = (int)message[1]!=0;
+                Vector3 position = new Vector3((float)message[2], (float)message[3], (float)message[4]);
+                position.Z = -position.Z; //Unity座標系からドライバ座標系へ
+                Quaternion rotation = new Quaternion((float)message[5], (float)message[6], (float)message[7], (float)message[8]);
+                rotation.Z = -rotation.Z;
+                rotation.W = -rotation.W;
+
+                HmdMatrix34_t m3 = new HmdMatrix34_t();
+                OpenVR.ChaperoneSetup.GetWorkingStandingZeroPoseToRawTrackingPose(ref m3);
+
+                Matrix4x4 pos = Matrix4x4.CreateTranslation(position);
+                Matrix4x4 rot = Matrix4x4.CreateFromQuaternion(rotation);
+                Matrix4x4 posrot = rot * pos;
+                Matrix4x4 m = posrot * util.HmdMatrix34ToMatrix4x4(m3);
+                EasyOpenVRUtil.Transform t2 = util.Matrix4x4ToTransform(m);
+
+                Console.WriteLine(position);
+                Console.WriteLine(rotation);
+
+                sharedMemory.Write(JsonSerializer.Serialize(new Communication.Base
+                {
+                    type = "Pos",
+                    json = JsonSerializer.Serialize(new Communication.Pos
+                    {
+                        idx = idx,
+                        en = enable,
+                        x = t2.position.X,
+                        y = t2.position.Y,
+                        z = t2.position.Z,
+                        qx = t2.rotation.X,
+                        qy = t2.rotation.Y,
+                        qz = t2.rotation.Z,
+                        qw = t2.rotation.W,
+                    })
+                })); ;
+            }
+        }
+
+        private void OnBundle(OscBundle bundle)
+        {
+            for (int i = 0; i < bundle.Count; i++)
             {
-                offsetPos = t.position;
-                offsetRot = t.rotation;
-                Console.WriteLine(t);
+                switch (bundle[i])
+                {
+                    //Messageを受信した
+                    case OscMessage msg:
+                        OnMessage(msg);
+                        break;
+                    default:
+                        //Do noting
+                        break;
+                }
             }
         }
 
@@ -119,6 +174,7 @@ public partial class MainWindow : Window
                 }
             } while (true);
 
+            /*
             EasyOpenVRUtil.Transform t = util.GetLeftControllerTransform();
             if (t != null)
             {
@@ -210,6 +266,7 @@ public partial class MainWindow : Window
                     qw = 1,
                 })
             }));
+            */
         }
 
 
@@ -218,21 +275,26 @@ public partial class MainWindow : Window
             //クローズ
             Console.WriteLine("Closed");
 
-            sharedMemory.Write(JsonSerializer.Serialize(new Communication.Base
-            {
-                type = "Pos",
-                json = JsonSerializer.Serialize(new Communication.Pos
+            for(int i = 0; i < 16; i++) {
+                sharedMemory.Write(JsonSerializer.Serialize(new Communication.Base
                 {
-                    x = 0,
-                    y = 0,
-                    z = 0,
-                    qx = 0,
-                    qy = 0,
-                    qz = 0,
-                    qw = 1,
-                })
-            })); ;
-            Thread.Sleep(10);
+                    type = "Pos",
+                    json = JsonSerializer.Serialize(new Communication.Pos
+                    {
+                        idx = i,
+                        en = false,
+                        x = 0,
+                        y = 0,
+                        z = 0,
+                        qx = 0,
+                        qy = 0,
+                        qz = 0,
+                        qw = 1,
+                    })
+                }));
+            }
+            osc.Dispose();
+            Thread.Sleep(500);
         }
     }
 }
