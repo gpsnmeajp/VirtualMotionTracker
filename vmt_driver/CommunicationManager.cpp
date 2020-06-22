@@ -5,14 +5,14 @@ namespace VMTDriver {
 	std::deque<string> CommunicationWorkerReadQue;
 	std::deque<string> CommunicationWorkerWriteQue;
 	bool CommunicationWorkerExit = false;
-	std::thread *CommunicationWorkerThread;
+	std::thread* CommunicationWorkerThread;
 	void CommunicationWorker()
 	{
 		while (!CommunicationWorkerExit)
 		{
 			//クリティカルセクション
 			{
-				std::lock_guard<std::mutex> lock(CommunicationWorkerMutex); 
+				std::lock_guard<std::mutex> lock(CommunicationWorkerMutex);
 
 				//受信データがあったらひたすら読み込む
 				string r = CommunicationManager::GetInstance()->GetSM()->readM2D();
@@ -59,7 +59,9 @@ namespace VMTDriver {
 			CommunicationWorkerWriteQue.push_back(s);
 		}
 	}
+}
 
+namespace VMTDriver {
 	CommunicationManager* CommunicationManager::GetInstance()
 	{
 		static CommunicationManager cm;
@@ -117,14 +119,22 @@ namespace VMTDriver {
 
 
 					DriverPose_t pose{ 0 };
-					pose.deviceIsConnected = true;
-					pose.poseIsValid = true;
-					pose.result = TrackingResult_Running_OK;
 
 					pose.qRotation = VMTDriver::HmdQuaternion_Identity;
 					pose.qWorldFromDriverRotation = VMTDriver::HmdQuaternion_Identity;
 					pose.qDriverFromHeadRotation = VMTDriver::HmdQuaternion_Identity;
 
+					int idx = j2["idx"];
+					if (j2["en"]) {
+						pose.deviceIsConnected = true;
+						pose.poseIsValid = true;
+						pose.result = TrackingResult_Running_OK;
+					}
+					else {
+						pose.deviceIsConnected = false;
+						pose.poseIsValid = false;
+						pose.result = ETrackingResult::TrackingResult_Calibrating_OutOfRange;
+					}
 					pose.vecPosition[0] = j2["x"];
 					pose.vecPosition[1] = j2["y"];
 					pose.vecPosition[2] = j2["z"];
@@ -132,7 +142,12 @@ namespace VMTDriver {
 					pose.qRotation.y = j2["qy"];
 					pose.qRotation.z = j2["qz"];
 					pose.qRotation.w = j2["qw"];
-					server->GetDevices()[0].SetPose(pose);
+
+					if (idx >= 0 && idx <= server->GetDevices().size())
+					{
+						server->GetDevices()[idx].RegisterToVRSystem();
+						server->GetDevices()[idx].SetPose(pose);
+					}
 				}
 				printf("%s\n", type.c_str());
 			} while (true);

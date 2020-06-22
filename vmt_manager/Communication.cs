@@ -19,6 +19,8 @@ class Communication
     }
     public class Pos
     {
+        public double idx { get; set; }
+        public bool en { get; set; }
         public double x { get; set; }
         public double y { get; set; }
         public double z { get; set; }

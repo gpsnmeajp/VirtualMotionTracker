@@ -24,6 +24,9 @@ SOFTWARE.
 #include "SharedMemory.h"
 
 namespace SharedMemory {
+
+
+
 	SharedMemory::SharedMemory()
 	{
 		open();

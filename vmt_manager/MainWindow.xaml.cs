@@ -147,6 +147,8 @@ public partial class MainWindow : Window
                     type = "Pos",
                     json = JsonSerializer.Serialize(new Communication.Pos
                     {
+                        idx = 0,
+                        en = true,
                         x = t2.position.X,
                         y = t2.position.Y,
                         z = t2.position.Z,
@@ -164,6 +166,8 @@ public partial class MainWindow : Window
                     type = "Pos",
                     json = JsonSerializer.Serialize(new Communication.Pos
                     {
+                        idx = 0,
+                        en = true,
                         x = rnd.NextDouble(),
                         y = rnd.NextDouble(),
                         z = rnd.NextDouble(),
@@ -172,9 +176,40 @@ public partial class MainWindow : Window
                         qz = 0,
                         qw = 1,
                     })
-                })); ; ;
-
+                }));
             }
+            sharedMemory.Write(JsonSerializer.Serialize(new Communication.Base
+            {
+                type = "Pos",
+                json = JsonSerializer.Serialize(new Communication.Pos
+                {
+                    idx = 1,
+                    en = true,
+                    x = rnd.NextDouble(),
+                    y = rnd.NextDouble(),
+                    z = rnd.NextDouble(),
+                    qx = 0,
+                    qy = 0,
+                    qz = 0,
+                    qw = 1,
+                })
+            }));
+            sharedMemory.Write(JsonSerializer.Serialize(new Communication.Base
+            {
+                type = "Pos",
+                json = JsonSerializer.Serialize(new Communication.Pos
+                {
+                    idx = 2,
+                    en = false,
+                    x = rnd.NextDouble(),
+                    y = rnd.NextDouble(),
+                    z = rnd.NextDouble(),
+                    qx = 0,
+                    qy = 0,
+                    qz = 0,
+                    qw = 1,
+                })
+            }));
         }
 
 

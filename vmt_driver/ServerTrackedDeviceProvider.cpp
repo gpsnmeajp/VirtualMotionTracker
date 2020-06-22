@@ -43,15 +43,14 @@ namespace VMTDriver {
         m_devices.resize(16);
 
         //16デバイスを登録
-//        for (int i = 0; i < m_devices.size(); i++)
-        for (int i = 0; i < 1; i++)
+        for (int i = 0; i < m_devices.size(); i++)
         {
-            string name = "Hello Device";
+            string name = "VMT_";
             name.append(std::to_string(i));
 
             m_devices[i].SetDeviceSerial(name);
             m_devices[i].SetObjectIndex(i);
-            m_devices[i].RegisterToVRSystem();
+            //m_devices[i].RegisterToVRSystem(); //登録は必要になったらやる
             m_devicesNum++;
         }
 
