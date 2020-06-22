@@ -304,10 +304,10 @@ namespace EasyLazyLibrary
             TrackedDevicePose_t Pose = allDevicePose[index];
             var m = Pose.mDeviceToAbsoluteTracking;
             Matrix4x4 mat = new Matrix4x4(
-                m.m0, m.m1, m.m2, m.m3,
-                m.m4, m.m5, m.m6, m.m7,
-                m.m8, m.m9, m.m10, m.m11,
-                0, 0, 0, 1
+                m.m0, m.m4, m.m8, 0,
+                m.m1, m.m5, m.m9, 0,
+                m.m2, m.m6, m.m10, 0,
+                m.m3, m.m7, m.m11, 1
             );
 
             Transform res = new Transform();
@@ -321,9 +321,9 @@ namespace EasyLazyLibrary
             res.angularVelocity.Y = Pose.vAngularVelocity.v1;
             res.angularVelocity.Z = Pose.vAngularVelocity.v2;
 
-            res.position = new Vector3(mat.M14, mat.M24, mat.M34);
+            res.position = mat.Translation;
             res.rotation = Quaternion.CreateFromRotationMatrix(mat);
-            res.rotation.W = -res.rotation.W;
+            //res.rotation.W = -res.rotation.W;
 
             return res;
         }
@@ -331,19 +331,19 @@ namespace EasyLazyLibrary
         {
             Transform res = new Transform();
             res.matrix4X4 = mat;
-            res.position = new Vector3(mat.M14, mat.M24, mat.M34);
+            res.position = mat.Translation;
             res.rotation = Quaternion.CreateFromRotationMatrix(mat);
-            res.rotation.W = -res.rotation.W;
+            //res.rotation.W = -res.rotation.W;
             return res;
         }
 
         public Matrix4x4 HmdMatrix34ToMatrix4x4(HmdMatrix34_t m)
         { 
             return new Matrix4x4(
-                m.m0, m.m1, m.m2, m.m3,
-                m.m4, m.m5, m.m6, m.m7,
-                m.m8, m.m9, m.m10, m.m11,
-                0, 0, 0, 1
+                m.m0, m.m4, m.m8, 0,
+                m.m1, m.m5, m.m9, 0,
+                m.m2, m.m6, m.m10, 0,
+                m.m3, m.m7, m.m11, 1
             );
         }
 
@@ -358,10 +358,10 @@ namespace EasyLazyLibrary
             TrackedDevicePose_t Pose = allDevicePoseRaw[index];
             var m = Pose.mDeviceToAbsoluteTracking;
             Matrix4x4 mat = new Matrix4x4(
-                m.m0, m.m1, m.m2, m.m3,
-                m.m4, m.m5, m.m6, m.m7,
-                m.m8, m.m9, m.m10, m.m11,
-                0, 0, 0, 1
+                m.m0, m.m4, m.m8, 0,
+                m.m1, m.m5, m.m9, 0,
+                m.m2, m.m6, m.m10, 0,
+                m.m3, m.m7, m.m11, 1
             );
 
             Transform res = new Transform();
@@ -375,9 +375,9 @@ namespace EasyLazyLibrary
             res.angularVelocity.Y = Pose.vAngularVelocity.v1;
             res.angularVelocity.Z = Pose.vAngularVelocity.v2;
 
-            res.position = new Vector3(mat.M14, mat.M24, mat.M34);
+            res.position = mat.Translation;
             res.rotation = Quaternion.CreateFromRotationMatrix(mat);
-            res.rotation.W = -res.rotation.W;
+            //res.rotation.W = -res.rotation.W;
 
             return res;
         }

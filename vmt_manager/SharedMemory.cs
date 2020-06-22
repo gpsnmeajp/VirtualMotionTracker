@@ -26,6 +26,11 @@ using System.IO;
 using System.IO.MemoryMappedFiles;
 using System.Linq;
 using System.Text;
+using System.Collections;
+using System.Collections.ObjectModel;
+using System.Collections.Generic;
+using System.Threading;
+using System.Threading.Tasks;
 
 public class SharedMemory : IDisposable
 {
@@ -47,6 +52,12 @@ public class SharedMemory : IDisposable
     MemoryMappedFile memoryMappedFileD2M;
     MemoryMappedViewAccessor memoryMappedViewAccessorD2M;
 
+    Task CommunicationThread;
+    bool CommunicationThreadExit = false;
+    Queue<string> ReadQueue = new Queue<string>();
+    Queue<string> WriteQueue = new Queue<string>();
+    Object CommunicationThreadLockObject = new Object();
+
     public SharedMemory()
 	{
         //オープン
@@ -61,13 +72,77 @@ public class SharedMemory : IDisposable
         memoryMappedViewAccessorM2D.Write(SHARED_MEMORY_ADDRESS_COUNTER_HANDSHAKE, (byte)0);
         memoryMappedViewAccessorD2M.Write(SHARED_MEMORY_ADDRESS_COUNTER_SEND, (byte)0);
         memoryMappedViewAccessorD2M.Write(SHARED_MEMORY_ADDRESS_COUNTER_HANDSHAKE, (byte)0);
+
+        CommunicationThread = Task.Run(() =>
+        {
+            while (!CommunicationThreadExit)
+            {
+                lock (CommunicationThreadLockObject)
+                {
+                    try
+                    {
+                        //送信キューにデータが有る場合
+                        if (WriteQueue.Count > 0)
+                        {
+                            if (WriteStringM2D(WriteQueue.Peek()))
+                            {
+                                //送信成功したら引き抜き、そのまま続ける
+                                WriteQueue.Dequeue();
+                                continue;
+                            }
+                            //書き込み失敗時は次の周期まで待つ(相手が起動していないか、相手がいっぱいいっぱい)
+                        }
+
+                        //受信データが有る場合(かつリミッター以下の場合)
+                        string r = ReadStringD2M();
+                        if (r.Length > 0 && ReadQueue.Count < 1024)
+                        {
+                            ReadQueue.Enqueue(r);
+                            continue;
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        Console.WriteLine(ex.ToString());
+                    }
+                }
+                Thread.Sleep(4);
+            }
+        });
+
     }
 
     public void Dispose() {
+        CommunicationThreadExit = true;
+        CommunicationThread.Wait();
+
         memoryMappedViewAccessorM2D.Dispose();
         memoryMappedViewAccessorD2M.Dispose();
         memoryMappedFileM2D.Dispose();
         memoryMappedFileD2M.Dispose();
+    }
+
+    public void Write(string s)
+    {
+        lock (CommunicationThreadLockObject)
+        {
+            if (WriteQueue.Count < 1024) //1024件以上は捨てる(異常時、通信不良時)
+            {
+                WriteQueue.Enqueue(s);
+            }
+        }
+    }
+    public string Read()
+    {
+        string read = "";
+        lock (CommunicationThreadLockObject)
+        {
+            if (ReadQueue.Count > 0)
+            {
+                read = ReadQueue.Dequeue();
+            }
+        }
+        return read;
     }
 
     public bool WriteStringM2D(string msg)

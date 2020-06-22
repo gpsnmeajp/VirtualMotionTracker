@@ -71,34 +71,6 @@ public partial class MainWindow : Window
 
         EasyOpenVRUtil util;
 
-        Task CommunicationThread;
-        bool CommunicationThreadExit = false;
-        Queue<string> ReadQueue = new Queue<string>();
-        Queue<string> WriteQueue = new Queue<string>();
-        Object CommunicationThreadLockObject = new Object();
-
-        void Write(string s)
-        {
-            lock (CommunicationThreadLockObject)
-            {
-                if (WriteQueue.Count < 1024) //1024件以上は捨てる(異常時、通信不良時)
-                {
-                    WriteQueue.Enqueue(s);
-                }
-            }
-        }
-        string Read()
-        {
-            string read = "";
-            lock (CommunicationThreadLockObject)
-            {
-                if (ReadQueue.Count > 0)
-                {
-                    read = ReadQueue.Dequeue();
-                }
-            }
-            return read;
-        }
 
         public MainWindow()
         {
@@ -127,41 +99,6 @@ public partial class MainWindow : Window
                 offsetRot = t.rotation;
                 Console.WriteLine(t);
             }
-
-            CommunicationThread = Task.Run(() =>
-            {
-                while (!CommunicationThreadExit) {
-                    lock (CommunicationThreadLockObject)
-                    {
-                        try
-                        {
-                            //送信キューにデータが有る場合
-                            if (WriteQueue.Count > 0)
-                            {
-                                if (sharedMemory.WriteStringM2D(WriteQueue.Peek()))
-                                {
-                                    //送信成功したら引き抜き、そのまま続ける
-                                    WriteQueue.Dequeue();
-                                    continue;
-                                }
-                                //書き込み失敗時は次の周期まで待つ(相手が起動していないか、相手がいっぱいいっぱい)
-                            }
-
-                            //受信データが有る場合(かつリミッター以下の場合)
-                            string r = sharedMemory.ReadStringD2M();
-                            if (r.Length > 0 && ReadQueue.Count<1024)
-                            {
-                                ReadQueue.Enqueue(r);
-                                continue;
-                            }
-                        }
-                        catch (Exception ex) {
-                            Console.WriteLine(ex.ToString());
-                        }
-                    }
-                    Thread.Sleep(4);
-                }
-            });
         }
 
         private void GenericTimer(object sender, EventArgs e)
@@ -169,7 +106,7 @@ public partial class MainWindow : Window
 
             do
             {
-                string read = Read();
+                string read = sharedMemory.Read();
                 if (read.Length < 1)
                 {
                     break;
@@ -183,18 +120,29 @@ public partial class MainWindow : Window
             } while (true);
 
             EasyOpenVRUtil.Transform t = util.GetLeftControllerTransform();
-            if (t != null) {
+            if (t != null)
+            {
                 Console.WriteLine(t);
 
                 HmdMatrix34_t m3 = new HmdMatrix34_t();
                 OpenVR.ChaperoneSetup.GetWorkingStandingZeroPoseToRawTrackingPose(ref m3);
 
-                Matrix4x4 m = util.HmdMatrix34ToMatrix4x4(m3)* t.matrix4X4;
+                Matrix4x4 pos = Matrix4x4.CreateTranslation(t.position);
+
+                Quaternion q = t.rotation;
+                Matrix4x4 rot = Matrix4x4.CreateFromQuaternion(q);
+                Matrix4x4 posrot = rot* pos;
+                Console.WriteLine(pos);
+                Console.WriteLine(rot);
+                Console.WriteLine(posrot);
+                Console.WriteLine(t.matrix4X4);
+
+                Matrix4x4 m = posrot*util.HmdMatrix34ToMatrix4x4(m3);
 
                 EasyOpenVRUtil.Transform t2 = util.Matrix4x4ToTransform(m);
                 Console.WriteLine(t2);
 
-                Write(JsonSerializer.Serialize(new Communication.Base
+                sharedMemory.Write(JsonSerializer.Serialize(new Communication.Base
                 {
                     type = "Pos",
                     json = JsonSerializer.Serialize(new Communication.Pos
@@ -207,7 +155,24 @@ public partial class MainWindow : Window
                         qz = t2.rotation.Z,
                         qw = t2.rotation.W,
                     })
-                }));;
+                })); ;
+
+            }
+            else {
+                sharedMemory.Write(JsonSerializer.Serialize(new Communication.Base
+                {
+                    type = "Pos",
+                    json = JsonSerializer.Serialize(new Communication.Pos
+                    {
+                        x = rnd.NextDouble(),
+                        y = rnd.NextDouble(),
+                        z = rnd.NextDouble(),
+                        qx = 0,
+                        qy = 0,
+                        qz = 0,
+                        qw = 1,
+                    })
+                })); ; ;
 
             }
         }
@@ -218,7 +183,7 @@ public partial class MainWindow : Window
             //クローズ
             Console.WriteLine("Closed");
 
-            Write(JsonSerializer.Serialize(new Communication.Base
+            sharedMemory.Write(JsonSerializer.Serialize(new Communication.Base
             {
                 type = "Pos",
                 json = JsonSerializer.Serialize(new Communication.Pos
@@ -233,8 +198,6 @@ public partial class MainWindow : Window
                 })
             })); ;
             Thread.Sleep(10);
-            CommunicationThreadExit = true;
-            CommunicationThread.Wait();
         }
     }
 }
