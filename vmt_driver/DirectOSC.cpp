@@ -28,9 +28,7 @@ namespace DirectOSC {
 
 	void ThreadWorker()
 	{
-		printf("$waiting...\n");
 		OSC::GetInstance()->GetSocketRx()->RunUntilSigInt();
-		printf("$Done...\n");
 	}
 
 	OSC::OSC()
@@ -55,6 +53,9 @@ namespace DirectOSC {
 	}
 	void OSC::Open(osc::OscPacketListener* listen, int portRx,int portTx)
 	{
+		if (m_opened) {
+			return;
+		}
 		this->listener = listen;
 		socketRx = new UdpListeningReceiveSocket(IpEndpointName(IpEndpointName::ANY_ADDRESS, portRx), listener);
 		socketTx = new UdpTransmitSocket(IpEndpointName("127.0.0.1", portTx));
@@ -64,6 +65,9 @@ namespace DirectOSC {
 	}
 	void OSC::Close()
 	{
+		if (!m_opened) {
+			return;
+		}
 		socketRx->AsynchronousBreak();
 		Thread->join();
 

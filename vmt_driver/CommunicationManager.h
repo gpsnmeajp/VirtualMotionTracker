@@ -30,19 +30,23 @@ using json = nlohmann::json;
 using namespace vr;
 
 namespace VMTDriver {
+	class OSCReceiver : public osc::OscPacketListener {
+		void SetPose(bool roomToDriver,int idx, int enable, double x, double y, double z, double qx, double qy, double qz, double qw);
+		virtual void ProcessMessage(const osc::ReceivedMessage& m, const IpEndpointName& remoteEndpoint);
+	};
+
 	class CommunicationManager {
 	private:
 		bool m_opened = false;
-		SharedMemory::SharedMemory *m_sm;
-
+		OSCReceiver m_rcv;
+		ServerTrackedDeviceProvider* m_server;
 	public:
 		static CommunicationManager* GetInstance();
+		ServerTrackedDeviceProvider* GetServer();
 
-		SharedMemory::SharedMemory* GetSM();
-
-		void Open();
+		void Open(ServerTrackedDeviceProvider* server);
 		void Close();
-		void Process(ServerTrackedDeviceProvider* server);
+		void Process();
 
 	};
 }

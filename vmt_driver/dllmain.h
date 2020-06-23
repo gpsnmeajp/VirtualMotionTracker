@@ -42,11 +42,11 @@ namespace VMTDriver {
 	class Log;
 }
 
-namespace SharedMemory {
-	class SharedMemory;
+namespace DirectOSC {
+	class OSC;
 }
 
-#include "SharedMemory.h"
+#include "DirectOSC.h"
 #include "ServerTrackedDeviceProvider.h"
 #include "TrackedDeviceServerDriver.h"
 #include "VRWatchdogProvider.h"

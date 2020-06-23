@@ -190,7 +190,6 @@
     <ClInclude Include="dllmain.h" />
     <ClInclude Include="Log.h" />
     <ClInclude Include="ServerTrackedDeviceProvider.h" />
-    <ClInclude Include="SharedMemory.h" />
     <ClInclude Include="TrackedDeviceServerDriver.h" />
     <ClInclude Include="VRWatchdogProvider.h" />
   </ItemGroup>
@@ -207,7 +206,6 @@
     <ClCompile Include="dllmain.cpp" />
     <ClCompile Include="Log.cpp" />
     <ClCompile Include="ServerTrackedDeviceProvider.cpp" />
-    <ClCompile Include="SharedMemory.cpp" />
     <ClCompile Include="TrackedDeviceServerDriver.cpp" />
     <ClCompile Include="VRWatchdogProvider.cpp" />
   </ItemGroup>

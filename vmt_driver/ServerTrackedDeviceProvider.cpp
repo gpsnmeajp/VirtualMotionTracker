@@ -36,7 +36,7 @@ namespace VMTDriver {
     {
         VR_INIT_SERVER_DRIVER_CONTEXT(pDriverContext)
         Log::Open(VRDriverLog());
-        CommunicationManager::GetInstance()->Open();
+        CommunicationManager::GetInstance()->Open(this);
         Log::Output("HelloWorld");
 
         //16デバイスを準備
@@ -74,10 +74,8 @@ namespace VMTDriver {
     //毎フレーム処理
     void ServerTrackedDeviceProvider::RunFrame()
     {
-        
-
         //通信処理をする
-        CommunicationManager::GetInstance()->Process(this);
+        CommunicationManager::GetInstance()->Process();
         for (int i = 0; i < m_devicesNum; i++)
         {
             m_devices[i].UpdatePoseToVRSystem();

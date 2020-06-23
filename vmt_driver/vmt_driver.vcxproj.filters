@@ -39,9 +39,6 @@
     <ClInclude Include="Log.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="SharedMemory.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
     <ClInclude Include="CommunicationManager.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
@@ -108,9 +105,6 @@
       <Filter>ソース ファイル</Filter>
     </ClCompile>
     <ClCompile Include="VRWatchdogProvider.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="SharedMemory.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
     <ClCompile Include="CommunicationManager.cpp">
