@@ -94,10 +94,16 @@ public partial class MainWindow : Window
             util.StartOpenVR();
 
             osc = new OSC(39530,OnBundle,OnMessage);
+
+            HmdMatrix34_t m3 = new HmdMatrix34_t();
+            OpenVR.ChaperoneSetup.GetWorkingStandingZeroPoseToRawTrackingPose(ref m3);
+            Console.WriteLine(util.HmdMatrix34ToMatrix4x4(m3));
         }
 
         private void OnMessage(OscMessage message)
         {
+            /*
+             * ルーム座標系からドライバ座標系に変換して送る
             Console.WriteLine("## " + message);
             if (message.Address == "/tra") {
                 int idx = (int)message[0];
@@ -110,6 +116,7 @@ public partial class MainWindow : Window
 
                 HmdMatrix34_t m3 = new HmdMatrix34_t();
                 OpenVR.ChaperoneSetup.GetWorkingStandingZeroPoseToRawTrackingPose(ref m3);
+                Console.WriteLine(m3);
 
                 Matrix4x4 pos = Matrix4x4.CreateTranslation(position);
                 Matrix4x4 rot = Matrix4x4.CreateFromQuaternion(rotation);
@@ -137,6 +144,7 @@ public partial class MainWindow : Window
                     })
                 })); ;
             }
+            */
         }
 
         private void OnBundle(OscBundle bundle)
@@ -158,6 +166,11 @@ public partial class MainWindow : Window
 
         private void GenericTimer(object sender, EventArgs e)
         {
+            HmdMatrix34_t m3 = new HmdMatrix34_t();
+            OpenVR.ChaperoneSetup.GetWorkingStandingZeroPoseToRawTrackingPose(ref m3);
+            Console.WriteLine("###");
+            Console.WriteLine(util.HmdMatrix34ToMatrix4x4(m3));
+            Console.WriteLine("###");
 
             do
             {
@@ -173,6 +186,32 @@ public partial class MainWindow : Window
                     Console.WriteLine("[" + baseObject.type + "]" + hello.msg);
                 }
             } while (true);
+
+            //ルーム座標をそのまま送る(ドライバ側で変換されるはず...)
+            EasyOpenVRUtil.Transform t = util.GetLeftControllerTransform();
+            if (t != null)
+            {
+                Console.WriteLine(t);
+
+                sharedMemory.Write(JsonSerializer.Serialize(new Communication.Base
+                {
+                    type = "Pos",
+                    json = JsonSerializer.Serialize(new Communication.Pos
+                    {
+                        idx = 0,
+                        en = true,
+                        x = t.position.X,
+                        y = t.position.Y,
+                        z = t.position.Z,
+                        qx = t.rotation.X,
+                        qy = t.rotation.Y,
+                        qz = t.rotation.Z,
+                        qw = t.rotation.W,
+                    })
+                })); ;
+
+            }
+
 
             /*
             EasyOpenVRUtil.Transform t = util.GetLeftControllerTransform();

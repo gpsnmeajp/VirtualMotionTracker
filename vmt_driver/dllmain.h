@@ -25,12 +25,14 @@ SOFTWARE.
 #include "framework.h"
 #include <string>
 #include <vector>
-#include "..\openvr\headers\openvr_driver.h"
+#include "openvr_driver.h"
 #include <thread>
 #include <mutex>
 #include <deque>
+#include "Eigen/Dense"
 
 #define HMD_DLL_EXPORT extern "C" __declspec( dllexport )
+using Eigen::MatrixXd;
 
 using namespace vr;
 namespace VMTDriver {

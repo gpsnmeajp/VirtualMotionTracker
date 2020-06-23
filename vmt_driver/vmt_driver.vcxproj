@@ -82,11 +82,13 @@
     <LinkIncremental>true</LinkIncremental>
     <TargetName>driver_vmt</TargetName>
     <OutDir>$(SolutionDir)vmt\bin\win64\</OutDir>
+    <IncludePath>..\openvr\headers;..\eigen-3.3.7;..\oscpack_1_1_0;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
     <TargetName>driver_vmt</TargetName>
     <OutDir>$(SolutionDir)vmt\bin\win64\</OutDir>
+    <IncludePath>..\openvr\headers;..\eigen-3.3.7;..\oscpack_1_1_0;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -130,17 +132,18 @@
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>_DEBUG;VMTDRIVER_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;EIGEN_MPL2_ONLY;_DEBUG;VMTDRIVER_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>false</ConformanceMode>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
+      <DisableSpecificWarnings>4996</DisableSpecificWarnings>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableUAC>false</EnableUAC>
-      <AdditionalDependencies>..\openvr\lib\win64\openvr_api.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>ws2_32.lib;winmm.lib;..\openvr\lib\win64\openvr_api.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -149,11 +152,12 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>NDEBUG;VMTDRIVER_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;EIGEN_MPL2_ONLY;NDEBUG;VMTDRIVER_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>false</ConformanceMode>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+      <DisableSpecificWarnings>4996</DisableSpecificWarnings>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -161,13 +165,27 @@
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableUAC>false</EnableUAC>
-      <AdditionalDependencies>..\openvr\lib\win64\openvr_api.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>ws2_32.lib;winmm.lib;..\openvr\lib\win64\openvr_api.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="..\json.hpp" />
     <ClInclude Include="..\openvr\headers\openvr_driver.h" />
+    <ClInclude Include="..\oscpack_1_1_0\ip\IpEndpointName.h" />
+    <ClInclude Include="..\oscpack_1_1_0\ip\NetworkingUtils.h" />
+    <ClInclude Include="..\oscpack_1_1_0\ip\PacketListener.h" />
+    <ClInclude Include="..\oscpack_1_1_0\ip\TimerListener.h" />
+    <ClInclude Include="..\oscpack_1_1_0\ip\UdpSocket.h" />
+    <ClInclude Include="..\oscpack_1_1_0\osc\MessageMappingOscPacketListener.h" />
+    <ClInclude Include="..\oscpack_1_1_0\osc\OscException.h" />
+    <ClInclude Include="..\oscpack_1_1_0\osc\OscHostEndianness.h" />
+    <ClInclude Include="..\oscpack_1_1_0\osc\OscOutboundPacketStream.h" />
+    <ClInclude Include="..\oscpack_1_1_0\osc\OscPacketListener.h" />
+    <ClInclude Include="..\oscpack_1_1_0\osc\OscPrintReceivedElements.h" />
+    <ClInclude Include="..\oscpack_1_1_0\osc\OscReceivedElements.h" />
+    <ClInclude Include="..\oscpack_1_1_0\osc\OscTypes.h" />
     <ClInclude Include="CommunicationManager.h" />
+    <ClInclude Include="DirectOSC.h" />
     <ClInclude Include="framework.h" />
     <ClInclude Include="dllmain.h" />
     <ClInclude Include="Log.h" />
@@ -177,7 +195,15 @@
     <ClInclude Include="VRWatchdogProvider.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="..\oscpack_1_1_0\ip\IpEndpointName.cpp" />
+    <ClCompile Include="..\oscpack_1_1_0\ip\win32\NetworkingUtils.cpp" />
+    <ClCompile Include="..\oscpack_1_1_0\ip\win32\UdpSocket.cpp" />
+    <ClCompile Include="..\oscpack_1_1_0\osc\OscOutboundPacketStream.cpp" />
+    <ClCompile Include="..\oscpack_1_1_0\osc\OscPrintReceivedElements.cpp" />
+    <ClCompile Include="..\oscpack_1_1_0\osc\OscReceivedElements.cpp" />
+    <ClCompile Include="..\oscpack_1_1_0\osc\OscTypes.cpp" />
     <ClCompile Include="CommunicationManager.cpp" />
+    <ClCompile Include="DirectOSC.cpp" />
     <ClCompile Include="dllmain.cpp" />
     <ClCompile Include="Log.cpp" />
     <ClCompile Include="ServerTrackedDeviceProvider.cpp" />

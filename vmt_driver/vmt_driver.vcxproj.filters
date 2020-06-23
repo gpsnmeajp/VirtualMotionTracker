@@ -13,6 +13,12 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="ソース ファイル\oscpack_1_1_0">
+      <UniqueIdentifier>{b4a629e1-b1ca-420d-951e-dae5bd73ed05}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\oscpack_1_1_0">
+      <UniqueIdentifier>{89b411bc-b5b2-40ad-896b-8eface8dec02}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="framework.h">
@@ -45,6 +51,48 @@
     <ClInclude Include="..\openvr\headers\openvr_driver.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
+    <ClInclude Include="DirectOSC.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="..\oscpack_1_1_0\ip\IpEndpointName.h">
+      <Filter>ヘッダー ファイル\oscpack_1_1_0</Filter>
+    </ClInclude>
+    <ClInclude Include="..\oscpack_1_1_0\ip\NetworkingUtils.h">
+      <Filter>ヘッダー ファイル\oscpack_1_1_0</Filter>
+    </ClInclude>
+    <ClInclude Include="..\oscpack_1_1_0\ip\PacketListener.h">
+      <Filter>ヘッダー ファイル\oscpack_1_1_0</Filter>
+    </ClInclude>
+    <ClInclude Include="..\oscpack_1_1_0\ip\TimerListener.h">
+      <Filter>ヘッダー ファイル\oscpack_1_1_0</Filter>
+    </ClInclude>
+    <ClInclude Include="..\oscpack_1_1_0\ip\UdpSocket.h">
+      <Filter>ヘッダー ファイル\oscpack_1_1_0</Filter>
+    </ClInclude>
+    <ClInclude Include="..\oscpack_1_1_0\osc\OscException.h">
+      <Filter>ヘッダー ファイル\oscpack_1_1_0</Filter>
+    </ClInclude>
+    <ClInclude Include="..\oscpack_1_1_0\osc\OscHostEndianness.h">
+      <Filter>ヘッダー ファイル\oscpack_1_1_0</Filter>
+    </ClInclude>
+    <ClInclude Include="..\oscpack_1_1_0\osc\OscOutboundPacketStream.h">
+      <Filter>ヘッダー ファイル\oscpack_1_1_0</Filter>
+    </ClInclude>
+    <ClInclude Include="..\oscpack_1_1_0\osc\OscPacketListener.h">
+      <Filter>ヘッダー ファイル\oscpack_1_1_0</Filter>
+    </ClInclude>
+    <ClInclude Include="..\oscpack_1_1_0\osc\OscPrintReceivedElements.h">
+      <Filter>ヘッダー ファイル\oscpack_1_1_0</Filter>
+    </ClInclude>
+    <ClInclude Include="..\oscpack_1_1_0\osc\OscReceivedElements.h">
+      <Filter>ヘッダー ファイル\oscpack_1_1_0</Filter>
+    </ClInclude>
+    <ClInclude Include="..\oscpack_1_1_0\osc\OscTypes.h">
+      <Filter>ヘッダー ファイル\oscpack_1_1_0</Filter>
+    </ClInclude>
+    <ClInclude Include="..\oscpack_1_1_0\osc\MessageMappingOscPacketListener.h">
+      <Filter>ヘッダー ファイル\oscpack_1_1_0</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="dllmain.cpp">
@@ -67,6 +115,30 @@
     </ClCompile>
     <ClCompile Include="CommunicationManager.cpp">
       <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="DirectOSC.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="..\oscpack_1_1_0\ip\IpEndpointName.cpp">
+      <Filter>ソース ファイル\oscpack_1_1_0</Filter>
+    </ClCompile>
+    <ClCompile Include="..\oscpack_1_1_0\ip\win32\NetworkingUtils.cpp">
+      <Filter>ソース ファイル\oscpack_1_1_0</Filter>
+    </ClCompile>
+    <ClCompile Include="..\oscpack_1_1_0\ip\win32\UdpSocket.cpp">
+      <Filter>ソース ファイル\oscpack_1_1_0</Filter>
+    </ClCompile>
+    <ClCompile Include="..\oscpack_1_1_0\osc\OscOutboundPacketStream.cpp">
+      <Filter>ソース ファイル\oscpack_1_1_0</Filter>
+    </ClCompile>
+    <ClCompile Include="..\oscpack_1_1_0\osc\OscPrintReceivedElements.cpp">
+      <Filter>ソース ファイル\oscpack_1_1_0</Filter>
+    </ClCompile>
+    <ClCompile Include="..\oscpack_1_1_0\osc\OscReceivedElements.cpp">
+      <Filter>ソース ファイル\oscpack_1_1_0</Filter>
+    </ClCompile>
+    <ClCompile Include="..\oscpack_1_1_0\osc\OscTypes.cpp">
+      <Filter>ソース ファイル\oscpack_1_1_0</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

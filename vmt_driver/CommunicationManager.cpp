@@ -22,13 +22,56 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 #include "CommunicationManager.h"
+#include "osc/OscOutboundPacketStream.h"
+#include "osc/OscReceivedElements.h"
+#include "osc/OscPacketListener.h"
+#include "ip/UdpSocket.h"
+#include "DirectOSC.h"
+
 namespace VMTDriver {
+
 	//送受信スレッド
 	std::mutex CommunicationWorkerMutex;
 	std::deque<string> CommunicationWorkerReadQue;
 	std::deque<string> CommunicationWorkerWriteQue;
 	bool CommunicationWorkerExit = false;
 	std::thread* CommunicationWorkerThread;
+
+	class OSCReceiver : public osc::OscPacketListener {
+		virtual void ProcessMessage(const osc::ReceivedMessage& m, const IpEndpointName& remoteEndpoint) override
+		{
+			try {
+				string adr = m.AddressPattern();
+				if (adr == "/test1")
+				{
+					float x;
+					float y;
+					float z;
+					osc::ReceivedMessageArgumentStream args = m.ArgumentStream();
+					args >> x >> y >> z >> osc::EndMessage;
+
+					printf("X:%lf, Y:%lf, Z:%lf\n", x, y, z);
+				}
+			}
+			catch (osc::Exception& e)
+			{
+				printf("Exp: %s\n", e.what());
+			}
+		}
+	};
+
+	void sendXYZ(DirectOSC::OSC* osc, float x, float y, float z) {
+		const size_t bufsize = 1024;
+		char buf[bufsize];
+		osc::OutboundPacketStream packet(buf, bufsize);
+		packet << osc::BeginMessage("/test1")
+			<< x
+			<< y
+			<< z
+			<< osc::EndMessage;
+		osc->GetSocketTx()->Send(packet.Data(), packet.Size());
+	}
+
 	void CommunicationWorker()
 	{
 		while (!CommunicationWorkerExit)
@@ -85,6 +128,7 @@ namespace VMTDriver {
 }
 
 namespace VMTDriver {
+
 	CommunicationManager* CommunicationManager::GetInstance()
 	{
 		static CommunicationManager cm;
@@ -158,13 +202,38 @@ namespace VMTDriver {
 						pose.poseIsValid = false;
 						pose.result = ETrackingResult::TrackingResult_Calibrating_OutOfRange;
 					}
-					pose.vecPosition[0] = j2["x"];
-					pose.vecPosition[1] = j2["y"];
-					pose.vecPosition[2] = j2["z"];
-					pose.qRotation.x = j2["qx"];
-					pose.qRotation.y = j2["qy"];
-					pose.qRotation.z = j2["qz"];
-					pose.qRotation.w = j2["qw"];
+					Eigen::Translation3d pos((double)j2["x"], (double)j2["y"], (double)j2["z"]);
+					Eigen::Quaterniond rot((double)j2["qw"],(double)j2["qx"], (double)j2["qy"], (double)j2["qz"]);
+					Eigen::Affine3d affin(pos * rot);
+					//{ {M11:-0.9998478 M12:0 M13:-0.01745246 M14:0} 
+					//  {M21:0 M22:1 M23:0 M24:0}
+					//  {M31:0.01745246 M32:0 M33:-0.9998478 M34:0}
+					//  {M41:0.5270745 M42:-2.244383 M43:-0.778713 M44:1} }
+
+					Eigen::Matrix4d RoomToDriver;
+					RoomToDriver << -0.9998478, 0, -0.01745246, 0,
+						0, 1, 0, 0,
+						0.01745246, 0, -0.9998478, 0,
+						0.5270745, -2.244383, -0.778713, 1;
+					Eigen::Affine3d RoomToDriverAffin;
+					RoomToDriverAffin = RoomToDriver.transpose();
+
+					Eigen::Affine3d outputAffin(RoomToDriverAffin * affin);
+					Eigen::Translation3d outpos(outputAffin.translation());
+					Eigen::Quaterniond outrot(outputAffin.rotation());
+
+					Log::printf("Origin: %10lf,%10lf,%10lf\n", pos.x(), pos.y(), pos.z());
+					Log::printf("Trans : %10lf,%10lf,%10lf\n", outpos.x(), outpos.y(), outpos.z());
+					Log::printf("Origin: %10lf,%10lf,%10lf,%10lf\n", rot.x(),rot.y(),rot.z(),rot.w());
+					Log::printf("Trans : %10lf,%10lf,%10lf,%10lf\n", outrot.x(), outrot.y(), outrot.z(), outrot.w());
+
+					pose.vecPosition[0] = outpos.x();
+					pose.vecPosition[1] = outpos.y();
+					pose.vecPosition[2] = outpos.z();
+					pose.qRotation.x = outrot.x();
+					pose.qRotation.y = outrot.y();
+					pose.qRotation.z = outrot.z();
+					pose.qRotation.w = outrot.w();
 
 					if (idx >= 0 && idx <= server->GetDevices().size())
 					{
