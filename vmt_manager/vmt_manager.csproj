@@ -86,11 +86,9 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Compile Include="Communication.cs" />
     <Compile Include="EasyOpenVRUtil.cs" />
     <Compile Include="openvr_api.cs" />
     <Compile Include="OSC.cs" />
-    <Compile Include="SharedMemory.cs" />
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>

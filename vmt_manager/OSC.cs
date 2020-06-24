@@ -27,6 +27,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Net;
 using Rug.Osc;
 
 class OSC : IDisposable
@@ -37,20 +38,25 @@ class OSC : IDisposable
 
     public long PacketCounter = 0;
 
-    //受信処理用
     OscReceiver oscReceiver = null;
+    OscSender oscSender = null;
     Thread thread = null;
     public int Port;
 
     //受信待受開始
-    public OSC(int port, Action<OscBundle> OnBundle, Action<OscMessage> OnMessage)
+    public OSC(string adr, int portRx, int portTx, Action<OscBundle> OnBundle, Action<OscMessage> OnMessage)
     {
-        this.Port = port;
+        this.Port = portRx;
         this.OnBundle = OnBundle;
         this.OnMessage = OnMessage;
 
+        //送信
+        IPAddress ip = IPAddress.Parse(adr);
+        oscSender = new OscSender(ip, 0, portTx);
+        oscSender.Connect();
+
         //受信待受
-        oscReceiver = new OscReceiver(this.Port);
+        oscReceiver = new OscReceiver(portRx);
         oscReceiver.Connect();
 
         //受信処理スレッド
@@ -67,12 +73,18 @@ class OSC : IDisposable
         try
         {
             oscReceiver?.Close();
+            oscSender?.Close();
         }
         finally
         {
             //Thread終了を待機
             thread?.Join();
         }
+    }
+
+    public void Send(OscPacket packet)
+    {
+        oscSender.Send(packet);
     }
 
     //受信Thread

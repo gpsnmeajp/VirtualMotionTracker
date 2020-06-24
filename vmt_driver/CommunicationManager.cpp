@@ -122,6 +122,22 @@ namespace VMTDriver {
 
 				SetPose(false, idx, enable, x, y, z, qx, qy, qz, qw, timeoffset);
 			}
+			else if (adr == "/Reset")
+			{
+				//全トラッカーを0にする
+				ServerTrackedDeviceProvider* sever = CommunicationManager::GetInstance()->GetServer();
+				for (int i = 0; i < sever->GetDevices().size(); i++)
+				{
+					DriverPose_t pose{ 0 };
+					pose.qRotation = VMTDriver::HmdQuaternion_Identity;
+					pose.qWorldFromDriverRotation = VMTDriver::HmdQuaternion_Identity;
+					pose.qDriverFromHeadRotation = VMTDriver::HmdQuaternion_Identity;
+					pose.deviceIsConnected = false;
+					pose.poseIsValid = false;
+					pose.result = ETrackingResult::TrackingResult_Calibrating_OutOfRange;
+					sever->GetDevices()[i].SetPose(pose); //すでにVRシステムに登録済みのものだけ通知される
+				}
+			}
 			else if (adr == "/LoadSetting")
 			{
 				CommunicationManager::GetInstance()->LoadSetting();

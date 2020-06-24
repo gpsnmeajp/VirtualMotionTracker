@@ -5,12 +5,20 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:vmt_manager"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800" Loaded="Window_Loaded" Closed="Window_Closed">
-    <Grid>
-		<Grid.ColumnDefinitions>
-			<ColumnDefinition Width="235*"/>
-			<ColumnDefinition Width="29*"/>
-		</Grid.ColumnDefinitions>
+		SizeToContent="WidthAndHeight"
+        Title="VMT Manager" Loaded="Window_Loaded" Closed="Window_Closed" ResizeMode="NoResize">
+	<DockPanel LastChildFill="False">
+		<Button Content="Reset" DockPanel.Dock="Top" Click="ResetButton"/>
+		<Button Content="Reload Setting" DockPanel.Dock="Top" Click="ReloadJsonButton"/>
+		<TextBlock Text="RoomMatrix" DockPanel.Dock="Top"/>
+		<TextBox Name="RoomMatrixTextBox" IsEnabled="False" IsReadOnly="True" Text="" DockPanel.Dock="Top" Height="69"/>
+		<Button Content="Set RoomMatrix" DockPanel.Dock="Top" Click="SetRoomMatrixButton"/>
+		<Button Content="Reset RoomMatrix" DockPanel.Dock="Top" Click="ResetRoomMatrixButton"/>
+		<TextBlock Text="VMT_0 Room Position" DockPanel.Dock="Top"/>
+		<TextBox Name="CheckPositionTextBox" IsEnabled="False" IsReadOnly="True" Text="-,-,-" DockPanel.Dock="Top"/>
+		<TextBlock Text="VMT_0 Raw Position" DockPanel.Dock="Top"/>
+		<TextBox Name="CheckPositionRawTextBox" IsEnabled="False" IsReadOnly="True" Text="-,-,-" DockPanel.Dock="Top"/>
+		<Button Content="Check VMT__0 Position &#xA;(Try set RoomPos=)0,0,0) )" DockPanel.Dock="Top" Click="CheckPositionButton"/>
+	</DockPanel>
 
-	</Grid>
 </Window>
