@@ -33,7 +33,7 @@ namespace VMTDriver {
     {
         handle = nullptr;
     }
-    void Log::Output(char* msg)
+    void Log::Output(const char* msg)
     {
         if (handle != nullptr) {
             handle->Log(msg);

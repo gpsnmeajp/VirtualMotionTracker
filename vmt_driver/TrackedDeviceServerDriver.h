@@ -24,8 +24,6 @@ SOFTWARE.
 #pragma once
 #include "dllmain.h"
 
-using namespace vr;
-using std::string;
 namespace VMTDriver {
     const HmdQuaternion_t HmdQuaternion_Identity{ 1,0,0,0 };
 

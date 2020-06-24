@@ -23,7 +23,6 @@ SOFTWARE.
 */
 #pragma once
 #include "dllmain.h"
-using namespace vr;
 namespace VMTDriver {
     class Log {
     private:
@@ -34,7 +33,7 @@ namespace VMTDriver {
 
         static void Open(IVRDriverLog*);
         static void Close();
-        static void Output(char*);
+        static void Output(const char*);
 
         static int printf(const char* fmt, ...);
     };

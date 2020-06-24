@@ -23,11 +23,6 @@ SOFTWARE.
 */
 #pragma once
 #include "dllmain.h"
-#include "..\json.hpp"
-
-using std::string;
-using json = nlohmann::json;
-using namespace vr;
 
 namespace VMTDriver {
 	class OSCReceiver : public osc::OscPacketListener {
@@ -40,13 +35,15 @@ namespace VMTDriver {
 		bool m_opened = false;
 		OSCReceiver m_rcv;
 		ServerTrackedDeviceProvider* m_server;
+		Eigen::Matrix4d m_RoomToDriverMatrix = Eigen::Matrix4d::Identity();
 	public:
 		static CommunicationManager* GetInstance();
 		ServerTrackedDeviceProvider* GetServer();
+		Eigen::Matrix4d& GetRoomToDriverMatrix();
 
 		void Open(ServerTrackedDeviceProvider* server);
 		void Close();
 		void Process();
-
+		void LoadSetting();
 	};
 }

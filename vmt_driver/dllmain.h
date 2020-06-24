@@ -23,6 +23,10 @@ SOFTWARE.
 */
 #pragma once
 #include "framework.h"
+#include <sstream>
+#include <fstream>
+#include <istream>
+#include <ostream>
 #include <string>
 #include <vector>
 #include "openvr_driver.h"
@@ -30,11 +34,17 @@ SOFTWARE.
 #include <mutex>
 #include <deque>
 #include "Eigen/Dense"
+#include "json.hpp"
+
 
 #define HMD_DLL_EXPORT extern "C" __declspec( dllexport )
 using Eigen::MatrixXd;
 
 using namespace vr;
+using std::string;
+using std::vector;
+using json = nlohmann::json;
+
 namespace VMTDriver {
 	class ServerTrackedDeviceProvider;
 	class TrackedDeviceServerDriver;

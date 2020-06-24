@@ -29,6 +29,7 @@ SOFTWARE.
 #include "DirectOSC.h"
 
 namespace VMTDriver {
+	//別スレッド
 	void OSCReceiver::SetPose(bool roomToDriver,int idx, int enable, double x, double y, double z, double qx, double qy, double qz, double qw)
 	{
 		DriverPose_t pose{ 0 };
@@ -54,19 +55,14 @@ namespace VMTDriver {
 		//  {M31:0.01745246 M32:0 M33:-0.9998478 M34:0}
 		//  {M41:0.5270745 M42:-2.244383 M43:-0.778713 M44:1} }
 
-		Eigen::Matrix4d RoomToDriver;
+		Eigen::Affine3d RoomToDriverAffin;
 		if (roomToDriver)
 		{
-			RoomToDriver << -0.9998478, 0, -0.01745246, 0,
-				0, 1, 0, 0,
-				0.01745246, 0, -0.9998478, 0,
-				0.5270745, -2.244383, -0.778713, 1;
+			RoomToDriverAffin = CommunicationManager::GetInstance()->GetRoomToDriverMatrix();
 		}
 		else {
-			RoomToDriver = Eigen::Matrix4d::Identity();
+			RoomToDriverAffin = Eigen::Matrix4d::Identity();
 		}
-		Eigen::Affine3d RoomToDriverAffin;
-		RoomToDriverAffin = RoomToDriver.transpose();
 
 		Eigen::Affine3d outputAffin(RoomToDriverAffin * affin);
 		Eigen::Translation3d outpos(outputAffin.translation());
@@ -94,6 +90,8 @@ namespace VMTDriver {
 			sever->GetDevices()[idx].SetPose(pose);
 		}
 	}
+
+	//別スレッド
 	void OSCReceiver::ProcessMessage(const osc::ReceivedMessage& m, const IpEndpointName& remoteEndpoint)
 	{
 		try {
@@ -134,6 +132,32 @@ namespace VMTDriver {
 
 				SetPose(false, idx, enable, x, y, z, qx, qy, qz, qw);
 			}
+			else if (adr == "/LoadSetting")
+			{
+				CommunicationManager::GetInstance()->LoadSetting();
+			}
+			else if (adr == "/SetRoomMatrix")
+			{
+				float m1, m2, m3, m4, 
+					m5, m6, m7, m8, 
+					m9, m10, m11, m12;
+				osc::ReceivedMessageArgumentStream args = m.ArgumentStream();
+				args >> m1 >> m2 >> m3 >> m4 >> m5 >> m6 >> m7 >> m8 >> m9 >> m10 >> m11 >> m12 >> osc::EndMessage;
+
+				CommunicationManager::GetInstance()->GetRoomToDriverMatrix()
+					<< m1, m2, m3, m4
+					, m5, m6, m7, m8
+					, m9, m10, m11, m12
+					, 0, 0, 0, 1;
+
+				json j = CommunicationManager::GetInstance()->GetServer()->LoadJson();
+				if (!j.contains("RoomMatrix"))
+				{
+					j["RoomMatrix"] = {};
+				}
+				j["RoomMatrix"] = {m1,m2,m3,m4,m5,m6,m7,m8,m9,m10,m11,m12};
+				CommunicationManager::GetInstance()->GetServer()->SaveJson(j);
+			}
 			else {
 				Log::printf("Unkown: %s", adr.c_str());
 			}
@@ -170,6 +194,11 @@ namespace VMTDriver {
 		return m_server;
 	}
 
+	Eigen::Matrix4d& CommunicationManager::GetRoomToDriverMatrix()
+	{
+		return m_RoomToDriverMatrix;
+	}
+
 	void CommunicationManager::Open(ServerTrackedDeviceProvider* server)
 	{
 		if (m_opened) {
@@ -178,6 +207,20 @@ namespace VMTDriver {
 		m_server = server;
 		DirectOSC::OSC::GetInstance()->Open(&m_rcv, 39570, 39571);
 		m_opened = true;
+
+		LoadSetting();
+		/*
+		m_RoomToDriverMatrix << -0.9998478, 0,          -0.01745246,     0,
+                     			0,          1,           0,              0,
+			                    0.01745246, 0,          -0.9998478,      0,
+			                    0.5270745, -2.244383,   -0.778713,       1;
+								*/
+		/*
+		m_RoomToDriverMatrix << -0.9998478, 0, 0.01745246, 0.5270745,
+			0, 1, 0, -2.244383,
+			-0.01745246, 0, -0.9998478, -0.778713,
+			0, 0, 0, 1;
+			*/
 	}
 	void CommunicationManager::Close()
 	{
@@ -187,5 +230,22 @@ namespace VMTDriver {
 	void CommunicationManager::Process()
 	{
 		//特に処理がない
+	}
+	void CommunicationManager::LoadSetting()
+	{
+		try {
+			json j = CommunicationManager::GetInstance()->GetServer()->LoadJson();
+			if (j.contains("RoomMatrix"))
+			{
+				m_RoomToDriverMatrix
+					<< j["RoomMatrix"][0], j["RoomMatrix"][1], j["RoomMatrix"][2], j["RoomMatrix"][3]
+					, j["RoomMatrix"][4], j["RoomMatrix"][5], j["RoomMatrix"][6], j["RoomMatrix"][7]
+					, j["RoomMatrix"][8], j["RoomMatrix"][9], j["RoomMatrix"][10], j["RoomMatrix"][11]
+					, 0, 0, 0, 1;
+			}
+		}
+		catch (...) {
+			m_RoomToDriverMatrix = Eigen::Matrix4d::Identity();
+		}
 	}
 }

@@ -24,8 +24,6 @@ SOFTWARE.
 #pragma once
 #include "dllmain.h"
 
-using namespace vr;
-using std::vector;
 namespace VMTDriver {
     //デバイスサーバー
     class ServerTrackedDeviceProvider : public IServerTrackedDeviceProvider
@@ -33,9 +31,13 @@ namespace VMTDriver {
     private:
         vector<TrackedDeviceServerDriver> m_devices;
         int m_devicesNum = 0;
+        IVRDriverContext* m_pDriverContext = nullptr;
 
     public:
         vector<TrackedDeviceServerDriver>& GetDevices();
+        json LoadJson();
+        void SaveJson(json);
+
 
         virtual EVRInitError Init(IVRDriverContext* pDriverContext) override;
         virtual void Cleanup() override;

@@ -31,18 +31,69 @@ namespace VMTDriver {
         return m_devices;
     }
 
+    json ServerTrackedDeviceProvider::LoadJson()
+    {
+        if (m_pDriverContext == nullptr) {
+            return json();
+        }
+
+        //ドライバのインストールパス取得
+        string s = VRProperties()->GetStringProperty(m_pDriverContext->GetDriverHandle(), Prop_InstallPath_String);
+        if (!s.empty()) {
+            string filename = (s + "\\setting.json");
+            try {
+                std::ifstream inputStream(filename);
+                string inputData((std::istreambuf_iterator<char>(inputStream)), std::istreambuf_iterator<char>());
+                inputStream.close();
+
+                json j = json::parse(inputData);
+                Log::Output(("LoadJson:" + j.dump()).c_str());
+                return j;
+            }
+            catch (...) {
+                //パース失敗・ファイルなしなど
+                Log::Output("LoadJson: Parse error or load faild");
+                return json();
+            }
+        }
+        Log::Output("LoadJson: No Path");
+        return json();
+    }
+
+    void ServerTrackedDeviceProvider::SaveJson(json j)
+    {
+        if (m_pDriverContext == nullptr) {
+            return;
+        }
+
+        //ドライバのインストールパス取得
+        string s = VRProperties()->GetStringProperty(m_pDriverContext->GetDriverHandle(), Prop_InstallPath_String);
+        if (!s.empty()) {
+            string filename = (s + "\\setting.json");
+
+            std::ofstream outputStream(filename);
+            outputStream << j.dump();
+            outputStream.close();
+
+            Log::Output(("SaveJson:" + j.dump()).c_str());
+            return;
+        }
+        Log::Output("SaveJson: No Path");
+        return;
+    }
+
     //初期化
     EVRInitError ServerTrackedDeviceProvider::Init(IVRDriverContext* pDriverContext)
     {
         VR_INIT_SERVER_DRIVER_CONTEXT(pDriverContext)
+        m_pDriverContext = pDriverContext;
         Log::Open(VRDriverLog());
         CommunicationManager::GetInstance()->Open(this);
-        Log::Output("HelloWorld");
 
-        //16デバイスを準備
-        m_devices.resize(16);
+        //デバイスを準備
+        m_devices.resize(64); //64デバイス
 
-        //16デバイスを登録
+        //デバイスを初期化
         for (int i = 0; i < m_devices.size(); i++)
         {
             string name = "VMT_";
@@ -54,6 +105,7 @@ namespace VMTDriver {
             m_devicesNum++;
         }
 
+        Log::Output("Startup OK");
         return EVRInitError::VRInitError_None;
     }
 
@@ -61,6 +113,7 @@ namespace VMTDriver {
     void ServerTrackedDeviceProvider::Cleanup()
     {
         VR_CLEANUP_SERVER_DRIVER_CONTEXT()
+        m_pDriverContext = nullptr;
         CommunicationManager::GetInstance()->Close();
         Log::Close();
     }
