@@ -30,9 +30,10 @@ SOFTWARE.
 
 namespace VMTDriver {
 	//別スレッド
-	void OSCReceiver::SetPose(bool roomToDriver,int idx, int enable, double x, double y, double z, double qx, double qy, double qz, double qw)
+	void OSCReceiver::SetPose(bool roomToDriver,int idx, int enable, double x, double y, double z, double qx, double qy, double qz, double qw, double timeoffset)
 	{
 		DriverPose_t pose{ 0 };
+		pose.poseTimeOffset = timeoffset;
 		pose.qRotation = VMTDriver::HmdQuaternion_Identity;
 		pose.qWorldFromDriverRotation = VMTDriver::HmdQuaternion_Identity;
 		pose.qDriverFromHeadRotation = VMTDriver::HmdQuaternion_Identity;
@@ -47,41 +48,30 @@ namespace VMTDriver {
 			pose.poseIsValid = false;
 			pose.result = ETrackingResult::TrackingResult_Calibrating_OutOfRange;
 		}
-		Eigen::Translation3d pos(x, y, z);
-		Eigen::Quaterniond rot(qw, qx, qy, qz);
-		Eigen::Affine3d affin(pos * rot);
-		//{ {M11:-0.9998478 M12:0 M13:-0.01745246 M14:0} 
-		//  {M21:0 M22:1 M23:0 M24:0}
-		//  {M31:0.01745246 M32:0 M33:-0.9998478 M34:0}
-		//  {M41:0.5270745 M42:-2.244383 M43:-0.778713 M44:1} }
 
 		Eigen::Affine3d RoomToDriverAffin;
-		if (roomToDriver)
-		{
-			RoomToDriverAffin = CommunicationManager::GetInstance()->GetRoomToDriverMatrix();
-		}
-		else {
-			RoomToDriverAffin = Eigen::Matrix4d::Identity();
-		}
+		RoomToDriverAffin = CommunicationManager::GetInstance()->GetRoomToDriverMatrix();
 
-		Eigen::Affine3d outputAffin(RoomToDriverAffin * affin);
-		Eigen::Translation3d outpos(outputAffin.translation());
-		Eigen::Quaterniond outrot(outputAffin.rotation());
+		//ワールド・ドライバ変換行列を設定
+		Eigen::Translation3d pos(RoomToDriverAffin.translation());
+		Eigen::Quaterniond rot(RoomToDriverAffin.rotation());
+		pose.vecWorldFromDriverTranslation[0] = pos.x();
+		pose.vecWorldFromDriverTranslation[1] = pos.y();
+		pose.vecWorldFromDriverTranslation[2] = pos.z();
+		pose.qWorldFromDriverRotation.x = rot.x();
+		pose.qWorldFromDriverRotation.y = rot.y();
+		pose.qWorldFromDriverRotation.z = rot.z();
+		pose.qWorldFromDriverRotation.w = rot.w();
 
-		/*
-		Log::printf("Origin: %10lf,%10lf,%10lf\n", pos.x(), pos.y(), pos.z());
-		Log::printf("Trans : %10lf,%10lf,%10lf\n", outpos.x(), outpos.y(), outpos.z());
-		Log::printf("Origin: %10lf,%10lf,%10lf,%10lf\n", rot.x(), rot.y(), rot.z(), rot.w());
-		Log::printf("Trans : %10lf,%10lf,%10lf,%10lf\n", outrot.x(), outrot.y(), outrot.z(), outrot.w());
-		*/
+		//座標を設定
+		pose.vecPosition[0] = x;
+		pose.vecPosition[1] = y;
+		pose.vecPosition[2] = z;
+		pose.qRotation.x = qx;
+		pose.qRotation.y = qy;
+		pose.qRotation.z = qz;
+		pose.qRotation.w = qw;
 
-		pose.vecPosition[0] = outpos.x();
-		pose.vecPosition[1] = outpos.y();
-		pose.vecPosition[2] = outpos.z();
-		pose.qRotation.x = outrot.x();
-		pose.qRotation.y = outrot.y();
-		pose.qRotation.z = outrot.z();
-		pose.qRotation.w = outrot.w();
 
 		ServerTrackedDeviceProvider* sever = CommunicationManager::GetInstance()->GetServer();
 		if (idx >= 0 && idx <= sever->GetDevices().size())
@@ -99,38 +89,38 @@ namespace VMTDriver {
 			if (adr == "/TrackerPoseRoomUnity")
 			{
 				int idx, enable;
-				float x, y, z, qx, qy, qz, qw;
+				float x, y, z, qx, qy, qz, qw, timeoffset;
 				osc::ReceivedMessageArgumentStream args = m.ArgumentStream();
-				args >> idx >> enable >> x >> y >> z >> qx >> qy >> qz >> qw >> osc::EndMessage;
+				args >> idx >> enable >> x >> y >> z >> qx >> qy >> qz >> qw >> timeoffset >> osc::EndMessage;
 
-				SetPose(true, idx, enable, x, y, -z, qx, qy, -qz, -qw);
+				SetPose(true, idx, enable, x, y, -z, qx, qy, -qz, -qw, timeoffset);
 			}
 			else if (adr == "/TrackerPoseRoomDriver")
 			{
 				int idx, enable;
-				float x, y, z, qx, qy, qz, qw;
+				float x, y, z, qx, qy, qz, qw, timeoffset;
 				osc::ReceivedMessageArgumentStream args = m.ArgumentStream();
-				args >> idx >> enable >> x >> y >> z >> qx >> qy >> qz >> qw >> osc::EndMessage;
+				args >> idx >> enable >> x >> y >> z >> qx >> qy >> qz >> qw >> timeoffset >> osc::EndMessage;
 
-				SetPose(true, idx, enable, x, y, z, qx, qy, qz, qw);
+				SetPose(true, idx, enable, x, y, z, qx, qy, qz, qw, timeoffset);
 			}
 			else if (adr == "/TrackerPoseRawUnity")
 			{
 				int idx, enable;
-				float x, y, z, qx, qy, qz, qw;
+				float x, y, z, qx, qy, qz, qw, timeoffset;
 				osc::ReceivedMessageArgumentStream args = m.ArgumentStream();
-				args >> idx >> enable >> x >> y >> z >> qx >> qy >> qz >> qw >> osc::EndMessage;
+				args >> idx >> enable >> x >> y >> z >> qx >> qy >> qz >> qw >> timeoffset >> osc::EndMessage;
 
-				SetPose(false, idx, enable, x, y, -z, qx, qy, -qz, -qw);
+				SetPose(false, idx, enable, x, y, -z, qx, qy, -qz, -qw, timeoffset);
 			}
 			else if (adr == "/TrackerPoseRawDriver")
 			{
 				int idx, enable;
-				float x, y, z, qx, qy, qz, qw;
+				float x, y, z, qx, qy, qz, qw, timeoffset;
 				osc::ReceivedMessageArgumentStream args = m.ArgumentStream();
-				args >> idx >> enable >> x >> y >> z >> qx >> qy >> qz >> qw >> osc::EndMessage;
+				args >> idx >> enable >> x >> y >> z >> qx >> qy >> qz >> qw >> timeoffset >> osc::EndMessage;
 
-				SetPose(false, idx, enable, x, y, z, qx, qy, qz, qw);
+				SetPose(false, idx, enable, x, y, z, qx, qy, qz, qw, timeoffset);
 			}
 			else if (adr == "/LoadSetting")
 			{

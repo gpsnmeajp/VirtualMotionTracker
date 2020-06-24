@@ -26,7 +26,7 @@ SOFTWARE.
 
 namespace VMTDriver {
 	class OSCReceiver : public osc::OscPacketListener {
-		void SetPose(bool roomToDriver,int idx, int enable, double x, double y, double z, double qx, double qy, double qz, double qw);
+		void SetPose(bool roomToDriver,int idx, int enable, double x, double y, double z, double qx, double qy, double qz, double qw, double timeoffset);
 		virtual void ProcessMessage(const osc::ReceivedMessage& m, const IpEndpointName& remoteEndpoint);
 	};
 
