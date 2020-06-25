@@ -6,11 +6,11 @@ C++製OpenVRドライバです。OSCでの仮想トラッカー姿勢の受信�
 SteamVRのWeb Consoleからエラーなどを確認することができます。  
 設定はドライバフォルダのsetting.jsonに記録されます。  
 
-**VMT Manager***
+**VMT Manager**  
 C#製管理ツールです。ドライバのインストールやアンインストール、設定や調整、動作確認の際に使用します。  
 必要なときだけ起動してください。毎度起動する必要はありません。  
 ルームセットアップをやり直したときは、このツールでの設定(Set RoomMatrix)もやり直してください。  
-
+  
 ## ドライバのインストール
 **1. VMTをダウンロードし、解凍します。**  
 [ダウンロード](https://github.com/gpsnmeajp/VirtualMotionTracker/releases)  
