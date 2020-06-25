@@ -12,3 +12,5 @@ OSCで姿勢(座標や回転)を受け取り、仮想的なトラッカーとし
 <img src="https://github.com/gpsnmeajp/VirtualMotionTracker/blob/master/doc/Architecture.png?raw=true"></img>
 
 # [お問合せ先(Discordサーバー)](https://discord.gg/nGapSR7)
+
+ハッシュタグは　#ばもとら
