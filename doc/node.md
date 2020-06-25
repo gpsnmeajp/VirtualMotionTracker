@@ -71,3 +71,54 @@ OpenVRの右手系、かつ、ドライバー空間(ルーム空間変換なし)
 **/SetRoomMatrix m1,m2,m3,m4,m5,m6,m7,m8,m9,m10,m11,m12**  
 RoomToDriver空間変換行列を設定します。  
 設定と同時にjsonに書き込むため、毎フレーム送るなど頻繁な送信は禁止します。  
+
+### Unityサンプル
+[hecomi/uOSC](https://github.com/hecomi/uOSC)を導入してください。  
+アタッチされたGameObjectの座標をトラッカーとして送信します。  
+  
+```cs
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+public class sendme : MonoBehaviour
+{
+    uOSC.uOscClient client;
+    void Start()
+    {
+        client = GetComponent<uOSC.uOscClient>();
+    }
+
+    void Update()
+    {
+        client.Send("/TrackerPoseRoomUnity", (int)0, (int)1,
+            (float)transform.position.x,
+            (float)transform.position.y,
+            (float)transform.position.z,
+            (float)transform.rotation.x,
+            (float)transform.rotation.y,
+            (float)transform.rotation.z,
+            (float)transform.rotation.w,
+            (float)0f
+        );
+    }
+}
+```
+
+## よくあるトラブル
+**RoomMatrixが赤色のまま緑色にならない**  
+→VR機器の電源が入っているか確認してください。  
+VR機器がスリープになっていないか確認してください。  
+ベースステーションの電源が入っているか確認してください。  
+SteamVRのルームセットアップが完了しているか確認してください。  
+SteamVRをインストールしているか確認してください。  
+  
+**Check VMT_0 Positionを押しても反応がない**  
+→Installをしてください。SteamVRがセーフモードであれば解除してください。  
+その後、忘れずにSteamVRを再起動してください。  
+  
+**Check VMT_0 Positionを押すとRoomPositionが赤色になる**  
+→VR機器が接続され、RoomMatrixが緑色になった状態で、Set RoomMatrixをしてください。  
+その上で再度Check VMT_0 Positionをクリックしてください。  
+  
+**VMC_0 Room PositionがUnityと符号が合わない**  
+→Driver空間座標なので一部符号が逆転します。  
