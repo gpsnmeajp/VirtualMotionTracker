@@ -7,6 +7,7 @@ OSCで姿勢(座標や回転)を受け取り、仮想的なトラッカーとし
 # [説明書・サンプル](doc/node.md)
 # [ダウンロード](https://github.com/gpsnmeajp/VirtualMotionTracker/releases)  
 **本ソフトウェアは、自分で問題を解決できる人向け(上級者向け)です。**  
+**64bit環境でのみ動作します。**  
 
 <img src="https://github.com/gpsnmeajp/VirtualMotionTracker/blob/master/doc/Architecture.png?raw=true"></img>
 
