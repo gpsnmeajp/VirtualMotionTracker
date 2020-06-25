@@ -115,6 +115,7 @@ SteamVRをインストールしているか確認してください。
 **Check VMT_0 Positionを押しても反応がない**  
 →Installをしてください。SteamVRがセーフモードであれば解除してください。  
 その後、忘れずにSteamVRを再起動してください。  
+ファイアーウォールでSteamVR(vrserver.exe)を許可しているか確認してください。  
   
 **Check VMT_0 Positionを押すとRoomPositionが赤色になる**  
 →VR機器が接続され、RoomMatrixが緑色になった状態で、Set RoomMatrixをしてください。  
