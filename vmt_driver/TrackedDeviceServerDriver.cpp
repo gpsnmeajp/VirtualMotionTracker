@@ -66,7 +66,7 @@ namespace VMTDriver {
         m_propertyContainer = VRProperties()->TrackedDeviceToPropertyContainer(unObjectId);
 
         VRProperties()->SetStringProperty(m_propertyContainer, Prop_ModelNumber_String, m_serial.c_str());
-        VRProperties()->SetStringProperty(m_propertyContainer, Prop_RenderModelName_String, "lh_basestation_vive");
+        VRProperties()->SetStringProperty(m_propertyContainer, Prop_RenderModelName_String, "lh_basestation_vive"); //とりあえずベースステーションの姿
 
         VRProperties()->SetUint64Property(m_propertyContainer, Prop_CurrentUniverseId_Uint64, 2);
         VRProperties()->SetBoolProperty(m_propertyContainer, Prop_NeverTracked_Bool, false);
