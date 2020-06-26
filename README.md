@@ -1,4 +1,6 @@
 # VMT - VirtualMotionTracker - ばもとら
+The OSC Virtual OpenVR Tracker Driver.
+
 OpenVR 仮想トラッカードライバです。  
 OSCで姿勢(座標や回転)を受け取り、仮想的なトラッカーとしてSteamVR上で利用することができます。  
   
@@ -10,6 +12,8 @@ OSCで姿勢(座標や回転)を受け取り、仮想的なトラッカーとし
 **64bit環境でのみ動作します。**  
 
 <img src="https://github.com/gpsnmeajp/VirtualMotionTracker/blob/master/doc/Architecture.png?raw=true"></img>
+<img src="https://github.com/gpsnmeajp/VirtualMotionTracker/blob/master/doc/screen2A.png?raw=true"></img>
+<img src="https://github.com/gpsnmeajp/VirtualMotionTracker/blob/master/doc/screen3.png?raw=true"></img>
 
 # [お問合せ先(Discordサーバー)](https://discord.gg/nGapSR7)
 

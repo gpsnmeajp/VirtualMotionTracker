@@ -1,4 +1,8 @@
 # VMT - VirtualMotionTracker 説明書
+## 注意
+アップデートの際は、古いドライバを予めアンインストールするか、フォルダごと消してください。  
+古いドライバが読み込まれて動かないことがあります。  
+
 ## 仕組み
 **VMT**  
 C++製OpenVRドライバです。OSCでの仮想トラッカー姿勢の受信と、SteamVRへの姿勢の受け渡しを行います。  
@@ -24,9 +28,12 @@ vmt_managerフォルダ内にあります。
 
 **3. vmt_managerをファイアーウォールで許可します。**  
 お使いの環境によりますが許可してください。  
+<img src="screen1A.png" height="300px"></img>
 
 **4. Installボタンを押してください**  
-ドライバーのパスがVRシステムに登録されます。
+ドライバーのパスがVRシステムに登録されます。  
+<img src="screen1.png" height="300px"></img>
+<img src="screen1B.png"></img>
 
 **5. SteamVRを再起動してください。**  
 vmt_managerが自動で終了します。
@@ -48,15 +55,20 @@ vmt_managerが自動で終了します。
 **1. Check VMT_0 Positionボタンを押してください**  
 **2. SteamVRにトラッカーが表示され、VMT_0 Room Positionが緑色になればOKです**  
 赤色になる場合は、Room Matrixが設定されていないか、ルーム情報が前回設定されたものと変わっています。  
+<img src="screen2A.png" height="300px"></img>
 <img src="screen3.png"></img>  
 
 ## ハンドヘルドの解除
 VRゲームでコントローラ代わりに反応してしまう場合は、以下の設定をしてください。  
 **1. 必要な数のトラッカーを出してください(必要であればManagerからShow allをクリックすると全部有効になります)**  
 **2. SteamVRの設定→デバイス→Viveトラッカーを管理**  
+<img src="screen4.png" height="300px"></img>  
 **3. Viveトラッカーの管理**  
+<img src="screen5.png" height="300px"></img>  
 **4. トラッカーの役割を「無効」**  
-これを必要な数だけ行います。
+これを必要な数だけ行います。  
+<img src="screen6.png" height="300px"></img>
+<img src="screen7.png" height="300px"></img>  
 
 ## OSCプロトコル
 
@@ -73,7 +85,7 @@ VRゲームでコントローラ代わりに反応してしまう場合は、以
 
 |識別子|型|内容|
 |---|---|---|
-|index|int| 識別番号。現在0～63まで利用できます。|
+|index|int| 識別番号。現在0～57まで利用できます。|
 |enable|int| 有効可否。1で有効、0で無効(非接続・非トラッキング状態)|
 |timeoffset|float| 補正時間。通常0です。|
 |x,y,z|float| 座標|
