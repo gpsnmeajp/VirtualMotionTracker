@@ -142,6 +142,11 @@ public class sendme : MonoBehaviour
     }
 }
 ```
+## コマンドライン引数
+|例|機能|
+|---|---|
+|vmt_manager.exe install|ドライバをインストールします|
+|vmt_manager.exe uninstall|ドライバをアンインストールします|
 
 ## よくあるトラブル
 **RoomMatrixが赤色のまま緑色にならない**  
