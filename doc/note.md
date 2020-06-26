@@ -98,7 +98,7 @@ RoomToDriver空間変換行列を設定します。
 stat(int): 状態(0=info,1=warn,2=err)  
 msg(string): メッセージ  
   
-**/VMT/Out/Alive version**
+**/VMT/Out/Alive version**  
 version(string): バージョン  
   
 
@@ -120,15 +120,14 @@ public class sendme : MonoBehaviour
 
     void Update()
     {
-        client.Send("/TrackerPoseRoomUnity", (int)0, (int)1,
+        client.Send("/VMT/Room/Unity", (int)0, (int)1, (float)0f,
             (float)transform.position.x,
             (float)transform.position.y,
             (float)transform.position.z,
             (float)transform.rotation.x,
             (float)transform.rotation.y,
             (float)transform.rotation.z,
-            (float)transform.rotation.w,
-            (float)0f
+            (float)transform.rotation.w
         );
     }
 }
