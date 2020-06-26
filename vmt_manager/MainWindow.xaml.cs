@@ -345,5 +345,15 @@ public partial class MainWindow : Window
                 MessageBox.Show(ex.Message, title);
             }
         }
+
+        private void ShowAllButton(object sender, RoutedEventArgs e)
+        {
+            for (int i = 0; i < 58; i++) {
+                osc.Send(new OscMessage("/VMT/Room/Driver",
+                    i, 1, 0f,
+                    (float)rnd.NextDouble()-0.5f, (float)rnd.NextDouble() - 0.5f, (float)rnd.NextDouble() - 0.5f,
+                    0f, 0f, 0f, 1f));
+            }
+        }
     }
 }

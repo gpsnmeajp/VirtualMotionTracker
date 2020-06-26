@@ -91,7 +91,7 @@ namespace VMTDriver {
         CommunicationManager::GetInstance()->Open(this);
 
         //デバイスを準備
-        m_devices.resize(64); //64デバイス
+        m_devices.resize(58); //64デバイス
 
         //デバイスを初期化
         for (int i = 0; i < m_devices.size(); i++)
