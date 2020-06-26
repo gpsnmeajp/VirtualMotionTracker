@@ -77,8 +77,8 @@ class OSC : IDisposable
         }
         finally
         {
-            //Thread終了を待機
-            thread?.Join();
+            //Thread終了を1500msの間待機
+            thread?.Join(1500);
         }
     }
 

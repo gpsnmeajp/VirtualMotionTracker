@@ -49,6 +49,7 @@ using EasyLazyLibrary;
 using System.Numerics;
 using Rug.Osc;
 using System.Reflection.Emit;
+using System.Runtime.InteropServices;
 
 namespace vmt_manager
 {
@@ -57,9 +58,12 @@ namespace vmt_manager
     /// </summary>
 public partial class MainWindow : Window
     {
+        const string Version = "VMT_001b";
         private DispatcherTimer dispatcherTimer;
         Random rnd;
+        string title = "";
 
+        int aliveCnt = 0;
         EasyOpenVRUtil util;
         OSC osc;
 
@@ -73,6 +77,9 @@ public partial class MainWindow : Window
             try
             {
                 Console.WriteLine("Loaded");
+                title = this.Title;
+                ManagerVersion.Text = Version;
+                DriverVersion.Text = "-";
 
                 dispatcherTimer = new DispatcherTimer();
                 dispatcherTimer.Interval = new TimeSpan(0, 0, 0, 0, 100);
@@ -84,7 +91,6 @@ public partial class MainWindow : Window
                 util = new EasyOpenVRUtil();
                 if (!util.StartOpenVR())
                 {
-                    MessageBox.Show("Please start SteamVR.");
                     Close();
                     return;
                 }
@@ -93,14 +99,83 @@ public partial class MainWindow : Window
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.Message);
+                MessageBox.Show(ex.Message, title);
                 Close();
                 return;
+            }
+
+            string[] args = System.Environment.GetCommandLineArgs();
+            if (args.Length > 1) {
+                if (args[1] == "install")
+                {
+                    InstallButton(null, null);
+                    Close();
+                    return;
+                }
+                if (args[1] == "uninstall")
+                {
+                    UninstallButton(null, null);
+                    Close();
+                    return;
+                }
             }
         }
 
         private void OnMessage(OscMessage message)
         {
+            try
+            {
+                if (message.Address == "/VMT/Out/Log")
+                {
+                    int stat = (int)message[0];
+                    string msg = (string)message[1];
+
+                    switch (stat)
+                    {
+                        case 0:
+                            MessageBox.Show(msg, title, MessageBoxButton.OK, MessageBoxImage.Information);
+                            break;
+                        case 1:
+                            MessageBox.Show(msg, title, MessageBoxButton.OK, MessageBoxImage.Warning);
+                            break;
+                        case 2:
+                            MessageBox.Show(msg, title, MessageBoxButton.OK, MessageBoxImage.Error);
+                            break;
+                        default:
+                            MessageBox.Show(msg, title, MessageBoxButton.OK);
+                            break;
+                    }
+                }
+                else if (message.Address == "/VMT/Out/Alive")
+                {
+                    this.Dispatcher.Invoke(() =>
+                    {
+                        DriverVersion.Text = (string)message[0];
+                        ControlDock.IsEnabled = true;
+
+                        if ((string)message[0] != Version)
+                        {
+                            VersionDock.Background = new SolidColorBrush(Color.FromRgb(255, 100, 100));
+                        }
+                        else {
+                            VersionDock.Background = new SolidColorBrush(Color.FromRgb(0, 255, 0));
+                        }
+
+                        aliveCnt = 0;
+                    });
+                    //Keep Alive
+                }
+                else {
+                    //Do noting
+                }
+
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message, title);
+                Close();
+                return;
+            }
         }
 
         private void OnBundle(OscBundle bundle)
@@ -143,9 +218,11 @@ public partial class MainWindow : Window
                 )
             {
                 RoomMatrixTextBox.Background = new SolidColorBrush(Color.FromRgb(255, 100, 100));
+                SetRoomMatrixButtonName.IsEnabled = false;
             }
             else {
                 RoomMatrixTextBox.Background = new SolidColorBrush(Color.FromRgb(0, 255, 0));
+                SetRoomMatrixButtonName.IsEnabled = true;
             }
 
 
@@ -164,6 +241,16 @@ public partial class MainWindow : Window
             if (t2 != null) {
                 CheckPositionRawTextBox.Text = String.Format("{0:0.00}, {1:0.00}, {2:0.00}", t2.position.X, t2.position.Y, t2.position.Z);
             }
+
+            if (aliveCnt > 90)
+            {
+                DriverVersion.Text = "-";
+                VersionDock.Background = new SolidColorBrush(Color.FromRgb(255, 255, 255));
+                ControlDock.IsEnabled = false;
+            }
+            else {
+                aliveCnt++;
+            }
         }
 
 
@@ -176,19 +263,19 @@ public partial class MainWindow : Window
 
         private void ResetButton(object sender, RoutedEventArgs e)
         {
-            osc.Send(new OscMessage("/Reset"));
+            osc.Send(new OscMessage("/VMT/Reset"));
         }
 
         private void ReloadJsonButton(object sender, RoutedEventArgs e)
         {
-            osc.Send(new OscMessage("/LoadSetting"));
+            osc.Send(new OscMessage("/VMT/LoadSetting"));
         }
 
         private void SetRoomMatrixButton(object sender, RoutedEventArgs e)
         {
             HmdMatrix34_t m = new HmdMatrix34_t();
             OpenVR.ChaperoneSetup.GetWorkingStandingZeroPoseToRawTrackingPose(ref m);
-            osc.Send(new OscMessage("/SetRoomMatrix", 
+            osc.Send(new OscMessage("/VMT/SetRoomMatrix", 
                 m.m0, m.m1, m.m2, m.m3, 
                 m.m4, m.m5, m.m6, m.m7, 
                 m.m8, m.m9, m.m10, m.m11));
@@ -196,7 +283,7 @@ public partial class MainWindow : Window
 
         private void ResetRoomMatrixButton(object sender, RoutedEventArgs e)
         {
-            osc.Send(new OscMessage("/SetRoomMatrix", 
+            osc.Send(new OscMessage("/VMT/SetRoomMatrix", 
                 1f,0f,0f,0f,
                 0f,1f,0f,0f,
                 0f,0f,1f,0f));
@@ -204,11 +291,10 @@ public partial class MainWindow : Window
 
         private void CheckPositionButton(object sender, RoutedEventArgs e)
         {
-            osc.Send(new OscMessage("/TrackerPoseRoomDriver",
-                0, 1, 
+            osc.Send(new OscMessage("/VMT/Room/Driver",
+                0, 1, 0f,
                 1f, 1f, 1f,
-                0f, 0f, 0f, 1f,
-                0f));
+                0f, 0f, 0f, 1f));
         }
 
         private void InstallButton(object sender, RoutedEventArgs e)
@@ -228,10 +314,10 @@ public partial class MainWindow : Window
                 process.Start();
                 process.WaitForExit();
 
-                MessageBox.Show("OK (ExitCode=" + process.ExitCode + ")");
+                MessageBox.Show("OK (ExitCode=" + process.ExitCode + ")", title);
             }
             catch (Exception ex) {
-                MessageBox.Show(ex.Message);
+                MessageBox.Show(ex.Message, title);
             }
         }
 
@@ -252,11 +338,11 @@ public partial class MainWindow : Window
                 process.Start();
                 process.WaitForExit();
 
-                MessageBox.Show("OK (ExitCode=" + process.ExitCode + ")");
+                MessageBox.Show("OK (ExitCode=" + process.ExitCode + ")", title);
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.Message);
+                MessageBox.Show(ex.Message, title);
             }
         }
     }

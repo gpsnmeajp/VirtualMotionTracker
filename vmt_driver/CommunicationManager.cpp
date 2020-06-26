@@ -81,48 +81,74 @@ namespace VMTDriver {
 		}
 	}
 
+	void OSCReceiver::SendLog(int stat, string msg) {
+		const size_t bufsize = 8192;
+		char buf[bufsize];
+		osc::OutboundPacketStream packet(buf, bufsize);
+		packet << osc::BeginMessage("/VMT/Out/Log")
+			<< stat
+			<< msg.c_str()
+			<< osc::EndMessage;
+		DirectOSC::OSC::GetInstance()->GetSocketTx()->Send(packet.Data(), packet.Size());
+	}
+
+	void OSCReceiver::SendAlive() {
+		const size_t bufsize = 8192;
+		char buf[bufsize];
+		osc::OutboundPacketStream packet(buf, bufsize);
+		packet << osc::BeginMessage("/VMT/Out/Alive")
+			<< Version.c_str()
+			<< osc::EndMessage;
+		DirectOSC::OSC::GetInstance()->GetSocketTx()->Send(packet.Data(), packet.Size());
+	}
+
+
 	//別スレッド
 	void OSCReceiver::ProcessMessage(const osc::ReceivedMessage& m, const IpEndpointName& remoteEndpoint)
 	{
 		try {
 			string adr = m.AddressPattern();
-			if (adr == "/TrackerPoseRoomUnity")
+			if (adr == "/VMT/Room/Unity")
 			{
 				int idx, enable;
-				float x, y, z, qx, qy, qz, qw, timeoffset;
+				float timeoffset;
+				float x, y, z, qx, qy, qz, qw;
 				osc::ReceivedMessageArgumentStream args = m.ArgumentStream();
-				args >> idx >> enable >> x >> y >> z >> qx >> qy >> qz >> qw >> timeoffset >> osc::EndMessage;
+				args >> idx >> enable >> timeoffset >> x >> y >> z >> qx >> qy >> qz >> qw >> osc::EndMessage;
 
 				SetPose(true, idx, enable, x, y, -z, qx, qy, -qz, -qw, timeoffset);
 			}
-			else if (adr == "/TrackerPoseRoomDriver")
+			else if (adr == "/VMT/Room/Driver")
 			{
 				int idx, enable;
-				float x, y, z, qx, qy, qz, qw, timeoffset;
+				float timeoffset;
+				float x, y, z, qx, qy, qz, qw;
 				osc::ReceivedMessageArgumentStream args = m.ArgumentStream();
-				args >> idx >> enable >> x >> y >> z >> qx >> qy >> qz >> qw >> timeoffset >> osc::EndMessage;
+				args >> idx >> enable >> timeoffset >> x >> y >> z >> qx >> qy >> qz >> qw >> osc::EndMessage;
 
 				SetPose(true, idx, enable, x, y, z, qx, qy, qz, qw, timeoffset);
 			}
-			else if (adr == "/TrackerPoseRawUnity")
+			else if (adr == "/VMT/Raw/Unity")
 			{
 				int idx, enable;
-				float x, y, z, qx, qy, qz, qw, timeoffset;
+				float timeoffset;
+				float x, y, z, qx, qy, qz, qw;
 				osc::ReceivedMessageArgumentStream args = m.ArgumentStream();
-				args >> idx >> enable >> x >> y >> z >> qx >> qy >> qz >> qw >> timeoffset >> osc::EndMessage;
+				args >> idx >> enable >> timeoffset >> x >> y >> z >> qx >> qy >> qz >> qw >> osc::EndMessage;
 
 				SetPose(false, idx, enable, x, y, -z, qx, qy, -qz, -qw, timeoffset);
 			}
-			else if (adr == "/TrackerPoseRawDriver")
+			else if (adr == "/VMT/Raw/Driver")
 			{
 				int idx, enable;
-				float x, y, z, qx, qy, qz, qw, timeoffset;
+				float timeoffset;
+				float x, y, z, qx, qy, qz, qw;
 				osc::ReceivedMessageArgumentStream args = m.ArgumentStream();
-				args >> idx >> enable >> x >> y >> z >> qx >> qy >> qz >> qw >> timeoffset >> osc::EndMessage;
+				args >> idx >> enable >> timeoffset >> x >> y >> z >> qx >> qy >> qz >> qw >> osc::EndMessage;
 
 				SetPose(false, idx, enable, x, y, z, qx, qy, qz, qw, timeoffset);
 			}
-			else if (adr == "/Reset")
+			else if (adr == "/VMT/Reset")
 			{
 				//全トラッカーを0にする
 				ServerTrackedDeviceProvider* sever = CommunicationManager::GetInstance()->GetServer();
@@ -138,11 +164,12 @@ namespace VMTDriver {
 					sever->GetDevices()[i].SetPose(pose); //すでにVRシステムに登録済みのものだけ通知される
 				}
 			}
-			else if (adr == "/LoadSetting")
+			else if (adr == "/VMT/LoadSetting")
 			{
 				CommunicationManager::GetInstance()->LoadSetting();
+				SendLog(0, "Setting Loaded");
 			}
-			else if (adr == "/SetRoomMatrix")
+			else if (adr == "/VMT/SetRoomMatrix")
 			{
 				float m1, m2, m3, m4, 
 					m5, m6, m7, m8, 
@@ -163,6 +190,8 @@ namespace VMTDriver {
 				}
 				j["RoomMatrix"] = {m1,m2,m3,m4,m5,m6,m7,m8,m9,m10,m11,m12};
 				CommunicationManager::GetInstance()->GetServer()->SaveJson(j);
+
+				SendLog(0, "Set Room Matrix Done.");
 			}
 			else {
 				Log::printf("Unkown: %s", adr.c_str());
@@ -235,7 +264,12 @@ namespace VMTDriver {
 	}
 	void CommunicationManager::Process()
 	{
-		//特に処理がない
+		//定期的に生存信号を送信
+		if (m_frame > frameCycle) {
+			OSCReceiver::SendAlive();
+			m_frame = 0;
+		}
+		m_frame++;
 	}
 	void CommunicationManager::LoadSetting()
 	{

@@ -25,13 +25,23 @@ SOFTWARE.
 #include "dllmain.h"
 
 namespace VMTDriver {
+	const string Version = "VMT_001b";
+
 	class OSCReceiver : public osc::OscPacketListener {
+	private:
 		void SetPose(bool roomToDriver,int idx, int enable, double x, double y, double z, double qx, double qy, double qz, double qw, double timeoffset);
 		virtual void ProcessMessage(const osc::ReceivedMessage& m, const IpEndpointName& remoteEndpoint);
+	public:
+		static void OSCReceiver::SendLog(int stat, string msg);
+		static void OSCReceiver::SendAlive();
+
 	};
 
 	class CommunicationManager {
 	private:
+		const int frameCycle = 45;
+		int m_frame = 0;
+
 		bool m_opened = false;
 		OSCReceiver m_rcv;
 		ServerTrackedDeviceProvider* m_server;

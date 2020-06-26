@@ -8,22 +8,34 @@
 		SizeToContent="WidthAndHeight"
         Title="VMT Manager" Loaded="Window_Loaded" Closed="Window_Closed" ResizeMode="NoResize">
 	<DockPanel LastChildFill="False">
+		<DockPanel DockPanel.Dock="Top" IsEnabled="False" Name="VersionDock">
+			<DockPanel DockPanel.Dock="Top">
+				<TextBlock DockPanel.Dock="Left" TextAlignment="Right" Text="Manager: " Width="60"/>
+				<TextBlock DockPanel.Dock="Right" Name="ManagerVersion"/>
+			</DockPanel>
+			<DockPanel DockPanel.Dock="Top">
+				<TextBlock DockPanel.Dock="Left" TextAlignment="Right" Text="Driver: " Width="60"/>
+				<TextBlock DockPanel.Dock="Right" Name="DriverVersion"/>
+			</DockPanel>
+		</DockPanel>
 		<Button Content="Install" DockPanel.Dock="Top" Click="InstallButton"/>
 		<Button Content="Uninstall" DockPanel.Dock="Top" Click="UninstallButton"/>
-		<TextBlock DockPanel.Dock="Top"/>
-		<Button Content="Reset" DockPanel.Dock="Top" Click="ResetButton"/>
-		<Button Content="Reload Setting" DockPanel.Dock="Top" Click="ReloadJsonButton"/>
-		<TextBlock DockPanel.Dock="Top"/>
-		<TextBlock Text="RoomMatrix" DockPanel.Dock="Top"/>
-		<TextBox Name="RoomMatrixTextBox" IsEnabled="False" IsReadOnly="True" Text="" DockPanel.Dock="Top" Height="69"/>
-		<Button Content="Set RoomMatrix" DockPanel.Dock="Top" Click="SetRoomMatrixButton"/>
-		<Button Content="Reset RoomMatrix" DockPanel.Dock="Top" Click="ResetRoomMatrixButton"/>
-		<TextBlock DockPanel.Dock="Top"/>
-		<TextBlock Text="VMT_0 Room Position" DockPanel.Dock="Top"/>
-		<TextBox Name="CheckPositionTextBox" IsEnabled="False" IsReadOnly="True" Text="-,-,-" DockPanel.Dock="Top"/>
-		<TextBlock Text="VMT_0 Raw Position" DockPanel.Dock="Top"/>
-		<TextBox Name="CheckPositionRawTextBox" IsEnabled="False" IsReadOnly="True" Text="-,-,-" DockPanel.Dock="Top"/>
-		<Button Content="Check VMT__0 Position &#xA;(Try set RoomPos=[1,1,1] )" DockPanel.Dock="Top" Click="CheckPositionButton"/>
+		<DockPanel DockPanel.Dock="Top" Name="ControlDock" IsEnabled="False">
+			<TextBlock DockPanel.Dock="Top"/>
+			<Button Content="Reset" DockPanel.Dock="Top" Click="ResetButton"/>
+			<Button Content="Reload Setting" DockPanel.Dock="Top" Click="ReloadJsonButton"/>
+			<TextBlock DockPanel.Dock="Top"/>
+			<TextBlock Text="RoomMatrix" DockPanel.Dock="Top"/>
+			<TextBox Name="RoomMatrixTextBox" IsEnabled="False" IsReadOnly="True" Text="" DockPanel.Dock="Top" Height="69"/>
+			<Button Content="Set RoomMatrix" DockPanel.Dock="Top" Name="SetRoomMatrixButtonName" Click="SetRoomMatrixButton"/>
+			<Button Content="Reset RoomMatrix" DockPanel.Dock="Top" Click="ResetRoomMatrixButton"/>
+			<TextBlock DockPanel.Dock="Top"/>
+			<TextBlock Text="VMT_0 Room Position" DockPanel.Dock="Top"/>
+			<TextBox Name="CheckPositionTextBox" IsEnabled="False" IsReadOnly="True" Text="-,-,-" DockPanel.Dock="Top"/>
+			<TextBlock Text="VMT_0 Raw Position" DockPanel.Dock="Top"/>
+			<TextBox Name="CheckPositionRawTextBox" IsEnabled="False" IsReadOnly="True" Text="-,-,-" DockPanel.Dock="Top"/>
+			<Button Content="Check VMT__0 Position &#xA;(Try set RoomPos=[1,1,1] )" DockPanel.Dock="Top" Click="CheckPositionButton"/>
+		</DockPanel>
 	</DockPanel>
 
 </Window>
