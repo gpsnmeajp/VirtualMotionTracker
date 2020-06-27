@@ -9,7 +9,10 @@ OSCで姿勢(座標や回転)を受け取り、仮想的なトラッカーとし
 # [説明書・サンプル(日本語)](doc/note.md) / [Manual & sample(English)](doc/note_en.md)
 # [Download](https://github.com/gpsnmeajp/VirtualMotionTracker/releases)  
 **本ソフトウェアは、自分で問題を解決できる人向け(上級者向け)です。**  
-**64bit環境でのみ動作します。**  
+**This software for developers. (not for General user)**  
+  
+**64bit Windows環境でのみ動作します。**  
+**Only works on 64bit Windows**  
 
 # [お問合せ先(Discordサーバー)](https://discord.gg/nGapSR7)
 ハッシュタグは [#バーチャルモーショントラッカー](https://twitter.com/search?q=%23%E3%83%90%E3%83%BC%E3%83%81%E3%83%A3%E3%83%AB%E3%83%A2%E3%83%BC%E3%82%B7%E3%83%A7%E3%83%B3%E3%83%88%E3%83%A9%E3%83%83%E3%82%AB%E3%83%BC)
