@@ -162,7 +162,7 @@ public class sendme : MonoBehaviour
 
 ## Tracking Override
 SteamVRには、開発中のデバイスのデバッグのため、既存のデバイスの姿勢を、  
-指定したデバイスの姿勢で上書きする機能があります。
+指定したデバイスの姿勢で上書きする機能があります。  
 https://github.com/ValveSoftware/openvr/wiki/TrackingOverrides
 
 例として、steamvr.vrsettingsに以下の記述を追加すると、トラッカー0=HMD, 1=左手, 2=右手の制御ができます。  
