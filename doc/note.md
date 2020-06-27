@@ -183,3 +183,6 @@ SteamVRをインストールしているか確認してください。
 **前は動いてたのに、なんかずれるようになった**  
 →ルームセットアップをやり直しませんでしたか？  
 再度Set RoomMatrixをしてください。  
+
+**UnityでHMDやコントローラの位置を取得したい**  
+[EasyOpenVRUtil](https://github.com/gpsnmeajp/EasyOpenVRUtil)を使用してください。  
