@@ -94,7 +94,7 @@ Unity lik Left-handed space, and Driver space.
 **/VMT/Raw/Driver index,enable,timeoffset,x,y,z,qx,qy,qz,qw**  
 Driver Right-handed space, and Driver space.  
   
-### ドライバ操作
+### Driver Management
 **/VMT/Reset**  
 All tracker will not-tracking state.  
   
