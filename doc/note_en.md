@@ -150,3 +150,16 @@ public class sendme : MonoBehaviour
 |vmt_manager.exe install|Install driver|
 |vmt_manager.exe uninstall|Uninstall driver|
 
+## Tracking Override
+https://github.com/ValveSoftware/openvr/wiki/TrackingOverrides
+
+steamvr.vrsettings
+
+```
+   "TrackingOverrides" : {
+      "/devices/vmt/VMT_0" : "/user/head",
+      "/devices/vmt/VMT_1" : "/user/hand/left",
+      "/devices/vmt/VMT_2" : "/user/hand/right"
+   },
+```
+
