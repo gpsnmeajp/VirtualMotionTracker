@@ -1,6 +1,6 @@
 # VMT - VirtualMotionTracker Manual
 ## Caution
-Please remove/uninstall old driver before new driver install.
+Please remove/uninstall old driver before new driver install.  
 
 ## How it works
 **VMT**  
@@ -9,7 +9,7 @@ it looks like base station in VR space.
   
 **VMT Manager**  
 C# Management tool.  
-Installation, Uninstallation, Room setup.
+Installation, Uninstallation, Room setup.  
   
 ## Installation
 **1. Download and extract VMT**  
@@ -21,26 +21,26 @@ Installation, Uninstallation, Room setup.
 <img src="screen1A.png" height="300px"></img>
 
 **4. Click "Install" button**  
-Driver path registration for VR System.
+Driver path registration for VR System.  
 <img src="screen1.png" height="300px"></img>
 <img src="screen1B.png"></img>
 
 **5. Restart SteamVR**  
-vmt manager will close automatically.
-
-**6. Allow SteamVR(vrserver.exe) in firewall**
-
+vmt manager will close automatically.  
+  
+**6. Allow SteamVR(vrserver.exe) in firewall**  
+  
 ## Room Matrix setup
 **1. Launch vmt_manager.exe**  
 
 **2. Start VR HMD and Controller**  
-vmt_manager will get room info.
-Please wait for Room Matrix turns green. 
+vmt_manager will get room info.  
+Please wait for Room Matrix turns green.   
 <img src="screen1.png" height="300px"></img>
 <img src="screen2.png" height="300px"></img>  
 
 **3. Click "Set Room Matrix" button.**  
-Room Matrix will save in setting.json.
+Room Matrix will save in setting.json.  
 
 ## Check
 **1. Click "Check VMT_0 Position" Button**  
@@ -69,7 +69,7 @@ As you want to use trackers.
 |Manager → Driver| 39570|
 |Manager ← Driver| 39571|
 
-Caution: If Port 39571 used be another application, Manager won't works.
+Caution: If Port 39571 used be another application, Manager won't works.  
   
 ### Virtual tracker control
 **Argument**  
@@ -83,29 +83,29 @@ Caution: If Port 39571 used be another application, Manager won't works.
 |qx,qy,qz,qw|float| Rotaion(Quaternion)|
 
 **/VMT/Room/Unity index,enable,timeoffset,x,y,z,qx,qy,qz,qw**  
-Unity lik Left-handed space, and Room space. (Recommended)
+Unity lik Left-handed space, and Room space. (Recommended)  
   
 **/VMT/Room/Driver index,enable,timeoffset,x,y,z,qx,qy,qz,qw**   
-Driver Right-handed space, and Room space.
+Driver Right-handed space, and Room space.  
   
 **/VMT/Raw/Unity index,enable,timeoffset,x,y,z,qx,qy,qz,qw**  
-Unity lik Left-handed space, and Driver space. 
+Unity lik Left-handed space, and Driver space.  
   
 **/VMT/Raw/Driver index,enable,timeoffset,x,y,z,qx,qy,qz,qw**  
-Driver Right-handed space, and Driver space.
+Driver Right-handed space, and Driver space.  
   
 ### ドライバ操作
 **/VMT/Reset**  
-All tracker will not-tracking state.
+All tracker will not-tracking state.  
   
 **/VMT/LoadSetting**  
 Reload json.  
   
 **/VMT/SetRoomMatrix m1,m2,m3,m4,m5,m6,m7,m8,m9,m10,m11,m12**  
-Set Room Matrix.
-Please do not send periodic. it writes setting on disc.  
+Set Room Matrix.  
+Please do not send periodic. it writes setting on drive.    
 
-### Drivers response
+### Drivers response  
 **/VMT/Out/Log stat,msg**  
 stat(int): Status(0=info,1=warn,2=err)  
 msg(string): Message  
