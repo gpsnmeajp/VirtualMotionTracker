@@ -5,7 +5,6 @@
   "input_bindingui_mode" : "single_device",
   "input_bindingui_left" :
   {
-    "transform" : "scale(1,1)",
     "image": "{vmt}/input/binding_image_light.png"
   },
   "input_bindingui_right" :
@@ -14,14 +13,44 @@
   },
   "input_source" :
   {
-    "/input/a" : { 
+    "/input/Button0" : { 
         "type" : "button",
+        "binding_image_point" : [ 0, 0 ],
+        "order" : 1
+    },
+    "/input/Button1" : { 
+        "type" : "button",
+        "binding_image_point" : [ 0, 0 ],
+        "order" : 1
+    },
+    "/input/Button2" : { 
+        "type" : "button",
+        "binding_image_point" : [ 0, 0 ],
+        "order" : 1
+    },
+    "/input/Button3" : { 
+        "type" : "button",
+        "binding_image_point" : [ 0, 0 ],
+        "order" : 1
+    },
+    "/input/Joystick0" : { 
+        "type" : "joystick",
+        "binding_image_point" : [ 0, 0 ],
+        "order" : 1
+    },
+    "/input/Trigger0" : { 
+        "type" : "trigger",
+        "binding_image_point" : [ 0, 0 ],
+        "order" : 1
+    },
+    "/input/Trigger1" : { 
+        "type" : "trigger",
         "binding_image_point" : [ 0, 0 ],
         "order" : 1
     },
     "/pose/raw" : {
         "type" : "pose",
         "binding_image_point" : [ 0, 0 ]
-    },
+    }
   }
 }
