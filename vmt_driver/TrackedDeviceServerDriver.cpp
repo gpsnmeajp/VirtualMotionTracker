@@ -67,9 +67,21 @@ namespace VMTDriver {
 
         VRProperties()->SetStringProperty(m_propertyContainer, Prop_ModelNumber_String, m_serial.c_str());
         VRProperties()->SetStringProperty(m_propertyContainer, Prop_RenderModelName_String, "lh_basestation_vive"); //とりあえずベースステーションの姿
-
         VRProperties()->SetUint64Property(m_propertyContainer, Prop_CurrentUniverseId_Uint64, 2);
         VRProperties()->SetBoolProperty(m_propertyContainer, Prop_NeverTracked_Bool, false);
+
+
+        VRProperties()->SetStringProperty(m_propertyContainer, Prop_InputProfilePath_String, "{vmt}/input/inputprofile.json");
+        VRProperties()->SetStringProperty(m_propertyContainer, Prop_NamedIconPathDeviceReady_String, "{vmt}/icons/Ready32x32.png");
+        VRProperties()->SetStringProperty(m_propertyContainer, Prop_NamedIconPathDeviceOff_String, "{vmt}/icons/Off32x32.png");
+
+        VRProperties()->SetUint64Property(m_propertyContainer, Prop_SupportedButtons_Uint64, 0xFF); //8bit buttons
+        VRProperties()->SetUint64Property(m_propertyContainer, Prop_Axis0Type_Int32, EVRControllerAxisType::k_eControllerAxis_Trigger);
+        VRProperties()->SetUint64Property(m_propertyContainer, Prop_Axis1Type_Int32, EVRControllerAxisType::k_eControllerAxis_TrackPad);
+        VRProperties()->SetUint64Property(m_propertyContainer, Prop_Axis2Type_Int32, EVRControllerAxisType::k_eControllerAxis_Joystick);
+
+        //VRDriverInput()->CreateBooleanComponent(m_propertyContainer, "/input/a/click", &a);
+        //VRDriverInput()->UpdateBooleanComponent(m_propertyContainer, true,0);
 
         return EVRInitError::VRInitError_None;
     }

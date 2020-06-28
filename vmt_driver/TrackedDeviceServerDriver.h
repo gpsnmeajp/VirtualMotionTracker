@@ -39,6 +39,9 @@ namespace VMTDriver {
 
         DriverPose_t m_pose{ 0 };
 
+        VRInputComponentHandle_t a;
+
+
     public:
         TrackedDeviceServerDriver();
         ~TrackedDeviceServerDriver();
