@@ -71,7 +71,7 @@ namespace VMTDriver {
         VRProperties()->SetBoolProperty(m_propertyContainer, Prop_NeverTracked_Bool, false);
 
 
-        VRProperties()->SetStringProperty(m_propertyContainer, Prop_InputProfilePath_String, "{vmt}/input/inputprofile.json");
+        VRProperties()->SetStringProperty(m_propertyContainer, Prop_InputProfilePath_String, "{vmt}/input/vmt_profile.json");
         VRProperties()->SetStringProperty(m_propertyContainer, Prop_NamedIconPathDeviceReady_String, "{vmt}/icons/Ready32x32.png");
         VRProperties()->SetStringProperty(m_propertyContainer, Prop_NamedIconPathDeviceOff_String, "{vmt}/icons/Off32x32.png");
 
@@ -80,8 +80,8 @@ namespace VMTDriver {
         VRProperties()->SetUint64Property(m_propertyContainer, Prop_Axis1Type_Int32, EVRControllerAxisType::k_eControllerAxis_TrackPad);
         VRProperties()->SetUint64Property(m_propertyContainer, Prop_Axis2Type_Int32, EVRControllerAxisType::k_eControllerAxis_Joystick);
 
-        //VRDriverInput()->CreateBooleanComponent(m_propertyContainer, "/input/a/click", &a);
-        //VRDriverInput()->UpdateBooleanComponent(m_propertyContainer, true,0);
+        VRDriverInput()->CreateBooleanComponent(m_propertyContainer, "/input/a/click", &a);
+        VRDriverInput()->UpdateBooleanComponent(m_propertyContainer, true,0);
 
         return EVRInitError::VRInitError_None;
     }
