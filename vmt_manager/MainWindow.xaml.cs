@@ -58,10 +58,11 @@ namespace vmt_manager
     /// </summary>
 public partial class MainWindow : Window
     {
-        const string Version = "VMT_001b";
+        const string Version = "VMT_002";
         private DispatcherTimer dispatcherTimer;
         Random rnd;
         string title = "";
+        bool detectOtherVersion = false;
 
         int aliveCnt = 0;
         EasyOpenVRUtil util;
@@ -155,10 +156,11 @@ public partial class MainWindow : Window
 
                         if ((string)message[0] != Version)
                         {
-                            VersionDock.Background = new SolidColorBrush(Color.FromRgb(255, 100, 100));
+                            DriverVersion.Foreground = new SolidColorBrush(Color.FromRgb(255, 100, 100));
+                            detectOtherVersion = true;
                         }
                         else {
-                            VersionDock.Background = new SolidColorBrush(Color.FromRgb(0, 255, 0));
+                            DriverVersion.Foreground = new SolidColorBrush(Color.FromRgb(0, 255, 0));
                         }
 
                         aliveCnt = 0;
@@ -245,7 +247,7 @@ public partial class MainWindow : Window
             if (aliveCnt > 90)
             {
                 DriverVersion.Text = "-";
-                VersionDock.Background = new SolidColorBrush(Color.FromRgb(255, 255, 255));
+                DriverVersion.Foreground = new SolidColorBrush(Color.FromRgb(255, 255, 255));
                 ControlDock.IsEnabled = false;
             }
             else {
@@ -299,6 +301,11 @@ public partial class MainWindow : Window
 
         private void InstallButton(object sender, RoutedEventArgs e)
         {
+            if (detectOtherVersion) {
+                MessageBox.Show("Please remove other version VMT before install.\nインストールを続ける前に、他のバージョンのVMTを削除してください", title,MessageBoxButton.OK,MessageBoxImage.Error);
+                return;
+            }
+
             try
             {
                 string driverPath_rel = System.IO.Path.GetDirectoryName(Assembly.GetEntryAssembly().Location) + @"\..\vmt";
@@ -323,6 +330,15 @@ public partial class MainWindow : Window
 
         private void UninstallButton(object sender, RoutedEventArgs e)
         {
+            if (detectOtherVersion)
+            {
+                var res = MessageBox.Show("This manager can not uninstall currently installed VMT version.\nPlease use installed manager version.\nTry it anyway?\n\nこのバージョンのManagerでは現在インストールされているバージョンのVMTをアンインストールすることはできません。\nインストールされているバージョンのManagerを使用してください。\nそれでも実行しますか？", title, MessageBoxButton.OKCancel, MessageBoxImage.Error);
+                if (res != MessageBoxResult.OK)
+                {
+                    return;
+                }
+            }
+
             try
             {
                 string driverPath_rel = System.IO.Path.GetDirectoryName(Assembly.GetEntryAssembly().Location) + @"\..\vmt";

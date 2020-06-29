@@ -4,40 +4,99 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:vmt_manager"
+		Width="320"
+		Height="240"
         mc:Ignorable="d"
-		SizeToContent="WidthAndHeight"
         Title="VMT Manager" Loaded="Window_Loaded" Closed="Window_Closed" ResizeMode="NoResize">
-	<DockPanel LastChildFill="False">
-		<DockPanel DockPanel.Dock="Top" IsEnabled="False" Name="VersionDock">
-			<DockPanel DockPanel.Dock="Top">
-				<TextBlock DockPanel.Dock="Left" TextAlignment="Right" Text="Manager: " Width="60"/>
-				<TextBlock DockPanel.Dock="Right" Name="ManagerVersion"/>
+	<TabControl>
+		<TabItem Header="Install">
+			<DockPanel LastChildFill="False">
+				<DockPanel.Background>
+					<LinearGradientBrush EndPoint="1,1" StartPoint="0,0">
+						<GradientStop Color="#FF636363" Offset="0"/>
+						<GradientStop Color="#FF111111" Offset="1"/>
+					</LinearGradientBrush>
+				</DockPanel.Background>
+				<Grid  DockPanel.Dock="Top" Margin="1">
+					<Grid.ColumnDefinitions>
+						<ColumnDefinition/>
+						<ColumnDefinition/>
+					</Grid.ColumnDefinitions>
+					<Button Content="Install" DockPanel.Dock="Top" Click="InstallButton" Grid.Column="0" Margin="1"/>
+					<Button Content="Uninstall" DockPanel.Dock="Top" Click="UninstallButton" Grid.Column="1" Margin="1"/>
+				</Grid>
+				<Grid DockPanel.Dock="Top" Margin="2">
+					<Grid.ColumnDefinitions>
+						<ColumnDefinition/>
+						<ColumnDefinition/>
+						<ColumnDefinition/>
+						<ColumnDefinition/>
+					</Grid.ColumnDefinitions>
+					<TextBlock HorizontalAlignment="Left" Text="Manager: " Grid.Column="0" Foreground="LightGray" />
+					<TextBlock Name="ManagerVersion"  Grid.Column="1" Foreground="LightGray" />
+					<TextBlock HorizontalAlignment="Left" Text="Driver: "  Grid.Column="2" Foreground="LightGray" />
+					<TextBlock Name="DriverVersion"  Grid.Column="3" Foreground="LightGray" />
+				</Grid>
+				<Image DockPanel.Dock="Bottom" Source="Resources/VMTlogo.png" Margin="5"/>
 			</DockPanel>
-			<DockPanel DockPanel.Dock="Top">
-				<TextBlock DockPanel.Dock="Left" TextAlignment="Right" Text="Driver: " Width="60"/>
-				<TextBlock DockPanel.Dock="Right" Name="DriverVersion"/>
+		</TabItem>
+		<TabItem Header="RoomSetup">
+			<DockPanel Name="ControlDock" IsEnabled="False">
+				<Grid>
+					<Grid.ColumnDefinitions>
+						<ColumnDefinition/>
+						<ColumnDefinition/>
+					</Grid.ColumnDefinitions>
+					<DockPanel Grid.Column="0" Margin="2"  LastChildFill="False">
+						<TextBlock Text="RoomMatrix" DockPanel.Dock="Top" Margin="1"/>
+						<TextBox Name="RoomMatrixTextBox" IsEnabled="False" IsReadOnly="True" Text="" DockPanel.Dock="Top" Height="69" Margin="1"/>
+						<Button Content="Set RoomMatrix" DockPanel.Dock="Top" Name="SetRoomMatrixButtonName" Click="SetRoomMatrixButton" Margin="1"/>
+						<Button Content="Reset RoomMatrix" DockPanel.Dock="Top" Click="ResetRoomMatrixButton" Margin="1"/>
+					</DockPanel>
+					<DockPanel Grid.Column="1" Margin="2" LastChildFill="False">
+						<TextBlock Text="VMT_0 Room Position" DockPanel.Dock="Top" Margin="1"/>
+						<TextBox Name="CheckPositionTextBox" IsEnabled="False" IsReadOnly="True" Text="-,-,-" DockPanel.Dock="Top" Margin="1"/>
+						<TextBlock Text="VMT_0 Raw Position" DockPanel.Dock="Top" Margin="1"/>
+						<TextBox Name="CheckPositionRawTextBox" IsEnabled="False" IsReadOnly="True" Text="-,-,-" DockPanel.Dock="Top" Margin="1"/>
+						<Button Content="Check VMT__0 Position &#xA;(Try set RoomPos=[1,1,1] )" DockPanel.Dock="Top" Click="CheckPositionButton" Margin="1"/>
+						<TextBlock DockPanel.Dock="Top"/>
+					</DockPanel>
+				</Grid>
 			</DockPanel>
-		</DockPanel>
-		<Button Content="Install" DockPanel.Dock="Top" Click="InstallButton"/>
-		<Button Content="Uninstall" DockPanel.Dock="Top" Click="UninstallButton"/>
-		<DockPanel DockPanel.Dock="Top" Name="ControlDock" IsEnabled="False">
-			<TextBlock DockPanel.Dock="Top"/>
-			<Button Content="Reload Setting" DockPanel.Dock="Top" Click="ReloadJsonButton"/>
-			<TextBlock DockPanel.Dock="Top"/>
-			<TextBlock Text="RoomMatrix" DockPanel.Dock="Top"/>
-			<TextBox Name="RoomMatrixTextBox" IsEnabled="False" IsReadOnly="True" Text="" DockPanel.Dock="Top" Height="69"/>
-			<Button Content="Set RoomMatrix" DockPanel.Dock="Top" Name="SetRoomMatrixButtonName" Click="SetRoomMatrixButton"/>
-			<Button Content="Reset RoomMatrix" DockPanel.Dock="Top" Click="ResetRoomMatrixButton"/>
-			<TextBlock DockPanel.Dock="Top"/>
-			<TextBlock Text="VMT_0 Room Position" DockPanel.Dock="Top"/>
-			<TextBox Name="CheckPositionTextBox" IsEnabled="False" IsReadOnly="True" Text="-,-,-" DockPanel.Dock="Top"/>
-			<TextBlock Text="VMT_0 Raw Position" DockPanel.Dock="Top"/>
-			<TextBox Name="CheckPositionRawTextBox" IsEnabled="False" IsReadOnly="True" Text="-,-,-" DockPanel.Dock="Top"/>
-			<Button Content="Check VMT__0 Position &#xA;(Try set RoomPos=[1,1,1] )" DockPanel.Dock="Top" Click="CheckPositionButton"/>
-			<TextBlock DockPanel.Dock="Top"/>
-			<Button Content="Reset" DockPanel.Dock="Top" Click="ResetButton"/>
-			<Button Content="Show all" DockPanel.Dock="Top" Click="ShowAllButton"/>
-		</DockPanel>
-	</DockPanel>
+		</TabItem>
+		<TabItem Header="Control">
+			<DockPanel>
+				<Grid>
+					<Grid.ColumnDefinitions>
+						<ColumnDefinition/>
+						<ColumnDefinition/>
+					</Grid.ColumnDefinitions>
+					<DockPanel Grid.Column="0" Margin="2"  LastChildFill="False">
+						<Button Content="Reload Setting" DockPanel.Dock="Top" Click="ReloadJsonButton" Margin="1"/>
+						<Button Content="Reset" DockPanel.Dock="Top" Click="ResetButton" Margin="1"/>
+						<Button Content="Show all" DockPanel.Dock="Top" Click="ShowAllButton" Margin="1"/>
+					</DockPanel>
+					<DockPanel Grid.Column="1" Margin="2" LastChildFill="False">
 
+					</DockPanel>
+				</Grid>
+			</DockPanel>
+		</TabItem>
+		<TabItem Header="Input">
+			<DockPanel>
+				<Grid>
+					<Grid.ColumnDefinitions>
+						<ColumnDefinition/>
+						<ColumnDefinition/>
+					</Grid.ColumnDefinitions>
+					<DockPanel Grid.Column="0" Margin="2"  LastChildFill="False">
+
+					</DockPanel>
+					<DockPanel Grid.Column="1" Margin="2" LastChildFill="False">
+
+					</DockPanel>
+				</Grid>
+			</DockPanel>
+		</TabItem>
+	</TabControl>
 </Window>
