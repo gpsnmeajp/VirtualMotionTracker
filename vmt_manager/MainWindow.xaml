@@ -80,12 +80,12 @@
 			</DockPanel>
 		</TabItem>
 		<TabItem Header="Input">
-			<DockPanel>
+			<DockPanel LastChildFill="False">
 				<DockPanel DockPanel.Dock="Top" Margin="1">
 					<TextBlock VerticalAlignment="Center" Text="VMT:" DockPanel.Dock="Left" />
 					<TextBox Name="InputVMTNoTextBox" Text="0"/>
 				</DockPanel>
-				<Grid>
+				<Grid DockPanel.Dock="Top">
 					<Grid.ColumnDefinitions>
 						<ColumnDefinition/>
 						<ColumnDefinition/>
@@ -132,6 +132,12 @@
 						<Button Content="Input Reset"  Margin="1" Click="InputResetButton" DockPanel.Dock="Top"/>
 					</DockPanel>
 				</Grid>
+
+				<Button Content="Haptic Test"  Margin="1" Click="HapticTestButton" DockPanel.Dock="Bottom"/>
+				<DockPanel DockPanel.Dock="Bottom" Margin="1">
+					<TextBlock VerticalAlignment="Center" Text="Haptic:" DockPanel.Dock="Left" />
+					<TextBox Name="InputVMTHapticTextBox" Text="-" IsReadOnly="True" IsEnabled="False" />
+				</DockPanel>
 			</DockPanel>
 		</TabItem>
 	</TabControl>

@@ -65,6 +65,7 @@ public partial class MainWindow : Window
         bool detectOtherVersion = false;
 
         int aliveCnt = 0;
+        bool ReceiveError = false;
         EasyOpenVRUtil util;
         OSC osc;
 
@@ -100,7 +101,7 @@ public partial class MainWindow : Window
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.Message, title);
+                MessageBox.Show(ex.Message + "\n" + ex.StackTrace, title);
                 Close();
                 return;
             }
@@ -124,6 +125,10 @@ public partial class MainWindow : Window
 
         private void OnMessage(OscMessage message)
         {
+            //エラー時はそれ以上受信しない
+            if (ReceiveError) {
+                return;
+            }
             try
             {
                 if (message.Address == "/VMT/Out/Log")
@@ -149,6 +154,7 @@ public partial class MainWindow : Window
                 }
                 else if (message.Address == "/VMT/Out/Alive")
                 {
+                    //Keep Alive
                     this.Dispatcher.Invoke(() =>
                     {
                         DriverVersion.Text = (string)message[0];
@@ -159,23 +165,37 @@ public partial class MainWindow : Window
                             DriverVersion.Foreground = new SolidColorBrush(Color.FromRgb(255, 100, 100));
                             detectOtherVersion = true;
                         }
-                        else {
+                        else
+                        {
                             DriverVersion.Foreground = new SolidColorBrush(Color.FromRgb(0, 255, 0));
                         }
 
                         aliveCnt = 0;
                     });
-                    //Keep Alive
                 }
-                else {
+                else if (message.Address == "/VMT/Out/Haptic")
+                {
+                    //振動
+                    this.Dispatcher.Invoke(() =>
+                    {
+                        InputVMTHapticTextBox.Text = string.Format("VMT_{0,0} f:{1:0.0}Hz A:{2:0.0} d:{3:0.0}s", (int)message[0], (float)message[1], (float)message[2], (float)message[3]);
+                        InputVMTHapticTextBox.Background = new SolidColorBrush(Color.FromRgb(0, 255, 0));
+                    });
+                }
+                else
+                {
                     //Do noting
                 }
 
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.Message, title);
-                Close();
+                ReceiveError = true;
+                MessageBox.Show(ex.Message+"\n"+ex.StackTrace, title);
+                this.Dispatcher.Invoke(() =>
+                {
+                    Close();
+                });
                 return;
             }
         }
@@ -253,6 +273,8 @@ public partial class MainWindow : Window
             else {
                 aliveCnt++;
             }
+
+            InputVMTHapticTextBox.Background = new SolidColorBrush(Color.FromRgb(255,255,255));
         }
 
 
@@ -324,7 +346,9 @@ public partial class MainWindow : Window
                 MessageBox.Show("OK (ExitCode=" + process.ExitCode + ")", title);
             }
             catch (Exception ex) {
-                MessageBox.Show(ex.Message, title);
+                MessageBox.Show(ex.Message + "\n" + ex.StackTrace, title);
+                Close();
+                return;
             }
         }
 
@@ -358,7 +382,9 @@ public partial class MainWindow : Window
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.Message, title);
+                MessageBox.Show(ex.Message + "\n" + ex.StackTrace, title);
+                Close();
+                return;
             }
         }
 
@@ -501,6 +527,16 @@ public partial class MainWindow : Window
             Slider1.Value = 0f;
             SliderX.Value = 0f;
             SliderY.Value = 0f;
+        }
+        private void HapticTestButton(object sender, RoutedEventArgs e)
+        {
+            var index = GetInputIndex();
+            if (index.ok) {
+                var deviceIndex = util.GetDeviceIndexBySerialNumber("VMT_" + index.i);
+                if (deviceIndex != EasyOpenVRUtil.InvalidDeviceIndex) {
+                    util.TriggerHapticPulse(deviceIndex);
+                }
+            }
         }
     }
 }

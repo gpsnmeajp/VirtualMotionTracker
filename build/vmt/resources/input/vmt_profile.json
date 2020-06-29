@@ -72,5 +72,10 @@
         "type" : "pose",
         "binding_image_point" : [ 0, 0 ]
     }
+    "/output/haptic" : {
+        "type" : "vibration",
+        "binding_image_point" : [ 0, 0 ],
+        "order" : 1
+    }
   }
 }

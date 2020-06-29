@@ -102,6 +102,20 @@ namespace VMTDriver {
 		DirectOSC::OSC::GetInstance()->GetSocketTx()->Send(packet.Data(), packet.Size());
 	}
 
+	void OSCReceiver::SendHaptic(int index, float frequency, float amplitude, float duration)
+	{
+		const size_t bufsize = 8192;
+		char buf[bufsize];
+		osc::OutboundPacketStream packet(buf, bufsize);
+		packet << osc::BeginMessage("/VMT/Out/Haptic")
+			<< index
+			<< frequency
+			<< amplitude
+			<< duration
+			<< osc::EndMessage;
+		DirectOSC::OSC::GetInstance()->GetSocketTx()->Send(packet.Data(), packet.Size());
+	}
+
 
 	//•ÊƒXƒŒƒbƒh
 	void OSCReceiver::ProcessMessage(const osc::ReceivedMessage& m, const IpEndpointName& remoteEndpoint)

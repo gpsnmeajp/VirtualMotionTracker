@@ -34,7 +34,7 @@ namespace VMTDriver {
 	public:
 		static void OSCReceiver::SendLog(int stat, string msg);
 		static void OSCReceiver::SendAlive();
-
+		static void OSCReceiver::SendHaptic(int index, float frequency, float amplitude, float duration);
 	};
 
 	class CommunicationManager {

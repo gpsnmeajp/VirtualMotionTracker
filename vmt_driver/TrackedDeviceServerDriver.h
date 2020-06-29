@@ -42,6 +42,7 @@ namespace VMTDriver {
         VRInputComponentHandle_t ButtonComponent[8];
         VRInputComponentHandle_t TriggerComponent[2];
         VRInputComponentHandle_t JoystickComponent[2];
+        VRInputComponentHandle_t HapticComponent;
 
     public:
         TrackedDeviceServerDriver();
@@ -56,6 +57,8 @@ namespace VMTDriver {
         void UpdateTriggerInput(int index, float value, double timeoffset);
         void UpdateJoystickInput(int index, float x, float y, double timeoffset);
         void Reset();
+
+        void ProcessEvent(VREvent_t &VREvent);
 
         //---------------
 

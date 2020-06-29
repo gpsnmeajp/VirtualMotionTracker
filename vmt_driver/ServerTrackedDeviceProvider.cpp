@@ -133,6 +133,14 @@ namespace VMTDriver {
         {
             m_devices[i].UpdatePoseToVRSystem();
         }
+
+        //イベントポンプ
+        VREvent_t VREvent;
+        VRServerDriverHost()->PollNextEvent(&VREvent, sizeof(VREvent_t));
+        for (int i = 0; i < m_devicesNum; i++)
+        {
+            m_devices[i].ProcessEvent(VREvent);
+        }
     }
 
     //スタンバイをブロックするか

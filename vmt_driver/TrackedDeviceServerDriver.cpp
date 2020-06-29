@@ -65,7 +65,6 @@ namespace VMTDriver {
         if (!m_alreadyRegistered) { return; }
         if (0 <= index && index <= 7)
         {
-            Log::printf("Boolean %d->%d", index, value ? 1 : 0);
             VRDriverInput()->UpdateBooleanComponent(ButtonComponent[index], value, timeoffset);
         }
     }
@@ -115,6 +114,20 @@ namespace VMTDriver {
             UpdateJoystickInput(i, 0, 0, 0);
         }
     }
+    void TrackedDeviceServerDriver::ProcessEvent(VREvent_t& VREvent)
+    {
+        switch (VREvent.eventType)
+        {
+        case EVREventType::VREvent_Input_HapticVibration:
+            //バイブレーション
+            if (VREvent.data.hapticVibration.componentHandle == HapticComponent) {
+                OSCReceiver::SendHaptic(m_index, VREvent.data.hapticVibration.fFrequency, VREvent.data.hapticVibration.fAmplitude, VREvent.data.hapticVibration.fDurationSeconds);
+            }
+            break;
+        default:
+            break;
+        }
+    }
     EVRInitError TrackedDeviceServerDriver::Activate(uint32_t unObjectId)
     {
         m_deviceIndex = unObjectId;
@@ -151,6 +164,8 @@ namespace VMTDriver {
 
         VRDriverInput()->CreateScalarComponent(m_propertyContainer, "/input/Joystick0/x", &JoystickComponent[0], EVRScalarType::VRScalarType_Absolute, EVRScalarUnits::VRScalarUnits_NormalizedTwoSided);
         VRDriverInput()->CreateScalarComponent(m_propertyContainer, "/input/Joystick0/y", &JoystickComponent[1], EVRScalarType::VRScalarType_Absolute, EVRScalarUnits::VRScalarUnits_NormalizedTwoSided);
+
+        VRDriverInput()->CreateHapticComponent(m_propertyContainer, "/output/haptic", &HapticComponent);
 
         return EVRInitError::VRInitError_None;
     }
