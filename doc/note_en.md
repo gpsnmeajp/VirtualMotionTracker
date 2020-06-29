@@ -101,16 +101,22 @@ Unity lik Left-handed space, and Driver space.
 **/VMT/Raw/Driver index, enable, timeoffset, x, y, z, qx, qy, qz, qw**  
 Driver Right-handed space, and Driver space.  
   
-### 入力操作
+### Input
+|Method|Range|
+|---|---|
+|ButtonIndex(int)| 0～7|
+|TriggerIndex(int)| 0, 1|
+|JoyStickIndex(int)| 0|
+
 **/VMT/Input/Button index, buttonindex, timeoffset, value**  
 Button input.  
 value(int):1=press, 0=Release  
   
-**/VMT/Input/Trigger index, buttonindex, timeoffset, value**  
+**/VMT/Input/Trigger index, triggerindex, timeoffset, value**  
 Trigger input.  
 value(float):0.0 ～ 1.0  
 
-**/VMT/Input/Joystick index, buttonindex, timeoffset, x, y**  
+**/VMT/Input/Joystick index, joystickindex, timeoffset, x, y**  
 Joystick input.  
 x,y(float):-1.0 ～ 1.0  
   
