@@ -28,11 +28,11 @@ vmt_managerフォルダ内にあります。
 
 **3. vmt_managerをファイアーウォールで許可します。**  
 お使いの環境によりますが許可してください。  
-<img src="screen1A.png" height="300px"></img>
+<img src="screen1A.png"></img>
 
 **4. Installボタンを押してください**  
 ドライバーのパスがVRシステムに登録されます。  
-<img src="screen1.png" height="300px"></img>
+<img src="screen0.png"></img>
 <img src="screen1B.png"></img>
 
 **5. SteamVRを再起動してください。**  
@@ -45,8 +45,8 @@ vmt_managerが自動で終了します。
 
 **2. VR機器やコントローラーを起動してください。**  
 ルーム情報を認識します。Room Matrixが緑色になるまで待ってください。  
-<img src="screen1.png" height="300px"></img>
-<img src="screen2.png" height="300px"></img>  
+<img src="screen1.png"></img>
+<img src="screen2.png"></img>  
 
 **3. Set Room Matrixボタンを押してください**  
 ルーム座標変換行列が登録され、setting.jsonに保存されます。
@@ -55,21 +55,31 @@ vmt_managerが自動で終了します。
 **1. Check VMT_0 Positionボタンを押してください**  
 **2. SteamVRにトラッカーが表示され、VMT_0 Room Positionが緑色になればOKです**  
 赤色になる場合は、Room Matrixが設定されていないか、ルーム情報が前回設定されたものと変わっています。  
-<img src="screen2A.png" height="300px"></img>
+<img src="screen2A.png"></img>
 <img src="screen3.png"></img>  
 
-## ハンドヘルドの解除
-VRゲームでコントローラ代わりに反応してしまう場合は、以下の設定をしてください。  
-**1. 必要な数のトラッカーを出してください(必要であればManagerからShow allをクリックすると全部有効になります)**  
+## コントローラ入力の確認
+入力の動作確認ができます。  
+下記のようにSteamVRにてトラッカーに役割を設定していない場合、動作しません。  
+<img src="screen2C.png"></img>  
+
+## ハンドヘルドの設定
+VRゲームでコントローラ代わりに使いたい場合、解除したい場合は、以下の設定をしてください。  
+**1. 必要な数のトラッカーを出してください**  
+(必要であればManagerからShow allをクリックすると全部有効になります)  
+<img src="screen2B.png"></img>  
+  
 **2. SteamVRの設定→デバイス→Viveトラッカーを管理**  
 <img src="screen4.png" height="300px"></img>  
+  
 **3. Viveトラッカーの管理**  
 <img src="screen5.png" height="300px"></img>  
-**4. トラッカーの役割を「無効」**  
+  
+**4. トラッカーの役割を設定**  
 これを必要な数だけ行います。  
 <img src="screen6.png" height="300px"></img>
 <img src="screen7.png" height="300px"></img>  
-
+  
 ## OSCプロトコル
 
 |方向|ポート番号|
@@ -91,18 +101,31 @@ VRゲームでコントローラ代わりに反応してしまう場合は、以
 |x,y,z|float| 座標|
 |qx,qy,qz,qw|float| 回転(クォータニオン)|
 
-**/VMT/Room/Unity index,enable,timeoffset,x,y,z,qx,qy,qz,qw**  
+**/VMT/Room/Unity index, enable, timeoffset, x, y, z, qx, qy, qz, qw**  
 Unityと同じ左手系、かつ、ルーム空間(ルーム空間変換あり)で仮想トラッカーを操作します。  
 通常はこれを使用します。  
   
-**/VMT/Room/Driver index,enable,timeoffset,x,y,z,qx,qy,qz,qw**   
+**/VMT/Room/Driver index, enable, timeoffset, x, y, z, qx, qy, qz, qw**   
 OpenVRの右手系、かつ、ルーム空間(ルーム空間変換あり)で仮想トラッカーを操作します。  
   
-**/VMT/Raw/Unity index,enable,timeoffset,x,y,z,qx,qy,qz,qw**  
+**/VMT/Raw/Unity index, enable, timeoffset, x, y, z, qx, qy, qz, qw**  
 Unityと同じ左手系、かつ、ドライバー空間(ルーム空間変換なし)で仮想トラッカーを操作します。  
   
-**/VMT/Raw/Driver index,enable,timeoffset,x,y,z,qx,qy,qz,qw**  
+**/VMT/Raw/Driver index, enable, timeoffset, x, y, z, qx, qy, qz, qw**  
 OpenVRの右手系、かつ、ドライバー空間(ルーム空間変換なし)で仮想トラッカーを操作します。  
+  
+### 入力操作
+**/VMT/Input/Button index, buttonindex, timeoffset, value**  
+ボタン入力をします。  
+value(int):1=press, 0=Release  
+  
+**/VMT/Input/Trigger index, buttonindex, timeoffset, value**  
+トリガー入力をします。  
+value(float):0.0 ～ 1.0  
+
+**/VMT/Input/Joystick index, buttonindex, timeoffset, x, y**  
+ジョイスティック入力をします。  
+x,y(float):-1.0 ～ 1.0  
   
 ### ドライバ操作
 **/VMT/Reset**  
@@ -123,7 +146,11 @@ msg(string): メッセージ
 **/VMT/Out/Alive version**  
 version(string): バージョン  
   
-
+**/VMT/Out/Haptic index, frequency, amplitude, duration**  
+frequency(float): 周波数  
+amplitude(float): 振幅  
+duration(float): 長さ  
+  
 ### Unityサンプル
 [hecomi/uOSC](https://github.com/hecomi/uOSC)を導入してください。  
 アタッチされたGameObjectの座標をトラッカーとして送信します。  
