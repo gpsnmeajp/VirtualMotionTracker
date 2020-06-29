@@ -5,7 +5,6 @@ Please remove/uninstall old driver before new driver install.
 ## How it works
 **VMT**  
 C++ OpenVR Driver. it receives OSC Protocol.  
-it looks like base station in VR space.  
   
 **VMT Manager**  
 C# Management tool.  
