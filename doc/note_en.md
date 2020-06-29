@@ -53,7 +53,7 @@ if "VMT_0 Room Position" is red, please retry Room Matrix setup.
 Please set tracker role before you test controller input.  
 <img src="screen2C.png"></img>  
 
-## Unset handheld mode.
+## Configure handheld mode.
 If you want to tracker works like Controller or not, please below setting.  
 **1. Click "Show all" in Manager**  
 <img src="screen2B.png"></img>  
