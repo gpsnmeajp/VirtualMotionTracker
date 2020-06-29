@@ -73,27 +73,63 @@
 					</Grid.ColumnDefinitions>
 					<DockPanel Grid.Column="0" Margin="2"  LastChildFill="False">
 						<Button Content="Reload Setting" DockPanel.Dock="Top" Click="ReloadJsonButton" Margin="1"/>
-						<Button Content="Reset" DockPanel.Dock="Top" Click="ResetButton" Margin="1"/>
+						<Button Content="Device Reset" DockPanel.Dock="Top" Click="ResetButton" Margin="1"/>
 						<Button Content="Show all" DockPanel.Dock="Top" Click="ShowAllButton" Margin="1"/>
-					</DockPanel>
-					<DockPanel Grid.Column="1" Margin="2" LastChildFill="False">
-
 					</DockPanel>
 				</Grid>
 			</DockPanel>
 		</TabItem>
 		<TabItem Header="Input">
 			<DockPanel>
+				<DockPanel DockPanel.Dock="Top" Margin="1">
+					<TextBlock VerticalAlignment="Center" Text="VMT:" DockPanel.Dock="Left" />
+					<TextBox Name="InputVMTNoTextBox" Text="0"/>
+				</DockPanel>
 				<Grid>
 					<Grid.ColumnDefinitions>
 						<ColumnDefinition/>
 						<ColumnDefinition/>
 					</Grid.ColumnDefinitions>
 					<DockPanel Grid.Column="0" Margin="2"  LastChildFill="False">
-
+						<Grid DockPanel.Dock="Top">
+							<Grid.ColumnDefinitions>
+								<ColumnDefinition/>
+								<ColumnDefinition/>
+							</Grid.ColumnDefinitions>
+							<Grid.RowDefinitions>
+								<RowDefinition/>
+								<RowDefinition/>
+								<RowDefinition/>
+								<RowDefinition/>
+							</Grid.RowDefinitions>
+							<Button Content="Button 0" PreviewMouseDown="Button0_MouseDown" PreviewMouseUp="Button0_MouseUp"  Margin="1" Grid.Column="0" Grid.Row="0" />
+							<Button Content="Button 1" PreviewMouseDown="Button1_MouseDown" PreviewMouseUp="Button1_MouseUp"  Margin="1" Grid.Column="1" Grid.Row="0" />
+							<Button Content="Button 2" PreviewMouseDown="Button2_MouseDown" PreviewMouseUp="Button2_MouseUp"  Margin="1" Grid.Column="0" Grid.Row="1" />
+							<Button Content="Button 3" PreviewMouseDown="Button3_MouseDown" PreviewMouseUp="Button3_MouseUp"  Margin="1" Grid.Column="1" Grid.Row="1" />
+							<Button Content="Button 4" PreviewMouseDown="Button4_MouseDown" PreviewMouseUp="Button4_MouseUp"  Margin="1" Grid.Column="0" Grid.Row="2" />
+							<Button Content="Button 5" PreviewMouseDown="Button5_MouseDown" PreviewMouseUp="Button5_MouseUp"  Margin="1" Grid.Column="1" Grid.Row="2" />
+							<Button Content="Button 6" PreviewMouseDown="Button6_MouseDown" PreviewMouseUp="Button6_MouseUp"  Margin="1" Grid.Column="0" Grid.Row="3" />
+							<Button Content="Button 7" PreviewMouseDown="Button7_MouseDown" PreviewMouseUp="Button7_MouseUp"  Margin="1" Grid.Column="1" Grid.Row="3" />
+						</Grid>
 					</DockPanel>
 					<DockPanel Grid.Column="1" Margin="2" LastChildFill="False">
-
+						<DockPanel DockPanel.Dock="Top" Margin="1">
+							<TextBlock Text="Trigger 0" DockPanel.Dock="Left" />
+							<Slider Minimum="0" Maximum="1" Value="0" Name="Slider0" ValueChanged="Slider0_ValueChanged" DockPanel.Dock="Left"/>
+						</DockPanel>
+						<DockPanel DockPanel.Dock="Top" Margin="1">
+							<TextBlock Text="Trigger 1" DockPanel.Dock="Left" />
+							<Slider Minimum="0" Maximum="1" Value="0" Name="Slider1" ValueChanged="Slider1_ValueChanged" DockPanel.Dock="Left"/>
+						</DockPanel>
+						<DockPanel DockPanel.Dock="Top" Margin="1">
+							<TextBlock Text="Joystick X" DockPanel.Dock="Left" />
+							<Slider Minimum="-1" Maximum="1" Value="0" Name="SliderX" ValueChanged="SliderXY_ValueChanged" DockPanel.Dock="Left"/>
+						</DockPanel>
+						<DockPanel DockPanel.Dock="Top" Margin="1">
+							<TextBlock Text="Joystick Y" DockPanel.Dock="Left" />
+							<Slider Minimum="-1" Maximum="1" Value="0" Name="SliderY" ValueChanged="SliderXY_ValueChanged" DockPanel.Dock="Left"/>
+						</DockPanel>
+						<Button Content="Input Reset"  Margin="1" Click="InputResetButton" DockPanel.Dock="Top"/>
 					</DockPanel>
 				</Grid>
 			</DockPanel>

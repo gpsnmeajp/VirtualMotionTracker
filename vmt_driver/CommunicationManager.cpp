@@ -148,20 +148,55 @@ namespace VMTDriver {
 
 				SetPose(false, idx, enable, x, y, z, qx, qy, qz, qw, timeoffset);
 			}
+			else if (adr == "/VMT/Input/Button")
+			{
+				int idx, ButtonIndex;
+				float timeoffset;
+				int value;
+				osc::ReceivedMessageArgumentStream args = m.ArgumentStream();
+				args >> idx >> ButtonIndex >> timeoffset >> value >> osc::EndMessage;
+
+				ServerTrackedDeviceProvider* sever = CommunicationManager::GetInstance()->GetServer();
+				if (idx >= 0 && idx <= sever->GetDevices().size())
+				{
+					sever->GetDevices()[idx].UpdateButtonInput(ButtonIndex, value != 0, timeoffset);
+				}
+			}
+			else if (adr == "/VMT/Input/Trigger")
+			{
+				int idx, ButtonIndex;
+				float timeoffset;
+				float value;
+				osc::ReceivedMessageArgumentStream args = m.ArgumentStream();
+				args >> idx >> ButtonIndex >> timeoffset >> value >> osc::EndMessage;
+
+				ServerTrackedDeviceProvider* sever = CommunicationManager::GetInstance()->GetServer();
+				if (idx >= 0 && idx <= sever->GetDevices().size())
+				{
+					sever->GetDevices()[idx].UpdateTriggerInput(ButtonIndex, value, timeoffset);
+				}
+			}
+			else if (adr == "/VMT/Input/Joystick")
+			{
+				int idx, ButtonIndex;
+				float timeoffset;
+				float x,y;
+				osc::ReceivedMessageArgumentStream args = m.ArgumentStream();
+				args >> idx >> ButtonIndex >> timeoffset >> x >> y >> osc::EndMessage;
+
+				ServerTrackedDeviceProvider* sever = CommunicationManager::GetInstance()->GetServer();
+				if (idx >= 0 && idx <= sever->GetDevices().size())
+				{
+					sever->GetDevices()[idx].UpdateJoystickInput(ButtonIndex, x, y, timeoffset);
+				}
+			}
 			else if (adr == "/VMT/Reset")
 			{
 				//全トラッカーを0にする
 				ServerTrackedDeviceProvider* sever = CommunicationManager::GetInstance()->GetServer();
 				for (int i = 0; i < sever->GetDevices().size(); i++)
 				{
-					DriverPose_t pose{ 0 };
-					pose.qRotation = VMTDriver::HmdQuaternion_Identity;
-					pose.qWorldFromDriverRotation = VMTDriver::HmdQuaternion_Identity;
-					pose.qDriverFromHeadRotation = VMTDriver::HmdQuaternion_Identity;
-					pose.deviceIsConnected = false;
-					pose.poseIsValid = false;
-					pose.result = ETrackingResult::TrackingResult_Calibrating_OutOfRange;
-					sever->GetDevices()[i].SetPose(pose); //すでにVRシステムに登録済みのものだけ通知される
+					sever->GetDevices()[i].Reset(); //すでにVRシステムに登録済みのものだけ通知される
 				}
 			}
 			else if (adr == "/VMT/LoadSetting")

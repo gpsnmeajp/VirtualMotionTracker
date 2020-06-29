@@ -60,6 +60,61 @@ namespace VMTDriver {
         if (!m_alreadyRegistered) { return; }
         VRServerDriverHost()->TrackedDevicePoseUpdated(m_deviceIndex, GetPose(), sizeof(DriverPose_t));
     }
+    void TrackedDeviceServerDriver::UpdateButtonInput(int index, bool value, double timeoffset)
+    {
+        if (!m_alreadyRegistered) { return; }
+        if (0 <= index && index <= 7)
+        {
+            Log::printf("Boolean %d->%d", index, value ? 1 : 0);
+            VRDriverInput()->UpdateBooleanComponent(ButtonComponent[index], value, timeoffset);
+        }
+    }
+    void TrackedDeviceServerDriver::UpdateTriggerInput(int index, float value, double timeoffset)
+    {
+        if (!m_alreadyRegistered) { return; }
+        if (value > 1.0) {
+            value = 1.0;
+        }
+        if (value < 0) {
+            value = 0;
+        }
+        if (isnan(value)) {
+            value = 0;
+        }
+
+        if (0 <= index && index <= 1)
+        {
+            VRDriverInput()->UpdateScalarComponent(TriggerComponent[index], value, timeoffset);
+        }
+    }
+    void TrackedDeviceServerDriver::UpdateJoystickInput(int index, float x, float y, double timeoffset)
+    {
+        if (!m_alreadyRegistered) { return; }
+        if (index == 0)
+        {
+            VRDriverInput()->UpdateScalarComponent(JoystickComponent[index + 0], x, timeoffset);
+            VRDriverInput()->UpdateScalarComponent(JoystickComponent[index + 1], y, timeoffset);
+        }
+    }
+    void TrackedDeviceServerDriver::Reset()
+    {
+        if (!m_alreadyRegistered) { return; }
+        DriverPose_t pose{ 0 };
+        pose.qRotation = VMTDriver::HmdQuaternion_Identity;
+        pose.qWorldFromDriverRotation = VMTDriver::HmdQuaternion_Identity;
+        pose.qDriverFromHeadRotation = VMTDriver::HmdQuaternion_Identity;
+        pose.deviceIsConnected = false;
+        pose.poseIsValid = false;
+        pose.result = ETrackingResult::TrackingResult_Calibrating_OutOfRange;
+        SetPose(pose);
+
+        //ëSèÛë‘Çèâä˙âªÇ∑ÇÈ
+        for (int i = 0; i < 16; i++) {
+            UpdateButtonInput(i, false, 0);
+            UpdateTriggerInput(i, 0, 0);
+            UpdateJoystickInput(i, 0, 0, 0);
+        }
+    }
     EVRInitError TrackedDeviceServerDriver::Activate(uint32_t unObjectId)
     {
         m_deviceIndex = unObjectId;
@@ -73,6 +128,8 @@ namespace VMTDriver {
         VRProperties()->SetStringProperty(m_propertyContainer, Prop_InputProfilePath_String, "{vmt}/input/vmt_profile.json");
         VRProperties()->SetStringProperty(m_propertyContainer, Prop_NamedIconPathDeviceReady_String, "{vmt}/icons/Ready32x32.png");
         VRProperties()->SetStringProperty(m_propertyContainer, Prop_NamedIconPathDeviceOff_String, "{vmt}/icons/Off32x32.png");
+        VRProperties()->SetStringProperty(m_propertyContainer, Prop_NamedIconPathDeviceNotReady_String, "{vmt}/icons/Off32x32.png");
+        VRProperties()->SetStringProperty(m_propertyContainer, Prop_NamedIconPathDeviceStandby_String, "{vmt}/icons/Off32x32.png");
 
         VRProperties()->SetUint64Property(m_propertyContainer, Prop_SupportedButtons_Uint64, 0xFFFFFFFF); //All buttons enable
         VRProperties()->SetUint64Property(m_propertyContainer, Prop_Axis0Type_Int32, EVRControllerAxisType::k_eControllerAxis_Trigger);
@@ -84,18 +141,16 @@ namespace VMTDriver {
         VRDriverInput()->CreateBooleanComponent(m_propertyContainer, "/input/Button1/click", &ButtonComponent[1]);
         VRDriverInput()->CreateBooleanComponent(m_propertyContainer, "/input/Button2/click", &ButtonComponent[2]);
         VRDriverInput()->CreateBooleanComponent(m_propertyContainer, "/input/Button3/click", &ButtonComponent[3]);
+        VRDriverInput()->CreateBooleanComponent(m_propertyContainer, "/input/Button4/click", &ButtonComponent[4]);
+        VRDriverInput()->CreateBooleanComponent(m_propertyContainer, "/input/Button5/click", &ButtonComponent[5]);
+        VRDriverInput()->CreateBooleanComponent(m_propertyContainer, "/input/Button6/click", &ButtonComponent[6]);
+        VRDriverInput()->CreateBooleanComponent(m_propertyContainer, "/input/Button7/click", &ButtonComponent[7]);
 
-        VRDriverInput()->CreateScalarComponent(m_propertyContainer, "/input/Trigger0/value", &TriggerComponent[0], EVRScalarType::VRScalarType_Absolute, EVRScalarUnits::VRScalarUnits_NormalizedTwoSided);
-        VRDriverInput()->CreateScalarComponent(m_propertyContainer, "/input/Trigger1/value", &TriggerComponent[1], EVRScalarType::VRScalarType_Absolute, EVRScalarUnits::VRScalarUnits_NormalizedTwoSided);
+        VRDriverInput()->CreateScalarComponent(m_propertyContainer, "/input/Trigger0/value", &TriggerComponent[0], EVRScalarType::VRScalarType_Absolute, EVRScalarUnits::VRScalarUnits_NormalizedOneSided);
+        VRDriverInput()->CreateScalarComponent(m_propertyContainer, "/input/Trigger1/value", &TriggerComponent[1], EVRScalarType::VRScalarType_Absolute, EVRScalarUnits::VRScalarUnits_NormalizedOneSided);
 
         VRDriverInput()->CreateScalarComponent(m_propertyContainer, "/input/Joystick0/x", &JoystickComponent[0], EVRScalarType::VRScalarType_Absolute, EVRScalarUnits::VRScalarUnits_NormalizedTwoSided);
         VRDriverInput()->CreateScalarComponent(m_propertyContainer, "/input/Joystick0/y", &JoystickComponent[1], EVRScalarType::VRScalarType_Absolute, EVRScalarUnits::VRScalarUnits_NormalizedTwoSided);
-
-        /*
-        VRDriverInput()->UpdateBooleanComponent(m_propertyContainer, true, 0);
-        VRDriverInput()->UpdateBooleanComponent(m_propertyContainer, true, 0);
-        VRDriverInput()->UpdateBooleanComponent(m_propertyContainer, true, 0);
-        */
 
         return EVRInitError::VRInitError_None;
     }

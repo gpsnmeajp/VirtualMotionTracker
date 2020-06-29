@@ -58,7 +58,7 @@ namespace vmt_manager
     /// </summary>
 public partial class MainWindow : Window
     {
-        const string Version = "VMT_002deb";
+        const string Version = "VMT_002";
         private DispatcherTimer dispatcherTimer;
         Random rnd;
         string title = "";
@@ -364,12 +364,143 @@ public partial class MainWindow : Window
 
         private void ShowAllButton(object sender, RoutedEventArgs e)
         {
-            for (int i = 0; i < 58; i++) {
+            for (int i = 0; i < 58; i++)
+            {
                 osc.Send(new OscMessage("/VMT/Room/Driver",
                     i, 1, 0f,
-                    (float)rnd.NextDouble()-0.5f, (float)rnd.NextDouble() - 0.5f, (float)rnd.NextDouble() - 0.5f,
+                    (float)rnd.NextDouble() - 0.5f, (float)rnd.NextDouble() - 0.5f, (float)rnd.NextDouble() - 0.5f,
                     0f, 0f, 0f, 1f));
             }
+        }
+
+        private (bool ok, int i) GetInputIndex()
+        {
+            int index = 0;
+            if (InputVMTNoTextBox != null && int.TryParse(InputVMTNoTextBox?.Text, out index))
+            {
+                return (ok: true, i: index);
+            }
+            return (ok: true, i: index);
+        }
+        private void ButtonSend(int buttonIndex, bool press)
+        {
+            var index = GetInputIndex();
+            int value = press ? 1 : 0;
+            float timeoffset = 0;
+            if (index.ok)
+            {
+                osc.Send(new OscMessage("/VMT/Input/Button",
+                    index.i, buttonIndex, timeoffset, value));
+            }
+        }
+
+        private void Button0_MouseDown(object sender, MouseButtonEventArgs e)
+        {
+            ButtonSend(0, true);
+        }
+        private void Button0_MouseUp(object sender, MouseButtonEventArgs e)
+        {
+            ButtonSend(0, false);
+        }
+        private void Button1_MouseDown(object sender, MouseButtonEventArgs e)
+        {
+            ButtonSend(1, true);
+        }
+        private void Button1_MouseUp(object sender, MouseButtonEventArgs e)
+        {
+            ButtonSend(1, false);
+        }
+        private void Button2_MouseDown(object sender, MouseButtonEventArgs e)
+        {
+            ButtonSend(2, true);
+        }
+        private void Button2_MouseUp(object sender, MouseButtonEventArgs e)
+        {
+            ButtonSend(2, false);
+        }
+        private void Button3_MouseDown(object sender, MouseButtonEventArgs e)
+        {
+            ButtonSend(3, true);
+        }
+        private void Button3_MouseUp(object sender, MouseButtonEventArgs e)
+        {
+            ButtonSend(3, false);
+        }
+        private void Button4_MouseDown(object sender, MouseButtonEventArgs e)
+        {
+            ButtonSend(4, true);
+        }
+        private void Button4_MouseUp(object sender, MouseButtonEventArgs e)
+        {
+            ButtonSend(4, false);
+        }
+        private void Button5_MouseDown(object sender, MouseButtonEventArgs e)
+        {
+            ButtonSend(5, true);
+        }
+        private void Button5_MouseUp(object sender, MouseButtonEventArgs e)
+        {
+            ButtonSend(5, false);
+        }
+        private void Button6_MouseDown(object sender, MouseButtonEventArgs e)
+        {
+            ButtonSend(6, true);
+        }
+        private void Button6_MouseUp(object sender, MouseButtonEventArgs e)
+        {
+            ButtonSend(6, false);
+        }
+        private void Button7_MouseDown(object sender, MouseButtonEventArgs e)
+        {
+            ButtonSend(7, true);
+        }
+        private void Button7_MouseUp(object sender, MouseButtonEventArgs e)
+        {
+            ButtonSend(7, false);
+        }
+
+        private void Slider0_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
+        {
+            var index = GetInputIndex();
+
+            int triggerIndex = 0;
+            float timeoffset = 0;
+            if (index.ok && Slider0 != null)
+            {
+                osc.Send(new OscMessage("/VMT/Input/Trigger",
+                    index.i, triggerIndex, timeoffset, (float)Slider0.Value));
+            }
+        }
+        private void Slider1_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
+        {
+            var index = GetInputIndex();
+
+            int triggerIndex = 1;
+            float timeoffset = 0;
+            if (index.ok && Slider1 != null)
+            {
+                osc.Send(new OscMessage("/VMT/Input/Trigger",
+                    index.i, triggerIndex, timeoffset, (float)Slider1.Value));
+            }
+        }
+        private void SliderXY_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
+        {
+            var index = GetInputIndex();
+
+            int joystickIndex = 0;
+            float timeoffset = 0;
+            if (index.ok && SliderX != null && SliderY != null)
+            {
+                osc.Send(new OscMessage("/VMT/Input/Joystick",
+                    index.i, joystickIndex, timeoffset, (float)SliderX.Value, (float)SliderY.Value));
+            }
+        }
+        private void InputResetButton(object sender, RoutedEventArgs e)
+        {
+            Slider0.Value = 0f;
+            Slider1.Value = 0f;
+            SliderX.Value = 0f;
+            SliderY.Value = 0f;
         }
     }
 }

@@ -33,6 +33,26 @@
         "binding_image_point" : [ 0, 0 ],
         "order" : 1
     },
+    "/input/Button4" : { 
+        "type" : "button",
+        "binding_image_point" : [ 0, 0 ],
+        "order" : 1
+    },
+    "/input/Button5" : { 
+        "type" : "button",
+        "binding_image_point" : [ 0, 0 ],
+        "order" : 1
+    },
+    "/input/Button6" : { 
+        "type" : "button",
+        "binding_image_point" : [ 0, 0 ],
+        "order" : 1
+    },
+    "/input/Button7" : { 
+        "type" : "button",
+        "binding_image_point" : [ 0, 0 ],
+        "order" : 1
+    },
     "/input/Joystick0" : { 
         "type" : "joystick",
         "binding_image_point" : [ 0, 0 ],

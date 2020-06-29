@@ -39,7 +39,7 @@ namespace VMTDriver {
 
         DriverPose_t m_pose{ 0 };
 
-        VRInputComponentHandle_t ButtonComponent[4];
+        VRInputComponentHandle_t ButtonComponent[8];
         VRInputComponentHandle_t TriggerComponent[2];
         VRInputComponentHandle_t JoystickComponent[2];
 
@@ -52,6 +52,10 @@ namespace VMTDriver {
         void SetPose(DriverPose_t pose);
         void RegisterToVRSystem();
         void UpdatePoseToVRSystem();
+        void UpdateButtonInput(int index, bool value, double timeoffset);
+        void UpdateTriggerInput(int index, float value, double timeoffset);
+        void UpdateJoystickInput(int index, float x, float y, double timeoffset);
+        void Reset();
 
         //---------------
 
