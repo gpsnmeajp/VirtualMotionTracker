@@ -58,7 +58,7 @@ namespace vmt_manager
     /// </summary>
 public partial class MainWindow : Window
     {
-        const string Version = "VMT_002";
+        const string Version = "VMT_002deb";
         private DispatcherTimer dispatcherTimer;
         Random rnd;
         string title = "";
@@ -332,7 +332,7 @@ public partial class MainWindow : Window
         {
             if (detectOtherVersion)
             {
-                var res = MessageBox.Show("This manager can not uninstall currently installed VMT version.\nPlease use installed manager version.\nTry it anyway?\n\nこのバージョンのManagerでは現在インストールされているバージョンのVMTをアンインストールすることはできません。\nインストールされているバージョンのManagerを使用してください。\nそれでも実行しますか？", title, MessageBoxButton.OKCancel, MessageBoxImage.Error);
+                var res = MessageBox.Show("Other VMT Driver version detected.\nIn many cases, this driver located on different path.\nmanager can not uninstallation these.\nIf you want to remove currently installed VMT driver, press cancel and please use manager of drivers itself.\n\nPress OK, Try uninstallation anyway. (it will fail in many cases.)\n\n違うバージョンのVMTドライバを検出しました。\n多くの場合これは別のパスにあります。\n本Managerではアンインストールできません。\nアンインストールしたい場合は、キャンセルを押し、そのVMTドライバに付属のManagerを使用してください\n\nOKを押すと、とにかくアンインストールを試します。(多くの場合失敗します。)", title, MessageBoxButton.OKCancel, MessageBoxImage.Error);
                 if (res != MessageBoxResult.OK)
                 {
                     return;
