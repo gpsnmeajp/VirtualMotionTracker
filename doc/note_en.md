@@ -22,7 +22,7 @@ Installation, Uninstallation, Room setup.
 
 **4. Click "Install" button**  
 Driver path registration for VR System.  
-<img src="screen1.png" height="300px"></img>
+<img src="screen0.png"></img>
 <img src="screen1B.png"></img>
 
 **5. Restart SteamVR**  
@@ -36,8 +36,8 @@ vmt manager will close automatically.
 **2. Start VR HMD and Controller**  
 vmt_manager will get room info.  
 Please wait for Room Matrix turns green.   
-<img src="screen1.png" height="300px"></img>
-<img src="screen2.png" height="300px"></img>  
+<img src="screen1.png"></img>
+<img src="screen2.png"></img>  
 
 **3. Click "Set Room Matrix" button.**  
 Room Matrix will save in setting.json.  
@@ -46,18 +46,25 @@ Room Matrix will save in setting.json.
 **1. Click "Check VMT_0 Position" Button**  
 **2. if SteamVR shows tracker, and "VMT_0 Room Position" green, it's ok.**  
 if "VMT_0 Room Position" is red, please retry Room Matrix setup.  
-<img src="screen2A.png" height="300px"></img>
+<img src="screen2A.png"></img>
 <img src="screen3.png"></img>  
 
+## Test controller input
+Please set tracker role before you test controller input.
+<img src="screen2C.png"></img>  
+
 ## Unset handheld mode.
-If tracker works like Controller, please below setting.  
+If you want to tracker works like Controller or not, please below setting.  
 **1. Click "Show all" in Manager**  
+<img src="screen2B.png"></img>  
+  
 **2. SteamVRの設定→デバイス→Viveトラッカーを管理**  
 <img src="screen4.png" height="300px"></img>  
+  
 **3. Viveトラッカーの管理**  
 <img src="screen5.png" height="300px"></img>  
-**4. Tracker roles「無効」**  
-As you want to use trackers.  
+  
+**4. Set Tracker roles**  
 <img src="screen6.png" height="300px"></img>
 <img src="screen7.png" height="300px"></img>  
 
@@ -82,17 +89,30 @@ Caution: If Port 39571 used be another application, Manager won't works.
 |x,y,z|float| Position|
 |qx,qy,qz,qw|float| Rotaion(Quaternion)|
 
-**/VMT/Room/Unity index,enable,timeoffset,x,y,z,qx,qy,qz,qw**  
+**/VMT/Room/Unity index, enable, timeoffset, x, y, z, qx, qy, qz, qw**  
 Unity lik Left-handed space, and Room space. (Recommended)  
   
-**/VMT/Room/Driver index,enable,timeoffset,x,y,z,qx,qy,qz,qw**   
+**/VMT/Room/Driver index, enable, timeoffset, x, y, z, qx, qy, qz, qw**  
 Driver Right-handed space, and Room space.  
   
-**/VMT/Raw/Unity index,enable,timeoffset,x,y,z,qx,qy,qz,qw**  
+**/VMT/Raw/Unity index, enable, timeoffset, x, y, z, qx, qy, qz, qw**  
 Unity lik Left-handed space, and Driver space.  
   
-**/VMT/Raw/Driver index,enable,timeoffset,x,y,z,qx,qy,qz,qw**  
+**/VMT/Raw/Driver index, enable, timeoffset, x, y, z, qx, qy, qz, qw**  
 Driver Right-handed space, and Driver space.  
+  
+### 入力操作
+**/VMT/Input/Button index, buttonindex, timeoffset, value**  
+Button input.  
+value(int):1=press, 0=Release  
+  
+**/VMT/Input/Trigger index, buttonindex, timeoffset, value**  
+Trigger input.  
+value(float):0.0 ～ 1.0  
+
+**/VMT/Input/Joystick index, buttonindex, timeoffset, x, y**  
+Joystick input.  
+x,y(float):-1.0 ～ 1.0  
   
 ### Driver Management
 **/VMT/Reset**  
@@ -113,6 +133,10 @@ msg(string): Message
 **/VMT/Out/Alive version**  
 version(string): Version  
   
+**/VMT/Out/Haptic index, frequency, amplitude, duration**  
+frequency(float): frequency  
+amplitude(float): amplitude  
+duration(float): duration  
 
 ### Unity sample
 Plese use [hecomi/uOSC](https://github.com/hecomi/uOSC)  
