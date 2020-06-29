@@ -9,9 +9,7 @@ C++製OpenVRドライバです。OSCでの仮想トラッカー姿勢の受信�
 座標変換はここでやっています。正常に動いていればSteamVRとともに起動し、終了します。  
 SteamVRのWeb Consoleからエラーなどを確認することができます。  
 設定はドライバフォルダのsetting.jsonに記録されます。  
-  
-なお、VR空間内での見た目はとりあえずベースステーションになっています。  
-  
+    
 **VMT Manager**  
 C#製管理ツールです。ドライバのインストールやアンインストール、設定や調整、動作確認の際に使用します。  
 必要なときだけ起動してください。毎度起動する必要はありません。  
@@ -117,9 +115,9 @@ OpenVRの右手系、かつ、ドライバー空間(ルーム空間変換なし)
 ### 入力操作
 |種類|範囲|
 |---|---|
-|ButtonIndex| 0～7|
-|TriggerIndex| 0,1|
-|JoyStickIndex| 0|
+|ButtonIndex(int)| 0～7|
+|TriggerIndex(int)| 0, 1|
+|JoyStickIndex(int)| 0|
 
 **/VMT/Input/Button index, buttonindex, timeoffset, value**  
 ボタン入力をします。  
