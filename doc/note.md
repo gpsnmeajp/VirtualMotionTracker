@@ -115,15 +115,21 @@ Unityと同じ左手系、かつ、ドライバー空間(ルーム空間変換�
 OpenVRの右手系、かつ、ドライバー空間(ルーム空間変換なし)で仮想トラッカーを操作します。  
   
 ### 入力操作
+|種類|範囲|
+|---|---|
+|ButtonIndex| 0～7|
+|TriggerIndex| 0,1|
+|JoyStickIndex| 0|
+
 **/VMT/Input/Button index, buttonindex, timeoffset, value**  
 ボタン入力をします。  
 value(int):1=press, 0=Release  
   
-**/VMT/Input/Trigger index, buttonindex, timeoffset, value**  
+**/VMT/Input/Trigger index, triggerindex, timeoffset, value**  
 トリガー入力をします。  
 value(float):0.0 ～ 1.0  
 
-**/VMT/Input/Joystick index, buttonindex, timeoffset, x, y**  
+**/VMT/Input/Joystick index, joystickindex, timeoffset, x, y**  
 ジョイスティック入力をします。  
 x,y(float):-1.0 ～ 1.0  
   
