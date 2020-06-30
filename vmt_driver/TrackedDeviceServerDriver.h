@@ -51,7 +51,7 @@ namespace VMTDriver {
         void SetDeviceSerial(string);
         void SetObjectIndex(int);
         void SetPose(DriverPose_t pose);
-        void RegisterToVRSystem();
+        void TrackedDeviceServerDriver::RegisterToVRSystem(int type);
         void UpdatePoseToVRSystem();
         void UpdateButtonInput(int index, bool value, double timeoffset);
         void UpdateTriggerInput(int index, float value, double timeoffset);

@@ -47,11 +47,28 @@ namespace VMTDriver {
         m_pose = pose;
     }
 
-    void TrackedDeviceServerDriver::RegisterToVRSystem()
+    void TrackedDeviceServerDriver::RegisterToVRSystem(int type)
     {
         if (!m_alreadyRegistered)
         {
-            VRServerDriverHost()->TrackedDeviceAdded(m_serial.c_str(), ETrackedDeviceClass::TrackedDeviceClass_GenericTracker, this);
+            switch (type)
+            {
+            case 4://Controller Other
+                VRServerDriverHost()->TrackedDeviceAdded(m_serial.c_str(), ETrackedDeviceClass::TrackedDeviceClass_Controller, this);
+                break;
+            case 3://Controller Right
+                VRProperties()->SetInt32Property(m_propertyContainer, Prop_ControllerRoleHint_Int32, ETrackedControllerRole::TrackedControllerRole_RightHand);
+                VRServerDriverHost()->TrackedDeviceAdded(m_serial.c_str(), ETrackedDeviceClass::TrackedDeviceClass_Controller, this);
+                break;
+            case 2://Controller Left
+                VRProperties()->SetInt32Property(m_propertyContainer, Prop_ControllerRoleHint_Int32, ETrackedControllerRole::TrackedControllerRole_LeftHand);
+                VRServerDriverHost()->TrackedDeviceAdded(m_serial.c_str(), ETrackedDeviceClass::TrackedDeviceClass_Controller, this);
+                break;
+            case 1://Tracker
+                VRServerDriverHost()->TrackedDeviceAdded(m_serial.c_str(), ETrackedDeviceClass::TrackedDeviceClass_GenericTracker, this);
+            default:
+                break;
+            }
             m_alreadyRegistered = true;
         }
     }

@@ -38,7 +38,7 @@ namespace VMTDriver {
 		pose.qWorldFromDriverRotation = VMTDriver::HmdQuaternion_Identity;
 		pose.qDriverFromHeadRotation = VMTDriver::HmdQuaternion_Identity;
 
-		if (enable) {
+		if (enable != 0) {
 			pose.deviceIsConnected = true;
 			pose.poseIsValid = true;
 			pose.result = TrackingResult_Running_OK;
@@ -76,7 +76,7 @@ namespace VMTDriver {
 		ServerTrackedDeviceProvider* sever = CommunicationManager::GetInstance()->GetServer();
 		if (idx >= 0 && idx <= sever->GetDevices().size())
 		{
-			sever->GetDevices()[idx].RegisterToVRSystem();
+			sever->GetDevices()[idx].RegisterToVRSystem(enable); //1=Tracker, 2=controller
 			sever->GetDevices()[idx].SetPose(pose);
 		}
 	}
