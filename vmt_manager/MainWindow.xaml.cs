@@ -121,6 +121,24 @@ public partial class MainWindow : Window
                     return;
                 }
             }
+
+            //セーフモードチェック
+            EVRSettingsError eVRSettingsError = EVRSettingsError.None;
+            bool safemode = OpenVR.Settings.GetBool("driver_vmt", OpenVR.k_pch_Driver_BlockedBySafemode_Bool, ref eVRSettingsError);
+            if (eVRSettingsError == EVRSettingsError.None && safemode)
+            {
+                var result = MessageBox.Show("SteamVR runnning on safe mode and VMT has blocked.\nPlease unblock, and restart SteamVR.\n\nSteamVRがセーフモードで動作し、VMTがブロックされています。\nブロックを解除し、SteamVRを再起動してください。", title, MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+            //Enableチェック
+            eVRSettingsError = EVRSettingsError.None;
+            bool enable = OpenVR.Settings.GetBool("driver_vmt", OpenVR.k_pch_Driver_Enable_Bool, ref eVRSettingsError);
+            if (eVRSettingsError == EVRSettingsError.None && !enable)
+            {
+                var result = MessageBox.Show("VMT has disabled in Steam VR setting.\nPlease enable, and restart SteamVR.\n\nVMTはSteamVR上で無効に設定されています。\n有効にし、SteamVRを再起動してください。", title, MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+
+            //デバッグのためにセーフモードを有効化
+            //OpenVR.Settings.SetBool(OpenVR.k_pch_SteamVR_Section, OpenVR.k_pch_SteamVR_EnableSafeMode, true,ref eVRSettingsError);
         }
 
         private void OnMessage(OscMessage message)
@@ -537,6 +555,11 @@ public partial class MainWindow : Window
                     util.TriggerHapticPulse(deviceIndex);
                 }
             }
+        }
+
+        private void Hyperlink_RequestNavigate(object sender, RequestNavigateEventArgs e)
+        {
+            System.Diagnostics.Process.Start(e.Uri.AbsoluteUri);
         }
     }
 }

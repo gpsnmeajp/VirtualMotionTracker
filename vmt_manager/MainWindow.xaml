@@ -37,7 +37,8 @@
 					<TextBlock HorizontalAlignment="Left" Text="Driver: "  Grid.Column="2" Foreground="LightGray" />
 					<TextBlock Name="DriverVersion"  Grid.Column="3" Foreground="LightGray" />
 				</Grid>
-				<Image DockPanel.Dock="Bottom" Source="Resources/VMTlogo.png" Margin="5"/>
+				<TextBlock DockPanel.Dock="Bottom" TextAlignment="Center" Margin="1"><Hyperlink Foreground="LightSkyBlue" NavigateUri="https://github.com/gpsnmeajp/VirtualMotionTracker" RequestNavigate="Hyperlink_RequestNavigate">https://github.com/gpsnmeajp/VirtualMotionTracker</Hyperlink></TextBlock>
+				<Image DockPanel.Dock="Bottom" Source="Resources/VMTlogo.png" Margin="0,5,0,0"/>
 			</DockPanel>
 		</TabItem>
 		<TabItem Header="RoomSetup">
