@@ -119,6 +119,8 @@ OpenVRの右手系、かつ、ドライバー空間(ルーム空間変換なし)
 |TriggerIndex(int)| 0, 1|
 |JoyStickIndex(int)| 0|
 
+***注意: 現状、VRアプリケーションでの動作が確認できていません。***  
+
 **/VMT/Input/Button index, buttonindex, timeoffset, value**  
 ボタン入力をします。  
 value(int):1=press, 0=Release  
