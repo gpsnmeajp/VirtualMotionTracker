@@ -1,8 +1,12 @@
 {
   "jsonid" : "input_profile",
-  "controller_type": "VMT",
-  "legacy_binding" :  "{vmt}/input/legacy_binding_vmt.json",
+  "controller_type": "vmt",
+  "device_class" : "TrackedDeviceClass_Controller",
+  "resource_root" : "vmt",
+  "driver_name" : "vmt",
+  "legacy_binding" :  "{vmt}/input/legacy_bindings_vmt.json",
   "input_bindingui_mode" : "single_device",
+  "should_show_binding_errors": true,
   "input_bindingui_left" :
   {
     "image": "{vmt}/input/binding_image_light.png"
