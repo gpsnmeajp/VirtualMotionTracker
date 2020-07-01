@@ -25,7 +25,7 @@ SOFTWARE.
 #include "dllmain.h"
 
 namespace VMTDriver {
-	const string Version = "VMT_002d";
+	const string Version = "VMT_003test";
 
 	class OSCReceiver : public osc::OscPacketListener {
 	private:
@@ -42,6 +42,8 @@ namespace VMTDriver {
 		const int frameCycle = 45;
 		int m_frame = 0;
 
+		string m_installPath = "";
+
 		bool m_opened = false;
 		OSCReceiver m_rcv;
 		ServerTrackedDeviceProvider* m_server;
@@ -50,6 +52,8 @@ namespace VMTDriver {
 		static CommunicationManager* GetInstance();
 		ServerTrackedDeviceProvider* GetServer();
 		Eigen::Matrix4d& GetRoomToDriverMatrix();
+		string GetInstallPath();
+		void SetInstallPath(string);
 
 		void Open(ServerTrackedDeviceProvider* server);
 		void Close();

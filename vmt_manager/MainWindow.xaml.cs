@@ -58,10 +58,11 @@ namespace vmt_manager
     /// </summary>
 public partial class MainWindow : Window
     {
-        const string Version = "VMT_002c";
+        const string Version = "VMT_003";
         private DispatcherTimer dispatcherTimer;
         Random rnd;
         string title = "";
+        string installPath = "";
         bool detectOtherVersion = false;
 
         int aliveCnt = 0;
@@ -176,6 +177,10 @@ public partial class MainWindow : Window
                     this.Dispatcher.Invoke(() =>
                     {
                         DriverVersion.Text = (string)message[0];
+                        if (message[1] is string) {
+                            installPath = (string)message[1];
+                        }
+
                         ControlDock.IsEnabled = true;
 
                         if ((string)message[0] != Version)
@@ -372,22 +377,34 @@ public partial class MainWindow : Window
 
         private void UninstallButton(object sender, RoutedEventArgs e)
         {
+            string driverPath_rel = System.IO.Path.GetDirectoryName(Assembly.GetEntryAssembly().Location) + @"\..\vmt";
+            string driverPath = System.IO.Path.GetFullPath(driverPath_rel);
+
             if (detectOtherVersion)
             {
-                var res = MessageBox.Show("Other VMT Driver version detected.\nIn many cases, this driver located on different path.\nmanager can not uninstallation these.\nIf you want to remove currently installed VMT driver, press cancel and please use manager of drivers itself.\n\nPress OK, Try uninstallation anyway. (it will fail in many cases.)\n\n違うバージョンのVMTドライバを検出しました。\n多くの場合これは別のパスにあります。\n本Managerではアンインストールできません。\nアンインストールしたい場合は、キャンセルを押し、そのVMTドライバに付属のManagerを使用してください\n\nOKを押すと、とにかくアンインストールを試します。(多くの場合失敗します。)", title, MessageBoxButton.OKCancel, MessageBoxImage.Error);
-                if (res != MessageBoxResult.OK)
+                if (installPath != "")
                 {
-                    return;
+                    //場所がわかっている
+                    var res = MessageBox.Show("Try uninstall other VMT Driver version?\n異なるバージョンのVMTドライバのアンインストールを試行しますか?\n\n"+installPath, title, MessageBoxButton.OKCancel, MessageBoxImage.Error);
+                    if (res != MessageBoxResult.OK)
+                    {
+                        return;
+                    }
+                    //現在のフォルダパスの代わりに、受信したパスでアンインストールを試す
+                    driverPath = installPath;
+                }
+                else {
+                    //場所不明だがとりあえず現在の場所としてアンインストールしようとするか確認する
+                    var res = MessageBox.Show("Other VMT Driver version detected.\nIn many cases, this driver located on different path.\nmanager can not uninstallation these.\nIf you want to remove currently installed VMT driver, press cancel and please use manager of drivers itself.\n\nPress OK, Try uninstallation anyway. (it will fail in many cases.)\n\n違うバージョンのVMTドライバを検出しました。\n多くの場合これは別のパスにあります。\n本Managerではアンインストールできません。\nアンインストールしたい場合は、キャンセルを押し、そのVMTドライバに付属のManagerを使用してください\n\nOKを押すと、とにかくアンインストールを試します。(多くの場合失敗します。)", title, MessageBoxButton.OKCancel, MessageBoxImage.Error);
+                    if (res != MessageBoxResult.OK)
+                    {
+                        return;
+                    }
                 }
             }
 
             try
             {
-                string driverPath_rel = System.IO.Path.GetDirectoryName(Assembly.GetEntryAssembly().Location) + @"\..\vmt";
-                string driverPath = System.IO.Path.GetFullPath(driverPath_rel);
-                Console.WriteLine(OpenVR.RuntimePath() + @"\bin\win64");
-                Console.WriteLine(driverPath);
-
                 System.Diagnostics.Process process = new System.Diagnostics.Process();
                 process.StartInfo.WorkingDirectory = OpenVR.RuntimePath() + @"\bin\win64";
                 process.StartInfo.FileName = OpenVR.RuntimePath() + @"\bin\win64\vrpathreg.exe";

@@ -98,6 +98,7 @@ namespace VMTDriver {
 		osc::OutboundPacketStream packet(buf, bufsize);
 		packet << osc::BeginMessage("/VMT/Out/Alive")
 			<< Version.c_str()
+			<< CommunicationManager::GetInstance()->GetInstallPath().c_str()
 			<< osc::EndMessage;
 		DirectOSC::OSC::GetInstance()->GetSocketTx()->Send(packet.Data(), packet.Size());
 	}
@@ -281,6 +282,16 @@ namespace VMTDriver {
 	Eigen::Matrix4d& CommunicationManager::GetRoomToDriverMatrix()
 	{
 		return m_RoomToDriverMatrix;
+	}
+
+	string CommunicationManager::GetInstallPath()
+	{
+		return m_installPath;
+	}
+
+	void CommunicationManager::SetInstallPath(string path)
+	{
+		m_installPath = path;
 	}
 
 	void CommunicationManager::Open(ServerTrackedDeviceProvider* server)

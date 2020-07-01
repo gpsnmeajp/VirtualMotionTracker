@@ -90,6 +90,13 @@ namespace VMTDriver {
         Log::Open(VRDriverLog());
         CommunicationManager::GetInstance()->Open(this);
 
+        //ドライバのインストールパス取得
+        string installPath = VRProperties()->GetStringProperty(m_pDriverContext->GetDriverHandle(), Prop_InstallPath_String);
+        if (!installPath.empty()) {
+            CommunicationManager::GetInstance()->SetInstallPath(installPath);
+        }
+
+
         //デバイスを準備
         m_devices.resize(58); //58デバイス(全合計64に満たないくらい)
 
