@@ -561,5 +561,41 @@ public partial class MainWindow : Window
         {
             System.Diagnostics.Process.Start(e.Uri.AbsoluteUri);
         }
+
+        private void RightHandButton(object sender, RoutedEventArgs e)
+        {
+            var index = GetInputIndex();
+            if (index.ok)
+            {
+                osc.Send(new OscMessage("/VMT/Room/Driver",
+                index.i, 3, 0f,
+                0f, 0f, 0f,
+                0f, 0f, 0f, 1f));
+            }
+        }
+
+        private void LeftHandButton(object sender, RoutedEventArgs e)
+        {
+            var index = GetInputIndex();
+            if (index.ok)
+            {
+                osc.Send(new OscMessage("/VMT/Room/Driver",
+                index.i, 2, 0f,
+                0f, 0f, 0f,
+                0f, 0f, 0f, 1f));
+            }
+        }
+
+        private void TrackerButton(object sender, RoutedEventArgs e)
+        {
+            var index = GetInputIndex();
+            if (index.ok)
+            {
+                osc.Send(new OscMessage("/VMT/Room/Driver",
+                index.i, 1, 0f,
+                0f, 0f, 0f,
+                0f, 0f, 0f, 1f));
+            }
+        }
     }
 }

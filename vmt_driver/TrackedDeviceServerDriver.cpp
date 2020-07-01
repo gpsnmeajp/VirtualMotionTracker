@@ -53,23 +53,22 @@ namespace VMTDriver {
         {
             switch (type)
             {
-            case 4://Controller Other
-                VRServerDriverHost()->TrackedDeviceAdded(m_serial.c_str(), ETrackedDeviceClass::TrackedDeviceClass_Controller, this);
-                break;
             case 3://Controller Right
                 VRProperties()->SetInt32Property(m_propertyContainer, Prop_ControllerRoleHint_Int32, ETrackedControllerRole::TrackedControllerRole_RightHand);
                 VRServerDriverHost()->TrackedDeviceAdded(m_serial.c_str(), ETrackedDeviceClass::TrackedDeviceClass_Controller, this);
+                m_alreadyRegistered = true;
                 break;
             case 2://Controller Left
                 VRProperties()->SetInt32Property(m_propertyContainer, Prop_ControllerRoleHint_Int32, ETrackedControllerRole::TrackedControllerRole_LeftHand);
                 VRServerDriverHost()->TrackedDeviceAdded(m_serial.c_str(), ETrackedDeviceClass::TrackedDeviceClass_Controller, this);
+                m_alreadyRegistered = true;
                 break;
             case 1://Tracker
                 VRServerDriverHost()->TrackedDeviceAdded(m_serial.c_str(), ETrackedDeviceClass::TrackedDeviceClass_GenericTracker, this);
+                m_alreadyRegistered = true;
             default:
                 break;
             }
-            m_alreadyRegistered = true;
         }
     }
     void TrackedDeviceServerDriver::UpdatePoseToVRSystem()
@@ -156,7 +155,7 @@ namespace VMTDriver {
         VRProperties()->SetBoolProperty(m_propertyContainer, Prop_NeverTracked_Bool, false);
 
         VRProperties()->SetStringProperty(m_propertyContainer, Prop_InputProfilePath_String, "{vmt}/input/vmt_profile.json");
-        VRProperties()->SetStringProperty(m_propertyContainer, Prop_ControllerType_String, "vmt" );
+        VRProperties()->SetStringProperty(m_propertyContainer, Prop_ControllerType_String, "vmt");
 
         VRProperties()->SetStringProperty(m_propertyContainer, Prop_NamedIconPathDeviceReady_String, "{vmt}/icons/Ready32x32.png");
         VRProperties()->SetStringProperty(m_propertyContainer, Prop_NamedIconPathDeviceReadyAlert_String, "{vmt}/icons/Ready32x32.png");

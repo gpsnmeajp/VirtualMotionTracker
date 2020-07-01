@@ -83,8 +83,11 @@
 		<TabItem Header="Input">
 			<DockPanel LastChildFill="False">
 				<DockPanel DockPanel.Dock="Top" Margin="1">
-					<TextBlock VerticalAlignment="Center" Text="VMT:" DockPanel.Dock="Left" />
-					<TextBox Name="InputVMTNoTextBox" Text="0"/>
+					<TextBlock VerticalAlignment="Center" Text="VMT:" DockPanel.Dock="Left" Margin="1" />
+					<Button Content="Right" Width="50" DockPanel.Dock="Right" Margin="1" Click="RightHandButton"/>
+					<Button Content="Left" Width="50" DockPanel.Dock="Right" Margin="1" Click="LeftHandButton"/>
+					<Button Content="Tracker" Width="50" DockPanel.Dock="Right" Margin="1" Click="TrackerButton"/>
+					<TextBox Name="InputVMTNoTextBox" Text="0" DockPanel.Dock="Left" Margin="1" />
 				</DockPanel>
 				<Grid DockPanel.Dock="Top">
 					<Grid.ColumnDefinitions>
@@ -133,7 +136,6 @@
 						<Button Content="Input Reset"  Margin="1" Click="InputResetButton" DockPanel.Dock="Top"/>
 					</DockPanel>
 				</Grid>
-
 				<Button Content="Haptic Test"  Margin="1" Click="HapticTestButton" DockPanel.Dock="Bottom"/>
 				<DockPanel DockPanel.Dock="Bottom" Margin="1">
 					<TextBlock VerticalAlignment="Center" Text="Haptic:" DockPanel.Dock="Left" />
