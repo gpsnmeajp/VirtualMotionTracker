@@ -63,7 +63,6 @@ public partial class MainWindow : Window
         Random rnd;
         string title = "";
         string installPath = "";
-        bool detectOtherVersion = false;
 
         int aliveCnt = 0;
         bool ReceiveError = false;
@@ -186,7 +185,6 @@ public partial class MainWindow : Window
                         if ((string)message[0] != Version)
                         {
                             DriverVersion.Foreground = new SolidColorBrush(Color.FromRgb(255, 100, 100));
-                            detectOtherVersion = true;
                         }
                         else
                         {
