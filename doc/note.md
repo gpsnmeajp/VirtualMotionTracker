@@ -34,10 +34,12 @@ C#製管理ツールです。ドライバのインストールやアンインス
 |識別子|型|内容|
 |---|---|---|
 |index|int| 識別番号。現在0～57まで利用できます。|
-|enable|int| 有効可否。1で有効、0で無効(非接続・非トラッキング状態)|
+|enable|int| 有効可否。0=無効, 1=有効(トラッカー), 2=有効(左コントローラ), 3=有効(右コントローラ)|
 |timeoffset|float| 補正時間。通常0です。|
 |x,y,z|float| 座標|
 |qx,qy,qz,qw|float| 回転(クォータニオン)|
+
+※種別(トラッカー or コントローラ)は初回のみ反映されます。  
 
 **/VMT/Room/Unity index, enable, timeoffset, x, y, z, qx, qy, qz, qw**  
 Unityと同じ左手系、かつ、ルーム空間(ルーム空間変換あり)で仮想トラッカーを操作します。  
@@ -81,8 +83,12 @@ x,y(float):-1.0 ～ 1.0
 ドライバーのjson設定を再読込します。  
   
 **/VMT/SetRoomMatrix m1,m2,m3,m4,m5,m6,m7,m8,m9,m10,m11,m12**  
-RoomToDriver空間変換行列を設定します。  
+RoomToDriver空間変換行列を設定し保存します。  
 設定と同時にjsonに書き込むため、毎フレーム送るなど頻繁な送信は禁止します。  
+
+**/VMT/SetRoomMatrix/Temporary m1,m2,m3,m4,m5,m6,m7,m8,m9,m10,m11,m12**  
+RoomToDriver空間変換行列を一時的に設定します。  
+こちらは一時的に適用され、再起動すると揮発します。  
 
 ### ドライバ側応答
 **/VMT/Out/Log stat,msg**  
