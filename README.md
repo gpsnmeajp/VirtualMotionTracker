@@ -1,4 +1,4 @@
-# VMT - VirtualMotionTracker - ばもとら
+# VMT - Virtual Motion Tracker
 The OSC Virtual OpenVR Tracker Driver for your DIY tracking devices.
 
 OpenVR 仮想トラッカードライバです。  
@@ -23,3 +23,12 @@ OSCで姿勢(座標や回転)を受け取り、仮想的なトラッカーとし
 <img src="https://github.com/gpsnmeajp/VirtualMotionTracker/blob/master/doc/screen0.png?raw=true"></img>
 <img src="https://github.com/gpsnmeajp/VirtualMotionTracker/blob/master/doc/Architecture.png?raw=true"></img>
 
+# Licence
+MIT Licence
+
+# Keyword
+Virtual Motion Tracker  
+バーチャルモーショントラッカー    
+OpenVR 仮想トラッカー  
+OSCトラッカー  
+ばもとら  
