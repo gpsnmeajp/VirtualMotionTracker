@@ -143,8 +143,9 @@ It is volatile.
 stat(int): Status(0=info,1=warn,2=err)  
 msg(string): Message  
   
-**/VMT/Out/Alive version**  
+**/VMT/Out/Alive version, installpath**  
 version(string): Version  
+installpath(string): Driver installed path
   
 **/VMT/Out/Haptic index, frequency, amplitude, duration**  
 frequency(float): frequency  
