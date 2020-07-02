@@ -95,9 +95,10 @@ RoomToDriver空間変換行列を一時的に設定します。
 stat(int): 状態(0=info,1=warn,2=err)  
 msg(string): メッセージ  
   
-**/VMT/Out/Alive version**  
+**/VMT/Out/Alive version, installpath**  
 version(string): バージョン  
-  
+installpath(string): ドライバのインストールパス  
+
 **/VMT/Out/Haptic index, frequency, amplitude, duration**  
 frequency(float): 周波数  
 amplitude(float): 振幅  
