@@ -88,7 +88,7 @@ Caution: If Port 39571 used be another application, Manager won't works.
 |x,y,z|float| Position|
 |qx,qy,qz,qw|float| Rotaion(Quaternion)|
 
-***Type(Tracker or Controller) may set only first time.***  
+***Type(Tracker or Controller) only works in first registration time.***  
 
 **/VMT/Room/Unity index, enable, timeoffset, x, y, z, qx, qy, qz, qw**  
 Unity lik Left-handed space, and Room space. (Recommended)  
