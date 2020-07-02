@@ -109,7 +109,6 @@ Driver Right-handed space, and Driver space.
 |TriggerIndex(int)| 0, 1|
 |JoyStickIndex(int)| 0|
 
-***CAUTION: It maybe dosen't work.***  
 
 **/VMT/Input/Button index, buttonindex, timeoffset, value**  
 Button input.  
