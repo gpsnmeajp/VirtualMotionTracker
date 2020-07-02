@@ -25,7 +25,7 @@ SOFTWARE.
 #include "dllmain.h"
 
 namespace VMTDriver {
-	const string Version = "VMT_003test";
+	const string Version = "VMT_003";
 
 	class OSCReceiver : public osc::OscPacketListener {
 	private:

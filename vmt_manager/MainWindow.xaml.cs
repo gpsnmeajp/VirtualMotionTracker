@@ -346,8 +346,8 @@ public partial class MainWindow : Window
 
         private void InstallButton(object sender, RoutedEventArgs e)
         {
-            if (detectOtherVersion) {
-                MessageBox.Show("Please remove other version VMT before install.\nインストールを続ける前に、他のバージョンのVMTを削除してください", title,MessageBoxButton.OK,MessageBoxImage.Error);
+            if (DriverVersion.Text != "-") {
+                MessageBox.Show("Please uninstall VMT before install.\nインストールを続ける前に、VMTをアンインストールしてください", title,MessageBoxButton.OK,MessageBoxImage.Error);
                 return;
             }
 
@@ -375,7 +375,7 @@ public partial class MainWindow : Window
             }
         }
 
-        private void UninstallButton(object sender, RoutedEventArgs e)
+        private async void UninstallButton(object sender, RoutedEventArgs e)
         {
             string driverPath_rel = System.IO.Path.GetDirectoryName(Assembly.GetEntryAssembly().Location) + @"\..\vmt";
             string driverPath = System.IO.Path.GetFullPath(driverPath_rel);
