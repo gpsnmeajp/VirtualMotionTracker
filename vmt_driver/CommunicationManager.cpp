@@ -221,8 +221,8 @@ namespace VMTDriver {
 			}
 			else if (adr == "/VMT/SetRoomMatrix")
 			{
-				float m1, m2, m3, m4, 
-					m5, m6, m7, m8, 
+				float m1, m2, m3, m4,
+					m5, m6, m7, m8,
 					m9, m10, m11, m12;
 				osc::ReceivedMessageArgumentStream args = m.ArgumentStream();
 				args >> m1 >> m2 >> m3 >> m4 >> m5 >> m6 >> m7 >> m8 >> m9 >> m10 >> m11 >> m12 >> osc::EndMessage;
@@ -238,10 +238,26 @@ namespace VMTDriver {
 				{
 					j["RoomMatrix"] = {};
 				}
-				j["RoomMatrix"] = {m1,m2,m3,m4,m5,m6,m7,m8,m9,m10,m11,m12};
+				j["RoomMatrix"] = { m1,m2,m3,m4,m5,m6,m7,m8,m9,m10,m11,m12 };
 				CommunicationManager::GetInstance()->GetServer()->SaveJson(j);
 
 				SendLog(0, "Set Room Matrix Done.");
+			}
+			else if (adr == "/VMT/SetRoomMatrix/Temporary")
+			{
+				float m1, m2, m3, m4,
+					m5, m6, m7, m8,
+					m9, m10, m11, m12;
+				osc::ReceivedMessageArgumentStream args = m.ArgumentStream();
+				args >> m1 >> m2 >> m3 >> m4 >> m5 >> m6 >> m7 >> m8 >> m9 >> m10 >> m11 >> m12 >> osc::EndMessage;
+
+				CommunicationManager::GetInstance()->GetRoomToDriverMatrix()
+					<< m1, m2, m3, m4
+					, m5, m6, m7, m8
+					, m9, m10, m11, m12
+					, 0, 0, 0, 1;
+
+				SendLog(0, "Set Room Matrix Done.(Temporary)");
 			}
 			else {
 				Log::printf("Unkown: %s", adr.c_str());

@@ -177,7 +177,7 @@ public partial class MainWindow : Window
                     this.Dispatcher.Invoke(() =>
                     {
                         DriverVersion.Text = (string)message[0];
-                        if (message[1] is string) {
+                        if (message.Count > 1 && message[1] is string) {
                             installPath = (string)message[1];
                         }
 
@@ -289,6 +289,7 @@ public partial class MainWindow : Window
 
             if (aliveCnt > 90)
             {
+                installPath = "";
                 DriverVersion.Text = "-";
                 DriverVersion.Foreground = new SolidColorBrush(Color.FromRgb(255, 255, 255));
                 ControlDock.IsEnabled = false;
@@ -322,20 +323,37 @@ public partial class MainWindow : Window
         {
             HmdMatrix34_t m = new HmdMatrix34_t();
             OpenVR.ChaperoneSetup.GetWorkingStandingZeroPoseToRawTrackingPose(ref m);
-            osc.Send(new OscMessage("/VMT/SetRoomMatrix", 
-                m.m0, m.m1, m.m2, m.m3, 
-                m.m4, m.m5, m.m6, m.m7, 
-                m.m8, m.m9, m.m10, m.m11));
+
+            if (SetRoomMatrixTemporaryCheckBox.IsChecked.Value) {
+                osc.Send(new OscMessage("/VMT/SetRoomMatrix/Temporary",
+                    m.m0, m.m1, m.m2, m.m3,
+                    m.m4, m.m5, m.m6, m.m7,
+                    m.m8, m.m9, m.m10, m.m11));
+            }
+            else { 
+                osc.Send(new OscMessage("/VMT/SetRoomMatrix", 
+                    m.m0, m.m1, m.m2, m.m3, 
+                    m.m4, m.m5, m.m6, m.m7, 
+                    m.m8, m.m9, m.m10, m.m11));
+            }
         }
 
         private void ResetRoomMatrixButton(object sender, RoutedEventArgs e)
         {
-            osc.Send(new OscMessage("/VMT/SetRoomMatrix", 
-                1f,0f,0f,0f,
-                0f,1f,0f,0f,
-                0f,0f,1f,0f));
+            if (SetRoomMatrixTemporaryCheckBox.IsChecked.Value)
+            {
+                osc.Send(new OscMessage("/VMT/SetRoomMatrix/Temporary",
+                    1f, 0f, 0f, 0f,
+                    0f, 1f, 0f, 0f,
+                    0f, 0f, 1f, 0f));
+            }
+            else {
+                osc.Send(new OscMessage("/VMT/SetRoomMatrix",
+                    1f, 0f, 0f, 0f,
+                    0f, 1f, 0f, 0f,
+                    0f, 0f, 1f, 0f));
+            }
         }
-
         private void CheckPositionButton(object sender, RoutedEventArgs e)
         {
             osc.Send(new OscMessage("/VMT/Room/Driver",
@@ -366,7 +384,7 @@ public partial class MainWindow : Window
                 process.Start();
                 process.WaitForExit();
 
-                MessageBox.Show("OK (ExitCode=" + process.ExitCode + ")", title);
+                MessageBox.Show("OK (ExitCode=" + process.ExitCode + ")\nPlease restart SteamVR.", title);
             }
             catch (Exception ex) {
                 MessageBox.Show(ex.Message + "\n" + ex.StackTrace, title);
@@ -380,26 +398,30 @@ public partial class MainWindow : Window
             string driverPath_rel = System.IO.Path.GetDirectoryName(Assembly.GetEntryAssembly().Location) + @"\..\vmt";
             string driverPath = System.IO.Path.GetFullPath(driverPath_rel);
 
-            if (detectOtherVersion)
+            if (installPath == "")
             {
-                if (installPath != "")
+                //インストールパスが受信できていない場合少し待つ
+                await Task.Delay(2000);
+            }
+
+            if (installPath != "")
+            {
+                //場所がわかっている
+                var res = MessageBox.Show("Uninstall VMT Driver?\nVMTドライバをアンインストールしますか?\n\n" + installPath, title, MessageBoxButton.OKCancel, MessageBoxImage.Question);
+                if (res != MessageBoxResult.OK)
                 {
-                    //場所がわかっている
-                    var res = MessageBox.Show("Try uninstall other VMT Driver version?\n異なるバージョンのVMTドライバのアンインストールを試行しますか?\n\n"+installPath, title, MessageBoxButton.OKCancel, MessageBoxImage.Error);
-                    if (res != MessageBoxResult.OK)
-                    {
-                        return;
-                    }
-                    //現在のフォルダパスの代わりに、受信したパスでアンインストールを試す
-                    driverPath = installPath;
+                    return;
                 }
-                else {
-                    //場所不明だがとりあえず現在の場所としてアンインストールしようとするか確認する
-                    var res = MessageBox.Show("Other VMT Driver version detected.\nIn many cases, this driver located on different path.\nmanager can not uninstallation these.\nIf you want to remove currently installed VMT driver, press cancel and please use manager of drivers itself.\n\nPress OK, Try uninstallation anyway. (it will fail in many cases.)\n\n違うバージョンのVMTドライバを検出しました。\n多くの場合これは別のパスにあります。\n本Managerではアンインストールできません。\nアンインストールしたい場合は、キャンセルを押し、そのVMTドライバに付属のManagerを使用してください\n\nOKを押すと、とにかくアンインストールを試します。(多くの場合失敗します。)", title, MessageBoxButton.OKCancel, MessageBoxImage.Error);
-                    if (res != MessageBoxResult.OK)
-                    {
-                        return;
-                    }
+                //現在のフォルダパスの代わりに、受信したパスでアンインストールを試す
+                driverPath = installPath;
+            }
+            else
+            {
+                //場所不明だがとりあえず現在の場所としてアンインストールしようとするか確認する
+                var res = MessageBox.Show("Other VMT Driver version detected.\nIn many cases, this driver located on different path.\nmanager can not uninstallation these.\nIf you want to remove currently installed VMT driver, press cancel and please use manager of drivers itself.\n\nPress OK, Try uninstallation anyway. (it will fail in many cases.)\n\n違うバージョンのVMTドライバを検出しました。\n多くの場合これは別のパスにあります。\n本Managerではアンインストールできません。\nアンインストールしたい場合は、キャンセルを押し、そのVMTドライバに付属のManagerを使用してください\n\nOKを押すと、とにかくアンインストールを試します。(多くの場合失敗します。)", title, MessageBoxButton.OKCancel, MessageBoxImage.Error);
+                if (res != MessageBoxResult.OK)
+                {
+                    return;
                 }
             }
 
@@ -413,7 +435,7 @@ public partial class MainWindow : Window
                 process.Start();
                 process.WaitForExit();
 
-                MessageBox.Show("OK (ExitCode=" + process.ExitCode + ")", title);
+                MessageBox.Show("OK (ExitCode=" + process.ExitCode + ")\nPlease restart SteamVR.", title);
             }
             catch (Exception ex)
             {

@@ -51,6 +51,7 @@
 					<DockPanel Grid.Column="0" Margin="2"  LastChildFill="False">
 						<TextBlock Text="RoomMatrix" DockPanel.Dock="Top" Margin="1"/>
 						<TextBox Name="RoomMatrixTextBox" IsEnabled="False" IsReadOnly="True" Text="" DockPanel.Dock="Top" Height="69" Margin="1"/>
+						<CheckBox Content="Temporary" DockPanel.Dock="Top" Name="SetRoomMatrixTemporaryCheckBox"></CheckBox>
 						<Button Content="Set RoomMatrix" DockPanel.Dock="Top" Name="SetRoomMatrixButtonName" Click="SetRoomMatrixButton" Margin="1"/>
 						<Button Content="Reset RoomMatrix" DockPanel.Dock="Top" Click="ResetRoomMatrixButton" Margin="1"/>
 					</DockPanel>
