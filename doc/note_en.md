@@ -83,10 +83,12 @@ Caution: If Port 39571 used be another application, Manager won't works.
 |Args|type|detail|
 |---|---|---|
 |index|int| ID number。0-57|
-|enable|int| 1=Enable, 0=Disable|
+|enable|int| 0=Disable, 1=Enable(Tracker), 2=Enable(Left Hand Controller), 3=Enable(Right Hand Controller) |
 |timeoffset|float| TimeOffset, normaly 0|
 |x,y,z|float| Position|
 |qx,qy,qz,qw|float| Rotaion(Quaternion)|
+
+***Type(Tracker or Controller) may set only first time.***  
 
 **/VMT/Room/Unity index, enable, timeoffset, x, y, z, qx, qy, qz, qw**  
 Unity lik Left-handed space, and Room space. (Recommended)  
@@ -129,8 +131,12 @@ All tracker will not-tracking state.
 Reload json.  
   
 **/VMT/SetRoomMatrix m1,m2,m3,m4,m5,m6,m7,m8,m9,m10,m11,m12**  
-Set Room Matrix.  
+Set and Save Room Matrix.  
 Please do not send periodic. it writes setting on drive.    
+
+**/VMT/SetRoomMatrix/Temporary m1,m2,m3,m4,m5,m6,m7,m8,m9,m10,m11,m12**  
+Set Room Matrix temporary.  
+It is volatile.    
 
 ### Drivers response  
 **/VMT/Out/Log stat,msg**  
