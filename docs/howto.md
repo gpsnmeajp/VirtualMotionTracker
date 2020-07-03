@@ -1,4 +1,4 @@
-## [ドライバのインストール](howto.md)
+## ドライバのインストール
 **1. VMTをダウンロードし、解凍します。**  
 [ダウンロード](https://github.com/gpsnmeajp/VirtualMotionTracker/releases)  
 次にインストールしますので、今後移動しない場所においてください。  
