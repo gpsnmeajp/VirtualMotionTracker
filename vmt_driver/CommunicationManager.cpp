@@ -30,7 +30,7 @@ SOFTWARE.
 
 namespace VMTDriver {
 	//別スレッド
-	void OSCReceiver::SetPose(bool roomToDriver,int idx, int enable, double x, double y, double z, double qx, double qy, double qz, double qw, double timeoffset, int root_sn)
+	void OSCReceiver::SetPose(bool roomToDriver,int idx, int enable, double x, double y, double z, double qx, double qy, double qz, double qw, double timeoffset, const char* root_sn)
 	{
 		DriverPose_t pose{ 0 };
 		pose.poseTimeOffset = timeoffset;
@@ -61,7 +61,7 @@ namespace VMTDriver {
 		pose.qRotation.z = qz;
 		pose.qRotation.w = qw;
 
-		if (root_sn == 0) {
+		if (root_sn == nullptr) {
 			//ワールド・ドライバ変換行列を設定
 			Eigen::Translation3d pos(RoomToDriverAffin.translation());
 			Eigen::Quaterniond rot(RoomToDriverAffin.rotation());
@@ -91,12 +91,6 @@ namespace VMTDriver {
 			IVRProperties* props = VRPropertiesRaw();
 			CVRPropertyHelpers* helper = VRProperties();
 
-			// デバイスを特定するシリアルナンバー
-			char sn[16];
-			sprintf(sn, "LHR-%8x", root_sn);
-			// TODO: ↑この書式文字列は特定のパターンで動作しない可能性がある。可能であればOSC受信時点で文字列に変えたい
-
-
 			bool deviceFound = false;
 
 			for (int i = 0; i < 64; i++) {
@@ -106,9 +100,9 @@ namespace VMTDriver {
 				PropertyContainerHandle_t h = props->TrackedDeviceToPropertyContainer(i);
 				string SerialNumber = helper->GetStringProperty(h, ETrackedDeviceProperty::Prop_SerialNumber_String);
 
-				if (SerialNumber.compare(sn) != 0) continue;
+				if (SerialNumber.compare(root_sn) != 0) continue;
 
-				pose.result = p->eTrackingResult;
+				pose.result = (ETrackingResult)(p->eTrackingResult);
 
 				if (p->eTrackingResult == ETrackingResult::TrackingResult_Running_OK) {
 					float* m = (float*)p->mDeviceToAbsoluteTracking.m;
@@ -238,9 +232,10 @@ namespace VMTDriver {
 			}
 			else if (adr == "/VMT/Joint/Unity")
 			{
-				int root_sn, idx, enable;
+				int idx, enable;
 				float timeoffset;
 				float x, y, z, qx, qy, qz, qw;
+				const char* root_sn = nullptr;
 				osc::ReceivedMessageArgumentStream args = m.ArgumentStream();
 				args >> idx >> enable >> timeoffset >> x >> y >> z >> qx >> qy >> qz >> qw >> root_sn >> osc::EndMessage;
 
@@ -248,9 +243,10 @@ namespace VMTDriver {
 			}
 			else if (adr == "/VMT/Joint/Driver")
 			{
-				int root_sn, idx, enable;
+				int idx, enable;
 				float timeoffset;
 				float x, y, z, qx, qy, qz, qw;
+				const char* root_sn = nullptr;
 				osc::ReceivedMessageArgumentStream args = m.ArgumentStream();
 				args >> idx >> enable >> timeoffset >> x >> y >> z >> qx >> qy >> qz >> qw >> root_sn >> osc::EndMessage;
 

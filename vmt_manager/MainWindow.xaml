@@ -4,8 +4,8 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:vmt_manager"
-		Width="320"
-		Height="240"
+		Width="350"
+		Height="260"
         mc:Ignorable="d"
         Title="VMT Manager" Loaded="Window_Loaded" Closed="Window_Closed" ResizeMode="NoResize">
 	<TabControl>
@@ -54,6 +54,11 @@
 						<CheckBox Content="Temporary" DockPanel.Dock="Top" Name="SetRoomMatrixTemporaryCheckBox"></CheckBox>
 						<Button Content="Set RoomMatrix" DockPanel.Dock="Top" Name="SetRoomMatrixButtonName" Click="SetRoomMatrixButton" Margin="1"/>
 						<Button Content="Reset RoomMatrix" DockPanel.Dock="Top" Click="ResetRoomMatrixButton" Margin="1"/>
+						<TextBlock Text="Position Coordinate" DockPanel.Dock="Top" Margin="1"/>
+						<ComboBox DockPanel.Dock="Top" Name="CoordinateCombo" SelectedIndex="0">
+							<ComboBoxItem>Driver Coordinate</ComboBoxItem>
+							<ComboBoxItem>Unity Coordinate</ComboBoxItem>
+						</ComboBox>
 					</DockPanel>
 					<DockPanel Grid.Column="1" Margin="2" LastChildFill="False">
 						<TextBlock Text="VMT_0 Room Position" DockPanel.Dock="Top" Margin="1"/>
@@ -61,7 +66,9 @@
 						<TextBlock Text="VMT_0 Raw Position" DockPanel.Dock="Top" Margin="1"/>
 						<TextBox Name="CheckPositionRawTextBox" IsEnabled="False" IsReadOnly="True" Text="-,-,-" DockPanel.Dock="Top" Margin="1"/>
 						<Button Content="Check VMT__0 Position &#xA;(Try set RoomPos=[1,1,1] )" DockPanel.Dock="Top" Click="CheckPositionButton" Margin="1"/>
-						<TextBlock DockPanel.Dock="Top"/>
+						<TextBlock Text="VMT_0 Joint Serial No" DockPanel.Dock="Top" Margin="1"/>
+						<TextBox Name="JointSerialNoTextBox" Text="LHR-xxxxxxxxx" DockPanel.Dock="Top" Margin="1"/>
+						<Button Content="Check VMT__0 Position &#xA;(Try set JointPos=[0.1,0.1,0.1] )" DockPanel.Dock="Top" Click="CheckJointPositionButton" Margin="1"/>
 					</DockPanel>
 				</Grid>
 			</DockPanel>
@@ -137,11 +144,11 @@
 						<Button Content="Input Reset"  Margin="1" Click="InputResetButton" DockPanel.Dock="Top"/>
 					</DockPanel>
 				</Grid>
-				<Button Content="Haptic Test"  Margin="1" Click="HapticTestButton" DockPanel.Dock="Bottom"/>
-				<DockPanel DockPanel.Dock="Bottom" Margin="1">
+				<DockPanel DockPanel.Dock="Top" Margin="1">
 					<TextBlock VerticalAlignment="Center" Text="Haptic:" DockPanel.Dock="Left" />
 					<TextBox Name="InputVMTHapticTextBox" Text="-" IsReadOnly="True" IsEnabled="False" />
 				</DockPanel>
+				<Button Content="Haptic Test"  Margin="1" Click="HapticTestButton" DockPanel.Dock="Top"/>
 			</DockPanel>
 		</TabItem>
 	</TabControl>

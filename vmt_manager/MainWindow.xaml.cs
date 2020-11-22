@@ -58,7 +58,7 @@ namespace vmt_manager
     /// </summary>
 public partial class MainWindow : Window
     {
-        const string Version = "VMT_003";
+        const string Version = "VMT_004";
         private DispatcherTimer dispatcherTimer;
         Random rnd;
         string title = "";
@@ -271,8 +271,14 @@ public partial class MainWindow : Window
 
             var t1 = util.GetTransformBySerialNumber("VMT_0");
             if (t1 != null) {
-                string roomPos = String.Format("{0:0.00}, {1:0.00}, {2:0.00}", t1.position.X, t1.position.Y, t1.position.Z);
-                CheckPositionTextBox.Text = roomPos;
+                string roomPos = string.Format("{0:0.00}, {1:0.00}, {2:0.00}", t1.position.X, t1.position.Y, t1.position.Z);
+
+                //Unity座標系ではZが反転する
+                if (CoordinateCombo.SelectedIndex == 1) {
+                    roomPos = string.Format("{0:0.00}, {1:0.00}, {2:0.00}", t1.position.X, t1.position.Y, -t1.position.Z);
+                }
+
+                    CheckPositionTextBox.Text = roomPos;
                 if (roomPos == "1.00, 1.00, 1.00") {
                     CheckPositionTextBox.Background = new SolidColorBrush(Color.FromRgb(0, 255, 0));
                 }
@@ -282,7 +288,7 @@ public partial class MainWindow : Window
             }
             var t2 = util.GetTransformBySerialNumberRaw("VMT_0");
             if (t2 != null) {
-                CheckPositionRawTextBox.Text = String.Format("{0:0.00}, {1:0.00}, {2:0.00}", t2.position.X, t2.position.Y, t2.position.Z);
+                CheckPositionRawTextBox.Text = string.Format("{0:0.00}, {1:0.00}, {2:0.00}", t2.position.X, t2.position.Y, t2.position.Z);
             }
 
             if (aliveCnt > 90)
@@ -354,10 +360,37 @@ public partial class MainWindow : Window
         }
         private void CheckPositionButton(object sender, RoutedEventArgs e)
         {
-            osc.Send(new OscMessage("/VMT/Room/Driver",
+            if (CoordinateCombo.SelectedIndex == 1)
+            {
+                osc.Send(new OscMessage("/VMT/Room/Unity",
                 0, 1, 0f,
                 1f, 1f, 1f,
                 0f, 0f, 0f, 1f));
+            }
+            else {
+                osc.Send(new OscMessage("/VMT/Room/Driver",
+                0, 1, 0f,
+                1f, 1f, 1f,
+                0f, 0f, 0f, 1f));
+            }
+        }
+        private void CheckJointPositionButton(object sender, RoutedEventArgs e)
+        {
+            if (CoordinateCombo.SelectedIndex == 1)
+            {
+                osc.Send(new OscMessage("/VMT/Joint/Unity",
+                    0, 1, 0f,
+                    0.1f, 0.1f, 0.1f,
+                    0f, 0f, 0f, 1f,
+                    JointSerialNoTextBox.Text));
+            }
+            else {
+                osc.Send(new OscMessage("/VMT/Joint/Driver",
+                    0, 1, 0f,
+                    0.1f, 0.1f, 0.1f,
+                    0f, 0f, 0f, 1f,
+                    JointSerialNoTextBox.Text));
+            }
         }
 
         private void InstallButton(object sender, RoutedEventArgs e)
