@@ -94,6 +94,7 @@ namespace VMTDriver {
 			// デバイスを特定するシリアルナンバー
 			char sn[16];
 			sprintf(sn, "LHR-%8x", root_sn);
+			// TODO: ↑この書式文字列は特定のパターンで動作しない可能性がある。可能であればOSC受信時点で文字列に変えたい
 
 
 			bool deviceFound = false;
