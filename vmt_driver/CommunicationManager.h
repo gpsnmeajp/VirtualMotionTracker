@@ -29,7 +29,7 @@ namespace VMTDriver {
 
 	class OSCReceiver : public osc::OscPacketListener {
 	private:
-		void SetPose(bool roomToDriver,int idx, int enable, double x, double y, double z, double qx, double qy, double qz, double qw, double timeoffset);
+		void SetPose(bool roomToDriver, int idx, int enable, double x, double y, double z, double qx, double qy, double qz, double qw, double timeoffset, int root_sn = 0);
 		virtual void ProcessMessage(const osc::ReceivedMessage& m, const IpEndpointName& remoteEndpoint);
 	public:
 		static void OSCReceiver::SendLog(int stat, string msg);

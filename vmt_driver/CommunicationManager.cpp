@@ -30,7 +30,7 @@ SOFTWARE.
 
 namespace VMTDriver {
 	//別スレッド
-	void OSCReceiver::SetPose(bool roomToDriver,int idx, int enable, double x, double y, double z, double qx, double qy, double qz, double qw, double timeoffset)
+	void OSCReceiver::SetPose(bool roomToDriver,int idx, int enable, double x, double y, double z, double qx, double qy, double qz, double qw, double timeoffset, int root_sn)
 	{
 		DriverPose_t pose{ 0 };
 		pose.poseTimeOffset = timeoffset;
@@ -52,17 +52,6 @@ namespace VMTDriver {
 		Eigen::Affine3d RoomToDriverAffin;
 		RoomToDriverAffin = CommunicationManager::GetInstance()->GetRoomToDriverMatrix();
 
-		//ワールド・ドライバ変換行列を設定
-		Eigen::Translation3d pos(RoomToDriverAffin.translation());
-		Eigen::Quaterniond rot(RoomToDriverAffin.rotation());
-		pose.vecWorldFromDriverTranslation[0] = pos.x();
-		pose.vecWorldFromDriverTranslation[1] = pos.y();
-		pose.vecWorldFromDriverTranslation[2] = pos.z();
-		pose.qWorldFromDriverRotation.x = rot.x();
-		pose.qWorldFromDriverRotation.y = rot.y();
-		pose.qWorldFromDriverRotation.z = rot.z();
-		pose.qWorldFromDriverRotation.w = rot.w();
-
 		//座標を設定
 		pose.vecPosition[0] = x;
 		pose.vecPosition[1] = y;
@@ -72,12 +61,95 @@ namespace VMTDriver {
 		pose.qRotation.z = qz;
 		pose.qRotation.w = qw;
 
+		if (root_sn == 0) {
+			//ワールド・ドライバ変換行列を設定
+			Eigen::Translation3d pos(RoomToDriverAffin.translation());
+			Eigen::Quaterniond rot(RoomToDriverAffin.rotation());
+			pose.vecWorldFromDriverTranslation[0] = pos.x();
+			pose.vecWorldFromDriverTranslation[1] = pos.y();
+			pose.vecWorldFromDriverTranslation[2] = pos.z();
+			pose.qWorldFromDriverRotation.x = rot.x();
+			pose.qWorldFromDriverRotation.y = rot.y();
+			pose.qWorldFromDriverRotation.z = rot.z();
+			pose.qWorldFromDriverRotation.w = rot.w();
 
-		ServerTrackedDeviceProvider* sever = CommunicationManager::GetInstance()->GetServer();
-		if (idx >= 0 && idx <= sever->GetDevices().size())
-		{
-			sever->GetDevices()[idx].RegisterToVRSystem(enable); //1=Tracker, 2=controller
-			sever->GetDevices()[idx].SetPose(pose);
+
+			ServerTrackedDeviceProvider* sever = CommunicationManager::GetInstance()->GetServer();
+			if (idx >= 0 && idx <= sever->GetDevices().size())
+			{
+				sever->GetDevices()[idx].RegisterToVRSystem(enable); //1=Tracker, 2=controller
+				sever->GetDevices()[idx].SetPose(pose);
+			}
+		}
+		else {
+			// 既存のトラッキングデバイスの座標系でぶら下げる
+
+			// ぶら下げる元のPoseを取得
+			vr::TrackedDevicePose_t poses[64];
+			IVRServerDriverHost* host = VRServerDriverHost();
+			host->GetRawTrackedDevicePoses(0.0f, poses, 64);
+			IVRProperties* props = VRPropertiesRaw();
+			CVRPropertyHelpers* helper = VRProperties();
+
+			// デバイスを特定するシリアルナンバー
+			char sn[16];
+			sprintf(sn, "LHR-%8x", root_sn);
+
+
+			bool deviceFound = false;
+
+			for (int i = 0; i < 64; i++) {
+				TrackedDevicePose_t* p = poses + i;
+				if (!p->bDeviceIsConnected) break;
+
+				PropertyContainerHandle_t h = props->TrackedDeviceToPropertyContainer(i);
+				string SerialNumber = helper->GetStringProperty(h, ETrackedDeviceProperty::Prop_SerialNumber_String);
+
+				if (SerialNumber.compare(sn) != 0) continue;
+
+				pose.result = p->eTrackingResult;
+
+				if (p->eTrackingResult == ETrackingResult::TrackingResult_Running_OK) {
+					float* m = (float*)p->mDeviceToAbsoluteTracking.m;
+
+					Eigen::Affine3d mm;
+					mm.matrix() << m[0 * 4 + 0], m[0 * 4 + 1], m[0 * 4 + 2], m[0 * 4 + 3],
+						m[1 * 4 + 0], m[1 * 4 + 1], m[1 * 4 + 2], m[1 * 4 + 3],
+						m[2 * 4 + 0], m[2 * 4 + 1], m[2 * 4 + 2], m[2 * 4 + 3],
+						0.0, 0.0, 0.0, 1.0;
+
+					Eigen::Translation3d pos(mm.translation());
+					Eigen::Quaterniond rot(mm.rotation());
+					pose.vecWorldFromDriverTranslation[0] = pos.x();
+					pose.vecWorldFromDriverTranslation[1] = pos.y();
+					pose.vecWorldFromDriverTranslation[2] = pos.z();
+					pose.qWorldFromDriverRotation.x = rot.x();
+					pose.qWorldFromDriverRotation.y = rot.y();
+					pose.qWorldFromDriverRotation.z = rot.z();
+					pose.qWorldFromDriverRotation.w = rot.w();
+
+					deviceFound = true;
+				}
+
+				break;
+			}
+
+			if (!deviceFound) {
+				pose.vecWorldFromDriverTranslation[0] = 0.0;
+				pose.vecWorldFromDriverTranslation[1] = 0.0;
+				pose.vecWorldFromDriverTranslation[2] = 0.0;
+				pose.qWorldFromDriverRotation.x = 0.0;
+				pose.qWorldFromDriverRotation.y = 0.0;
+				pose.qWorldFromDriverRotation.z = 0.0;
+				pose.qWorldFromDriverRotation.w = 1.0;
+			}
+
+			ServerTrackedDeviceProvider* sever = CommunicationManager::GetInstance()->GetServer();
+			if (idx >= 0 && idx <= sever->GetDevices().size())
+			{
+				sever->GetDevices()[idx].RegisterToVRSystem(enable); //1=Tracker, 2=controller
+				sever->GetDevices()[idx].SetPose(pose);
+			}
 		}
 	}
 
@@ -162,6 +234,26 @@ namespace VMTDriver {
 				args >> idx >> enable >> timeoffset >> x >> y >> z >> qx >> qy >> qz >> qw >> osc::EndMessage;
 
 				SetPose(false, idx, enable, x, y, z, qx, qy, qz, qw, timeoffset);
+			}
+			else if (adr == "/VMT/Joint/Unity")
+			{
+				int root_sn, idx, enable;
+				float timeoffset;
+				float x, y, z, qx, qy, qz, qw;
+				osc::ReceivedMessageArgumentStream args = m.ArgumentStream();
+				args >> idx >> enable >> timeoffset >> x >> y >> z >> qx >> qy >> qz >> qw >> root_sn >> osc::EndMessage;
+
+				SetPose(false, idx, enable, x, y, -z, qx, qy, -qz, -qw, timeoffset, root_sn);
+			}
+			else if (adr == "/VMT/Joint/Driver")
+			{
+				int root_sn, idx, enable;
+				float timeoffset;
+				float x, y, z, qx, qy, qz, qw;
+				osc::ReceivedMessageArgumentStream args = m.ArgumentStream();
+				args >> idx >> enable >> timeoffset >> x >> y >> z >> qx >> qy >> qz >> qw >> root_sn >> osc::EndMessage;
+
+				SetPose(false, idx, enable, x, y, z, qx, qy, qz, qw, timeoffset, root_sn);
 			}
 			else if (adr == "/VMT/Input/Button")
 			{
