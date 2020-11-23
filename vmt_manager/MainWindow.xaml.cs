@@ -58,7 +58,7 @@ namespace vmt_manager
     /// </summary>
 public partial class MainWindow : Window
     {
-        const string Version = "VMT_004";
+        const string Version = "VMT_005";
         private DispatcherTimer dispatcherTimer;
         Random rnd;
         string title = "";
@@ -666,6 +666,16 @@ public partial class MainWindow : Window
                 0f, 0f, 0f,
                 0f, 0f, 0f, 1f));
             }
+        }
+
+
+        private void EnableAutoPoseUdateButton(object sender, RoutedEventArgs e)
+        {
+            osc.Send(new OscMessage("/VMT/SetAutoPoseUpdate",1));
+        }
+        private void DisableAutoPoseUdateButton(object sender, RoutedEventArgs e)
+        {
+            osc.Send(new OscMessage("/VMT/SetAutoPoseUpdate", 0));
         }
     }
 }

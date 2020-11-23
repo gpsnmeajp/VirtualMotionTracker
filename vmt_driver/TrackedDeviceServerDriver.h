@@ -27,38 +27,59 @@ SOFTWARE.
 namespace VMTDriver {
     const HmdQuaternion_t HmdQuaternion_Identity{ 1,0,0,0 };
 
+    struct RawPose {
+        bool roomToDriver;
+        int idx;
+        int enable;
+        double x;
+        double y;
+        double z;
+        double qx;
+        double qy;
+        double qz;
+        double qw;
+        double timeoffset;
+        const char* root_sn;
+    };
+
     //個々のデバイス
     class TrackedDeviceServerDriver : public ITrackedDeviceServerDriver
     {
     private:
         bool m_alreadyRegistered = false;
-        string m_serial;
-        TrackedDeviceIndex_t m_deviceIndex;
-        PropertyContainerHandle_t m_propertyContainer;
-        int m_index;
+        string m_serial = "";
+        TrackedDeviceIndex_t m_deviceIndex{ 0 };
+        PropertyContainerHandle_t m_propertyContainer{ 0 };
+        uint32_t m_index = k_unTrackedDeviceIndexInvalid;
 
         DriverPose_t m_pose{ 0 };
+        RawPose m_rawPose{ 0 };
 
-        VRInputComponentHandle_t ButtonComponent[8];
-        VRInputComponentHandle_t TriggerComponent[2];
-        VRInputComponentHandle_t JoystickComponent[2];
-        VRInputComponentHandle_t HapticComponent;
+        VRInputComponentHandle_t ButtonComponent[8]{ 0 };
+        VRInputComponentHandle_t TriggerComponent[2]{ 0 };
+        VRInputComponentHandle_t JoystickComponent[2]{ 0 };
+        VRInputComponentHandle_t HapticComponent{ 0 };
 
+        static bool s_autoUpdate;
     public:
         TrackedDeviceServerDriver();
         ~TrackedDeviceServerDriver();
 
         void SetDeviceSerial(string);
-        void SetObjectIndex(int);
+        void SetObjectIndex(uint32_t);
         void SetPose(DriverPose_t pose);
-        void TrackedDeviceServerDriver::RegisterToVRSystem(int type);
+        void SetRawPose(RawPose rawPose);
+        void RawPoseToPose();
+        void RegisterToVRSystem(int type);
         void UpdatePoseToVRSystem();
-        void UpdateButtonInput(int index, bool value, double timeoffset);
-        void UpdateTriggerInput(int index, float value, double timeoffset);
-        void UpdateJoystickInput(int index, float x, float y, double timeoffset);
+        void UpdateButtonInput(uint32_t index, bool value, double timeoffset);
+        void UpdateTriggerInput(uint32_t index, float value, double timeoffset);
+        void UpdateJoystickInput(uint32_t index, float x, float y, double timeoffset);
         void Reset();
 
         void ProcessEvent(VREvent_t &VREvent);
+
+        static void SetAutoUpdate(bool enable);
 
         //---------------
 

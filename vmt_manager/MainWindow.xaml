@@ -84,6 +84,8 @@
 						<Button Content="Reload Setting" DockPanel.Dock="Top" Click="ReloadJsonButton" Margin="1"/>
 						<Button Content="Device Reset" DockPanel.Dock="Top" Click="ResetButton" Margin="1"/>
 						<Button Content="Show all" DockPanel.Dock="Top" Click="ShowAllButton" Margin="1"/>
+						<Button Content="Enable Auto Pose Udate" DockPanel.Dock="Top" Click="EnableAutoPoseUdateButton" Margin="1"/>
+						<Button Content="Disable Auto Pose Udate" DockPanel.Dock="Top" Click="DisableAutoPoseUdateButton" Margin="1"/>
 					</DockPanel>
 				</Grid>
 			</DockPanel>

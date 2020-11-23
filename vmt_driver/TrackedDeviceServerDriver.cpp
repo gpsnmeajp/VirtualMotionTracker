@@ -23,6 +23,8 @@ SOFTWARE.
 */
 #include "TrackedDeviceServerDriver.h"
 namespace VMTDriver {
+    bool TrackedDeviceServerDriver::s_autoUpdate = false;
+
     TrackedDeviceServerDriver::TrackedDeviceServerDriver()
     {
         m_deviceIndex = k_unTrackedDeviceIndexInvalid;
@@ -37,7 +39,7 @@ namespace VMTDriver {
         m_serial = serial;
     }
 
-    void TrackedDeviceServerDriver::SetObjectIndex(int idx)
+    void TrackedDeviceServerDriver::SetObjectIndex(uint32_t idx)
     {
         m_index = idx;
     }
@@ -45,6 +47,116 @@ namespace VMTDriver {
     void TrackedDeviceServerDriver::SetPose(DriverPose_t pose)
     {
         m_pose = pose;
+    }
+
+    void TrackedDeviceServerDriver::SetRawPose(RawPose rawPose)
+    {
+        m_rawPose = rawPose;
+        RawPoseToPose();
+    }
+
+    void TrackedDeviceServerDriver::RawPoseToPose()
+    {
+        DriverPose_t pose{ 0 };
+        pose.poseTimeOffset = m_rawPose.timeoffset;
+        pose.qRotation = VMTDriver::HmdQuaternion_Identity;
+        pose.qWorldFromDriverRotation = VMTDriver::HmdQuaternion_Identity;
+        pose.qDriverFromHeadRotation = VMTDriver::HmdQuaternion_Identity;
+
+        if (m_rawPose.enable != 0) {
+            pose.deviceIsConnected = true;
+            pose.poseIsValid = true;
+            pose.result = TrackingResult_Running_OK;
+        }
+        else {
+            pose.deviceIsConnected = false;
+            pose.poseIsValid = false;
+            pose.result = ETrackingResult::TrackingResult_Calibrating_OutOfRange;
+        }
+
+        Eigen::Affine3d RoomToDriverAffin;
+        RoomToDriverAffin = CommunicationManager::GetInstance()->GetRoomToDriverMatrix();
+
+        //座標を設定
+        pose.vecPosition[0] = m_rawPose.x;
+        pose.vecPosition[1] = m_rawPose.y;
+        pose.vecPosition[2] = m_rawPose.z;
+        pose.qRotation.x = m_rawPose.qx;
+        pose.qRotation.y = m_rawPose.qy;
+        pose.qRotation.z = m_rawPose.qz;
+        pose.qRotation.w = m_rawPose.qw;
+
+        if (m_rawPose.root_sn == nullptr) {
+            //ワールド・ドライバ変換行列を設定
+            Eigen::Translation3d pos(RoomToDriverAffin.translation());
+            Eigen::Quaterniond rot(RoomToDriverAffin.rotation());
+            pose.vecWorldFromDriverTranslation[0] = pos.x();
+            pose.vecWorldFromDriverTranslation[1] = pos.y();
+            pose.vecWorldFromDriverTranslation[2] = pos.z();
+            pose.qWorldFromDriverRotation.x = rot.x();
+            pose.qWorldFromDriverRotation.y = rot.y();
+            pose.qWorldFromDriverRotation.z = rot.z();
+            pose.qWorldFromDriverRotation.w = rot.w();
+        }
+        else {
+            // 既存のトラッキングデバイスの座標系でぶら下げる
+
+            // ぶら下げる元のPoseを取得
+            vr::TrackedDevicePose_t poses[k_unMaxTrackedDeviceCount];
+            IVRServerDriverHost* host = VRServerDriverHost();
+            host->GetRawTrackedDevicePoses(0.0f, poses, k_unMaxTrackedDeviceCount);
+            IVRProperties* props = VRPropertiesRaw();
+            CVRPropertyHelpers* helper = VRProperties();
+
+            bool deviceFound = false;
+
+            for (uint32_t i = 0; i < k_unMaxTrackedDeviceCount; i++) {
+                TrackedDevicePose_t* const p = poses + i;
+                if (!p->bDeviceIsConnected) break;
+
+                PropertyContainerHandle_t h = props->TrackedDeviceToPropertyContainer(i);
+                string SerialNumber = helper->GetStringProperty(h, ETrackedDeviceProperty::Prop_SerialNumber_String);
+
+                if (SerialNumber.compare(m_rawPose.root_sn) != 0) continue;
+
+                pose.result = (ETrackingResult)(p->eTrackingResult);
+
+                if (p->eTrackingResult == ETrackingResult::TrackingResult_Running_OK) {
+                    float* m = (float*)p->mDeviceToAbsoluteTracking.m;
+
+                    Eigen::Affine3d mm;
+                    mm.matrix() << m[0 * 4 + 0], m[0 * 4 + 1], m[0 * 4 + 2], m[0 * 4 + 3],
+                        m[1 * 4 + 0], m[1 * 4 + 1], m[1 * 4 + 2], m[1 * 4 + 3],
+                        m[2 * 4 + 0], m[2 * 4 + 1], m[2 * 4 + 2], m[2 * 4 + 3],
+                        0.0, 0.0, 0.0, 1.0;
+
+                    Eigen::Translation3d pos(mm.translation());
+                    Eigen::Quaterniond rot(mm.rotation());
+                    pose.vecWorldFromDriverTranslation[0] = pos.x();
+                    pose.vecWorldFromDriverTranslation[1] = pos.y();
+                    pose.vecWorldFromDriverTranslation[2] = pos.z();
+                    pose.qWorldFromDriverRotation.x = rot.x();
+                    pose.qWorldFromDriverRotation.y = rot.y();
+                    pose.qWorldFromDriverRotation.z = rot.z();
+                    pose.qWorldFromDriverRotation.w = rot.w();
+
+                    deviceFound = true;
+                }
+
+                break;
+            }
+
+            if (!deviceFound) {
+                pose.vecWorldFromDriverTranslation[0] = 0.0;
+                pose.vecWorldFromDriverTranslation[1] = 0.0;
+                pose.vecWorldFromDriverTranslation[2] = 0.0;
+                pose.qWorldFromDriverRotation.x = 0.0;
+                pose.qWorldFromDriverRotation.y = 0.0;
+                pose.qWorldFromDriverRotation.z = 0.0;
+                pose.qWorldFromDriverRotation.w = 1.0;
+            }
+        }
+        SetPose(pose);
     }
 
     void TrackedDeviceServerDriver::RegisterToVRSystem(int type)
@@ -76,7 +188,7 @@ namespace VMTDriver {
         if (!m_alreadyRegistered) { return; }
         VRServerDriverHost()->TrackedDevicePoseUpdated(m_deviceIndex, GetPose(), sizeof(DriverPose_t));
     }
-    void TrackedDeviceServerDriver::UpdateButtonInput(int index, bool value, double timeoffset)
+    void TrackedDeviceServerDriver::UpdateButtonInput(uint32_t index, bool value, double timeoffset)
     {
         if (!m_alreadyRegistered) { return; }
         if (0 <= index && index <= 7)
@@ -84,7 +196,7 @@ namespace VMTDriver {
             VRDriverInput()->UpdateBooleanComponent(ButtonComponent[index], value, timeoffset);
         }
     }
-    void TrackedDeviceServerDriver::UpdateTriggerInput(int index, float value, double timeoffset)
+    void TrackedDeviceServerDriver::UpdateTriggerInput(uint32_t index, float value, double timeoffset)
     {
         if (!m_alreadyRegistered) { return; }
         if (value > 1.0) {
@@ -102,7 +214,7 @@ namespace VMTDriver {
             VRDriverInput()->UpdateScalarComponent(TriggerComponent[index], value, timeoffset);
         }
     }
-    void TrackedDeviceServerDriver::UpdateJoystickInput(int index, float x, float y, double timeoffset)
+    void TrackedDeviceServerDriver::UpdateJoystickInput(uint32_t index, float x, float y, double timeoffset)
     {
         if (!m_alreadyRegistered) { return; }
         if (index == 0)
@@ -143,6 +255,10 @@ namespace VMTDriver {
         default:
             break;
         }
+    }
+    void TrackedDeviceServerDriver::SetAutoUpdate(bool enable)
+    {
+        s_autoUpdate = enable;
     }
     EVRInitError TrackedDeviceServerDriver::Activate(uint32_t unObjectId)
     {
@@ -210,6 +326,11 @@ namespace VMTDriver {
     }
     DriverPose_t TrackedDeviceServerDriver::GetPose()
     {
+        if (s_autoUpdate) {
+            if (m_alreadyRegistered) {
+                RawPoseToPose();
+            }
+        }
         return m_pose;
     }
 
