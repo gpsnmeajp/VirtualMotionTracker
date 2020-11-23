@@ -95,6 +95,10 @@ RoomToDriver空間変換行列を設定し保存します。
 RoomToDriver空間変換行列を一時的に設定します。  
 こちらは一時的に適用され、再起動すると揮発します。  
 
+**/VMT/SetAutoPoseUpdate enable**  
+姿勢の自動更新をオンにします。(jointが自動追従するようになります)  
+enable 1=on, 0=off  
+
 ### ドライバ側応答
 **/VMT/Out/Log stat,msg**  
 stat(int): 状態(0=info,1=warn,2=err)  
