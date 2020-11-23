@@ -38,6 +38,7 @@ C#製管理ツールです。ドライバのインストールやアンインス
 |timeoffset|float| 補正時間。通常0です。|
 |x,y,z|float| 座標|
 |qx,qy,qz,qw|float| 回転(クォータニオン)|
+|serial|string| 対象デバイスシリアル番号(LHR-xxxxxxx)|
 
 ※種別(トラッカー or コントローラ)は初回のみ反映されます。  
 
@@ -53,6 +54,12 @@ Unityと同じ左手系、かつ、ドライバー空間(ルーム空間変換�
   
 **/VMT/Raw/Driver index, enable, timeoffset, x, y, z, qx, qy, qz, qw**  
 OpenVRの右手系、かつ、ドライバー空間(ルーム空間変換なし)で仮想トラッカーを操作します。  
+  
+**/VMT/Joint/Unity index, enable, timeoffset, x, y, z, qx, qy, qz, qw, serial**  
+Unityと同じ左手系、かつ、指定デバイス空間で仮想トラッカーを操作します。  
+  
+**/VMT/Joint/Driver index, enable, timeoffset, x, y, z, qx, qy, qz, qw, serial**  
+OpenVRの右手系、かつ、指定デバイス空間で仮想トラッカーを操作します。  
   
 ### 入力操作
 |種類|範囲|

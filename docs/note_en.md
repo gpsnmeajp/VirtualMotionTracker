@@ -87,6 +87,7 @@ Caution: If Port 39571 used be another application, Manager won't works.
 |timeoffset|float| TimeOffset, normaly 0|
 |x,y,z|float| Position|
 |qx,qy,qz,qw|float| Rotaion(Quaternion)|
+|serial|string| Target device serial(LHR-xxxxxxx)|
 
 ***Type(Tracker or Controller) only works in first registration time.***  
 
@@ -101,6 +102,12 @@ Unity lik Left-handed space, and Driver space.
   
 **/VMT/Raw/Driver index, enable, timeoffset, x, y, z, qx, qy, qz, qw**  
 Driver Right-handed space, and Driver space.  
+  
+**/VMT/Joint/Unity index, enable, timeoffset, x, y, z, qx, qy, qz, qw, serial**  
+Unity lik Left-handed space, and Traget device space.  
+  
+**/VMT/Joint/Driver index, enable, timeoffset, x, y, z, qx, qy, qz, qw, serial**  
+Driver Right-handed space, and Traget device space.  
   
 ### Input
 |Method|Range|
