@@ -144,6 +144,10 @@ Please do not send periodic. it writes setting on drive.
 Set Room Matrix temporary.  
 It is volatile.    
 
+**/VMT/SetAutoPoseUpdate enable**  
+Set Pose auto update. (for joint)  
+enable 1=on, 0=off  
+
 ### Drivers response  
 **/VMT/Out/Log stat,msg**  
 stat(int): Status(0=info,1=warn,2=err)  
