@@ -22,6 +22,8 @@ OpenVRのサンプルと仕様に沿った作りになっており、他のド�
 # [お問合せ先(Discordサーバー)](https://discord.gg/QkR2GM5)
 ハッシュタグは [#バーチャルモーショントラッカー](https://twitter.com/search?q=%23%E3%83%90%E3%83%BC%E3%83%81%E3%83%A3%E3%83%AB%E3%83%A2%E3%83%BC%E3%82%B7%E3%83%A7%E3%83%B3%E3%83%88%E3%83%A9%E3%83%83%E3%82%AB%E3%83%BC)
 
+twitterでのサポートは行っておりません
+
 <img src="https://github.com/gpsnmeajp/VirtualMotionTracker/blob/master/docs/vmt_vr.png?raw=true"></img>
 <img src="https://github.com/gpsnmeajp/VirtualMotionTracker/blob/master/docs/screen0.png?raw=true"></img>
 <img src="https://github.com/gpsnmeajp/VirtualMotionTracker/blob/master/docs/Architecture.png?raw=true"></img>
