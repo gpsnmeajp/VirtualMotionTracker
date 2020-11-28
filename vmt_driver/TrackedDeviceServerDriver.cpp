@@ -131,10 +131,20 @@ namespace VMTDriver {
                         0.0, 0.0, 0.0, 1.0;
 
                     Eigen::Translation3d pos(mm.translation());
-                    Eigen::Quaterniond rot(mm.rotation());
                     pose.vecWorldFromDriverTranslation[0] = pos.x();
                     pose.vecWorldFromDriverTranslation[1] = pos.y();
                     pose.vecWorldFromDriverTranslation[2] = pos.z();
+
+                    Eigen::Quaterniond rot;
+                    switch (m_rawPose.jointMode) {
+                    case 1: // 回転は追従させない（ジェイロIMUに都合のいいモード）
+                        rot = Eigen::Quaterniond(RoomToDriverAffin.rotation());
+                        break;
+                    default:
+                        rot = Eigen::Quaterniond(mm.rotation());
+                        break;
+                    }
+
                     pose.qWorldFromDriverRotation.x = rot.x();
                     pose.qWorldFromDriverRotation.y = rot.y();
                     pose.qWorldFromDriverRotation.z = rot.z();

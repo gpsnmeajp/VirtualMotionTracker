@@ -39,6 +39,7 @@ namespace VMTDriver {
         double qz;
         double qw;
         double timeoffset;
+        int jointMode;
         const char* root_sn;
     };
 

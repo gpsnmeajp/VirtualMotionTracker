@@ -30,7 +30,7 @@ SOFTWARE.
 
 namespace VMTDriver {
 	//•ÊƒXƒŒƒbƒh
-	void OSCReceiver::SetPose(bool roomToDriver, int idx, int enable, double x, double y, double z, double qx, double qy, double qz, double qw, double timeoffset, const char* root_sn)
+	void OSCReceiver::SetPose(bool roomToDriver, int idx, int enable, double x, double y, double z, double qx, double qy, double qz, double qw, double timeoffset, int jointMode, const char* root_sn)
 	{
 		RawPose pose;
 		pose.roomToDriver = roomToDriver;
@@ -44,6 +44,7 @@ namespace VMTDriver {
 		pose.qz = qz;
 		pose.qw = qw;
 		pose.timeoffset = timeoffset;
+		pose.jointMode = jointMode;
 		pose.root_sn = root_sn;
 
 		ServerTrackedDeviceProvider* sever = CommunicationManager::GetInstance()->GetServer();
@@ -138,25 +139,25 @@ namespace VMTDriver {
 			}
 			else if (adr == "/VMT/Joint/Unity")
 			{
-				int idx, enable;
+				int idx, enable, jointMode;
 				float timeoffset;
 				float x, y, z, qx, qy, qz, qw;
 				const char* root_sn = nullptr;
 				osc::ReceivedMessageArgumentStream args = m.ArgumentStream();
-				args >> idx >> enable >> timeoffset >> x >> y >> z >> qx >> qy >> qz >> qw >> root_sn >> osc::EndMessage;
+				args >> idx >> enable >> timeoffset >> x >> y >> z >> qx >> qy >> qz >> qw >> jointMode >> root_sn >> osc::EndMessage;
 
-				SetPose(false, idx, enable, x, y, -z, qx, qy, -qz, -qw, timeoffset, root_sn);
+				SetPose(false, idx, enable, x, y, -z, qx, qy, -qz, -qw, timeoffset, jointMode, root_sn);
 			}
 			else if (adr == "/VMT/Joint/Driver")
 			{
-				int idx, enable;
+				int idx, enable, jointMode;
 				float timeoffset;
 				float x, y, z, qx, qy, qz, qw;
 				const char* root_sn = nullptr;
 				osc::ReceivedMessageArgumentStream args = m.ArgumentStream();
-				args >> idx >> enable >> timeoffset >> x >> y >> z >> qx >> qy >> qz >> qw >> root_sn >> osc::EndMessage;
+				args >> idx >> enable >> timeoffset >> x >> y >> z >> qx >> qy >> qz >> qw >> jointMode >> root_sn >> osc::EndMessage;
 
-				SetPose(false, idx, enable, x, y, z, qx, qy, qz, qw, timeoffset, root_sn);
+				SetPose(false, idx, enable, x, y, z, qx, qy, qz, qw, timeoffset, jointMode, root_sn);
 			}
 			else if (adr == "/VMT/Input/Button")
 			{
