@@ -47,11 +47,11 @@ namespace VMTDriver {
 		pose.jointMode = jointMode;
 		pose.root_sn = root_sn;
 
-		ServerTrackedDeviceProvider* sever = CommunicationManager::GetInstance()->GetServer();
-		if (idx >= 0 && idx <= sever->GetDevices().size())
+		ServerTrackedDeviceProvider* server = CommunicationManager::GetInstance()->GetServer();
+		if (idx >= 0 && idx <= server->GetDevices().size())
 		{
-			sever->GetDevices()[idx].RegisterToVRSystem(enable); //1=Tracker, 2=controller
-			sever->GetDevices()[idx].SetRawPose(pose);
+			server->GetDevices()[idx].RegisterToVRSystem(enable); //1=Tracker, 2=controller
+			server->GetDevices()[idx].SetRawPose(pose);
 		}
 	}
 

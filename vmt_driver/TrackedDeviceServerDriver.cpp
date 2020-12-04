@@ -119,7 +119,8 @@ namespace VMTDriver {
 
                 if (SerialNumber.compare(m_rawPose.root_sn) != 0) continue;
 
-                pose.result = (ETrackingResult)(p->eTrackingResult);
+                if (pose.result != ETrackingResult::TrackingResult_Calibrating_OutOfRange)
+                    pose.result = (ETrackingResult)(p->eTrackingResult);
 
                 if (p->eTrackingResult == ETrackingResult::TrackingResult_Running_OK) {
                     float* m = (float*)p->mDeviceToAbsoluteTracking.m;
