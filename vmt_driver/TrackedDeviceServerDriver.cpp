@@ -138,11 +138,14 @@ namespace VMTDriver {
 
                     Eigen::Quaterniond rot;
                     switch (m_rawPose.jointMode) {
-                    case 1: // 回転は追従させない（ジェイロIMUに都合のいいモード）
+                    case JointMode_t::JointPositionJointRotation:
+                        rot = Eigen::Quaterniond(mm.rotation());
+                        break;
+                    case JointMode_t::JointPositionRoomRotation: // IMUトラッカー用（重力・地磁気共にジョイント元の状態に寄らずにIMUの座標系で取得される）
                         rot = Eigen::Quaterniond(RoomToDriverAffin.rotation());
                         break;
                     default:
-                        rot = Eigen::Quaterniond(mm.rotation());
+                        rot = Eigen::Quaterniond::Identity();
                         break;
                     }
 
