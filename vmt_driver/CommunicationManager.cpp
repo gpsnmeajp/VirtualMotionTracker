@@ -29,8 +29,12 @@ SOFTWARE.
 #include "DirectOSC.h"
 
 namespace VMTDriver {
-	//åˆ¥ã‚¹ãƒ¬ãƒƒãƒ‰
-	void OSCReceiver::SetPose(bool roomToDriver, int idx, int enable, double x, double y, double z, double qx, double qy, double qz, double qw, double timeoffset, int jointMode, const char* root_sn)
+	//•ÊƒXƒŒƒbƒh
+	void OSCReceiver::SetPose(bool roomToDriver, int idx, int enable,
+	                          double x, double y, double z,
+	                          double qx, double qy, double qz, double qw,
+	                          double timeoffset,
+	                          const char* root_sn, ReferMode_t mode)
 	{
 		RawPose pose;
 		pose.roomToDriver = roomToDriver;
@@ -44,7 +48,7 @@ namespace VMTDriver {
 		pose.qz = qz;
 		pose.qw = qw;
 		pose.timeoffset = timeoffset;
-		pose.jointMode = static_cast<JointMode_t>(jointMode);
+		pose.mode = mode;
 		pose.root_sn = root_sn;
 
 		ServerTrackedDeviceProvider* server = CommunicationManager::GetInstance()->GetServer();
@@ -92,7 +96,7 @@ namespace VMTDriver {
 	}
 
 
-	//åˆ¥ã‚¹ãƒ¬ãƒƒãƒ‰
+	//•ÊƒXƒŒƒbƒh
 	void OSCReceiver::ProcessMessage(const osc::ReceivedMessage& m, const IpEndpointName& remoteEndpoint)
 	{
 		try {
@@ -139,25 +143,47 @@ namespace VMTDriver {
 			}
 			else if (adr == "/VMT/Joint/Unity")
 			{
-				int idx, enable, jointMode;
+				int idx, enable;
 				float timeoffset;
 				float x, y, z, qx, qy, qz, qw;
 				const char* root_sn = nullptr;
 				osc::ReceivedMessageArgumentStream args = m.ArgumentStream();
-				args >> idx >> enable >> timeoffset >> x >> y >> z >> qx >> qy >> qz >> qw >> jointMode >> root_sn >> osc::EndMessage;
+				args >> idx >> enable >> timeoffset >> x >> y >> z >> qx >> qy >> qz >> qw >> root_sn >> osc::EndMessage;
 
-				SetPose(false, idx, enable, x, y, -z, qx, qy, -qz, -qw, timeoffset, jointMode, root_sn);
+				SetPose(false, idx, enable, x, y, -z, qx, qy, -qz, -qw, timeoffset, root_sn, ReferMode_t::Joint);
 			}
 			else if (adr == "/VMT/Joint/Driver")
 			{
-				int idx, enable, jointMode;
+				int idx, enable;
 				float timeoffset;
 				float x, y, z, qx, qy, qz, qw;
 				const char* root_sn = nullptr;
 				osc::ReceivedMessageArgumentStream args = m.ArgumentStream();
-				args >> idx >> enable >> timeoffset >> x >> y >> z >> qx >> qy >> qz >> qw >> jointMode >> root_sn >> osc::EndMessage;
+				args >> idx >> enable >> timeoffset >> x >> y >> z >> qx >> qy >> qz >> qw >> root_sn >> osc::EndMessage;
 
-				SetPose(false, idx, enable, x, y, z, qx, qy, qz, qw, timeoffset, jointMode, root_sn);
+				SetPose(false, idx, enable, x, y, z, qx, qy, qz, qw, timeoffset, root_sn, ReferMode_t::Joint);
+			}
+			else if (adr == "/VMT/Follow/Unity")
+			{
+				int idx, enable;
+				float timeoffset;
+				float x, y, z, qx, qy, qz, qw;
+				const char* root_sn = nullptr;
+				osc::ReceivedMessageArgumentStream args = m.ArgumentStream();
+				args >> idx >> enable >> timeoffset >> x >> y >> z >> qx >> qy >> qz >> qw >> root_sn >> osc::EndMessage;
+
+				SetPose(false, idx, enable, x, y, -z, qx, qy, -qz, -qw, timeoffset, root_sn, ReferMode_t::Follow);
+			}
+			else if (adr == "/VMT/Follow/Driver")
+			{
+				int idx, enable;
+				float timeoffset;
+				float x, y, z, qx, qy, qz, qw;
+				const char* root_sn = nullptr;
+				osc::ReceivedMessageArgumentStream args = m.ArgumentStream();
+				args >> idx >> enable >> timeoffset >> x >> y >> z >> qx >> qy >> qz >> qw >> root_sn >> osc::EndMessage;
+
+				SetPose(false, idx, enable, x, y, z, qx, qy, qz, qw, timeoffset, root_sn, ReferMode_t::Follow);
 			}
 			else if (adr == "/VMT/Input/Button")
 			{
@@ -203,11 +229,11 @@ namespace VMTDriver {
 			}
 			else if (adr == "/VMT/Reset")
 			{
-			//å…¨ãƒˆãƒ©ãƒƒã‚«ãƒ¼ã‚’0ã«ã™ã‚‹
+			//‘Sƒgƒ‰ƒbƒJ[‚ð0‚É‚·‚é
 				ServerTrackedDeviceProvider* sever = CommunicationManager::GetInstance()->GetServer();
 				for (int i = 0; i < sever->GetDevices().size(); i++)
 				{
-					sever->GetDevices()[i].Reset(); //ã™ã§ã«VRã‚·ã‚¹ãƒ†ãƒ ã«ç™»éŒ²æ¸ˆã¿ã®ã‚‚ã®ã ã‘é€šçŸ¥ã•ã‚Œã‚‹
+					sever->GetDevices()[i].Reset(); //‚·‚Å‚ÉVRƒVƒXƒeƒ€‚É“o˜^Ï‚Ý‚Ì‚à‚Ì‚¾‚¯’Ê’m‚³‚ê‚é
 				}
 			}
 			else if (adr == "/VMT/LoadSetting")
@@ -344,7 +370,7 @@ namespace VMTDriver {
 	}
 	void CommunicationManager::Process()
 	{
-		//å®šæœŸçš„ã«ç”Ÿå­˜ä¿¡å·ã‚’é€ä¿¡
+		//’èŠú“I‚É¶‘¶M†‚ð‘—M
 		if (m_frame > frameCycle) {
 			OSCReceiver::SendAlive();
 			m_frame = 0;

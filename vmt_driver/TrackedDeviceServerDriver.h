@@ -27,15 +27,6 @@ SOFTWARE.
 namespace VMTDriver {
     const HmdQuaternion_t HmdQuaternion_Identity{ 1,0,0,0 };
 
-    enum JointMode_t : int {
-        JointPositionJointRotation = 0x00000000,
-        JointPositionRoomRotation = 0x00000001,
-        
-        // No reason to implements
-        // RoomPositionJointRotation = 0x00000100,
-        // RoomPositionRoomRotation = 0x00000101,
-    };
-
     struct RawPose {
         bool roomToDriver;
         int idx;
@@ -48,11 +39,11 @@ namespace VMTDriver {
         double qz;
         double qw;
         double timeoffset;
-        JointMode_t jointMode;
+        ReferMode_t mode;
         const char* root_sn;
     };
 
-    //蛟九�縺ｮ繝�繝舌う繧ｹ
+    //個々のデバイス
     class TrackedDeviceServerDriver : public ITrackedDeviceServerDriver
     {
     private:
