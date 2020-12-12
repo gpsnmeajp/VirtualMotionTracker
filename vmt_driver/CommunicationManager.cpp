@@ -30,7 +30,11 @@ SOFTWARE.
 
 namespace VMTDriver {
 	//別スレッド
-	void OSCReceiver::SetPose(bool roomToDriver, int idx, int enable, double x, double y, double z, double qx, double qy, double qz, double qw, double timeoffset, const char* root_sn)
+	void OSCReceiver::SetPose(bool roomToDriver, int idx, int enable,
+	                          double x, double y, double z,
+	                          double qx, double qy, double qz, double qw,
+	                          double timeoffset,
+	                          const char* root_sn, ReferMode_t mode)
 	{
 		RawPose pose;
 		pose.roomToDriver = roomToDriver;
@@ -44,13 +48,14 @@ namespace VMTDriver {
 		pose.qz = qz;
 		pose.qw = qw;
 		pose.timeoffset = timeoffset;
+		pose.mode = mode;
 		pose.root_sn = root_sn;
 
-		ServerTrackedDeviceProvider* sever = CommunicationManager::GetInstance()->GetServer();
-		if (idx >= 0 && idx <= sever->GetDevices().size())
+		ServerTrackedDeviceProvider* server = CommunicationManager::GetInstance()->GetServer();
+		if (idx >= 0 && idx <= server->GetDevices().size())
 		{
-			sever->GetDevices()[idx].RegisterToVRSystem(enable); //1=Tracker, 2=controller
-			sever->GetDevices()[idx].SetRawPose(pose);
+			server->GetDevices()[idx].RegisterToVRSystem(enable); //1=Tracker, 2=controller
+			server->GetDevices()[idx].SetRawPose(pose);
 		}
 	}
 
@@ -145,7 +150,7 @@ namespace VMTDriver {
 				osc::ReceivedMessageArgumentStream args = m.ArgumentStream();
 				args >> idx >> enable >> timeoffset >> x >> y >> z >> qx >> qy >> qz >> qw >> root_sn >> osc::EndMessage;
 
-				SetPose(false, idx, enable, x, y, -z, qx, qy, -qz, -qw, timeoffset, root_sn);
+				SetPose(false, idx, enable, x, y, -z, qx, qy, -qz, -qw, timeoffset, root_sn, ReferMode_t::Joint);
 			}
 			else if (adr == "/VMT/Joint/Driver")
 			{
@@ -156,7 +161,29 @@ namespace VMTDriver {
 				osc::ReceivedMessageArgumentStream args = m.ArgumentStream();
 				args >> idx >> enable >> timeoffset >> x >> y >> z >> qx >> qy >> qz >> qw >> root_sn >> osc::EndMessage;
 
-				SetPose(false, idx, enable, x, y, z, qx, qy, qz, qw, timeoffset, root_sn);
+				SetPose(false, idx, enable, x, y, z, qx, qy, qz, qw, timeoffset, root_sn, ReferMode_t::Joint);
+			}
+			else if (adr == "/VMT/Follow/Unity")
+			{
+				int idx, enable;
+				float timeoffset;
+				float x, y, z, qx, qy, qz, qw;
+				const char* root_sn = nullptr;
+				osc::ReceivedMessageArgumentStream args = m.ArgumentStream();
+				args >> idx >> enable >> timeoffset >> x >> y >> z >> qx >> qy >> qz >> qw >> root_sn >> osc::EndMessage;
+
+				SetPose(false, idx, enable, x, y, -z, qx, qy, -qz, -qw, timeoffset, root_sn, ReferMode_t::Follow);
+			}
+			else if (adr == "/VMT/Follow/Driver")
+			{
+				int idx, enable;
+				float timeoffset;
+				float x, y, z, qx, qy, qz, qw;
+				const char* root_sn = nullptr;
+				osc::ReceivedMessageArgumentStream args = m.ArgumentStream();
+				args >> idx >> enable >> timeoffset >> x >> y >> z >> qx >> qy >> qz >> qw >> root_sn >> osc::EndMessage;
+
+				SetPose(false, idx, enable, x, y, z, qx, qy, qz, qw, timeoffset, root_sn, ReferMode_t::Follow);
 			}
 			else if (adr == "/VMT/Input/Button")
 			{
@@ -202,7 +229,7 @@ namespace VMTDriver {
 			}
 			else if (adr == "/VMT/Reset")
 			{
-				//全トラッカーを0にする
+			//全トラッカーを0にする
 				ServerTrackedDeviceProvider* sever = CommunicationManager::GetInstance()->GetServer();
 				for (int i = 0; i < sever->GetDevices().size(); i++)
 				{

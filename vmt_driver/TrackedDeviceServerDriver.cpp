@@ -86,7 +86,7 @@ namespace VMTDriver {
         pose.qRotation.z = m_rawPose.qz;
         pose.qRotation.w = m_rawPose.qw;
 
-        if (m_rawPose.root_sn == nullptr) {
+        if (m_rawPose.mode == ReferMode_t::None) {
             //ワールド・ドライバ変換行列を設定
             Eigen::Translation3d pos(RoomToDriverAffin.translation());
             Eigen::Quaterniond rot(RoomToDriverAffin.rotation());
@@ -97,11 +97,10 @@ namespace VMTDriver {
             pose.qWorldFromDriverRotation.y = rot.y();
             pose.qWorldFromDriverRotation.z = rot.z();
             pose.qWorldFromDriverRotation.w = rot.w();
-        }
-        else {
-            // 既存のトラッキングデバイスの座標系でぶら下げる
+        } else {
+            // 既存のトラッキングデバイスの座標系を参照する
 
-            // ぶら下げる元のPoseを取得
+            // 参照元のPoseを取得
             vr::TrackedDevicePose_t poses[k_unMaxTrackedDeviceCount];
             IVRServerDriverHost* host = VRServerDriverHost();
             host->GetRawTrackedDevicePoses(0.0f, poses, k_unMaxTrackedDeviceCount);
@@ -119,22 +118,39 @@ namespace VMTDriver {
 
                 if (SerialNumber.compare(m_rawPose.root_sn) != 0) continue;
 
-                pose.result = (ETrackingResult)(p->eTrackingResult);
+                // 参照元のトラッキングステータスを継承させる
+                if (m_rawPose.enable != 0) {
+                    pose.result = p->eTrackingResult;
+                }
 
                 if (p->eTrackingResult == ETrackingResult::TrackingResult_Running_OK) {
                     float* m = (float*)p->mDeviceToAbsoluteTracking.m;
 
-                    Eigen::Affine3d mm;
-                    mm.matrix() << m[0 * 4 + 0], m[0 * 4 + 1], m[0 * 4 + 2], m[0 * 4 + 3],
+                    Eigen::Affine3d rootDeviceToAbsoluteTracking;
+                    rootDeviceToAbsoluteTracking.matrix() <<
+                        m[0 * 4 + 0], m[0 * 4 + 1], m[0 * 4 + 2], m[0 * 4 + 3],
                         m[1 * 4 + 0], m[1 * 4 + 1], m[1 * 4 + 2], m[1 * 4 + 3],
                         m[2 * 4 + 0], m[2 * 4 + 1], m[2 * 4 + 2], m[2 * 4 + 3],
                         0.0, 0.0, 0.0, 1.0;
 
-                    Eigen::Translation3d pos(mm.translation());
-                    Eigen::Quaterniond rot(mm.rotation());
+                    Eigen::Translation3d pos(rootDeviceToAbsoluteTracking.translation());
                     pose.vecWorldFromDriverTranslation[0] = pos.x();
                     pose.vecWorldFromDriverTranslation[1] = pos.y();
                     pose.vecWorldFromDriverTranslation[2] = pos.z();
+
+                    Eigen::Quaterniond rot;
+                    switch (m_rawPose.mode) {
+                    case ReferMode_t::Joint:
+                        rot = Eigen::Quaterniond(rootDeviceToAbsoluteTracking.rotation());
+                        break;
+                    case ReferMode_t::Follow:
+                        rot = Eigen::Quaterniond(RoomToDriverAffin.rotation());
+                        break;
+                    default:
+                        rot = Eigen::Quaterniond::Identity();
+                        break;
+                    }
+
                     pose.qWorldFromDriverRotation.x = rot.x();
                     pose.qWorldFromDriverRotation.y = rot.y();
                     pose.qWorldFromDriverRotation.z = rot.z();
