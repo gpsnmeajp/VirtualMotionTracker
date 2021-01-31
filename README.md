@@ -20,7 +20,7 @@ OpenVRのサンプルと仕様に沿った作りになっており、他のド�
 **Only works on 64bit Windows**  
 
 **Steam VRがHMDを認識していない場合、利用できません。(HMD未接続、Oculus Link起動前など)**  
-**It should not work when you are not connect HMDx. disconnected, not started Oculus Link)**  
+**It should not work when you are not connect HMD. (Ex. disconnected, not started Oculus Link)**  
 
 # [お問合せ先(Discordサーバー)](https://discord.gg/QkR2GM5)
 ハッシュタグは [#バーチャルモーショントラッカー](https://twitter.com/search?q=%23%E3%83%90%E3%83%BC%E3%83%81%E3%83%A3%E3%83%AB%E3%83%A2%E3%83%BC%E3%82%B7%E3%83%A7%E3%83%B3%E3%83%88%E3%83%A9%E3%83%83%E3%82%AB%E3%83%BC)
