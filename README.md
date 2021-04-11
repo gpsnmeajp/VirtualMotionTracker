@@ -26,6 +26,9 @@ OpenVRのサンプルと仕様に沿った作りになっており、他のド�
 説明書を読んで理解できない場合は、使用されないことを勧めします。  
 Please don't use if you can not understand manual.  
 
+VMT_005までにあった"起動しない"などのトラブルに関しては、VMT_006を使用するとエラーメッセージが表示されます。  
+If you have trouble for VMT 005 such as not starting, use VMT 006 or after will shows error message.  
+
 <img src="https://github.com/gpsnmeajp/VirtualMotionTracker/blob/master/docs/vmt_vr.png?raw=true"></img>
 <img src="https://github.com/gpsnmeajp/VirtualMotionTracker/blob/master/docs/screen0.png?raw=true"></img>
 <img src="https://github.com/gpsnmeajp/VirtualMotionTracker/blob/master/docs/Architecture.png?raw=true"></img>
