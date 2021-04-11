@@ -86,7 +86,8 @@ namespace VMTDriver {
         pose.qRotation.z = m_rawPose.qz;
         pose.qRotation.w = m_rawPose.qw;
 
-        if (m_rawPose.mode == ReferMode_t::None) {
+        //Jointでない場合
+        if (m_rawPose.mode == ReferMode_t::None || m_rawPose.root_sn == nullptr) {
             //ワールド・ドライバ変換行列を設定
             Eigen::Translation3d pos(RoomToDriverAffin.translation());
             Eigen::Quaterniond rot(RoomToDriverAffin.rotation());
@@ -98,6 +99,7 @@ namespace VMTDriver {
             pose.qWorldFromDriverRotation.z = rot.z();
             pose.qWorldFromDriverRotation.w = rot.w();
         } else {
+            //Joint時
             // 既存のトラッキングデバイスの座標系を参照する
 
             // 参照元のPoseを取得
@@ -140,14 +142,12 @@ namespace VMTDriver {
 
                     Eigen::Quaterniond rot;
                     switch (m_rawPose.mode) {
-                    case ReferMode_t::Joint:
-                        rot = Eigen::Quaterniond(rootDeviceToAbsoluteTracking.rotation());
-                        break;
                     case ReferMode_t::Follow:
                         rot = Eigen::Quaterniond(RoomToDriverAffin.rotation());
                         break;
+                    case ReferMode_t::Joint:
                     default:
-                        rot = Eigen::Quaterniond::Identity();
+                        rot = Eigen::Quaterniond(rootDeviceToAbsoluteTracking.rotation());
                         break;
                     }
 
