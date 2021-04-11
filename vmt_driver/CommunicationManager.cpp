@@ -29,7 +29,7 @@ SOFTWARE.
 #include "DirectOSC.h"
 
 namespace VMTDriver {
-	//•ÊƒXƒŒƒbƒh
+	//åˆ¥ã‚¹ãƒ¬ãƒƒãƒ‰
 	void OSCReceiver::SetPose(bool roomToDriver, int idx, int enable,
 	                          double x, double y, double z,
 	                          double qx, double qy, double qz, double qw,
@@ -96,7 +96,7 @@ namespace VMTDriver {
 	}
 
 
-	//•ÊƒXƒŒƒbƒh
+	//åˆ¥ã‚¹ãƒ¬ãƒƒãƒ‰
 	void OSCReceiver::ProcessMessage(const osc::ReceivedMessage& m, const IpEndpointName& remoteEndpoint)
 	{
 		try {
@@ -229,11 +229,11 @@ namespace VMTDriver {
 			}
 			else if (adr == "/VMT/Reset")
 			{
-			//‘Sƒgƒ‰ƒbƒJ[‚ð0‚É‚·‚é
+			//å…¨ãƒˆãƒ©ãƒƒã‚«ãƒ¼ã‚’0ã«ã™ã‚‹
 				ServerTrackedDeviceProvider* sever = CommunicationManager::GetInstance()->GetServer();
 				for (int i = 0; i < sever->GetDevices().size(); i++)
 				{
-					sever->GetDevices()[i].Reset(); //‚·‚Å‚ÉVRƒVƒXƒeƒ€‚É“o˜^Ï‚Ý‚Ì‚à‚Ì‚¾‚¯’Ê’m‚³‚ê‚é
+					sever->GetDevices()[i].Reset(); //ã™ã§ã«VRã‚·ã‚¹ãƒ†ãƒ ã«ç™»éŒ²æ¸ˆã¿ã®ã‚‚ã®ã ã‘é€šçŸ¥ã•ã‚Œã‚‹
 				}
 			}
 			else if (adr == "/VMT/LoadSetting")
@@ -370,7 +370,7 @@ namespace VMTDriver {
 	}
 	void CommunicationManager::Process()
 	{
-		//’èŠú“I‚É¶‘¶M†‚ð‘—M
+		//å®šæœŸçš„ã«ç”Ÿå­˜ä¿¡å·ã‚’é€ä¿¡
 		if (m_frame > frameCycle) {
 			OSCReceiver::SendAlive();
 			m_frame = 0;

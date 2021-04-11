@@ -43,7 +43,7 @@ namespace VMTDriver {
         const char* root_sn;
     };
 
-    //個々のデバイス
+    //蛟九�縺ｮ繝�繝舌う繧ｹ
     class TrackedDeviceServerDriver : public ITrackedDeviceServerDriver
     {
     private:

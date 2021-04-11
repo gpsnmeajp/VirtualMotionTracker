@@ -52,9 +52,9 @@ namespace VMTDriver {
 	class Log;
 
 	enum ReferMode_t : int {
-		None = 0,   // ƒ‹[ƒ€À•W‚ðŽg—p‚·‚é
-		Joint = 1,  // Position, Rotation‹¤‚É‘¼‚Ìƒgƒ‰ƒbƒJ[ƒfƒoƒCƒX‚ÌÀ•WŒn‚ðŽQÆ‚·‚é
-		Follow = 2, // Position‚Í‘¼‚Ìƒgƒ‰ƒbƒJ[ƒfƒoƒCƒX‚ðŽQÆ‚·‚é‚ªARotation‚Íƒ‹[ƒ€À•W‚ðŽQÆ‚·‚é
+		None = 0,   // ãƒ«ãƒ¼ãƒ åº§æ¨™ã‚’ä½¿ç”¨ã™ã‚‹
+		Joint = 1,  // Position, Rotationå…±ã«ä»–ã®ãƒˆãƒ©ãƒƒã‚«ãƒ¼ãƒ‡ãƒã‚¤ã‚¹ã®åº§æ¨™ç³»ã‚’å‚ç…§ã™ã‚‹
+		Follow = 2, // Positionã¯ä»–ã®ãƒˆãƒ©ãƒƒã‚«ãƒ¼ãƒ‡ãƒã‚¤ã‚¹ã‚’å‚ç…§ã™ã‚‹ãŒã€Rotationã¯ãƒ«ãƒ¼ãƒ åº§æ¨™ã‚’å‚ç…§ã™ã‚‹
 	};
 }
 

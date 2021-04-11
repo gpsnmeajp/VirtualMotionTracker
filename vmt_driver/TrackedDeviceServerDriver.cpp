@@ -77,7 +77,7 @@ namespace VMTDriver {
         Eigen::Affine3d RoomToDriverAffin;
         RoomToDriverAffin = CommunicationManager::GetInstance()->GetRoomToDriverMatrix();
 
-        //À•W‚ğİ’è
+        //åº§æ¨™ã‚’è¨­å®š
         pose.vecPosition[0] = m_rawPose.x;
         pose.vecPosition[1] = m_rawPose.y;
         pose.vecPosition[2] = m_rawPose.z;
@@ -86,9 +86,9 @@ namespace VMTDriver {
         pose.qRotation.z = m_rawPose.qz;
         pose.qRotation.w = m_rawPose.qw;
 
-        //Joint‚Å‚È‚¢ê‡
+        //Jointã§ãªã„å ´åˆ
         if (m_rawPose.mode == ReferMode_t::None || m_rawPose.root_sn == nullptr) {
-            //ƒ[ƒ‹ƒhEƒhƒ‰ƒCƒo•ÏŠ·s—ñ‚ğİ’è
+            //ãƒ¯ãƒ¼ãƒ«ãƒ‰ãƒ»ãƒ‰ãƒ©ã‚¤ãƒå¤‰æ›è¡Œåˆ—ã‚’è¨­å®š
             Eigen::Translation3d pos(RoomToDriverAffin.translation());
             Eigen::Quaterniond rot(RoomToDriverAffin.rotation());
             pose.vecWorldFromDriverTranslation[0] = pos.x();
@@ -99,10 +99,10 @@ namespace VMTDriver {
             pose.qWorldFromDriverRotation.z = rot.z();
             pose.qWorldFromDriverRotation.w = rot.w();
         } else {
-            //Joint
-            // Šù‘¶‚Ìƒgƒ‰ƒbƒLƒ“ƒOƒfƒoƒCƒX‚ÌÀ•WŒn‚ğQÆ‚·‚é
+            //Jointæ™‚
+            // æ—¢å­˜ã®ãƒˆãƒ©ãƒƒã‚­ãƒ³ã‚°ãƒ‡ãƒã‚¤ã‚¹ã®åº§æ¨™ç³»ã‚’å‚ç…§ã™ã‚‹
 
-            // QÆŒ³‚ÌPose‚ğæ“¾
+            // å‚ç…§å…ƒã®Poseã‚’å–å¾—
             vr::TrackedDevicePose_t poses[k_unMaxTrackedDeviceCount];
             IVRServerDriverHost* host = VRServerDriverHost();
             host->GetRawTrackedDevicePoses(0.0f, poses, k_unMaxTrackedDeviceCount);
@@ -120,7 +120,7 @@ namespace VMTDriver {
 
                 if (SerialNumber.compare(m_rawPose.root_sn) != 0) continue;
 
-                // QÆŒ³‚Ìƒgƒ‰ƒbƒLƒ“ƒOƒXƒe[ƒ^ƒX‚ğŒp³‚³‚¹‚é
+                // å‚ç…§å…ƒã®ãƒˆãƒ©ãƒƒã‚­ãƒ³ã‚°ã‚¹ãƒ†ãƒ¼ã‚¿ã‚¹ã‚’ç¶™æ‰¿ã•ã›ã‚‹
                 if (m_rawPose.enable != 0) {
                     pose.result = p->eTrackingResult;
                 }
@@ -251,7 +251,7 @@ namespace VMTDriver {
         pose.result = ETrackingResult::TrackingResult_Calibrating_OutOfRange;
         SetPose(pose);
 
-        //‘Só‘Ô‚ğ‰Šú‰»‚·‚é
+        //å…¨çŠ¶æ…‹ã‚’åˆæœŸåŒ–ã™ã‚‹
         for (int i = 0; i < 16; i++) {
             UpdateButtonInput(i, false, 0);
             UpdateTriggerInput(i, 0, 0);
@@ -263,7 +263,7 @@ namespace VMTDriver {
         switch (VREvent.eventType)
         {
         case EVREventType::VREvent_Input_HapticVibration:
-            //ƒoƒCƒuƒŒ[ƒVƒ‡ƒ“
+            //ãƒã‚¤ãƒ–ãƒ¬ãƒ¼ã‚·ãƒ§ãƒ³
             if (VREvent.data.hapticVibration.componentHandle == HapticComponent) {
                 OSCReceiver::SendHaptic(m_index, VREvent.data.hapticVibration.fFrequency, VREvent.data.hapticVibration.fAmplitude, VREvent.data.hapticVibration.fDurationSeconds);
             }
