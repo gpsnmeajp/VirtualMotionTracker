@@ -25,11 +25,11 @@ SOFTWARE.
 #include "dllmain.h"
 
 namespace VMTDriver {
-    //�󋵂Ɋ֌W�Ȃ������f�o�C�X�Ȃǂ��Ď����邽�߂�WatchDog
+    //状況に関係なく物理デバイスなどを監視するためのWatchDog
     class VRWatchdogProvider : public IVRWatchdogProvider
     {
     public:
-        // IVRWatchdogProvider ����Čp������܂���
+        // IVRWatchdogProvider を介して継承されました
         virtual EVRInitError Init(IVRDriverContext* pDriverContext) override;
         virtual void Cleanup() override;
     };

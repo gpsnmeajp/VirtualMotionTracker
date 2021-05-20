@@ -56,9 +56,9 @@ namespace vmt_manager
     /// <summary>
     /// MainWindow.xaml の相互作用ロジック
     /// </summary>
-public partial class MainWindow : Window
+    public partial class MainWindow : Window
     {
-        const string Version = "VMT_005";
+        const string Version = "VMT_006";
         private DispatcherTimer dispatcherTimer;
         Random rnd;
         string title = "";
@@ -83,21 +83,58 @@ public partial class MainWindow : Window
                 ManagerVersion.Text = Version;
                 DriverVersion.Text = "-";
 
-                dispatcherTimer = new DispatcherTimer();
-                dispatcherTimer.Interval = new TimeSpan(0, 0, 0, 0, 100);
-                dispatcherTimer.Tick += new EventHandler(GenericTimer);
-                dispatcherTimer.Start();
-
                 rnd = new Random();
 
                 util = new EasyOpenVRUtil();
                 if (!util.StartOpenVR())
                 {
+                    var result = MessageBox.Show("Steam VR not ready. Maybe not ready for HMD or Tracking system?\nStream VRが利用できません。HMDやトラッキングシステムが利用できない状態の可能性があります。", title, MessageBoxButton.OK, MessageBoxImage.Error);
                     Close();
                     return;
                 }
 
                 osc = new OSC("127.0.0.1", 39571, 39570, OnBundle, OnMessage);
+
+                //セーフモードチェック
+                EVRSettingsError eVRSettingsError = EVRSettingsError.None;
+                bool safemode = OpenVR.Settings.GetBool("driver_vmt", OpenVR.k_pch_Driver_BlockedBySafemode_Bool, ref eVRSettingsError);
+                if (eVRSettingsError == EVRSettingsError.None && safemode)
+                {
+                    var result = MessageBox.Show("SteamVR runnning on safe mode and VMT has blocked.\nPlease unblock, and restart SteamVR.\n\nSteamVRがセーフモードで動作し、VMTがブロックされています。\nブロックを解除し、SteamVRを再起動してください。", title, MessageBoxButton.OK, MessageBoxImage.Error);
+                }
+                //Enableチェック
+                eVRSettingsError = EVRSettingsError.None;
+                bool enable = OpenVR.Settings.GetBool("driver_vmt", OpenVR.k_pch_Driver_Enable_Bool, ref eVRSettingsError);
+                if (eVRSettingsError == EVRSettingsError.None && !enable)
+                {
+                    var result = MessageBox.Show("VMT has disabled in Steam VR setting.\nPlease enable, and restart SteamVR.\n\nVMTはSteamVR上で無効に設定されています。\n有効にし、SteamVRを再起動してください。", title, MessageBoxButton.OK, MessageBoxImage.Error);
+                }
+
+                //デバッグのためにセーフモードを有効化
+                //OpenVR.Settings.SetBool(OpenVR.k_pch_SteamVR_Section, OpenVR.k_pch_SteamVR_EnableSafeMode, true,ref eVRSettingsError);
+
+                //タイマー起動
+                dispatcherTimer = new DispatcherTimer();
+                dispatcherTimer.Interval = new TimeSpan(0, 0, 0, 0, 100);
+                dispatcherTimer.Tick += new EventHandler(GenericTimer);
+                dispatcherTimer.Start();
+
+                string[] args = System.Environment.GetCommandLineArgs();
+                if (args.Length > 1)
+                {
+                    if (args[1] == "install")
+                    {
+                        InstallButton(null, null);
+                        Close();
+                        return;
+                    }
+                    if (args[1] == "uninstall")
+                    {
+                        UninstallButton(null, null);
+                        Close();
+                        return;
+                    }
+                }
             }
             catch (Exception ex)
             {
@@ -105,46 +142,13 @@ public partial class MainWindow : Window
                 Close();
                 return;
             }
-
-            string[] args = System.Environment.GetCommandLineArgs();
-            if (args.Length > 1) {
-                if (args[1] == "install")
-                {
-                    InstallButton(null, null);
-                    Close();
-                    return;
-                }
-                if (args[1] == "uninstall")
-                {
-                    UninstallButton(null, null);
-                    Close();
-                    return;
-                }
-            }
-
-            //セーフモードチェック
-            EVRSettingsError eVRSettingsError = EVRSettingsError.None;
-            bool safemode = OpenVR.Settings.GetBool("driver_vmt", OpenVR.k_pch_Driver_BlockedBySafemode_Bool, ref eVRSettingsError);
-            if (eVRSettingsError == EVRSettingsError.None && safemode)
-            {
-                var result = MessageBox.Show("SteamVR runnning on safe mode and VMT has blocked.\nPlease unblock, and restart SteamVR.\n\nSteamVRがセーフモードで動作し、VMTがブロックされています。\nブロックを解除し、SteamVRを再起動してください。", title, MessageBoxButton.OK, MessageBoxImage.Error);
-            }
-            //Enableチェック
-            eVRSettingsError = EVRSettingsError.None;
-            bool enable = OpenVR.Settings.GetBool("driver_vmt", OpenVR.k_pch_Driver_Enable_Bool, ref eVRSettingsError);
-            if (eVRSettingsError == EVRSettingsError.None && !enable)
-            {
-                var result = MessageBox.Show("VMT has disabled in Steam VR setting.\nPlease enable, and restart SteamVR.\n\nVMTはSteamVR上で無効に設定されています。\n有効にし、SteamVRを再起動してください。", title, MessageBoxButton.OK, MessageBoxImage.Error);
-            }
-
-            //デバッグのためにセーフモードを有効化
-            //OpenVR.Settings.SetBool(OpenVR.k_pch_SteamVR_Section, OpenVR.k_pch_SteamVR_EnableSafeMode, true,ref eVRSettingsError);
         }
 
         private void OnMessage(OscMessage message)
         {
             //エラー時はそれ以上受信しない
-            if (ReceiveError) {
+            if (ReceiveError)
+            {
                 return;
             }
             try
@@ -176,7 +180,8 @@ public partial class MainWindow : Window
                     this.Dispatcher.Invoke(() =>
                     {
                         DriverVersion.Text = (string)message[0];
-                        if (message.Count > 1 && message[1] is string) {
+                        if (message.Count > 1 && message[1] is string)
+                        {
                             installPath = (string)message[1];
                         }
 
@@ -212,7 +217,7 @@ public partial class MainWindow : Window
             catch (Exception ex)
             {
                 ReceiveError = true;
-                MessageBox.Show(ex.Message+"\n"+ex.StackTrace, title);
+                MessageBox.Show(ex.Message + "\n" + ex.StackTrace, title);
                 this.Dispatcher.Invoke(() =>
                 {
                     Close();
@@ -240,77 +245,95 @@ public partial class MainWindow : Window
 
         private void GenericTimer(object sender, EventArgs e)
         {
-            HmdMatrix34_t m = new HmdMatrix34_t();
-            OpenVR.ChaperoneSetup.GetWorkingStandingZeroPoseToRawTrackingPose(ref m);
-
-            RoomMatrixTextBox.Text =
-                String.Format("{0:0.00}, {1:0.00}, {2:0.00}, {3:0.00}\n{4:0.00}, {5:0.00}, {6:0.00}, {7:0.00}\n{8:0.00}, {9:0.00}, {10:0.00}, {11:0.00}\n", m.m0, m.m1, m.m2, m.m3, m.m4, m.m5, m.m6, m.m7, m.m8, m.m9, m.m10,m.m11);
-            if (
-                m.m0 == 0 &&
-                m.m1 == 0 &&
-                m.m2 == 0 &&
-                m.m3 == 0 &&
-                m.m4 == 0 &&
-                m.m5 == 0 &&
-                m.m6 == 0 &&
-                m.m7 == 0 &&
-                m.m8 == 0 &&
-                m.m9 == 0 &&
-                m.m10 == 0 &&
-                m.m11 == 0
-                )
+            try
             {
-                RoomMatrixTextBox.Background = new SolidColorBrush(Color.FromRgb(255, 100, 100));
-                SetRoomMatrixButtonName.IsEnabled = false;
-            }
-            else {
-                RoomMatrixTextBox.Background = new SolidColorBrush(Color.FromRgb(0, 255, 0));
-                SetRoomMatrixButtonName.IsEnabled = true;
-            }
+                HmdMatrix34_t m = new HmdMatrix34_t();
+                OpenVR.ChaperoneSetup.GetWorkingStandingZeroPoseToRawTrackingPose(ref m);
 
-
-            var t1 = util.GetTransformBySerialNumber("VMT_0");
-            if (t1 != null) {
-                string roomPos = string.Format("{0:0.00}, {1:0.00}, {2:0.00}", t1.position.X, t1.position.Y, t1.position.Z);
-
-                //Unity座標系ではZが反転する
-                if (CoordinateCombo.SelectedIndex == 1) {
-                    roomPos = string.Format("{0:0.00}, {1:0.00}, {2:0.00}", t1.position.X, t1.position.Y, -t1.position.Z);
+                RoomMatrixTextBox.Text =
+                    String.Format("{0:0.00}, {1:0.00}, {2:0.00}, {3:0.00}\n{4:0.00}, {5:0.00}, {6:0.00}, {7:0.00}\n{8:0.00}, {9:0.00}, {10:0.00}, {11:0.00}\n", m.m0, m.m1, m.m2, m.m3, m.m4, m.m5, m.m6, m.m7, m.m8, m.m9, m.m10, m.m11);
+                if (
+                    m.m0 == 0 &&
+                    m.m1 == 0 &&
+                    m.m2 == 0 &&
+                    m.m3 == 0 &&
+                    m.m4 == 0 &&
+                    m.m5 == 0 &&
+                    m.m6 == 0 &&
+                    m.m7 == 0 &&
+                    m.m8 == 0 &&
+                    m.m9 == 0 &&
+                    m.m10 == 0 &&
+                    m.m11 == 0
+                    )
+                {
+                    RoomMatrixTextBox.Background = new SolidColorBrush(Color.FromRgb(255, 100, 100));
+                    SetRoomMatrixButtonName.IsEnabled = false;
                 }
+                else
+                {
+                    RoomMatrixTextBox.Background = new SolidColorBrush(Color.FromRgb(0, 255, 0));
+                    SetRoomMatrixButtonName.IsEnabled = true;
+                }
+
+
+                var t1 = util.GetTransformBySerialNumber("VMT_0");
+                if (t1 != null)
+                {
+                    string roomPos = string.Format("{0:0.00}, {1:0.00}, {2:0.00}", t1.position.X, t1.position.Y, t1.position.Z);
+
+                    //Unity座標系ではZが反転する
+                    if (CoordinateCombo.SelectedIndex == 1)
+                    {
+                        roomPos = string.Format("{0:0.00}, {1:0.00}, {2:0.00}", t1.position.X, t1.position.Y, -t1.position.Z);
+                    }
 
                     CheckPositionTextBox.Text = roomPos;
-                if (roomPos == "1.00, 1.00, 1.00") {
-                    CheckPositionTextBox.Background = new SolidColorBrush(Color.FromRgb(0, 255, 0));
+                    if (roomPos == "1.00, 1.00, 1.00")
+                    {
+                        CheckPositionTextBox.Background = new SolidColorBrush(Color.FromRgb(0, 255, 0));
+                    }
+                    else
+                    {
+                        CheckPositionTextBox.Background = new SolidColorBrush(Color.FromRgb(255, 100, 100));
+                    }
                 }
-                else {
-                    CheckPositionTextBox.Background = new SolidColorBrush(Color.FromRgb(255, 100, 100));
+                var t2 = util.GetTransformBySerialNumberRaw("VMT_0");
+                if (t2 != null)
+                {
+                    CheckPositionRawTextBox.Text = string.Format("{0:0.00}, {1:0.00}, {2:0.00}", t2.position.X, t2.position.Y, t2.position.Z);
                 }
-            }
-            var t2 = util.GetTransformBySerialNumberRaw("VMT_0");
-            if (t2 != null) {
-                CheckPositionRawTextBox.Text = string.Format("{0:0.00}, {1:0.00}, {2:0.00}", t2.position.X, t2.position.Y, t2.position.Z);
-            }
 
-            if (aliveCnt > 90)
+                if (aliveCnt > 90)
+                {
+                    installPath = "";
+                    DriverVersion.Text = "-";
+                    DriverVersion.Foreground = new SolidColorBrush(Color.FromRgb(255, 255, 255));
+                    ControlDock.IsEnabled = false;
+                }
+                else
+                {
+                    aliveCnt++;
+                }
+
+                InputVMTHapticTextBox.Background = new SolidColorBrush(Color.FromRgb(255, 255, 255));
+            }
+            catch (Exception ex)
             {
-                installPath = "";
-                DriverVersion.Text = "-";
-                DriverVersion.Foreground = new SolidColorBrush(Color.FromRgb(255, 255, 255));
-                ControlDock.IsEnabled = false;
+                dispatcherTimer.Stop(); //タイマー停止
+                MessageBox.Show(ex.Message + "\n" + ex.StackTrace, title);
+                Close();
+                return;
             }
-            else {
-                aliveCnt++;
-            }
-
-            InputVMTHapticTextBox.Background = new SolidColorBrush(Color.FromRgb(255,255,255));
         }
-
 
         private void Window_Closed(object sender, EventArgs e)
         {
             //クローズ
             Console.WriteLine("Closed");
-            osc.Dispose();
+            if (osc != null) {
+                osc.Dispose();
+            }
         }
 
         private void ResetButton(object sender, RoutedEventArgs e)
@@ -328,16 +351,18 @@ public partial class MainWindow : Window
             HmdMatrix34_t m = new HmdMatrix34_t();
             OpenVR.ChaperoneSetup.GetWorkingStandingZeroPoseToRawTrackingPose(ref m);
 
-            if (SetRoomMatrixTemporaryCheckBox.IsChecked.Value) {
+            if (SetRoomMatrixTemporaryCheckBox.IsChecked.Value)
+            {
                 osc.Send(new OscMessage("/VMT/SetRoomMatrix/Temporary",
                     m.m0, m.m1, m.m2, m.m3,
                     m.m4, m.m5, m.m6, m.m7,
                     m.m8, m.m9, m.m10, m.m11));
             }
-            else { 
-                osc.Send(new OscMessage("/VMT/SetRoomMatrix", 
-                    m.m0, m.m1, m.m2, m.m3, 
-                    m.m4, m.m5, m.m6, m.m7, 
+            else
+            {
+                osc.Send(new OscMessage("/VMT/SetRoomMatrix",
+                    m.m0, m.m1, m.m2, m.m3,
+                    m.m4, m.m5, m.m6, m.m7,
                     m.m8, m.m9, m.m10, m.m11));
             }
         }
@@ -351,7 +376,8 @@ public partial class MainWindow : Window
                     0f, 1f, 0f, 0f,
                     0f, 0f, 1f, 0f));
             }
-            else {
+            else
+            {
                 osc.Send(new OscMessage("/VMT/SetRoomMatrix",
                     1f, 0f, 0f, 0f,
                     0f, 1f, 0f, 0f,
@@ -367,7 +393,8 @@ public partial class MainWindow : Window
                 1f, 1f, 1f,
                 0f, 0f, 0f, 1f));
             }
-            else {
+            else
+            {
                 osc.Send(new OscMessage("/VMT/Room/Driver",
                 0, 1, 0f,
                 1f, 1f, 1f,
@@ -384,7 +411,8 @@ public partial class MainWindow : Window
                     0f, 0f, 0f, 1f,
                     JointSerialNoTextBox.Text));
             }
-            else {
+            else
+            {
                 osc.Send(new OscMessage("/VMT/Joint/Driver",
                     0, 1, 0f,
                     0.1f, 0.1f, 0.1f,
@@ -395,8 +423,9 @@ public partial class MainWindow : Window
 
         private void InstallButton(object sender, RoutedEventArgs e)
         {
-            if (DriverVersion.Text != "-") {
-                MessageBox.Show("Please uninstall VMT before install.\nインストールを続ける前に、VMTをアンインストールしてください", title,MessageBoxButton.OK,MessageBoxImage.Error);
+            if (DriverVersion.Text != "-")
+            {
+                MessageBox.Show("Please uninstall VMT before install.\nインストールを続ける前に、VMTをアンインストールしてください", title, MessageBoxButton.OK, MessageBoxImage.Error);
                 return;
             }
 
@@ -417,7 +446,8 @@ public partial class MainWindow : Window
 
                 MessageBox.Show("OK (ExitCode=" + process.ExitCode + ")\nPlease restart SteamVR.", title);
             }
-            catch (Exception ex) {
+            catch (Exception ex)
+            {
                 MessageBox.Show(ex.Message + "\n" + ex.StackTrace, title);
                 Close();
                 return;
@@ -619,9 +649,11 @@ public partial class MainWindow : Window
         private void HapticTestButton(object sender, RoutedEventArgs e)
         {
             var index = GetInputIndex();
-            if (index.ok) {
+            if (index.ok)
+            {
                 var deviceIndex = util.GetDeviceIndexBySerialNumber("VMT_" + index.i);
-                if (deviceIndex != EasyOpenVRUtil.InvalidDeviceIndex) {
+                if (deviceIndex != EasyOpenVRUtil.InvalidDeviceIndex)
+                {
                     util.TriggerHapticPulse(deviceIndex);
                 }
             }
@@ -671,7 +703,7 @@ public partial class MainWindow : Window
 
         private void EnableAutoPoseUdateButton(object sender, RoutedEventArgs e)
         {
-            osc.Send(new OscMessage("/VMT/SetAutoPoseUpdate",1));
+            osc.Send(new OscMessage("/VMT/SetAutoPoseUpdate", 1));
         }
         private void DisableAutoPoseUdateButton(object sender, RoutedEventArgs e)
         {

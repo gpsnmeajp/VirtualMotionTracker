@@ -39,10 +39,11 @@ namespace VMTDriver {
         double qz;
         double qw;
         double timeoffset;
+        ReferMode_t mode;
         const char* root_sn;
     };
 
-    //個々のデバイス
+    //蛟九�縺ｮ繝�繝舌う繧ｹ
     class TrackedDeviceServerDriver : public ITrackedDeviceServerDriver
     {
     private:

@@ -23,7 +23,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-//oscpack‚Ìˆ—‚ð‚·‚é
+//oscpackã®å‡¦ç†ã‚’ã™ã‚‹
 #include <windows.h>
 #include <iostream>
 #include <cstring>

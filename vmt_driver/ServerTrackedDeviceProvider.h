@@ -25,7 +25,7 @@ SOFTWARE.
 #include "dllmain.h"
 
 namespace VMTDriver {
-    //デバイスサーバー
+    //繝�繝舌う繧ｹ繧ｵ繝ｼ繝舌�ｼ
     class ServerTrackedDeviceProvider : public IServerTrackedDeviceProvider
     {
     private:

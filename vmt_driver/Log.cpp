@@ -49,7 +49,7 @@ namespace VMTDriver {
         const int size = 8192;
         char output[size] = { 0 };
 
-        //ƒƒOo—Í(ó‹µ‚É‡‚í‚¹‚ÄØ‚è‘Ö‚¦‚ç‚ê‚é‚æ‚¤‚É)
+        //ãƒ­ã‚°å‡ºåŠ›(çŠ¶æ³ã«åˆã‚ã›ã¦åˆ‡ã‚Šæ›¿ãˆã‚‰ã‚Œã‚‹ã‚ˆã†ã«)
         va_list arg;
         va_start(arg, fmt);
         int ret = vsnprintf(output, size, fmt, arg);

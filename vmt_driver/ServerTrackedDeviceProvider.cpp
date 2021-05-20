@@ -23,8 +23,8 @@ SOFTWARE.
 */
 #include "ServerTrackedDeviceProvider.h"
 namespace VMTDriver {
-    //ƒfƒoƒCƒX‚ğŠÇ—‚·‚ée
-    //‚±‚Ì‰º‚Éq‚Æ‚µ‚ÄƒfƒoƒCƒX‚ª‚Ô‚ç‰º‚ª‚é
+    //ãƒ‡ãƒã‚¤ã‚¹ã‚’ç®¡ç†ã™ã‚‹è¦ª
+    //ã“ã®ä¸‹ã«å­ã¨ã—ã¦ãƒ‡ãƒã‚¤ã‚¹ãŒã¶ã‚‰ä¸‹ãŒã‚‹
 
     vector<TrackedDeviceServerDriver>& ServerTrackedDeviceProvider::GetDevices()
     {
@@ -37,7 +37,7 @@ namespace VMTDriver {
             return json();
         }
 
-        //ƒhƒ‰ƒCƒo‚ÌƒCƒ“ƒXƒg[ƒ‹ƒpƒXæ“¾
+        //ãƒ‰ãƒ©ã‚¤ãƒã®ã‚¤ãƒ³ã‚¹ãƒˆãƒ¼ãƒ«ãƒ‘ã‚¹å–å¾—
         string s = VRProperties()->GetStringProperty(m_pDriverContext->GetDriverHandle(), Prop_InstallPath_String);
         if (!s.empty()) {
             string filename = (s + "\\setting.json");
@@ -51,7 +51,7 @@ namespace VMTDriver {
                 return j;
             }
             catch (...) {
-                //ƒp[ƒX¸”sEƒtƒ@ƒCƒ‹‚È‚µ‚È‚Ç
+                //ãƒ‘ãƒ¼ã‚¹å¤±æ•—ãƒ»ãƒ•ã‚¡ã‚¤ãƒ«ãªã—ãªã©
                 Log::Output("LoadJson: Parse error or load faild");
                 return json();
             }
@@ -66,7 +66,7 @@ namespace VMTDriver {
             return;
         }
 
-        //ƒhƒ‰ƒCƒo‚ÌƒCƒ“ƒXƒg[ƒ‹ƒpƒXæ“¾
+        //ãƒ‰ãƒ©ã‚¤ãƒã®ã‚¤ãƒ³ã‚¹ãƒˆãƒ¼ãƒ«ãƒ‘ã‚¹å–å¾—
         string s = VRProperties()->GetStringProperty(m_pDriverContext->GetDriverHandle(), Prop_InstallPath_String);
         if (!s.empty()) {
             string filename = (s + "\\setting.json");
@@ -82,7 +82,7 @@ namespace VMTDriver {
         return;
     }
 
-    //‰Šú‰»
+    //åˆæœŸåŒ–
     EVRInitError ServerTrackedDeviceProvider::Init(IVRDriverContext* pDriverContext)
     {
         VR_INIT_SERVER_DRIVER_CONTEXT(pDriverContext)
@@ -90,17 +90,17 @@ namespace VMTDriver {
         Log::Open(VRDriverLog());
         CommunicationManager::GetInstance()->Open(this);
 
-        //ƒhƒ‰ƒCƒo‚ÌƒCƒ“ƒXƒg[ƒ‹ƒpƒXæ“¾
+        //ãƒ‰ãƒ©ã‚¤ãƒã®ã‚¤ãƒ³ã‚¹ãƒˆãƒ¼ãƒ«ãƒ‘ã‚¹å–å¾—
         string installPath = VRProperties()->GetStringProperty(m_pDriverContext->GetDriverHandle(), Prop_InstallPath_String);
         if (!installPath.empty()) {
             CommunicationManager::GetInstance()->SetInstallPath(installPath);
         }
 
 
-        //ƒfƒoƒCƒX‚ğ€”õ
-        m_devices.resize(58); //58ƒfƒoƒCƒX(‘S‡Œv64‚É–‚½‚È‚¢‚­‚ç‚¢)
+        //ãƒ‡ãƒã‚¤ã‚¹ã‚’æº–å‚™
+        m_devices.resize(58); //58ãƒ‡ãƒã‚¤ã‚¹(å…¨åˆè¨ˆ64ã«æº€ãŸãªã„ãã‚‰ã„)
 
-        //ƒfƒoƒCƒX‚ğ‰Šú‰»
+        //ãƒ‡ãƒã‚¤ã‚¹ã‚’åˆæœŸåŒ–
         for (int i = 0; i < m_devices.size(); i++)
         {
             string name = "VMT_";
@@ -108,7 +108,7 @@ namespace VMTDriver {
 
             m_devices[i].SetDeviceSerial(name);
             m_devices[i].SetObjectIndex(i);
-            //m_devices[i].RegisterToVRSystem(); //“o˜^‚Í•K—v‚É‚È‚Á‚½‚ç‚â‚é
+            //m_devices[i].RegisterToVRSystem(); //ç™»éŒ²ã¯å¿…è¦ã«ãªã£ãŸã‚‰ã‚„ã‚‹
             m_devicesNum++;
         }
 
@@ -116,7 +116,7 @@ namespace VMTDriver {
         return EVRInitError::VRInitError_None;
     }
 
-    //I—¹
+    //çµ‚äº†
     void ServerTrackedDeviceProvider::Cleanup()
     {
         VR_CLEANUP_SERVER_DRIVER_CONTEXT()
@@ -125,23 +125,23 @@ namespace VMTDriver {
         Log::Close();
     }
 
-    //ƒCƒ“ƒ^[ƒtƒF[ƒXƒo[ƒWƒ‡ƒ“(ƒ‰ƒCƒuƒ‰ƒŠ‚ÉˆË‘¶)
+    //ã‚¤ãƒ³ã‚¿ãƒ¼ãƒ•ã‚§ãƒ¼ã‚¹ãƒãƒ¼ã‚¸ãƒ§ãƒ³(ãƒ©ã‚¤ãƒ–ãƒ©ãƒªã«ä¾å­˜)
     const char* const* ServerTrackedDeviceProvider::GetInterfaceVersions()
     {
         return k_InterfaceVersions;
     }
 
-    //–ˆƒtƒŒ[ƒ€ˆ—
+    //æ¯ãƒ•ãƒ¬ãƒ¼ãƒ å‡¦ç†
     void ServerTrackedDeviceProvider::RunFrame()
     {
-        //’ÊMˆ—‚ğ‚·‚é
+        //é€šä¿¡å‡¦ç†ã‚’ã™ã‚‹
         CommunicationManager::GetInstance()->Process();
         for (int i = 0; i < m_devicesNum; i++)
         {
             m_devices[i].UpdatePoseToVRSystem();
         }
 
-        //ƒCƒxƒ“ƒgƒ|ƒ“ƒv
+        //ã‚¤ãƒ™ãƒ³ãƒˆãƒãƒ³ãƒ—
         VREvent_t VREvent;
         VRServerDriverHost()->PollNextEvent(&VREvent, sizeof(VREvent_t));
         for (int i = 0; i < m_devicesNum; i++)
@@ -150,18 +150,18 @@ namespace VMTDriver {
         }
     }
 
-    //ƒXƒ^ƒ“ƒoƒC‚ğƒuƒƒbƒN‚·‚é‚©
+    //ã‚¹ã‚¿ãƒ³ãƒã‚¤ã‚’ãƒ–ãƒ­ãƒƒã‚¯ã™ã‚‹ã‹
     bool ServerTrackedDeviceProvider::ShouldBlockStandbyMode()
     {
         return false;
     }
 
-    //ƒXƒ^ƒ“ƒoƒC‚É“ü‚Á‚½
+    //ã‚¹ã‚¿ãƒ³ãƒã‚¤ã«å…¥ã£ãŸ
     void ServerTrackedDeviceProvider::EnterStandby()
     {
     }
 
-    //ƒXƒ^ƒ“ƒoƒC‚©‚ço‚½
+    //ã‚¹ã‚¿ãƒ³ãƒã‚¤ã‹ã‚‰å‡ºãŸ
     void ServerTrackedDeviceProvider::LeaveStandby()
     {
     }

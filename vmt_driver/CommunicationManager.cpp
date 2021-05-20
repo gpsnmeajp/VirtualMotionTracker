@@ -29,8 +29,12 @@ SOFTWARE.
 #include "DirectOSC.h"
 
 namespace VMTDriver {
-	//•ÊƒXƒŒƒbƒh
-	void OSCReceiver::SetPose(bool roomToDriver, int idx, int enable, double x, double y, double z, double qx, double qy, double qz, double qw, double timeoffset, const char* root_sn)
+	//åˆ¥ã‚¹ãƒ¬ãƒƒãƒ‰
+	void OSCReceiver::SetPose(bool roomToDriver, int idx, int enable,
+	                          double x, double y, double z,
+	                          double qx, double qy, double qz, double qw,
+	                          double timeoffset,
+	                          const char* root_sn, ReferMode_t mode)
 	{
 		RawPose pose;
 		pose.roomToDriver = roomToDriver;
@@ -44,13 +48,14 @@ namespace VMTDriver {
 		pose.qz = qz;
 		pose.qw = qw;
 		pose.timeoffset = timeoffset;
+		pose.mode = mode;
 		pose.root_sn = root_sn;
 
-		ServerTrackedDeviceProvider* sever = CommunicationManager::GetInstance()->GetServer();
-		if (idx >= 0 && idx <= sever->GetDevices().size())
+		ServerTrackedDeviceProvider* server = CommunicationManager::GetInstance()->GetServer();
+		if (idx >= 0 && idx <= server->GetDevices().size())
 		{
-			sever->GetDevices()[idx].RegisterToVRSystem(enable); //1=Tracker, 2=controller
-			sever->GetDevices()[idx].SetRawPose(pose);
+			server->GetDevices()[idx].RegisterToVRSystem(enable); //1=Tracker, 2=controller
+			server->GetDevices()[idx].SetRawPose(pose);
 		}
 	}
 
@@ -91,7 +96,7 @@ namespace VMTDriver {
 	}
 
 
-	//•ÊƒXƒŒƒbƒh
+	//åˆ¥ã‚¹ãƒ¬ãƒƒãƒ‰
 	void OSCReceiver::ProcessMessage(const osc::ReceivedMessage& m, const IpEndpointName& remoteEndpoint)
 	{
 		try {
@@ -145,7 +150,7 @@ namespace VMTDriver {
 				osc::ReceivedMessageArgumentStream args = m.ArgumentStream();
 				args >> idx >> enable >> timeoffset >> x >> y >> z >> qx >> qy >> qz >> qw >> root_sn >> osc::EndMessage;
 
-				SetPose(false, idx, enable, x, y, -z, qx, qy, -qz, -qw, timeoffset, root_sn);
+				SetPose(false, idx, enable, x, y, -z, qx, qy, -qz, -qw, timeoffset, root_sn, ReferMode_t::Joint);
 			}
 			else if (adr == "/VMT/Joint/Driver")
 			{
@@ -156,7 +161,29 @@ namespace VMTDriver {
 				osc::ReceivedMessageArgumentStream args = m.ArgumentStream();
 				args >> idx >> enable >> timeoffset >> x >> y >> z >> qx >> qy >> qz >> qw >> root_sn >> osc::EndMessage;
 
-				SetPose(false, idx, enable, x, y, z, qx, qy, qz, qw, timeoffset, root_sn);
+				SetPose(false, idx, enable, x, y, z, qx, qy, qz, qw, timeoffset, root_sn, ReferMode_t::Joint);
+			}
+			else if (adr == "/VMT/Follow/Unity")
+			{
+				int idx, enable;
+				float timeoffset;
+				float x, y, z, qx, qy, qz, qw;
+				const char* root_sn = nullptr;
+				osc::ReceivedMessageArgumentStream args = m.ArgumentStream();
+				args >> idx >> enable >> timeoffset >> x >> y >> z >> qx >> qy >> qz >> qw >> root_sn >> osc::EndMessage;
+
+				SetPose(false, idx, enable, x, y, -z, qx, qy, -qz, -qw, timeoffset, root_sn, ReferMode_t::Follow);
+			}
+			else if (adr == "/VMT/Follow/Driver")
+			{
+				int idx, enable;
+				float timeoffset;
+				float x, y, z, qx, qy, qz, qw;
+				const char* root_sn = nullptr;
+				osc::ReceivedMessageArgumentStream args = m.ArgumentStream();
+				args >> idx >> enable >> timeoffset >> x >> y >> z >> qx >> qy >> qz >> qw >> root_sn >> osc::EndMessage;
+
+				SetPose(false, idx, enable, x, y, z, qx, qy, qz, qw, timeoffset, root_sn, ReferMode_t::Follow);
 			}
 			else if (adr == "/VMT/Input/Button")
 			{
@@ -202,11 +229,11 @@ namespace VMTDriver {
 			}
 			else if (adr == "/VMT/Reset")
 			{
-				//‘Sƒgƒ‰ƒbƒJ[‚ð0‚É‚·‚é
+			//å…¨ãƒˆãƒ©ãƒƒã‚«ãƒ¼ã‚’0ã«ã™ã‚‹
 				ServerTrackedDeviceProvider* sever = CommunicationManager::GetInstance()->GetServer();
 				for (int i = 0; i < sever->GetDevices().size(); i++)
 				{
-					sever->GetDevices()[i].Reset(); //‚·‚Å‚ÉVRƒVƒXƒeƒ€‚É“o˜^Ï‚Ý‚Ì‚à‚Ì‚¾‚¯’Ê’m‚³‚ê‚é
+					sever->GetDevices()[i].Reset(); //ã™ã§ã«VRã‚·ã‚¹ãƒ†ãƒ ã«ç™»éŒ²æ¸ˆã¿ã®ã‚‚ã®ã ã‘é€šçŸ¥ã•ã‚Œã‚‹
 				}
 			}
 			else if (adr == "/VMT/LoadSetting")
@@ -343,7 +370,7 @@ namespace VMTDriver {
 	}
 	void CommunicationManager::Process()
 	{
-		//’èŠú“I‚É¶‘¶M†‚ð‘—M
+		//å®šæœŸçš„ã«ç”Ÿå­˜ä¿¡å·ã‚’é€ä¿¡
 		if (m_frame > frameCycle) {
 			OSCReceiver::SendAlive();
 			m_frame = 0;
