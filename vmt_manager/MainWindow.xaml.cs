@@ -663,6 +663,17 @@ namespace vmt_manager
         {
             System.Diagnostics.Process.Start(e.Uri.AbsoluteUri);
         }
+        private void TrackingReferenceButton(object sender, RoutedEventArgs e)
+        {
+            var index = GetInputIndex();
+            if (index.ok)
+            {
+                osc.Send(new OscMessage("/VMT/Room/Driver",
+                index.i, 4, 0f,
+                0f, 0f, 0f,
+                0f, 0f, 0f, 1f));
+            }
+        }
 
         private void RightHandButton(object sender, RoutedEventArgs e)
         {
@@ -699,7 +710,6 @@ namespace vmt_manager
                 0f, 0f, 0f, 1f));
             }
         }
-
 
         private void EnableAutoPoseUdateButton(object sender, RoutedEventArgs e)
         {

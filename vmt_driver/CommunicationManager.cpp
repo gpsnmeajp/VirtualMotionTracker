@@ -54,7 +54,7 @@ namespace VMTDriver {
 		ServerTrackedDeviceProvider* server = CommunicationManager::GetInstance()->GetServer();
 		if (idx >= 0 && idx <= server->GetDevices().size())
 		{
-			server->GetDevices()[idx].RegisterToVRSystem(enable); //1=Tracker, 2=controller
+			server->GetDevices()[idx].RegisterToVRSystem(enable); //1=Tracker, 2=Controller Left, 3=Controller Right, 4=Tracking Reference
 			server->GetDevices()[idx].SetRawPose(pose);
 		}
 	}

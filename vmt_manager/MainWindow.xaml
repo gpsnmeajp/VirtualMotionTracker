@@ -94,6 +94,7 @@
 			<DockPanel LastChildFill="False">
 				<DockPanel DockPanel.Dock="Top" Margin="1">
 					<TextBlock VerticalAlignment="Center" Text="VMT:" DockPanel.Dock="Left" Margin="1" />
+					<Button Content="Ref" Width="50" DockPanel.Dock="Right" Margin="1" Click="TrackingReferenceButton"/>
 					<Button Content="Right" Width="50" DockPanel.Dock="Right" Margin="1" Click="RightHandButton"/>
 					<Button Content="Left" Width="50" DockPanel.Dock="Right" Margin="1" Click="LeftHandButton"/>
 					<Button Content="Tracker" Width="50" DockPanel.Dock="Right" Margin="1" Click="TrackerButton"/>
