@@ -113,7 +113,7 @@ namespace VMTDriver {
 
             for (uint32_t i = 0; i < k_unMaxTrackedDeviceCount; i++) {
                 TrackedDevicePose_t* const p = poses + i;
-                if (!p->bDeviceIsConnected) break;
+                if (!p->bDeviceIsConnected) continue;
 
                 PropertyContainerHandle_t h = props->TrackedDeviceToPropertyContainer(i);
                 string SerialNumber = helper->GetStringProperty(h, ETrackedDeviceProperty::Prop_SerialNumber_String);

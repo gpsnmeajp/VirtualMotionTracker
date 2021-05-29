@@ -83,7 +83,7 @@ Caution: If Port 39571 used be another application, Manager won't works.
 |Args|type|detail|
 |---|---|---|
 |index|int| ID number。0-57|
-|enable|int| 0=Disable, 1=Enable(Tracker), 2=Enable(Left Hand Controller), 3=Enable(Right Hand Controller) |
+|enable|int| 0=Disable, 1=Enable(Tracker), 2=Enable(Left Hand Controller), 3=Enable(Right Hand Controller), 4=Enable(TrackingReference) |
 |timeoffset|float| TimeOffset, normaly 0|
 |x,y,z|float| Position|
 |qx,qy,qz,qw|float| Rotaion(Quaternion)|
