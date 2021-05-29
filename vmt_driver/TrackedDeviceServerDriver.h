@@ -40,7 +40,7 @@ namespace VMTDriver {
         double qw;
         double timeoffset;
         ReferMode_t mode;
-        const char* root_sn;
+        std::string root_sn;
     };
 
     //個々のデバイス

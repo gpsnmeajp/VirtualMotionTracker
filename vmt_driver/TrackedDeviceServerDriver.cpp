@@ -87,7 +87,7 @@ namespace VMTDriver {
         pose.qRotation.w = m_rawPose.qw;
 
         //Jointでない場合
-        if (m_rawPose.mode == ReferMode_t::None || m_rawPose.root_sn == nullptr) {
+        if (m_rawPose.mode == ReferMode_t::None || m_rawPose.root_sn.empty()) {
             //ワールド・ドライバ変換行列を設定
             Eigen::Translation3d pos(RoomToDriverAffin.translation());
             Eigen::Quaterniond rot(RoomToDriverAffin.rotation());

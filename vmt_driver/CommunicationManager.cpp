@@ -49,7 +49,7 @@ namespace VMTDriver {
 		pose.qw = qw;
 		pose.timeoffset = timeoffset;
 		pose.mode = mode;
-		pose.root_sn = root_sn;
+		pose.root_sn = root_sn ? root_sn : "";
 
 		ServerTrackedDeviceProvider* server = CommunicationManager::GetInstance()->GetServer();
 		if (idx >= 0 && idx <= server->GetDevices().size())
