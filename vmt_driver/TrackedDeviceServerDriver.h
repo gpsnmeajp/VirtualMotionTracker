@@ -41,6 +41,7 @@ namespace VMTDriver {
         double timeoffset;
         ReferMode_t mode;
         std::string root_sn;
+        std::chrono::system_clock::time_point time;
     };
 
     //個々のデバイス
@@ -55,6 +56,7 @@ namespace VMTDriver {
 
         DriverPose_t m_pose{ 0 };
         RawPose m_rawPose{ 0 };
+        RawPose m_lastRawPose{ 0 };
 
         VRInputComponentHandle_t ButtonComponent[8]{ 0 };
         VRInputComponentHandle_t TriggerComponent[2]{ 0 };

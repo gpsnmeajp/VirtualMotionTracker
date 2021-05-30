@@ -25,7 +25,7 @@ SOFTWARE.
 #include "dllmain.h"
 
 namespace VMTDriver {
-	const string Version = "VMT_007";
+	const string Version = "VMT_008";
 
 	class OSCReceiver : public osc::OscPacketListener {
 	private:
@@ -53,6 +53,8 @@ namespace VMTDriver {
 		OSCReceiver m_rcv;
 		ServerTrackedDeviceProvider* m_server;
 		Eigen::Matrix4d m_RoomToDriverMatrix = Eigen::Matrix4d::Identity();
+
+		bool m_velocityEnable = true;
 	public:
 		static CommunicationManager* GetInstance();
 		ServerTrackedDeviceProvider* GetServer();
@@ -64,5 +66,7 @@ namespace VMTDriver {
 		void Close();
 		void Process();
 		void LoadSetting();
+
+		bool GetVelocityEnable();
 	};
 }

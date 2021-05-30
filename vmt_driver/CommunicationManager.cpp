@@ -50,6 +50,7 @@ namespace VMTDriver {
 		pose.timeoffset = timeoffset;
 		pose.mode = mode;
 		pose.root_sn = root_sn ? root_sn : "";
+		pose.time = std::chrono::system_clock::now();
 
 		ServerTrackedDeviceProvider* server = CommunicationManager::GetInstance()->GetServer();
 		if (idx >= 0 && idx <= server->GetDevices().size())
@@ -260,6 +261,10 @@ namespace VMTDriver {
 				{
 					j["RoomMatrix"] = {};
 				}
+				if (!j.contains("VelocityEnable"))
+				{
+					j["VelocityEnable"] = true;
+				}
 				j["RoomMatrix"] = { m1,m2,m3,m4,m5,m6,m7,m8,m9,m10,m11,m12 };
 				CommunicationManager::GetInstance()->GetServer()->SaveJson(j);
 
@@ -389,9 +394,17 @@ namespace VMTDriver {
 					, j["RoomMatrix"][8], j["RoomMatrix"][9], j["RoomMatrix"][10], j["RoomMatrix"][11]
 					, 0, 0, 0, 1;
 			}
+			if (j.contains("VelocityEnable"))
+			{
+				m_velocityEnable = j["VelocityEnable"];
+			}
 		}
 		catch (...) {
 			m_RoomToDriverMatrix = Eigen::Matrix4d::Identity();
 		}
+	}
+	bool CommunicationManager::GetVelocityEnable()
+	{
+		return m_velocityEnable;
 	}
 }

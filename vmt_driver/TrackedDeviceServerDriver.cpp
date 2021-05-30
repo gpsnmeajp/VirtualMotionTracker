@@ -51,6 +51,7 @@ namespace VMTDriver {
 
     void TrackedDeviceServerDriver::SetRawPose(RawPose rawPose)
     {
+        m_lastRawPose = m_rawPose; //差分を取るために前回値を取っておく
         m_rawPose = rawPose;
         RawPoseToPose();
     }
@@ -85,6 +86,35 @@ namespace VMTDriver {
         pose.qRotation.y = m_rawPose.qy;
         pose.qRotation.z = m_rawPose.qz;
         pose.qRotation.w = m_rawPose.qw;
+
+        //経過時間を計算
+        double duration_sec = std::chrono::duration_cast<std::chrono::microseconds>((m_rawPose.time - m_lastRawPose.time)).count() / (1000.0*1000.0);
+        //速度・角速度を計算
+        if (duration_sec > std::numeric_limits<double>::epsilon() && CommunicationManager::GetInstance()->GetVelocityEnable())
+        {
+            pose.vecVelocity[0] = (m_rawPose.x - m_lastRawPose.x) / duration_sec;
+            pose.vecVelocity[1] = (m_rawPose.y - m_lastRawPose.y) / duration_sec;
+            pose.vecVelocity[2] = (m_rawPose.z - m_lastRawPose.z) / duration_sec;
+
+            //omega = 2 * (q2 - q1) * conj( q1 ) / dt
+            Eigen::Vector3d rotDiffV(m_rawPose.qx - m_lastRawPose.qx, m_rawPose.qy - m_lastRawPose.qy, m_rawPose.qz - m_lastRawPose.qz);
+            Eigen::Vector3d lastRotConj(-m_lastRawPose.qx,-m_lastRawPose.qy,-m_lastRawPose.qz);
+
+            Eigen::Vector3d angVelo = 2.0 * rotDiffV.cross(lastRotConj) / duration_sec;
+            pose.vecAngularVelocity[0] = angVelo.x();
+            pose.vecAngularVelocity[1] = angVelo.y();
+            pose.vecAngularVelocity[2] = angVelo.z();
+        }
+        else {
+            pose.vecVelocity[0] = 0.0f;
+            pose.vecVelocity[1] = 0.0f;
+            pose.vecVelocity[2] = 0.0f;
+            pose.vecAngularVelocity[0] = 0.0f;
+            pose.vecAngularVelocity[1] = 0.0f;
+            pose.vecAngularVelocity[2] = 0.0f;
+        }
+
+
 
         //Jointでない場合
         if (m_rawPose.mode == ReferMode_t::None || m_rawPose.root_sn.empty()) {
