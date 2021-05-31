@@ -129,6 +129,12 @@ using System.Collections.Generic;
 using UnityEngine;
 public class sendme : MonoBehaviour
 {
+    const int DISABLE = 0;
+    const int ENABLE_TRACKER = 1;
+    const int ENABLE_CONTROLLER_L = 2;
+    const int ENABLE_CONTROLLER_R = 3;
+    const int ENABLE_TRACKING_REFERENCE = 4;
+
     uOSC.uOscClient client;
     void Start()
     {
@@ -137,7 +143,11 @@ public class sendme : MonoBehaviour
 
     void Update()
     {
-        client.Send("/VMT/Room/Unity", (int)0, (int)1, (float)0f,
+        const int index = 0;
+        const int enable = ENABLE_TRACKER;
+        const float timeoffset = 0f;
+
+        client.Send("/VMT/Room/Unity", (int)index, (int)enable, (float)timeoffset,
             (float)transform.position.x,
             (float)transform.position.y,
             (float)transform.position.z,
@@ -176,3 +186,5 @@ https://github.com/ValveSoftware/openvr/wiki/TrackingOverrides
 仮想トラッカーを無効にすると、上書きは解除されます。  
 上書きを有効にする際は、対象のHMDとコントローラの電源が入っており、正常にトラッキングされている状態にする必要があります。  
   
+## 互換性オプション
+"VelocityEnable":false にすると速度・角速度エミュレーションを止めます。

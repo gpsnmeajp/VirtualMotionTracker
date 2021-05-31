@@ -178,6 +178,12 @@ using System.Collections.Generic;
 using UnityEngine;
 public class sendme : MonoBehaviour
 {
+    const int DISABLE = 0;
+    const int ENABLE_TRACKER = 1;
+    const int ENABLE_CONTROLLER_L = 2;
+    const int ENABLE_CONTROLLER_R = 3;
+    const int ENABLE_TRACKING_REFERENCE = 4;
+
     uOSC.uOscClient client;
     void Start()
     {
@@ -186,7 +192,11 @@ public class sendme : MonoBehaviour
 
     void Update()
     {
-        client.Send("/VMT/Room/Unity", (int)0, (int)1, (float)0f,
+        const int index = 0;
+        const int enable = ENABLE_TRACKER;
+        const float timeoffset = 0f;
+
+        client.Send("/VMT/Room/Unity", (int)index, (int)enable, (float)timeoffset,
             (float)transform.position.x,
             (float)transform.position.y,
             (float)transform.position.z,
@@ -217,3 +227,5 @@ steamvr.vrsettings
    },
 ```
 
+## Compatibility option
+"VelocityEnable":false Velocity, angular Velocity emulation off.
