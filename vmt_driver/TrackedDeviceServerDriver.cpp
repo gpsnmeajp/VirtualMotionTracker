@@ -96,14 +96,19 @@ namespace VMTDriver {
             pose.vecVelocity[1] = (m_rawPose.y - m_lastRawPose.y) / duration_sec;
             pose.vecVelocity[2] = (m_rawPose.z - m_lastRawPose.z) / duration_sec;
 
-            //omega = 2 * (q2 - q1) * conj( q1 ) / dt
-            Eigen::Vector3d rotDiffV(m_rawPose.qx - m_lastRawPose.qx, m_rawPose.qy - m_lastRawPose.qy, m_rawPose.qz - m_lastRawPose.qz);
-            Eigen::Vector3d lastRotConj(-m_lastRawPose.qx,-m_lastRawPose.qy,-m_lastRawPose.qz);
+            Eigen::Quaterniond q1(m_rawPose.qw, m_rawPose.qx, m_rawPose.qy, m_rawPose.qz);
+            Eigen::Quaterniond q2(m_lastRawPose.qw, m_lastRawPose.qx, m_lastRawPose.qy, m_lastRawPose.qz);
 
-            Eigen::Vector3d angVelo = 2.0 * rotDiffV.cross(lastRotConj) / duration_sec;
-            pose.vecAngularVelocity[0] = angVelo.x();
-            pose.vecAngularVelocity[1] = angVelo.y();
-            pose.vecAngularVelocity[2] = angVelo.z();
+            Eigen::Quaterniond dq = q1 * q2.inverse();
+            Eigen::AngleAxisd dAAx(dq);
+            double angle = dAAx.angle();
+            double angularVelocity = angle / duration_sec;
+            Eigen::Vector3d axis = dAAx.axis();
+            Eigen::Vector3d vecAngularVelocity = axis * angularVelocity;
+
+            pose.vecAngularVelocity[0] = vecAngularVelocity.x();
+            pose.vecAngularVelocity[1] = vecAngularVelocity.y();
+            pose.vecAngularVelocity[2] = vecAngularVelocity.z();
         }
         else {
             pose.vecVelocity[0] = 0.0f;
