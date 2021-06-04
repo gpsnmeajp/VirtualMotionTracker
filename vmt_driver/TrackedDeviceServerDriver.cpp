@@ -438,6 +438,9 @@ namespace VMTDriver {
     {
         if (s_autoUpdate) {
             if (m_alreadyRegistered) {
+                //加速度計算の更新
+                m_lastRawPose = m_rawPose;
+                m_rawPose.time = std::chrono::system_clock::now();
                 RawPoseToPose();
             }
         }
