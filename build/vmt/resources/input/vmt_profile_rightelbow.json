@@ -1,6 +1,6 @@
 {
   "jsonid" : "input_profile",
-  "controller_type": "vmt",
+  "controller_type": "vmte_rightelbow",
   "device_class" : "TrackedDeviceClass_Controller",
   "resource_root" : "vmt",
   "driver_name" : "vmt",
@@ -17,21 +17,6 @@
     "image": "{vmt}/input/binding_image_light.png"
   },
   "priority" : 6,
-  "tracker_types" : {
-    "TrackerRole_Handed":"{vmt}/input/vmt_profile_handed.json",
-    "TrackerRole_LeftFoot":"{vmt}/input/vmt_profile_leftfoot.json",
-    "TrackerRole_RightFoot":"{vmt}/input/vmt_profile_rightfoot.json",
-    "TrackerRole_LeftShoulder":"{vmt}/input/vmt_profile_leftshoulder.json",
-    "TrackerRole_RightShoulder":"{vmt}/input/vmt_profile_rightshoulder.json",
-    "TrackerRole_LeftElbow":"{vmt}/input/vmt_profile_leftelbow.json",
-    "TrackerRole_RightElbow":"{vmt}/input/vmt_profile_rightelbow.json",
-    "TrackerRole_LeftKnee":"{vmt}/input/vmt_profile_leftknee.json",
-    "TrackerRole_RightKnee":"{vmt}/input/vmt_profile_rightknee.json",
-    "TrackerRole_Waist":"{vmt}/input/vmt_profile_waist.json",
-    "TrackerRole_Chest":"{vmt}/input/vmt_profile_chest.json",
-    "TrackerRole_Camera":"{vmt}/input/vmt_profile_camera.json",
-    "TrackerRole_Keyboard":"{vmt}/input/vmt_profile_keyboard.json"
-  },
   "input_source" :
   {
     "/input/Button0" : { 

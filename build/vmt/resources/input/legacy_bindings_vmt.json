@@ -3,22 +3,22 @@
       "/actions/legacy" : {
          "haptics" : [
             {
-               "output" : "/actions/legacy/out/right_haptic",
-               "path" : "/user/hand/right/output/haptic"
+               "output" : "/actions/legacy/out/left_haptic",
+               "path" : "/user/hand/left/output/haptic"
             },
             {
                "output" : "/actions/legacy/out/right_haptic",
-               "path" : "/user/hand/left/output/haptic"
+               "path" : "/user/hand/right/output/haptic"
             }
          ],
          "poses" : [
             {
-               "output" : "/actions/legacy/in/right_pose",
-               "path" : "/user/hand/right/pose/raw"
+               "output" : "/actions/legacy/in/Left_Pose",
+               "path" : "/user/hand/left/pose/raw"
             },
             {
-               "output" : "/actions/legacy/in/right_pose",
-               "path" : "/user/hand/left/pose/raw"
+               "output" : "/actions/legacy/in/Right_Pose",
+               "path" : "/user/hand/right/pose/raw"
             }
          ],
          "sources" : [
@@ -29,7 +29,7 @@
                   }
                },
                "mode" : "button",
-               "path" : "/user/hand/right/input/Button0"
+               "path" : "/user/hand/left/input/Button0"
             },
             {
                "inputs" : {
@@ -38,7 +38,7 @@
                   }
                },
                "mode" : "button",
-               "path" : "/user/hand/right/input/Button1"
+               "path" : "/user/hand/left/input/Button1"
             },
             {
                "inputs" : {
@@ -47,7 +47,7 @@
                   }
                },
                "mode" : "button",
-               "path" : "/user/hand/right/input/Button2"
+               "path" : "/user/hand/left/input/Button2"
             },
             {
                "inputs" : {
@@ -56,7 +56,7 @@
                   }
                },
                "mode" : "button",
-               "path" : "/user/hand/right/input/Button3"
+               "path" : "/user/hand/left/input/Button3"
             },
             {
                "inputs" : {
@@ -65,7 +65,7 @@
                   }
                },
                "mode" : "button",
-               "path" : "/user/hand/right/input/Button4"
+               "path" : "/user/hand/left/input/Button4"
             },
             {
                "inputs" : {
@@ -74,7 +74,7 @@
                   }
                },
                "mode" : "button",
-               "path" : "/user/hand/right/input/Button5"
+               "path" : "/user/hand/left/input/Button5"
             },
             {
                "inputs" : {
@@ -83,7 +83,7 @@
                   }
                },
                "mode" : "button",
-               "path" : "/user/hand/right/input/Button6"
+               "path" : "/user/hand/left/input/Button6"
             },
             {
                "inputs" : {
@@ -92,7 +92,7 @@
                   }
                },
                "mode" : "button",
-               "path" : "/user/hand/right/input/Button7"
+               "path" : "/user/hand/left/input/Button7"
             },
             {
                "inputs" : {
@@ -101,7 +101,7 @@
                   }
                },
                "mode" : "joystick",
-               "path" : "/user/hand/right/input/Joystick0"
+               "path" : "/user/hand/left/input/Joystick0"
             },
             {
                "inputs" : {
@@ -110,12 +110,111 @@
                   }
                },
                "mode" : "trigger",
+               "path" : "/user/hand/left/input/Trigger0"
+            },
+            {
+               "inputs" : {
+                  "pull" : {
+                     "output" : "/actions/legacy/in/left_axis3_value"
+                  }
+               },
+               "mode" : "trigger",
+               "path" : "/user/hand/left/input/Trigger1"
+            },
+            {
+               "inputs" : {
+                  "click" : {
+                     "output" : "/actions/legacy/in/right_a_press"
+                  }
+               },
+               "mode" : "button",
+               "path" : "/user/hand/right/input/Button0"
+            },
+            {
+               "inputs" : {
+                  "click" : {
+                     "output" : "/actions/legacy/in/right_grip_press"
+                  }
+               },
+               "mode" : "button",
+               "path" : "/user/hand/right/input/Button1"
+            },
+            {
+               "inputs" : {
+                  "click" : {
+                     "output" : "/actions/legacy/in/right_applicationmenu_press"
+                  }
+               },
+               "mode" : "button",
+               "path" : "/user/hand/right/input/Button2"
+            },
+            {
+               "inputs" : {
+                  "click" : {
+                     "output" : "/actions/legacy/in/right_system_press"
+                  }
+               },
+               "mode" : "button",
+               "path" : "/user/hand/right/input/Button3"
+            },
+            {
+               "inputs" : {
+                  "click" : {
+                     "output" : "/actions/legacy/in/right_axis0_press"
+                  }
+               },
+               "mode" : "button",
+               "path" : "/user/hand/right/input/Button4"
+            },
+            {
+               "inputs" : {
+                  "click" : {
+                     "output" : "/actions/legacy/in/right_axis1_press"
+                  }
+               },
+               "mode" : "button",
+               "path" : "/user/hand/right/input/Button5"
+            },
+            {
+               "inputs" : {
+                  "click" : {
+                     "output" : "/actions/legacy/in/right_axis2_press"
+                  }
+               },
+               "mode" : "button",
+               "path" : "/user/hand/right/input/Button6"
+            },
+            {
+               "inputs" : {
+                  "click" : {
+                     "output" : "/actions/legacy/in/right_axis3_press"
+                  }
+               },
+               "mode" : "button",
+               "path" : "/user/hand/right/input/Button7"
+            },
+            {
+               "inputs" : {
+                  "position" : {
+                     "output" : "/actions/legacy/in/right_axis0_value"
+                  }
+               },
+               "mode" : "joystick",
+               "path" : "/user/hand/right/input/Joystick0"
+            },
+            {
+               "inputs" : {
+                  "pull" : {
+                     "output" : "/actions/legacy/in/right_axis1_value"
+                  }
+               },
+               "mode" : "trigger",
                "path" : "/user/hand/right/input/Trigger0"
             },
             {
                "inputs" : {
                   "pull" : {
-                     "output" : "/actions/legacy/in/left_axis3_value_e0"
+                     "output" : "/actions/legacy/in/right_axis3_value"
                   }
                },
                "mode" : "trigger",
@@ -125,6 +224,6 @@
       }
    },
    "controller_type" : "vmt",
-   "description" : "",
-   "name" : "Default binding"
+   "description" : "Default legacy binding",
+   "name" : "Default legacy binding"
 }
