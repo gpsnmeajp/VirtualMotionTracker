@@ -26,12 +26,13 @@ OpenVRのサンプルと仕様に沿った作りになっており、他のド�
 + VMT_009以降を使用しているか
 + SteamVRトラッカーロールの設定
 + SteamVRバインディングの割当
++ C:\Program Files (x86)\Steam\config\steamvr.vrsettings からVMT周りの設定を削除してみる(必ずバックアップを取ってください)
 
 Please check below if you meet software won't recognize VMT.  
 + Use after version of VMT_009
 + SteamVR Tracker Role
 + SteamVR binding (Pose)
-
++ Try remove VMT setting on C:\Program Files (x86)\Steam\config\steamvr.vrsettings (You must backup before change it.)
 
 # サポートは閉鎖しました。(Support desk has been closed.)
 説明書を読んで理解できない場合は、使用されないことを勧めします。  
