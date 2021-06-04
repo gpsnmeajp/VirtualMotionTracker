@@ -22,6 +22,17 @@ OpenVRのサンプルと仕様に沿った作りになっており、他のド�
 **Steam VRがHMDを認識していない場合、利用できません。(HMD未接続、Oculus Link起動前など)**  
 **It should not work when you are not connect HMD. (Ex. disconnected, not started Oculus Link)**  
 
+認識しないソフトがある場合、以下を確認してください。  
++ VMT_009以降を使用しているか
++ SteamVRトラッカーロールの設定
++ SteamVRバインディングの割当
+
+Please check below if you meet software won't recognize VMT.  
++ Use after version of VMT_009
++ SteamVR Tracker Role
++ SteamVR binding (Pose)
+
+
 # サポートは閉鎖しました。(Support desk has been closed.)
 説明書を読んで理解できない場合は、使用されないことを勧めします。  
 Please don't use if you can not understand manual.  
