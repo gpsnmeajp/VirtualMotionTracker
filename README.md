@@ -16,11 +16,14 @@ OpenVRのサンプルと仕様に沿った作りになっており、他のド�
 **入れただけで何かができるツールではなく、他のアプリケーションやデバイスと組み合わせて使用します。**  
 **This software for developers. (not for end user)**  
   
-**64bit Windows環境でのみ動作します。**  
-**Only works on 64bit Windows**  
+**64bit Windows 10環境でのみ動作します。**  
+**Only works on 64bit Windows 10**  
 
 **Steam VRがHMDを認識していない場合、利用できません。(HMD未接続、Oculus Link起動前など)**  
 **It should not work when you are not connect HMD. (Ex. disconnected, not started Oculus Link)**  
+
+VMT_005までにあった"起動しない"などのトラブルに関しては、VMT_006を使用するとエラーメッセージが表示されます。  
+If you have trouble for VMT 005 such as not starting, use VMT 006 or after will shows error message.  
 
 認識しないソフトがある場合、以下を確認してください。  
 + VMT_009以降を使用しているか
@@ -38,9 +41,15 @@ Please check below if you meet software won't recognize VMT.
 説明書を読んで理解できない場合は、使用されないことを勧めします。  
 Please don't use if you can not understand manual.  
 
-VMT_005までにあった"起動しない"などのトラブルに関しては、VMT_006を使用するとエラーメッセージが表示されます。  
-If you have trouble for VMT 005 such as not starting, use VMT 006 or after will shows error message.  
+コードレベル以外のIssueは返答無くCloseすることがあります。  
+Issues other than code level may be closed without a response.  
 
+# 他のソフトウェアに同梱されたVMTを使っている人へ (To VMT users bundled with other software)
+このソフトは、無料、無保証で、使い方がわかる開発者に向けて作成しています。  
+各ソフトウェアとの組み合わせで発生したトラブルは、各作者にサポートの依頼をしてください。  
+This software is free, non-warranty, and designed for developers who know how to use it.  
+For troubles that occur in combination with each software, ask each author for support.  
+  
 <img src="https://github.com/gpsnmeajp/VirtualMotionTracker/blob/master/docs/vmt_vr.png?raw=true"></img>
 <img src="https://github.com/gpsnmeajp/VirtualMotionTracker/blob/master/docs/screen0.png?raw=true"></img>
 <img src="https://github.com/gpsnmeajp/VirtualMotionTracker/blob/master/docs/Architecture.png?raw=true"></img>
