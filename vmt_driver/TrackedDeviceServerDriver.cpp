@@ -51,6 +51,7 @@ namespace VMTDriver {
 
     void TrackedDeviceServerDriver::SetRawPose(RawPose rawPose)
     {
+        m_poweron = true; //電源オン状態にする
         m_lastRawPose = m_rawPose; //差分を取るために前回値を取っておく
         m_rawPose = rawPose;
         RawPoseToPose();
@@ -281,6 +282,8 @@ namespace VMTDriver {
     }
     void TrackedDeviceServerDriver::Reset()
     {
+        m_poweron = false; //電源オフ状態にする
+
         if (!m_alreadyRegistered) { return; }
         DriverPose_t pose{ 0 };
         pose.qRotation = VMTDriver::HmdQuaternion_Identity;
@@ -307,6 +310,7 @@ namespace VMTDriver {
             if (VREvent.data.hapticVibration.componentHandle == HapticComponent) {
                 OSCReceiver::SendHaptic(m_index, VREvent.data.hapticVibration.fFrequency, VREvent.data.hapticVibration.fAmplitude, VREvent.data.hapticVibration.fDurationSeconds);
             }
+            
             break;
         default:
             break;
@@ -348,7 +352,7 @@ namespace VMTDriver {
 
 
         VRProperties()->SetBoolProperty(m_propertyContainer, Prop_DeviceProvidesBatteryStatus_Bool, true);
-        VRProperties()->SetBoolProperty(m_propertyContainer, Prop_DeviceCanPowerOff_Bool, false);
+        VRProperties()->SetBoolProperty(m_propertyContainer, Prop_DeviceCanPowerOff_Bool, true);
         VRProperties()->SetStringProperty(m_propertyContainer, Prop_Firmware_ProgrammingTarget_String, Version.c_str());
 
 
@@ -364,7 +368,7 @@ namespace VMTDriver {
         VRProperties()->SetBoolProperty(m_propertyContainer, Prop_NeverTracked_Bool, false);
 
 
-        VRProperties()->SetBoolProperty(m_propertyContainer, Prop_Identifiable_Bool, false);
+        VRProperties()->SetBoolProperty(m_propertyContainer, Prop_Identifiable_Bool, true);
 
         VRProperties()->SetBoolProperty(m_propertyContainer, Prop_Firmware_RemindUpdate_Bool, false);
 
@@ -423,6 +427,8 @@ namespace VMTDriver {
     }
     void TrackedDeviceServerDriver::EnterStandby()
     {
+        //電源オフ要求が来た
+        Reset();
     }
     void* TrackedDeviceServerDriver::GetComponent(const char* pchComponentNameAndVersion)
     {
@@ -436,13 +442,13 @@ namespace VMTDriver {
     }
     DriverPose_t TrackedDeviceServerDriver::GetPose()
     {
-        if (s_autoUpdate) {
-            if (m_alreadyRegistered) {
-                //加速度計算の更新
-                m_lastRawPose = m_rawPose;
-                m_rawPose.time = std::chrono::system_clock::now();
-                RawPoseToPose();
-            }
+        //自動更新が有効 AND デバイス登録済み AND 電源オン状態
+        if (s_autoUpdate && m_alreadyRegistered && m_poweron) {
+            //加速度計算の自動更新
+            m_lastRawPose = m_rawPose;
+            m_rawPose.time = std::chrono::system_clock::now();
+            //姿勢情報の更新(他デバイス連動時に効果あり)
+            RawPoseToPose();
         }
         return m_pose;
     }
