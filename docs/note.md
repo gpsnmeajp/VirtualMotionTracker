@@ -192,5 +192,13 @@ https://github.com/ValveSoftware/openvr/wiki/TrackingOverrides
 仮想トラッカーを無効にすると、上書きは解除されます。  
 上書きを有効にする際は、対象のHMDとコントローラの電源が入っており、正常にトラッキングされている状態にする必要があります。  
   
-## 互換性オプション
-"VelocityEnable":false にすると速度・角速度エミュレーションを止めます。
+## setting.json
+
+```
+{
+	"ReceivePort": 受信ポート,
+	"RoomMatrix": ルーム行列,
+	"SendPort": 送信ポート,
+	"VelocityEnable": 速度・角速度エミュレーション
+}
+```
