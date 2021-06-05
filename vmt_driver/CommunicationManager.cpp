@@ -96,6 +96,17 @@ namespace VMTDriver {
 		DirectOSC::OSC::GetInstance()->GetSocketTx()->Send(packet.Data(), packet.Size());
 	}
 
+	void OSCReceiver::SendUnavailable(int code, std::string reason) {
+		const size_t bufsize = 8192;
+		char buf[bufsize];
+		osc::OutboundPacketStream packet(buf, bufsize);
+		packet << osc::BeginMessage("/VMT/Out/Unavailable")
+			<< code
+			<< reason.c_str()
+			<< osc::EndMessage;
+		DirectOSC::OSC::GetInstance()->GetSocketTx()->Send(packet.Data(), packet.Size());
+	}
+
 
 	//別スレッド
 	void OSCReceiver::ProcessMessage(const osc::ReceivedMessage& m, const IpEndpointName& remoteEndpoint)
@@ -230,7 +241,7 @@ namespace VMTDriver {
 			}
 			else if (adr == "/VMT/Reset")
 			{
-			//全トラッカーを0にする
+				//全トラッカーを0にする
 				ServerTrackedDeviceProvider* sever = CommunicationManager::GetInstance()->GetServer();
 				for (int i = 0; i < sever->GetDevices().size(); i++)
 				{
@@ -255,6 +266,7 @@ namespace VMTDriver {
 					, m5, m6, m7, m8
 					, m9, m10, m11, m12
 					, 0, 0, 0, 1;
+				CommunicationManager::GetInstance()->SetRoomMatrixStatus(true); //ルーム行列がセットされた
 
 				json j = CommunicationManager::GetInstance()->GetServer()->LoadJson();
 				if (!j.contains("RoomMatrix"))
@@ -275,7 +287,6 @@ namespace VMTDriver {
 				}
 				j["RoomMatrix"] = { m1,m2,m3,m4,m5,m6,m7,m8,m9,m10,m11,m12 };
 				CommunicationManager::GetInstance()->GetServer()->SaveJson(j);
-
 				SendLog(0, "Set Room Matrix Done.");
 			}
 			else if (adr == "/VMT/SetRoomMatrix/Temporary")
@@ -291,6 +302,7 @@ namespace VMTDriver {
 					, m5, m6, m7, m8
 					, m9, m10, m11, m12
 					, 0, 0, 0, 1;
+				CommunicationManager::GetInstance()->SetRoomMatrixStatus(true); //ルーム行列がセットされた
 
 				SendLog(0, "Set Room Matrix Done.(Temporary)");
 			}
@@ -387,6 +399,13 @@ namespace VMTDriver {
 		//定期的に生存信号を送信
 		if (m_frame > frameCycle) {
 			OSCReceiver::SendAlive();
+
+			if (!m_RoomMatrixStatus) {
+				OSCReceiver::SendUnavailable(1, "Room Matrix has not been set.");
+			}
+			else {
+				OSCReceiver::SendUnavailable(0, "OK");
+			}
 			m_frame = 0;
 		}
 		m_frame++;
@@ -394,6 +413,8 @@ namespace VMTDriver {
 	void CommunicationManager::LoadSetting()
 	{
 		try {
+			SetRoomMatrixStatus(false); //ルーム行列セット状態をクリア
+
 			json j = CommunicationManager::GetInstance()->GetServer()->LoadJson();
 			if (j.contains("RoomMatrix"))
 			{
@@ -402,6 +423,7 @@ namespace VMTDriver {
 					, j["RoomMatrix"][4], j["RoomMatrix"][5], j["RoomMatrix"][6], j["RoomMatrix"][7]
 					, j["RoomMatrix"][8], j["RoomMatrix"][9], j["RoomMatrix"][10], j["RoomMatrix"][11]
 					, 0, 0, 0, 1;
+				SetRoomMatrixStatus(true); //ルーム行列がセットされた
 			}
 			if (j.contains("VelocityEnable"))
 			{
@@ -427,5 +449,9 @@ namespace VMTDriver {
 	bool CommunicationManager::GetVelocityEnable()
 	{
 		return m_velocityEnable;
+	}
+	void CommunicationManager::SetRoomMatrixStatus(bool ok)
+	{
+		m_RoomMatrixStatus = ok;
 	}
 }

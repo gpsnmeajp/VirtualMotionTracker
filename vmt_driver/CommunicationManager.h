@@ -40,11 +40,12 @@ namespace VMTDriver {
 		static void OSCReceiver::SendLog(int stat, string msg);
 		static void OSCReceiver::SendAlive();
 		static void OSCReceiver::SendHaptic(int index, float frequency, float amplitude, float duration);
+		static void OSCReceiver::SendUnavailable(int code, std::string reason);
 	};
 
 	class CommunicationManager {
 	private:
-		const int frameCycle = 45;
+		const int frameCycle = 120;
 		int m_frame = 0;
 
 		string m_installPath = "";
@@ -57,6 +58,9 @@ namespace VMTDriver {
 		bool m_velocityEnable = true;
 		int m_receivePort = 39570;
 		int m_sendPort = 39571;
+
+		bool m_RoomMatrixStatus = false;
+
 	public:
 		static CommunicationManager* GetInstance();
 		ServerTrackedDeviceProvider* GetServer();
@@ -70,5 +74,6 @@ namespace VMTDriver {
 		void LoadSetting();
 
 		bool GetVelocityEnable();
+		void SetRoomMatrixStatus(bool ok);
 	};
 }

@@ -5,154 +5,161 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:vmt_manager"
 		Width="350"
-		Height="260"
+		Height="280"
         mc:Ignorable="d"
         Title="VMT Manager" Loaded="Window_Loaded" Closed="Window_Closed" ResizeMode="NoResize">
-	<TabControl>
-		<TabItem Header="Install">
-			<DockPanel LastChildFill="False">
-				<DockPanel.Background>
-					<LinearGradientBrush EndPoint="1,1" StartPoint="0,0">
-						<GradientStop Color="#FF636363" Offset="0"/>
-						<GradientStop Color="#FF111111" Offset="1"/>
-					</LinearGradientBrush>
-				</DockPanel.Background>
-				<Grid  DockPanel.Dock="Top" Margin="1">
-					<Grid.ColumnDefinitions>
-						<ColumnDefinition/>
-						<ColumnDefinition/>
-					</Grid.ColumnDefinitions>
-					<Button Content="Install" DockPanel.Dock="Top" Click="InstallButton" Grid.Column="0" Margin="1"/>
-					<Button Content="Uninstall" DockPanel.Dock="Top" Click="UninstallButton" Grid.Column="1" Margin="1"/>
-				</Grid>
-				<Grid DockPanel.Dock="Top" Margin="2">
-					<Grid.ColumnDefinitions>
-						<ColumnDefinition/>
-						<ColumnDefinition/>
-						<ColumnDefinition/>
-						<ColumnDefinition/>
-					</Grid.ColumnDefinitions>
-					<TextBlock HorizontalAlignment="Left" Text="Manager: " Grid.Column="0" Foreground="LightGray" />
-					<TextBlock Name="ManagerVersion"  Grid.Column="1" Foreground="LightGray" />
-					<TextBlock HorizontalAlignment="Left" Text="Driver: "  Grid.Column="2" Foreground="LightGray" />
-					<TextBlock Name="DriverVersion"  Grid.Column="3" Foreground="LightGray" />
-				</Grid>
-				<TextBlock DockPanel.Dock="Bottom" TextAlignment="Center" Margin="1"><Hyperlink Foreground="LightSkyBlue" NavigateUri="https://github.com/gpsnmeajp/VirtualMotionTracker" RequestNavigate="Hyperlink_RequestNavigate">https://github.com/gpsnmeajp/VirtualMotionTracker</Hyperlink></TextBlock>
-				<Image DockPanel.Dock="Bottom" Source="Resources/VMTlogo.png" Margin="0,5,0,0"/>
-			</DockPanel>
-		</TabItem>
-		<TabItem Header="RoomSetup">
-			<DockPanel Name="ControlDock" IsEnabled="False">
-				<Grid>
-					<Grid.ColumnDefinitions>
-						<ColumnDefinition/>
-						<ColumnDefinition/>
-					</Grid.ColumnDefinitions>
-					<DockPanel Grid.Column="0" Margin="2"  LastChildFill="False">
-						<TextBlock Text="RoomMatrix" DockPanel.Dock="Top" Margin="1"/>
-						<TextBox Name="RoomMatrixTextBox" IsEnabled="False" IsReadOnly="True" Text="" DockPanel.Dock="Top" Height="69" Margin="1"/>
-						<CheckBox Content="Temporary" DockPanel.Dock="Top" Name="SetRoomMatrixTemporaryCheckBox"></CheckBox>
-						<Button Content="Set RoomMatrix" DockPanel.Dock="Top" Name="SetRoomMatrixButtonName" Click="SetRoomMatrixButton" Margin="1"/>
-						<Button Content="Reset RoomMatrix" DockPanel.Dock="Top" Click="ResetRoomMatrixButton" Margin="1"/>
-						<TextBlock Text="Position Coordinate" DockPanel.Dock="Top" Margin="1"/>
-						<ComboBox DockPanel.Dock="Top" Name="CoordinateCombo" SelectedIndex="0">
-							<ComboBoxItem>Driver Coordinate</ComboBoxItem>
-							<ComboBoxItem>Unity Coordinate</ComboBoxItem>
-						</ComboBox>
-					</DockPanel>
-					<DockPanel Grid.Column="1" Margin="2" LastChildFill="False">
-						<TextBlock Text="VMT_0 Room Position" DockPanel.Dock="Top" Margin="1"/>
-						<TextBox Name="CheckPositionTextBox" IsEnabled="False" IsReadOnly="True" Text="-,-,-" DockPanel.Dock="Top" Margin="1"/>
-						<TextBlock Text="VMT_0 Raw Position" DockPanel.Dock="Top" Margin="1"/>
-						<TextBox Name="CheckPositionRawTextBox" IsEnabled="False" IsReadOnly="True" Text="-,-,-" DockPanel.Dock="Top" Margin="1"/>
-						<Button Content="Check VMT__0 Position &#xA;(Try set RoomPos=[1,1,1] )" DockPanel.Dock="Top" Click="CheckPositionButton" Margin="1"/>
-						<TextBlock Text="VMT_0 Joint Serial No" DockPanel.Dock="Top" Margin="1"/>
-						<TextBox Name="JointSerialNoTextBox" Text="LHR-xxxxxxxxx" DockPanel.Dock="Top" Margin="1"/>
-						<Button Content="Check VMT__0 Position &#xA;(Try set JointPos=[0.1,0.1,0.1] )" DockPanel.Dock="Top" Click="CheckJointPositionButton" Margin="1"/>
-					</DockPanel>
-				</Grid>
-			</DockPanel>
-		</TabItem>
-		<TabItem Header="Control">
-			<DockPanel>
-				<Grid>
-					<Grid.ColumnDefinitions>
-						<ColumnDefinition/>
-						<ColumnDefinition/>
-					</Grid.ColumnDefinitions>
-					<DockPanel Grid.Column="0" Margin="2"  LastChildFill="False">
-						<Button Content="Reload Setting" DockPanel.Dock="Top" Click="ReloadJsonButton" Margin="1"/>
-						<Button Content="Device Reset" DockPanel.Dock="Top" Click="ResetButton" Margin="1"/>
-						<Button Content="Show all" DockPanel.Dock="Top" Click="ShowAllButton" Margin="1"/>
-						<Button Content="Enable Auto Pose Udate" DockPanel.Dock="Top" Click="EnableAutoPoseUdateButton" Margin="1"/>
-						<Button Content="Disable Auto Pose Udate" DockPanel.Dock="Top" Click="DisableAutoPoseUdateButton" Margin="1"/>
-					</DockPanel>
-				</Grid>
-			</DockPanel>
-		</TabItem>
-		<TabItem Header="Input">
-			<DockPanel LastChildFill="False">
-				<DockPanel DockPanel.Dock="Top" Margin="1">
-					<TextBlock VerticalAlignment="Center" Text="VMT:" DockPanel.Dock="Left" Margin="1" />
-					<Button Content="Ref" Width="50" DockPanel.Dock="Right" Margin="1" Click="TrackingReferenceButton"/>
-					<Button Content="Right" Width="50" DockPanel.Dock="Right" Margin="1" Click="RightHandButton"/>
-					<Button Content="Left" Width="50" DockPanel.Dock="Right" Margin="1" Click="LeftHandButton"/>
-					<Button Content="Tracker" Width="50" DockPanel.Dock="Right" Margin="1" Click="TrackerButton"/>
-					<TextBox Name="InputVMTNoTextBox" Text="0" DockPanel.Dock="Left" Margin="1" />
+	<DockPanel LastChildFill="True">
+		<StatusBar DockPanel.Dock="Bottom" Name="StatusBar">
+			<StatusBarItem>
+				<TextBlock Name="StatusBarTextBlock" Text="Virtual Motion Tracker" FontWeight="Bold" />
+			</StatusBarItem>
+		</StatusBar>
+		<TabControl DockPanel.Dock="Top">
+			<TabItem Header="Install">
+				<DockPanel LastChildFill="False">
+					<DockPanel.Background>
+						<LinearGradientBrush EndPoint="1,1" StartPoint="0,0">
+							<GradientStop Color="#FF636363" Offset="0"/>
+							<GradientStop Color="#FF111111" Offset="1"/>
+						</LinearGradientBrush>
+					</DockPanel.Background>
+					<Grid  DockPanel.Dock="Top" Margin="1">
+						<Grid.ColumnDefinitions>
+							<ColumnDefinition/>
+							<ColumnDefinition/>
+						</Grid.ColumnDefinitions>
+						<Button Content="Install" DockPanel.Dock="Top" Click="InstallButton" Grid.Column="0" Margin="1"/>
+						<Button Content="Uninstall" DockPanel.Dock="Top" Click="UninstallButton" Grid.Column="1" Margin="1"/>
+					</Grid>
+					<Grid DockPanel.Dock="Top" Margin="2">
+						<Grid.ColumnDefinitions>
+							<ColumnDefinition/>
+							<ColumnDefinition/>
+							<ColumnDefinition/>
+							<ColumnDefinition/>
+						</Grid.ColumnDefinitions>
+						<TextBlock HorizontalAlignment="Left" Text="Manager: " Grid.Column="0" Foreground="LightGray" />
+						<TextBlock Name="ManagerVersion"  Grid.Column="1" Foreground="LightGray" />
+						<TextBlock HorizontalAlignment="Left" Text="Driver: "  Grid.Column="2" Foreground="LightGray" />
+						<TextBlock Name="DriverVersion"  Grid.Column="3" Foreground="LightGray" />
+					</Grid>
+					<TextBlock DockPanel.Dock="Bottom" TextAlignment="Center" Margin="1"><Hyperlink Foreground="LightSkyBlue" NavigateUri="https://github.com/gpsnmeajp/VirtualMotionTracker" RequestNavigate="Hyperlink_RequestNavigate">https://github.com/gpsnmeajp/VirtualMotionTracker</Hyperlink></TextBlock>
+					<Image DockPanel.Dock="Bottom" Source="Resources/VMTlogo.png" Margin="0,5,0,0"/>
 				</DockPanel>
-				<Grid DockPanel.Dock="Top">
-					<Grid.ColumnDefinitions>
-						<ColumnDefinition/>
-						<ColumnDefinition/>
-					</Grid.ColumnDefinitions>
-					<DockPanel Grid.Column="0" Margin="2"  LastChildFill="False">
-						<Grid DockPanel.Dock="Top">
-							<Grid.ColumnDefinitions>
-								<ColumnDefinition/>
-								<ColumnDefinition/>
-							</Grid.ColumnDefinitions>
-							<Grid.RowDefinitions>
-								<RowDefinition/>
-								<RowDefinition/>
-								<RowDefinition/>
-								<RowDefinition/>
-							</Grid.RowDefinitions>
-							<Button Content="Button 0" PreviewMouseDown="Button0_MouseDown" PreviewMouseUp="Button0_MouseUp"  Margin="1" Grid.Column="0" Grid.Row="0" />
-							<Button Content="Button 1" PreviewMouseDown="Button1_MouseDown" PreviewMouseUp="Button1_MouseUp"  Margin="1" Grid.Column="1" Grid.Row="0" />
-							<Button Content="Button 2" PreviewMouseDown="Button2_MouseDown" PreviewMouseUp="Button2_MouseUp"  Margin="1" Grid.Column="0" Grid.Row="1" />
-							<Button Content="Button 3" PreviewMouseDown="Button3_MouseDown" PreviewMouseUp="Button3_MouseUp"  Margin="1" Grid.Column="1" Grid.Row="1" />
-							<Button Content="Button 4" PreviewMouseDown="Button4_MouseDown" PreviewMouseUp="Button4_MouseUp"  Margin="1" Grid.Column="0" Grid.Row="2" />
-							<Button Content="Button 5" PreviewMouseDown="Button5_MouseDown" PreviewMouseUp="Button5_MouseUp"  Margin="1" Grid.Column="1" Grid.Row="2" />
-							<Button Content="Button 6" PreviewMouseDown="Button6_MouseDown" PreviewMouseUp="Button6_MouseUp"  Margin="1" Grid.Column="0" Grid.Row="3" />
-							<Button Content="Button 7" PreviewMouseDown="Button7_MouseDown" PreviewMouseUp="Button7_MouseUp"  Margin="1" Grid.Column="1" Grid.Row="3" />
-						</Grid>
-					</DockPanel>
-					<DockPanel Grid.Column="1" Margin="2" LastChildFill="False">
-						<DockPanel DockPanel.Dock="Top" Margin="1">
-							<TextBlock Text="Trigger 0" DockPanel.Dock="Left" />
-							<Slider Minimum="0" Maximum="1" Value="0" Name="Slider0" ValueChanged="Slider0_ValueChanged" DockPanel.Dock="Left"/>
+			</TabItem>
+			<TabItem Header="RoomSetup">
+				<DockPanel Name="ControlDock" IsEnabled="False">
+					<Grid>
+						<Grid.ColumnDefinitions>
+							<ColumnDefinition/>
+							<ColumnDefinition/>
+						</Grid.ColumnDefinitions>
+						<DockPanel Grid.Column="0" Margin="2"  LastChildFill="False">
+							<TextBlock Text="RoomMatrix" DockPanel.Dock="Top" Margin="1"/>
+							<TextBox Name="RoomMatrixTextBox" IsEnabled="False" IsReadOnly="True" Text="" DockPanel.Dock="Top" Height="69" Margin="1"/>
+							<CheckBox Content="Temporary" DockPanel.Dock="Top" Name="SetRoomMatrixTemporaryCheckBox"></CheckBox>
+							<Button Content="Set RoomMatrix" DockPanel.Dock="Top" Name="SetRoomMatrixButtonName" Click="SetRoomMatrixButton" Margin="1"/>
+							<Button Content="Reset RoomMatrix" DockPanel.Dock="Top" Click="ResetRoomMatrixButton" Margin="1"/>
+							<TextBlock Text="Position Coordinate" DockPanel.Dock="Top" Margin="1"/>
+							<ComboBox DockPanel.Dock="Top" Name="CoordinateCombo" SelectedIndex="0">
+								<ComboBoxItem>Driver Coordinate</ComboBoxItem>
+								<ComboBoxItem>Unity Coordinate</ComboBoxItem>
+							</ComboBox>
 						</DockPanel>
-						<DockPanel DockPanel.Dock="Top" Margin="1">
-							<TextBlock Text="Trigger 1" DockPanel.Dock="Left" />
-							<Slider Minimum="0" Maximum="1" Value="0" Name="Slider1" ValueChanged="Slider1_ValueChanged" DockPanel.Dock="Left"/>
+						<DockPanel Grid.Column="1" Margin="2" LastChildFill="False">
+							<TextBlock Text="VMT_0 Room Position" DockPanel.Dock="Top" Margin="1"/>
+							<TextBox Name="CheckPositionTextBox" IsEnabled="False" IsReadOnly="True" Text="-,-,-" DockPanel.Dock="Top" Margin="1"/>
+							<TextBlock Text="VMT_0 Raw Position" DockPanel.Dock="Top" Margin="1"/>
+							<TextBox Name="CheckPositionRawTextBox" IsEnabled="False" IsReadOnly="True" Text="-,-,-" DockPanel.Dock="Top" Margin="1"/>
+							<Button Content="Check VMT__0 Position &#xA;(Try set RoomPos=[1,1,1] )" DockPanel.Dock="Top" Click="CheckPositionButton" Margin="1"/>
+							<TextBlock Text="VMT_0 Joint Serial No" DockPanel.Dock="Top" Margin="1"/>
+							<TextBox Name="JointSerialNoTextBox" Text="LHR-xxxxxxxxx" DockPanel.Dock="Top" Margin="1"/>
+							<Button Content="Check VMT__0 Position &#xA;(Try set JointPos=[0.1,0.1,0.1] )" DockPanel.Dock="Top" Click="CheckJointPositionButton" Margin="1"/>
 						</DockPanel>
-						<DockPanel DockPanel.Dock="Top" Margin="1">
-							<TextBlock Text="Joystick X" DockPanel.Dock="Left" />
-							<Slider Minimum="-1" Maximum="1" Value="0" Name="SliderX" ValueChanged="SliderXY_ValueChanged" DockPanel.Dock="Left"/>
-						</DockPanel>
-						<DockPanel DockPanel.Dock="Top" Margin="1">
-							<TextBlock Text="Joystick Y" DockPanel.Dock="Left" />
-							<Slider Minimum="-1" Maximum="1" Value="0" Name="SliderY" ValueChanged="SliderXY_ValueChanged" DockPanel.Dock="Left"/>
-						</DockPanel>
-						<Button Content="Input Reset"  Margin="1" Click="InputResetButton" DockPanel.Dock="Top"/>
-					</DockPanel>
-				</Grid>
-				<DockPanel DockPanel.Dock="Top" Margin="1">
-					<TextBlock VerticalAlignment="Center" Text="Haptic:" DockPanel.Dock="Left" />
-					<TextBox Name="InputVMTHapticTextBox" Text="-" IsReadOnly="True" IsEnabled="False" />
+					</Grid>
 				</DockPanel>
-				<Button Content="Haptic Test"  Margin="1" Click="HapticTestButton" DockPanel.Dock="Top"/>
-			</DockPanel>
-		</TabItem>
-	</TabControl>
+			</TabItem>
+			<TabItem Header="Control">
+				<DockPanel>
+					<Grid>
+						<Grid.ColumnDefinitions>
+							<ColumnDefinition/>
+							<ColumnDefinition/>
+						</Grid.ColumnDefinitions>
+						<DockPanel Grid.Column="0" Margin="2"  LastChildFill="False">
+							<Button Content="Reload Setting" DockPanel.Dock="Top" Click="ReloadJsonButton" Margin="1"/>
+							<Button Content="Device Reset" DockPanel.Dock="Top" Click="ResetButton" Margin="1"/>
+							<Button Content="Show all" DockPanel.Dock="Top" Click="ShowAllButton" Margin="1"/>
+							<Button Content="Enable Auto Pose Udate" DockPanel.Dock="Top" Click="EnableAutoPoseUdateButton" Margin="1"/>
+							<Button Content="Disable Auto Pose Udate" DockPanel.Dock="Top" Click="DisableAutoPoseUdateButton" Margin="1"/>
+						</DockPanel>
+					</Grid>
+				</DockPanel>
+			</TabItem>
+			<TabItem Header="Input">
+				<DockPanel LastChildFill="False">
+					<DockPanel DockPanel.Dock="Top" Margin="1">
+						<TextBlock VerticalAlignment="Center" Text="VMT:" DockPanel.Dock="Left" Margin="1" />
+						<Button Content="Ref" Width="50" DockPanel.Dock="Right" Margin="1" Click="TrackingReferenceButton"/>
+						<Button Content="Right" Width="50" DockPanel.Dock="Right" Margin="1" Click="RightHandButton"/>
+						<Button Content="Left" Width="50" DockPanel.Dock="Right" Margin="1" Click="LeftHandButton"/>
+						<Button Content="Tracker" Width="50" DockPanel.Dock="Right" Margin="1" Click="TrackerButton"/>
+						<TextBox Name="InputVMTNoTextBox" Text="0" DockPanel.Dock="Left" Margin="1" />
+					</DockPanel>
+					<Grid DockPanel.Dock="Top">
+						<Grid.ColumnDefinitions>
+							<ColumnDefinition/>
+							<ColumnDefinition/>
+						</Grid.ColumnDefinitions>
+						<DockPanel Grid.Column="0" Margin="2"  LastChildFill="False">
+							<Grid DockPanel.Dock="Top">
+								<Grid.ColumnDefinitions>
+									<ColumnDefinition/>
+									<ColumnDefinition/>
+								</Grid.ColumnDefinitions>
+								<Grid.RowDefinitions>
+									<RowDefinition/>
+									<RowDefinition/>
+									<RowDefinition/>
+									<RowDefinition/>
+								</Grid.RowDefinitions>
+								<Button Content="Button 0" PreviewMouseDown="Button0_MouseDown" PreviewMouseUp="Button0_MouseUp"  Margin="1" Grid.Column="0" Grid.Row="0" />
+								<Button Content="Button 1" PreviewMouseDown="Button1_MouseDown" PreviewMouseUp="Button1_MouseUp"  Margin="1" Grid.Column="1" Grid.Row="0" />
+								<Button Content="Button 2" PreviewMouseDown="Button2_MouseDown" PreviewMouseUp="Button2_MouseUp"  Margin="1" Grid.Column="0" Grid.Row="1" />
+								<Button Content="Button 3" PreviewMouseDown="Button3_MouseDown" PreviewMouseUp="Button3_MouseUp"  Margin="1" Grid.Column="1" Grid.Row="1" />
+								<Button Content="Button 4" PreviewMouseDown="Button4_MouseDown" PreviewMouseUp="Button4_MouseUp"  Margin="1" Grid.Column="0" Grid.Row="2" />
+								<Button Content="Button 5" PreviewMouseDown="Button5_MouseDown" PreviewMouseUp="Button5_MouseUp"  Margin="1" Grid.Column="1" Grid.Row="2" />
+								<Button Content="Button 6" PreviewMouseDown="Button6_MouseDown" PreviewMouseUp="Button6_MouseUp"  Margin="1" Grid.Column="0" Grid.Row="3" />
+								<Button Content="Button 7" PreviewMouseDown="Button7_MouseDown" PreviewMouseUp="Button7_MouseUp"  Margin="1" Grid.Column="1" Grid.Row="3" />
+							</Grid>
+						</DockPanel>
+						<DockPanel Grid.Column="1" Margin="2" LastChildFill="False">
+							<DockPanel DockPanel.Dock="Top" Margin="1">
+								<TextBlock Text="Trigger 0" DockPanel.Dock="Left" />
+								<Slider Minimum="0" Maximum="1" Value="0" Name="Slider0" ValueChanged="Slider0_ValueChanged" DockPanel.Dock="Left"/>
+							</DockPanel>
+							<DockPanel DockPanel.Dock="Top" Margin="1">
+								<TextBlock Text="Trigger 1" DockPanel.Dock="Left" />
+								<Slider Minimum="0" Maximum="1" Value="0" Name="Slider1" ValueChanged="Slider1_ValueChanged" DockPanel.Dock="Left"/>
+							</DockPanel>
+							<DockPanel DockPanel.Dock="Top" Margin="1">
+								<TextBlock Text="Joystick X" DockPanel.Dock="Left" />
+								<Slider Minimum="-1" Maximum="1" Value="0" Name="SliderX" ValueChanged="SliderXY_ValueChanged" DockPanel.Dock="Left"/>
+							</DockPanel>
+							<DockPanel DockPanel.Dock="Top" Margin="1">
+								<TextBlock Text="Joystick Y" DockPanel.Dock="Left" />
+								<Slider Minimum="-1" Maximum="1" Value="0" Name="SliderY" ValueChanged="SliderXY_ValueChanged" DockPanel.Dock="Left"/>
+							</DockPanel>
+							<Button Content="Input Reset"  Margin="1" Click="InputResetButton" DockPanel.Dock="Top"/>
+						</DockPanel>
+					</Grid>
+					<DockPanel DockPanel.Dock="Top" Margin="1">
+						<TextBlock VerticalAlignment="Center" Text="Haptic:" DockPanel.Dock="Left" />
+						<TextBox Name="InputVMTHapticTextBox" Text="-" IsReadOnly="True" IsEnabled="False" />
+					</DockPanel>
+					<Button Content="Haptic Test"  Margin="1" Click="HapticTestButton" DockPanel.Dock="Top"/>
+				</DockPanel>
+			</TabItem>
+		</TabControl>
+	</DockPanel>
 </Window>

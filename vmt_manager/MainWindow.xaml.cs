@@ -177,9 +177,10 @@ namespace vmt_manager
                 else if (message.Address == "/VMT/Out/Alive")
                 {
                     //Keep Alive
+                    string versionFromOSC = (string)message[0];
                     this.Dispatcher.Invoke(() =>
                     {
-                        DriverVersion.Text = (string)message[0];
+                        DriverVersion.Text = versionFromOSC;
                         if (message.Count > 1 && message[1] is string)
                         {
                             installPath = (string)message[1];
@@ -187,7 +188,7 @@ namespace vmt_manager
 
                         ControlDock.IsEnabled = true;
 
-                        if ((string)message[0] != Version)
+                        if (versionFromOSC != Version)
                         {
                             DriverVersion.Foreground = new SolidColorBrush(Color.FromRgb(255, 100, 100));
                         }
@@ -201,11 +202,33 @@ namespace vmt_manager
                 }
                 else if (message.Address == "/VMT/Out/Haptic")
                 {
+                    int index = (int)message[0];
+                    float frequency = (float)message[1];
+                    float amplitude = (float)message[2];
+                    float duration = (float)message[3];
                     //振動
                     this.Dispatcher.Invoke(() =>
                     {
-                        InputVMTHapticTextBox.Text = string.Format("VMT_{0,0} f:{1:0.0}Hz A:{2:0.0} d:{3:0.0}s", (int)message[0], (float)message[1], (float)message[2], (float)message[3]);
+                        InputVMTHapticTextBox.Text = string.Format("VMT_{0,0} f:{1:0.0}Hz A:{2:0.0} d:{3:0.0}s", index, frequency, amplitude, duration);
                         InputVMTHapticTextBox.Background = new SolidColorBrush(Color.FromRgb(0, 255, 0));
+                    });
+                }
+                else if (message.Address == "/VMT/Out/Unavailable")
+                {
+                    //利用不可ステータス
+                    int code = (int)message[0];
+                    string reason = (string)message[1];
+
+                    this.Dispatcher.Invoke(() =>
+                    {
+                        StatusBarTextBlock.Text = code.ToString() + " : " + reason;
+                        if (code != 0)
+                        {
+                            StatusBar.Background = new SolidColorBrush(Color.FromRgb(255, 255, 0));
+                        }
+                        else {
+                            StatusBar.Background = new SolidColorBrush(Color.FromRgb(255,255,255));
+                        }
                     });
                 }
                 else

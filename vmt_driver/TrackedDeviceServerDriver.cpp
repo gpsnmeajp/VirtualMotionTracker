@@ -128,8 +128,6 @@ namespace VMTDriver {
             pose.vecAngularVelocity[2] = 0.0f;
         }
 
-
-
         //Jointでない場合
         if (m_rawPose.mode == ReferMode_t::None || m_rawPose.root_sn.empty()) {
             //ワールド・ドライバ変換行列を設定
