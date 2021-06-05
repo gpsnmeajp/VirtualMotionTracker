@@ -14,6 +14,11 @@
     <WarningLevel>4</WarningLevel>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
     <Deterministic>true</Deterministic>
+    <runtime>
+      <assemblyBinding xmlns="urn:schemas-microsoft-com:asm.v1">
+        <probing privatePath="dll" />
+      </assemblyBinding>
+    </runtime>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <PlatformTarget>x64</PlatformTarget>
@@ -24,16 +29,26 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <runtime>
+      <assemblyBinding xmlns="urn:schemas-microsoft-com:asm.v1">
+        <probing privatePath="dll" />
+      </assemblyBinding>
+    </runtime>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <PlatformTarget>x64</PlatformTarget>
-    <DebugType>pdbonly</DebugType>
+    <DebugType>none</DebugType>
     <Optimize>true</Optimize>
     <OutputPath>..\build\vmt_manager\</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <GenerateSerializationAssemblies>Off</GenerateSerializationAssemblies>
+    <runtime>
+      <assemblyBinding xmlns="urn:schemas-microsoft-com:asm.v1">
+        <probing privatePath="dll" />
+      </assemblyBinding>
+    </runtime>
   </PropertyGroup>
   <PropertyGroup>
     <ApplicationIcon>
@@ -141,4 +156,16 @@
     <Resource Include="Resources\VMTlogo.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+    <PostBuildEvent>del "$(TargetDir)*.xml"
+move /y "$(TargetDir)*.dll" "$(TargetDir)dll"
+move /y "$(TargetDir)dll\Rug.Osc.dll" "$(TargetDir)"
+move /y "$(TargetDir)dll\openvr_api.dll" "$(TargetDir)"</PostBuildEvent>
+  </PropertyGroup>
+  <PropertyGroup>
+    <PreBuildEvent>del "$(TargetDir)*.pdb"
+del "$(TargetDir)*.dll"
+del "$(TargetDir)dll\*.dll"
+copy "$(TargetDir)..\..\openvr\bin\win64\openvr_api.dll" "$(TargetDir)dll"</PreBuildEvent>
+  </PropertyGroup>
 </Project>
