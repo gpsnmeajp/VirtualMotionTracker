@@ -64,5 +64,5 @@ OpenVR 仮想トラッカー
 OSCトラッカー  
 ばもとら  
 
-#苦労話
+# 苦労話
 [Virtual Motion Trackerを作ったときのノウハウ](https://qiita.com/gpsnmeajp/items/9c41654e6c89c6b9702f)
