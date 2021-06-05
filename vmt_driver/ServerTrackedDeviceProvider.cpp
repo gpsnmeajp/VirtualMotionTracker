@@ -72,7 +72,7 @@ namespace VMTDriver {
             string filename = (s + "\\setting.json");
 
             std::ofstream outputStream(filename);
-            outputStream << j.dump();
+            outputStream << j.dump(3, ' ');
             outputStream.close();
 
             Log::Output(("SaveJson:" + j.dump()).c_str());
