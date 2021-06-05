@@ -303,6 +303,16 @@ namespace VMTDriver {
     }
     void TrackedDeviceServerDriver::ProcessEvent(VREvent_t& VREvent)
     {
+        //未登録 or 電源オフ時は反応しない
+        if (!m_alreadyRegistered || !m_poweron) {
+            return;
+        }
+
+        //異常値を除去(なんで送られてくるんだ？)
+        if (VREvent_VendorSpecific_Reserved_End < VREvent.eventType) {
+            return;
+        }
+
         switch (VREvent.eventType)
         {
         case EVREventType::VREvent_Input_HapticVibration:
@@ -310,9 +320,12 @@ namespace VMTDriver {
             if (VREvent.data.hapticVibration.componentHandle == HapticComponent) {
                 OSCReceiver::SendHaptic(m_index, VREvent.data.hapticVibration.fFrequency, VREvent.data.hapticVibration.fAmplitude, VREvent.data.hapticVibration.fDurationSeconds);
             }
-            
             break;
         default:
+            //デバッグ用
+            //if (m_serial == "VMT_0") {
+            //    Log::printf("Event: %d\n",VREvent.eventType);
+            //}
             break;
         }
     }
@@ -436,6 +449,8 @@ namespace VMTDriver {
     }
     void TrackedDeviceServerDriver::DebugRequest(const char* pchRequest, char* pchResponseBuffer, uint32_t unResponseBufferSize)
     {
+        //デバッグ用
+        //Log::printf("DebugRequest: %s", pchRequest);
         if (unResponseBufferSize > 0) {
             pchResponseBuffer[0] = '\0';
         }
