@@ -27,14 +27,14 @@ If you have trouble for VMT 005 such as not starting, use VMT 006 or after will 
 
 認識しないソフトがある場合、以下を確認してください。  
 + VMT_009以降を使用しているか
-+ SteamVRトラッカーロールの設定
-+ SteamVRバインディングの割当
++ [SteamVRトラッカーロールの設定](docs/howto.md)
++ [SteamVRバインディングの割当](doc/binding.md)
 + C:\Program Files (x86)\Steam\config\steamvr.vrsettings からVMT周りの設定を削除してみる(必ずバックアップを取ってください)
 
 Please check below if you meet software won't recognize VMT.  
 + Use after version of VMT_009
-+ SteamVR Tracker Role
-+ SteamVR binding (Pose)
++ [SteamVR Tracker Role](docs/note_en.md)
++ [SteamVR binding (Pose)](doc/binding.md)
 + Try remove VMT setting on C:\Program Files (x86)\Steam\config\steamvr.vrsettings (You must backup before change it.)
 
 # サポートは閉鎖しました。(Support desk has been closed.)
