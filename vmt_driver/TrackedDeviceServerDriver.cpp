@@ -382,6 +382,7 @@ namespace VMTDriver {
 
 
         VRProperties()->SetBoolProperty(m_propertyContainer, Prop_Identifiable_Bool, true);
+        VRProperties()->SetBoolProperty(m_propertyContainer, Prop_CanWirelessIdentify_Bool, true);
 
         VRProperties()->SetBoolProperty(m_propertyContainer, Prop_Firmware_RemindUpdate_Bool, false);
 
