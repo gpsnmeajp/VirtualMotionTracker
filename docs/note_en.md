@@ -168,9 +168,15 @@ frequency(float): frequency
 amplitude(float): amplitude  
 duration(float): duration  
 
+**/VMT/Out/Unavailable code, reason**  
+code(int): Unavailable code(0=Available, 1=Room Matrix has not been set.)  
+reason(string): Reason(Human readable)  
+
 ### Unity sample
 Plese use [hecomi/uOSC](https://github.com/hecomi/uOSC)  
 Send gameobject transform to virtual tracker.  
+
+<img src="unity.png"></img>
   
 ```cs
 using System.Collections;
@@ -227,5 +233,13 @@ steamvr.vrsettings
    },
 ```
 
-## Compatibility option
-"VelocityEnable":false Velocity, angular Velocity emulation off.
+## setting.json
+
+```
+{
+	"ReceivePort": OSC Receive port,
+	"RoomMatrix": Room Matrix,
+	"SendPort": OSC Send port,
+	"VelocityEnable": Velocity, angular velocity emuration enable
+}
+```

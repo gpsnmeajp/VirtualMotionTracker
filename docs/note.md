@@ -118,10 +118,16 @@ installpath(string): ドライバのインストールパス
 frequency(float): 周波数  
 amplitude(float): 振幅  
 duration(float): 長さ  
+
+**/VMT/Out/Unavailable code, reason**  
+code(int): 利用不可コード(0=利用可能, 1=ルーム行列が設定されていない)  
+reason(string): 詳細(人間が読む用)  
   
 ### Unityサンプル
 [hecomi/uOSC](https://github.com/hecomi/uOSC)を導入してください。  
 アタッチされたGameObjectの座標をトラッカーとして送信します。  
+  
+<img src="unity.png"></img>
   
 ```cs
 using System.Collections;
