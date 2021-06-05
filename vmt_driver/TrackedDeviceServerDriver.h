@@ -74,7 +74,7 @@ namespace VMTDriver {
         void SetObjectIndex(uint32_t);
         void SetPose(DriverPose_t pose);
         void SetRawPose(RawPose rawPose);
-        void RawPoseToPose();
+        DriverPose_t RawPoseToPose();
         void RegisterToVRSystem(int type);
         void UpdatePoseToVRSystem();
         void UpdateButtonInput(uint32_t index, bool value, double timeoffset);

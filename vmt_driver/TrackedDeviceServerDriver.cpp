@@ -52,12 +52,20 @@ namespace VMTDriver {
     void TrackedDeviceServerDriver::SetRawPose(RawPose rawPose)
     {
         m_poweron = true; //電源オン状態にする
-        m_lastRawPose = m_rawPose; //差分を取るために前回値を取っておく
-        m_rawPose = rawPose;
-        RawPoseToPose();
+
+        if (s_autoUpdate) {
+            //自動更新が有効ならPoseは自動計算される
+            m_rawPose = rawPose;
+        }
+        else {
+            //自動更新が無効ならばPoseを更新する
+            m_lastRawPose = m_rawPose; //差分を取るために前回値を取っておく
+            m_rawPose = rawPose;
+            SetPose(RawPoseToPose());
+        }
     }
 
-    void TrackedDeviceServerDriver::RawPoseToPose()
+    DriverPose_t TrackedDeviceServerDriver::RawPoseToPose()
     {
         DriverPose_t pose{ 0 };
         pose.poseTimeOffset = m_rawPose.timeoffset;
@@ -208,7 +216,7 @@ namespace VMTDriver {
                 pose.qWorldFromDriverRotation.w = 1.0;
             }
         }
-        SetPose(pose);
+        return pose;
     }
 
     void TrackedDeviceServerDriver::RegisterToVRSystem(int type)
@@ -464,7 +472,7 @@ namespace VMTDriver {
             m_lastRawPose = m_rawPose;
             m_rawPose.time = std::chrono::system_clock::now();
             //姿勢情報の更新(他デバイス連動時に効果あり)
-            RawPoseToPose();
+            SetPose(RawPoseToPose());
         }
         return m_pose;
     }
