@@ -157,7 +157,7 @@ namespace VMTDriver {
 
                 // 参照元のトラッキングステータスを継承させる
                 if (m_rawPose.enable != 0) {
-                    pose.result = p->eTrackingResult;
+                    pose.result = (vr::ETrackingResult)p->eTrackingResult;
                 }
 
                 if (p->eTrackingResult == ETrackingResult::TrackingResult_Running_OK) {

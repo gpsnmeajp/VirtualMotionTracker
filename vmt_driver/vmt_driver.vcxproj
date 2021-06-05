@@ -83,12 +83,16 @@
     <TargetName>driver_vmt</TargetName>
     <OutDir>$(SolutionDir)..\build\vmt\bin\win64\</OutDir>
     <IncludePath>..\;..\openvr\headers;..\eigen-3.3.7;..\oscpack_1_1_0;$(IncludePath)</IncludePath>
+    <RunCodeAnalysis>true</RunCodeAnalysis>
+    <EnableClangTidyCodeAnalysis>false</EnableClangTidyCodeAnalysis>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
     <TargetName>driver_vmt</TargetName>
     <OutDir>$(SolutionDir)..\build\vmt\bin\win64\</OutDir>
     <IncludePath>..\;..\openvr\headers;..\eigen-3.3.7;..\oscpack_1_1_0;$(IncludePath)</IncludePath>
+    <RunCodeAnalysis>true</RunCodeAnalysis>
+    <EnableClangTidyCodeAnalysis>false</EnableClangTidyCodeAnalysis>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -214,4 +218,8 @@
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
+  
+  <PropertyGroup Condition="'$(Language)'=='C++'">
+    <CAExcludePath>..\json.hpp;..\openvr\;..\eigen-3.3.7\;..\oscpack_1_1_0\;$(CAExcludePath)</CAExcludePath>
+  </PropertyGroup>
 </Project>

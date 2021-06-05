@@ -50,8 +50,8 @@ namespace VMTDriver {
 		string m_installPath = "";
 
 		bool m_opened = false;
-		OSCReceiver m_rcv;
-		ServerTrackedDeviceProvider* m_server;
+		OSCReceiver m_rcv{};
+		ServerTrackedDeviceProvider* m_server{};
 		Eigen::Matrix4d m_RoomToDriverMatrix = Eigen::Matrix4d::Identity();
 
 		bool m_velocityEnable = true;

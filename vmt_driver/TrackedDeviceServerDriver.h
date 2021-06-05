@@ -28,20 +28,20 @@ namespace VMTDriver {
     const HmdQuaternion_t HmdQuaternion_Identity{ 1,0,0,0 };
 
     struct RawPose {
-        bool roomToDriver;
-        int idx;
-        int enable;
-        double x;
-        double y;
-        double z;
-        double qx;
-        double qy;
-        double qz;
-        double qw;
-        double timeoffset;
-        ReferMode_t mode;
-        std::string root_sn;
-        std::chrono::system_clock::time_point time;
+        bool roomToDriver{};
+        int idx{};
+        int enable{};
+        double x{};
+        double y{};
+        double z{};
+        double qx{};
+        double qy{};
+        double qz{};
+        double qw{};
+        double timeoffset{};
+        ReferMode_t mode{};
+        std::string root_sn{};
+        std::chrono::system_clock::time_point time{};
     };
 
     //個々のデバイス
