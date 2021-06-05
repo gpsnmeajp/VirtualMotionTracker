@@ -58,7 +58,7 @@ namespace vmt_manager
     /// </summary>
     public partial class MainWindow : Window
     {
-        const string Version = "VMT_009";
+        const string Version = "VMT_010";
         private DispatcherTimer dispatcherTimer;
         Random rnd;
         string title = "";
@@ -88,7 +88,7 @@ namespace vmt_manager
                 util = new EasyOpenVRUtil();
                 if (!util.StartOpenVR())
                 {
-                    var result = MessageBox.Show("Steam VR not ready. Maybe not ready for HMD or Tracking system?\nStream VRが利用できません。HMDやトラッキングシステムが利用できない状態の可能性があります。", title, MessageBoxButton.OK, MessageBoxImage.Error);
+                    var result = MessageBox.Show("Steam VR not ready. Maybe not ready for HMD or Tracking system.\nStream VRが利用できません。HMDやトラッキングシステムが利用できない状態の可能性があります。", title, MessageBoxButton.OK, MessageBoxImage.Error);
                     Close();
                     return;
                 }

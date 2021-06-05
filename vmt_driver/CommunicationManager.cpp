@@ -265,6 +265,14 @@ namespace VMTDriver {
 				{
 					j["VelocityEnable"] = true;
 				}
+				if (!j.contains("ReceivePort"))
+				{
+					j["ReceivePort"] = -1;
+				}
+				if (!j.contains("SendPort"))
+				{
+					j["SendPort"] = -1;
+				}
 				j["RoomMatrix"] = { m1,m2,m3,m4,m5,m6,m7,m8,m9,m10,m11,m12 };
 				CommunicationManager::GetInstance()->GetServer()->SaveJson(j);
 
@@ -351,10 +359,11 @@ namespace VMTDriver {
 			return;
 		}
 		m_server = server;
-		DirectOSC::OSC::GetInstance()->Open(&m_rcv, 39570, 39571);
-		m_opened = true;
 
 		LoadSetting();
+		DirectOSC::OSC::GetInstance()->Open(&m_rcv, m_receivePort, m_sendPort);
+		m_opened = true;
+
 		/*
 		m_RoomToDriverMatrix << -0.9998478, 0,          -0.01745246,     0,
                      			0,          1,           0,              0,
@@ -397,6 +406,18 @@ namespace VMTDriver {
 			if (j.contains("VelocityEnable"))
 			{
 				m_velocityEnable = j["VelocityEnable"];
+			}
+			if (j.contains("ReceivePort"))
+			{
+				if (j["ReceivePort"] > 0) {
+					m_receivePort = j["ReceivePort"];
+				}
+			}
+			if (j.contains("SendPort"))
+			{
+				if (j["SendPort"] > 0) {
+					m_sendPort = j["SendPort"];
+				}
 			}
 		}
 		catch (...) {
