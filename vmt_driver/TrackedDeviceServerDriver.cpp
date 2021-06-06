@@ -224,6 +224,7 @@ namespace VMTDriver {
             switch (type)
             {
             case 4://TrackingReference
+                VRProperties()->SetInt32Property(m_propertyContainer, Prop_ControllerRoleHint_Int32, ETrackedControllerRole::TrackedControllerRole_OptOut); //手に割り当てないように
                 VRServerDriverHost()->TrackedDeviceAdded(m_serial.c_str(), ETrackedDeviceClass::TrackedDeviceClass_TrackingReference, this);
                 m_alreadyRegistered = true;
                 break;
@@ -238,6 +239,7 @@ namespace VMTDriver {
                 m_alreadyRegistered = true;
                 break;
             case 1://Tracker
+                VRProperties()->SetInt32Property(m_propertyContainer, Prop_ControllerRoleHint_Int32, ETrackedControllerRole::TrackedControllerRole_OptOut); //手に割り当てないように
                 VRServerDriverHost()->TrackedDeviceAdded(m_serial.c_str(), ETrackedDeviceClass::TrackedDeviceClass_GenericTracker, this);
                 m_alreadyRegistered = true;
                 break;
