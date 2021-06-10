@@ -154,7 +154,7 @@ namespace VMTDriver {
             //デバイスが見つかったフラグ
             bool deviceFound = false;
 
-            //シリアルナンバーがHMDである場合(かつオンになっている場合)は、index 0を参照する
+            //シリアルナンバーがHMDである場合(かつオンになっている場合)は、index 0(k_unTrackedDeviceIndex_Hmd)を参照する
             if (m_rawPose.root_sn == "HMD" && CommunicationManager::GetInstance()->GetHMDisIndex0()) {
                 TrackedDevicePose_t* const p = poses + 0;
 
@@ -277,8 +277,18 @@ namespace VMTDriver {
                 pose.qWorldFromDriverRotation.y = 0.0;
                 pose.qWorldFromDriverRotation.z = 0.0;
                 pose.qWorldFromDriverRotation.w = 1.0;
+
+
+                //[?]表示にする
+                pose.poseIsValid = false;
             }
         }
+
+        //ルームマトリクスが設定されていない
+        if (!CommunicationManager::GetInstance()->GetRoomMatrixStatus()) {
+            pose.poseIsValid = false;
+        }
+
         return pose;
     }
 
@@ -317,9 +327,12 @@ namespace VMTDriver {
             }
         }
     }
+
+    //毎フレーム処理
     void TrackedDeviceServerDriver::UpdatePoseToVRSystem()
     {
         if (!m_alreadyRegistered) { return; }
+        //姿勢を更新
         VRServerDriverHost()->TrackedDevicePoseUpdated(m_deviceIndex, GetPose(), sizeof(DriverPose_t));
     }
     void TrackedDeviceServerDriver::UpdateButtonInput(uint32_t index, bool value, double timeoffset)
@@ -429,7 +442,7 @@ namespace VMTDriver {
         VRProperties()->SetBoolProperty(m_propertyContainer, Prop_DeviceIsCharging_Bool, false);
         VRProperties()->SetFloatProperty(m_propertyContainer, Prop_DeviceBatteryPercentage_Float, 1.0f);
 
-        VRProperties()->SetBoolProperty(m_propertyContainer, Prop_Firmware_UpdateAvailable_Bool, true);
+        VRProperties()->SetBoolProperty(m_propertyContainer, Prop_Firmware_UpdateAvailable_Bool, false);
         VRProperties()->SetBoolProperty(m_propertyContainer, Prop_Firmware_ManualUpdate_Bool, true);
         VRProperties()->SetStringProperty(m_propertyContainer, Prop_Firmware_ManualUpdateURL_String, "https://github.com/gpsnmeajp/VirtualMotionTracker");
         VRProperties()->SetUint64Property(m_propertyContainer, Prop_HardwareRevision_Uint64, 0);
@@ -474,15 +487,15 @@ namespace VMTDriver {
         VRProperties()->SetFloatProperty(m_propertyContainer, Prop_DisplayMaxAnalogGain_Float, 1.0f);
 
 
-        VRProperties()->SetStringProperty(m_propertyContainer, Prop_NamedIconPathDeviceOff_String, "{vmt}/icons/Ready32x32.png");
-        VRProperties()->SetStringProperty(m_propertyContainer, Prop_NamedIconPathDeviceSearching_String, "{vmt}/icons/Ready32x32.png");
-        VRProperties()->SetStringProperty(m_propertyContainer, Prop_NamedIconPathDeviceSearchingAlert_String, "{vmt}/icons/Ready32x32.png");
+        VRProperties()->SetStringProperty(m_propertyContainer, Prop_NamedIconPathDeviceOff_String, "{vmt}/icons/Off32x32.png");
+        VRProperties()->SetStringProperty(m_propertyContainer, Prop_NamedIconPathDeviceSearching_String, "{vmt}/icons/Searching32x32.png");
+        VRProperties()->SetStringProperty(m_propertyContainer, Prop_NamedIconPathDeviceSearchingAlert_String, "{vmt}/icons/SearchingAlert32x32.png");
         VRProperties()->SetStringProperty(m_propertyContainer, Prop_NamedIconPathDeviceReady_String, "{vmt}/icons/Ready32x32.png");
-        VRProperties()->SetStringProperty(m_propertyContainer, Prop_NamedIconPathDeviceReadyAlert_String, "{vmt}/icons/Ready32x32.png");
-        VRProperties()->SetStringProperty(m_propertyContainer, Prop_NamedIconPathDeviceNotReady_String, "{vmt}/icons/Ready32x32.png");
-        VRProperties()->SetStringProperty(m_propertyContainer, Prop_NamedIconPathDeviceStandby_String, "{vmt}/icons/Ready32x32.png");
-        VRProperties()->SetStringProperty(m_propertyContainer, Prop_NamedIconPathDeviceStandbyAlert_String, "{vmt}/icons/Ready32x32.png");
-        VRProperties()->SetStringProperty(m_propertyContainer, Prop_NamedIconPathDeviceAlertLow_String, "{vmt}/icons/Ready32x32.png");
+        VRProperties()->SetStringProperty(m_propertyContainer, Prop_NamedIconPathDeviceReadyAlert_String, "{vmt}/icons/ReadyAlert32x32.png");
+        VRProperties()->SetStringProperty(m_propertyContainer, Prop_NamedIconPathDeviceNotReady_String, "{vmt}/icons/NotReady32x32.png");
+        VRProperties()->SetStringProperty(m_propertyContainer, Prop_NamedIconPathDeviceStandby_String, "{vmt}/icons/Standby32x32.png");
+        VRProperties()->SetStringProperty(m_propertyContainer, Prop_NamedIconPathDeviceStandbyAlert_String, "{vmt}/icons/StandbyAlert32x32.png");
+        VRProperties()->SetStringProperty(m_propertyContainer, Prop_NamedIconPathDeviceAlertLow_String, "{vmt}/icons/AlertLow32x32.png");
 
         VRProperties()->SetBoolProperty(m_propertyContainer, Prop_HasDisplayComponent_Bool, false);
         VRProperties()->SetBoolProperty(m_propertyContainer, Prop_HasCameraComponent_Bool, false);
@@ -545,5 +558,4 @@ namespace VMTDriver {
         }
         return m_pose;
     }
-
 }

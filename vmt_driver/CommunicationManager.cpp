@@ -478,4 +478,8 @@ namespace VMTDriver {
 	{
 		return m_HMDisIndex0;
 	}
+	bool CommunicationManager::GetRoomMatrixStatus()
+	{
+		return m_RoomMatrixStatus;
+	}
 }

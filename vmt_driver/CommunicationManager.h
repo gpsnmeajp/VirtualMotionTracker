@@ -78,5 +78,6 @@ namespace VMTDriver {
 		void SetRoomMatrixStatus(bool ok);
 		bool GetOptoutTrackingRole();
 		bool GetHMDisIndex0();
+		bool GetRoomMatrixStatus();
 	};
 }
