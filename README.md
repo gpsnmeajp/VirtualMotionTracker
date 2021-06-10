@@ -44,6 +44,8 @@ Please don't use if you can not understand manual.
 コードレベル以外のIssueは返答無くCloseすることがあります。  
 Issues other than code level may be closed without a response.  
 
+明らかな不具合や異常挙動に関しては、詳細を添えてIssueを立ててください。  
+
 # 他のソフトウェアに同梱されたVMTを使っている人へ (To VMT users bundled with other software)
 このソフトは、無料、無保証で、使い方がわかる開発者に向けて作成しています。  
 各ソフトウェアとの組み合わせで発生したトラブルは、各作者にサポートの依頼をしてください。  
