@@ -59,6 +59,8 @@ For troubles that occur in combination with each software, ask each author for s
 # Licence
 MIT Licence
 
+Logo text font: M+ Fonts https://mplus-fonts.osdn.jp/about2.html
+
 # Keyword
 Virtual Motion Tracker  
 バーチャルモーショントラッカー    
