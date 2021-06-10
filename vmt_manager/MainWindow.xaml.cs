@@ -58,7 +58,7 @@ namespace vmt_manager
     /// </summary>
     public partial class MainWindow : Window
     {
-        const string Version = "VMT_010";
+        const string Version = "VMT_011";
         private DispatcherTimer dispatcherTimer;
         Random rnd;
         string title = "";
@@ -430,7 +430,7 @@ namespace vmt_manager
             {
                 osc.Send(new OscMessage("/VMT/Joint/Unity",
                     0, 1, 0f,
-                    0.1f, 0.1f, 0.1f,
+                    0.1f, 0f, -0.5f,
                     0f, 0f, 0f, 1f,
                     JointSerialNoTextBox.Text));
             }
@@ -438,9 +438,28 @@ namespace vmt_manager
             {
                 osc.Send(new OscMessage("/VMT/Joint/Driver",
                     0, 1, 0f,
-                    0.1f, 0.1f, 0.1f,
+                    0.1f, 0f, -0.5f,
                     0f, 0f, 0f, 1f,
                     JointSerialNoTextBox.Text));
+            }
+        }
+        private void CheckJointPosition2Button(object sender, RoutedEventArgs e)
+        {
+            if (CoordinateCombo.SelectedIndex == 1)
+            {
+                osc.Send(new OscMessage("/VMT/Joint/Unity",
+                    1, 1, 0f,
+                    -0.1f, 0f, -0.5f,
+                    0f, 0f, 0f, 1f,
+                    JointSerialNo2TextBox.Text));
+            }
+            else
+            {
+                osc.Send(new OscMessage("/VMT/Joint/Driver",
+                    1, 1, 0f,
+                    -0.1f, 0f, -0.5f,
+                    0f, 0f, 0f, 1f,
+                    JointSerialNo2TextBox.Text));
             }
         }
 

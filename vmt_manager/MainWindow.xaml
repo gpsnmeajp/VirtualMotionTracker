@@ -4,8 +4,8 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:vmt_manager"
-		Width="350"
-		Height="280"
+		Width="370"
+		Height="350"
         mc:Ignorable="d"
         Title="VMT Manager" Loaded="Window_Loaded" Closed="Window_Closed" ResizeMode="NoResize">
 	<DockPanel LastChildFill="True">
@@ -73,8 +73,10 @@
 							<TextBox Name="CheckPositionRawTextBox" IsEnabled="False" IsReadOnly="True" Text="-,-,-" DockPanel.Dock="Top" Margin="1"/>
 							<Button Content="Check VMT__0 Position &#xA;(Try set RoomPos=[1,1,1] )" DockPanel.Dock="Top" Click="CheckPositionButton" Margin="1"/>
 							<TextBlock Text="VMT_0 Joint Serial No" DockPanel.Dock="Top" Margin="1"/>
-							<TextBox Name="JointSerialNoTextBox" Text="LHR-xxxxxxxxx" DockPanel.Dock="Top" Margin="1"/>
-							<Button Content="Check VMT__0 Position &#xA;(Try set JointPos=[0.1,0.1,0.1] )" DockPanel.Dock="Top" Click="CheckJointPositionButton" Margin="1"/>
+							<TextBox Name="JointSerialNoTextBox" Text="HMD" DockPanel.Dock="Top" Margin="1"/>
+							<Button Content="Check VMT__0 Position &#xA;(Try set JointPos=[0.1,0.0,-0.5] )" DockPanel.Dock="Top" Click="CheckJointPositionButton" Margin="1"/>
+							<TextBox Name="JointSerialNo2TextBox" Text="LHR-xxxxxxxxx" DockPanel.Dock="Top" Margin="1"/>
+							<Button Content="Check VMT__1 Position &#xA;(Try set JointPos=[-0.1,0.0,-0.5] )" DockPanel.Dock="Top" Click="CheckJointPosition2Button" Margin="1"/>
 						</DockPanel>
 					</Grid>
 				</DockPanel>
@@ -158,6 +160,14 @@
 						<TextBox Name="InputVMTHapticTextBox" Text="-" IsReadOnly="True" IsEnabled="False" />
 					</DockPanel>
 					<Button Content="Haptic Test"  Margin="1" Click="HapticTestButton" DockPanel.Dock="Top"/>
+				</DockPanel>
+			</TabItem>
+			<TabItem Header="Device">
+				<DockPanel LastChildFill="False">
+				</DockPanel>
+			</TabItem>
+			<TabItem Header="json">
+				<DockPanel LastChildFill="False">
 				</DockPanel>
 			</TabItem>
 		</TabControl>
