@@ -234,10 +234,14 @@ steamvr.vrsettings
 ```
 
 ## setting.json
+Basicaly, set false to old version compatible.
 
 ```
 {
+	"HMDisIndex0": Serial number "HMD" as HMD(Index 0),
+	"OptoutTrackingRole": Optout Tracking Role when tracker/tracking reference,
 	"ReceivePort": OSC Receive port,
+	"RejectWhenCannotTracking": Stop when tracking lost,
 	"RoomMatrix": Room Matrix,
 	"SendPort": OSC Send port,
 	"VelocityEnable": Velocity, angular velocity emuration enable

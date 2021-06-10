@@ -193,10 +193,14 @@ https://github.com/ValveSoftware/openvr/wiki/TrackingOverrides
 上書きを有効にする際は、対象のHMDとコントローラの電源が入っており、正常にトラッキングされている状態にする必要があります。  
   
 ## setting.json
+基本的にfalseにすることで古い挙動に戻ります(旧バージョンに対する互換性)。
 
 ```
 {
+	"HMDisIndex0": 「HMD」というシリアルをIndex 0(HMD)として扱うか,
+	"OptoutTrackingRole": トラッキングロールのオプトアウトを行うか(トラッカー、トラッキングリファレンス),
 	"ReceivePort": 受信ポート,
+	"RejectWhenCannotTracking": 異常時にトラッキングを停止するか,
 	"RoomMatrix": ルーム行列,
 	"SendPort": 送信ポート,
 	"VelocityEnable": 速度・角速度エミュレーション
