@@ -278,14 +278,15 @@ namespace VMTDriver {
                 pose.qWorldFromDriverRotation.z = 0.0;
                 pose.qWorldFromDriverRotation.w = 1.0;
 
-
                 //[?]表示にする
-                pose.poseIsValid = false;
+                if (CommunicationManager::GetInstance()->GetRejectWhenCannotTracking()) {
+                    pose.poseIsValid = false;
+                }
             }
         }
 
         //ルームマトリクスが設定されていない
-        if (!CommunicationManager::GetInstance()->GetRoomMatrixStatus()) {
+        if (!CommunicationManager::GetInstance()->GetRoomMatrixStatus() && CommunicationManager::GetInstance()->GetRejectWhenCannotTracking()) {
             pose.poseIsValid = false;
         }
 

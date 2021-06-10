@@ -293,6 +293,10 @@ namespace VMTDriver {
 				{
 					j["HMDisIndex0"] = true;
 				}
+				if (!j.contains("RejectWhenCannotTracking"))
+				{
+					j["RejectWhenCannotTracking"] = true;
+				}
 				j["RoomMatrix"] = { m1,m2,m3,m4,m5,m6,m7,m8,m9,m10,m11,m12 };
 				CommunicationManager::GetInstance()->GetServer()->SaveJson(j);
 				SendLog(0, "Set Room Matrix Done.");
@@ -457,6 +461,10 @@ namespace VMTDriver {
 			{
 				m_HMDisIndex0 = j["HMDisIndex0"];
 			}
+			if (j.contains("RejectWhenCannotTracking"))
+			{
+				m_RejectWhenCannotTracking = j["RejectWhenCannotTracking"];
+			}
 		}
 		catch (...) {
 			m_RoomToDriverMatrix = Eigen::Matrix4d::Identity();
@@ -481,5 +489,9 @@ namespace VMTDriver {
 	bool CommunicationManager::GetRoomMatrixStatus()
 	{
 		return m_RoomMatrixStatus;
+	}
+	bool CommunicationManager::GetRejectWhenCannotTracking()
+	{
+		return m_RejectWhenCannotTracking;
 	}
 }

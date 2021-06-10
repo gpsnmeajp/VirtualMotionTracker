@@ -171,8 +171,9 @@
 			</TabItem>
 			<TabItem Header="Json">
 				<DockPanel LastChildFill="True">
-					<Button Content="Load" Margin="1" Click="JsonLoadButton" DockPanel.Dock="Top"/>
-					<Button Content="Save" Margin="1" Click="JsonSaveButton" DockPanel.Dock="Top"/>
+					<Button Content="Load json editor" Margin="1" Click="JsonLoadButton" DockPanel.Dock="Top"/>
+					<Button Content="Save json editor" Margin="1" Click="JsonSaveButton" DockPanel.Dock="Top"/>
+					<Button Content="Reload Setting" DockPanel.Dock="Bottom" Click="ReloadJsonButton" Margin="1"/>
 					<TextBox Name="JsonTextBox" Margin="1" DockPanel.Dock="Top" VerticalScrollBarVisibility="Visible"/>
 				</DockPanel>
 			</TabItem>

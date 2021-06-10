@@ -61,7 +61,7 @@ namespace VMTDriver {
 		int m_sendPort = 39571;
 		bool m_optoutTrackingRole = true;
 		bool m_HMDisIndex0 = true;
-
+		bool m_RejectWhenCannotTracking = true;
 	public:
 		static CommunicationManager* GetInstance();
 		ServerTrackedDeviceProvider* GetServer();
@@ -79,5 +79,6 @@ namespace VMTDriver {
 		bool GetOptoutTrackingRole();
 		bool GetHMDisIndex0();
 		bool GetRoomMatrixStatus();
+		bool GetRejectWhenCannotTracking();
 	};
 }
