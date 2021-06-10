@@ -227,7 +227,7 @@ namespace vmt_manager
                             StatusBar.Background = new SolidColorBrush(Color.FromRgb(255, 255, 0));
                         }
                         else {
-                            StatusBar.Background = new SolidColorBrush(Color.FromRgb(255,255,255));
+                            StatusBar.Background = new SolidColorBrush(Color.FromRgb(255, 255, 255));
                         }
                     });
                 }
@@ -760,6 +760,55 @@ namespace vmt_manager
         private void DisableAutoPoseUdateButton(object sender, RoutedEventArgs e)
         {
             osc.Send(new OscMessage("/VMT/SetAutoPoseUpdate", 0));
+        }
+        private void DeviceReloadButton(object sender, RoutedEventArgs e)
+        {
+            DeviceListView.Items.Clear();
+
+            for (uint i = 0; i < OpenVR.k_unMaxTrackedDeviceCount; i++)
+            {
+                string s = i.ToString() + " : " + util.GetSerialNumber(i);
+                DeviceListView.Items.Add(s);
+            }
+        }
+        private void DeviceCopyButton(object sender, RoutedEventArgs e)
+        {
+            if (DeviceListView.SelectedItem != null)
+            {
+                string s = (string)DeviceListView.SelectedItem;
+                s = s.Split(':')[1].Trim();
+
+                System.Windows.Clipboard.SetText(s);
+            }
+        }
+        private void JsonLoadButton(object sender, RoutedEventArgs e)
+        {
+            string jsonPath_rel = System.IO.Path.GetDirectoryName(Assembly.GetEntryAssembly().Location) + @"\..\vmt\setting.json";
+            string jsonPath = System.IO.Path.GetFullPath(jsonPath_rel);
+
+            try
+            {
+                JsonTextBox.Text = File.ReadAllText(jsonPath, new UTF8Encoding(false));
+                MessageBox.Show("Loaded.", title, MessageBoxButton.OK, MessageBoxImage.Information);
+            }
+            catch (Exception ex) {
+                MessageBox.Show(ex.Message + "\n" + ex.StackTrace, title);
+            }
+
+        }
+        private void JsonSaveButton(object sender, RoutedEventArgs e)
+        {
+            string jsonPath_rel = System.IO.Path.GetDirectoryName(Assembly.GetEntryAssembly().Location) + @"\..\vmt\setting.json";
+            string jsonPath = System.IO.Path.GetFullPath(jsonPath_rel);
+            try
+            {
+                File.WriteAllText(jsonPath, JsonTextBox.Text, new UTF8Encoding(false));
+                MessageBox.Show("Saved.", title, MessageBoxButton.OK, MessageBoxImage.Information);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message + "\n" + ex.StackTrace, title);
+            }
         }
     }
 }

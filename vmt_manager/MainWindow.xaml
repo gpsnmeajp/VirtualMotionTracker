@@ -164,10 +164,16 @@
 			</TabItem>
 			<TabItem Header="Device">
 				<DockPanel LastChildFill="False">
+					<Button Content="Reload" Margin="1" Click="DeviceReloadButton" DockPanel.Dock="Top"/>
+					<Button Content="Copy to Clipboard" Margin="1" Click="DeviceCopyButton" DockPanel.Dock="Top"/>
+					<ListView Name="DeviceListView" Margin="1" DockPanel.Dock="Top"/>
 				</DockPanel>
 			</TabItem>
-			<TabItem Header="json">
-				<DockPanel LastChildFill="False">
+			<TabItem Header="Json">
+				<DockPanel LastChildFill="True">
+					<Button Content="Load" Margin="1" Click="JsonLoadButton" DockPanel.Dock="Top"/>
+					<Button Content="Save" Margin="1" Click="JsonSaveButton" DockPanel.Dock="Top"/>
+					<TextBox Name="JsonTextBox" Margin="1" DockPanel.Dock="Top" VerticalScrollBarVisibility="Visible"/>
 				</DockPanel>
 			</TabItem>
 		</TabControl>

@@ -285,11 +285,11 @@ namespace VMTDriver {
 				{
 					j["SendPort"] = -1;
 				}
-				if (j.contains("OptoutTrackingRole"))
+				if (!j.contains("OptoutTrackingRole"))
 				{
 					j["OptoutTrackingRole"] = true;
 				}
-				if (j.contains("HMDisIndex0"))
+				if (!j.contains("HMDisIndex0"))
 				{
 					j["HMDisIndex0"] = true;
 				}
