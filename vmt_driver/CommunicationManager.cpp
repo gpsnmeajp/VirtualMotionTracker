@@ -285,6 +285,14 @@ namespace VMTDriver {
 				{
 					j["SendPort"] = -1;
 				}
+				if (j.contains("OptoutTrackingRole"))
+				{
+					j["OptoutTrackingRole"] = true;
+				}
+				if (j.contains("HMDisIndex0"))
+				{
+					j["HMDisIndex0"] = true;
+				}
 				j["RoomMatrix"] = { m1,m2,m3,m4,m5,m6,m7,m8,m9,m10,m11,m12 };
 				CommunicationManager::GetInstance()->GetServer()->SaveJson(j);
 				SendLog(0, "Set Room Matrix Done.");
@@ -441,6 +449,14 @@ namespace VMTDriver {
 					m_sendPort = j["SendPort"];
 				}
 			}
+			if (j.contains("OptoutTrackingRole"))
+			{
+				m_optoutTrackingRole = j["OptoutTrackingRole"];
+			}
+			if (j.contains("HMDisIndex0"))
+			{
+				m_HMDisIndex0 = j["HMDisIndex0"];
+			}
 		}
 		catch (...) {
 			m_RoomToDriverMatrix = Eigen::Matrix4d::Identity();
@@ -453,5 +469,13 @@ namespace VMTDriver {
 	void CommunicationManager::SetRoomMatrixStatus(bool ok)
 	{
 		m_RoomMatrixStatus = ok;
+	}
+	bool CommunicationManager::GetOptoutTrackingRole()
+	{
+		return m_optoutTrackingRole;
+	}
+	bool CommunicationManager::GetHMDisIndex0()
+	{
+		return m_HMDisIndex0;
 	}
 }

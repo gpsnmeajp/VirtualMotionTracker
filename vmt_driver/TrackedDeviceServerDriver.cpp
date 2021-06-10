@@ -146,64 +146,129 @@ namespace VMTDriver {
 
             // 参照元のPoseを取得
             vr::TrackedDevicePose_t poses[k_unMaxTrackedDeviceCount];
-            IVRServerDriverHost* host = VRServerDriverHost();
-            host->GetRawTrackedDevicePoses(0.0f, poses, k_unMaxTrackedDeviceCount);
+            VRServerDriverHost()->GetRawTrackedDevicePoses(0.0f, poses, k_unMaxTrackedDeviceCount);
+
             IVRProperties* props = VRPropertiesRaw();
             CVRPropertyHelpers* helper = VRProperties();
 
+            //デバイスが見つかったフラグ
             bool deviceFound = false;
 
-            for (uint32_t i = 0; i < k_unMaxTrackedDeviceCount; i++) {
-                TrackedDevicePose_t* const p = poses + i;
-                if (!p->bDeviceIsConnected) continue;
+            //シリアルナンバーがHMDである場合(かつオンになっている場合)は、index 0を参照する
+            if (m_rawPose.root_sn == "HMD" && CommunicationManager::GetInstance()->GetHMDisIndex0()) {
+                TrackedDevicePose_t* const p = poses + 0;
 
-                PropertyContainerHandle_t h = props->TrackedDeviceToPropertyContainer(i);
-                string SerialNumber = helper->GetStringProperty(h, ETrackedDeviceProperty::Prop_SerialNumber_String);
-
-                if (SerialNumber.compare(m_rawPose.root_sn) != 0) continue;
-
-                // 参照元のトラッキングステータスを継承させる
-                if (m_rawPose.enable != 0) {
-                    pose.result = (vr::ETrackingResult)p->eTrackingResult;
-                }
-
-                if (p->eTrackingResult == ETrackingResult::TrackingResult_Running_OK) {
-                    float* m = (float*)p->mDeviceToAbsoluteTracking.m;
-
-                    Eigen::Affine3d rootDeviceToAbsoluteTracking;
-                    rootDeviceToAbsoluteTracking.matrix() <<
-                        m[0 * 4 + 0], m[0 * 4 + 1], m[0 * 4 + 2], m[0 * 4 + 3],
-                        m[1 * 4 + 0], m[1 * 4 + 1], m[1 * 4 + 2], m[1 * 4 + 3],
-                        m[2 * 4 + 0], m[2 * 4 + 1], m[2 * 4 + 2], m[2 * 4 + 3],
-                        0.0, 0.0, 0.0, 1.0;
-
-                    Eigen::Translation3d pos(rootDeviceToAbsoluteTracking.translation());
-                    pose.vecWorldFromDriverTranslation[0] = pos.x();
-                    pose.vecWorldFromDriverTranslation[1] = pos.y();
-                    pose.vecWorldFromDriverTranslation[2] = pos.z();
-
-                    Eigen::Quaterniond rot;
-                    switch (m_rawPose.mode) {
-                    case ReferMode_t::Follow:
-                        rot = Eigen::Quaterniond(RoomToDriverAffin.rotation());
-                        break;
-                    case ReferMode_t::Joint:
-                    default:
-                        rot = Eigen::Quaterniond(rootDeviceToAbsoluteTracking.rotation());
-                        break;
+                //そのデバイスがつながっている
+                if (p->bDeviceIsConnected) {
+                    // 仮想デバイスが有効なら、参照元のトラッキングステータスを継承させる
+                    if (m_rawPose.enable != 0) {
+                        pose.result = (vr::ETrackingResult)p->eTrackingResult;
                     }
 
-                    pose.qWorldFromDriverRotation.x = rot.x();
-                    pose.qWorldFromDriverRotation.y = rot.y();
-                    pose.qWorldFromDriverRotation.z = rot.z();
-                    pose.qWorldFromDriverRotation.w = rot.w();
+                    //デバイスのトラッキング状態が正常なら
+                    if (p->eTrackingResult == ETrackingResult::TrackingResult_Running_OK) {
+                        //デバイスの変換行列を取得し、Eigenの行列に変換
+                        float* m = (float*)p->mDeviceToAbsoluteTracking.m;
 
-                    deviceFound = true;
+                        Eigen::Affine3d rootDeviceToAbsoluteTracking;
+                        rootDeviceToAbsoluteTracking.matrix() <<
+                            m[0 * 4 + 0], m[0 * 4 + 1], m[0 * 4 + 2], m[0 * 4 + 3],
+                            m[1 * 4 + 0], m[1 * 4 + 1], m[1 * 4 + 2], m[1 * 4 + 3],
+                            m[2 * 4 + 0], m[2 * 4 + 1], m[2 * 4 + 2], m[2 * 4 + 3],
+                            0.0, 0.0, 0.0, 1.0;
+
+                        //変換行列から位置変換をセット
+                        Eigen::Translation3d pos(rootDeviceToAbsoluteTracking.translation());
+                        pose.vecWorldFromDriverTranslation[0] = pos.x();
+                        pose.vecWorldFromDriverTranslation[1] = pos.y();
+                        pose.vecWorldFromDriverTranslation[2] = pos.z();
+
+                        //回転をルーム基準にしたりデバイス基準にしたりする
+                        Eigen::Quaterniond rot;
+                        switch (m_rawPose.mode) {
+                        case ReferMode_t::Follow:
+                            rot = Eigen::Quaterniond(RoomToDriverAffin.rotation());
+                            break;
+                        case ReferMode_t::Joint:
+                        default:
+                            rot = Eigen::Quaterniond(rootDeviceToAbsoluteTracking.rotation());
+                            break;
+                        }
+
+                        pose.qWorldFromDriverRotation.x = rot.x();
+                        pose.qWorldFromDriverRotation.y = rot.y();
+                        pose.qWorldFromDriverRotation.z = rot.z();
+                        pose.qWorldFromDriverRotation.w = rot.w();
+
+                        //正常なデバイスを見つけた
+                        deviceFound = true;
+                    }
                 }
+            }
+            else {
+                //インデックス順にデバイスを探索する
+                for (uint32_t i = 0; i < k_unMaxTrackedDeviceCount; i++) {
+                    TrackedDevicePose_t* const p = poses + i;
 
-                break;
+                    //そのデバイスがつながっていないなら次のデバイスへ
+                    if (!p->bDeviceIsConnected) continue;
+
+                    //デバイスがつながっているので、シリアルナンバーを取得する
+                    PropertyContainerHandle_t h = props->TrackedDeviceToPropertyContainer(i);
+                    string SerialNumber = helper->GetStringProperty(h, ETrackedDeviceProperty::Prop_SerialNumber_String);
+
+                    //対象シリアルナンバーと比較し、違うデバイスなら、次のデバイスへ
+                    if (SerialNumber.compare(m_rawPose.root_sn) != 0) continue;
+
+                    // 仮想デバイスが有効なら、参照元のトラッキングステータスを継承させる
+                    if (m_rawPose.enable != 0) {
+                        pose.result = (vr::ETrackingResult)p->eTrackingResult;
+                    }
+
+                    //デバイスのトラッキング状態が正常なら
+                    if (p->eTrackingResult == ETrackingResult::TrackingResult_Running_OK) {
+                        //デバイスの変換行列を取得し、Eigenの行列に変換
+                        float* m = (float*)p->mDeviceToAbsoluteTracking.m;
+
+                        Eigen::Affine3d rootDeviceToAbsoluteTracking;
+                        rootDeviceToAbsoluteTracking.matrix() <<
+                            m[0 * 4 + 0], m[0 * 4 + 1], m[0 * 4 + 2], m[0 * 4 + 3],
+                            m[1 * 4 + 0], m[1 * 4 + 1], m[1 * 4 + 2], m[1 * 4 + 3],
+                            m[2 * 4 + 0], m[2 * 4 + 1], m[2 * 4 + 2], m[2 * 4 + 3],
+                            0.0, 0.0, 0.0, 1.0;
+
+                        //変換行列から位置変換をセット
+                        Eigen::Translation3d pos(rootDeviceToAbsoluteTracking.translation());
+                        pose.vecWorldFromDriverTranslation[0] = pos.x();
+                        pose.vecWorldFromDriverTranslation[1] = pos.y();
+                        pose.vecWorldFromDriverTranslation[2] = pos.z();
+
+                        //回転をルーム基準にしたりデバイス基準にしたりする
+                        Eigen::Quaterniond rot;
+                        switch (m_rawPose.mode) {
+                        case ReferMode_t::Follow:
+                            rot = Eigen::Quaterniond(RoomToDriverAffin.rotation());
+                            break;
+                        case ReferMode_t::Joint:
+                        default:
+                            rot = Eigen::Quaterniond(rootDeviceToAbsoluteTracking.rotation());
+                            break;
+                        }
+
+                        pose.qWorldFromDriverRotation.x = rot.x();
+                        pose.qWorldFromDriverRotation.y = rot.y();
+                        pose.qWorldFromDriverRotation.z = rot.z();
+                        pose.qWorldFromDriverRotation.w = rot.w();
+
+                        //正常なデバイスを見つけた
+                        deviceFound = true;
+                    }
+                    //正常異常問わず、目的のデバイスは見つかっているので終了
+                    break;
+                }
             }
 
+            //正常なデバイスが検出できなかった場合、変換行列を0にする
             if (!deviceFound) {
                 pose.vecWorldFromDriverTranslation[0] = 0.0;
                 pose.vecWorldFromDriverTranslation[1] = 0.0;
@@ -224,7 +289,9 @@ namespace VMTDriver {
             switch (type)
             {
             case 4://TrackingReference
-                VRProperties()->SetInt32Property(m_propertyContainer, Prop_ControllerRoleHint_Int32, ETrackedControllerRole::TrackedControllerRole_OptOut); //手に割り当てないように
+                if (CommunicationManager::GetInstance()->GetOptoutTrackingRole()) {
+                    VRProperties()->SetInt32Property(m_propertyContainer, Prop_ControllerRoleHint_Int32, ETrackedControllerRole::TrackedControllerRole_OptOut); //手に割り当てないように
+                }
                 VRServerDriverHost()->TrackedDeviceAdded(m_serial.c_str(), ETrackedDeviceClass::TrackedDeviceClass_TrackingReference, this);
                 m_alreadyRegistered = true;
                 break;
@@ -239,7 +306,9 @@ namespace VMTDriver {
                 m_alreadyRegistered = true;
                 break;
             case 1://Tracker
-                VRProperties()->SetInt32Property(m_propertyContainer, Prop_ControllerRoleHint_Int32, ETrackedControllerRole::TrackedControllerRole_OptOut); //手に割り当てないように
+                if (CommunicationManager::GetInstance()->GetOptoutTrackingRole()) {
+                    VRProperties()->SetInt32Property(m_propertyContainer, Prop_ControllerRoleHint_Int32, ETrackedControllerRole::TrackedControllerRole_OptOut); //手に割り当てないように
+                }
                 VRServerDriverHost()->TrackedDeviceAdded(m_serial.c_str(), ETrackedDeviceClass::TrackedDeviceClass_GenericTracker, this);
                 m_alreadyRegistered = true;
                 break;

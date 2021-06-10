@@ -53,13 +53,14 @@ namespace VMTDriver {
 		bool m_opened = false;
 		OSCReceiver m_rcv{};
 		ServerTrackedDeviceProvider* m_server{};
-		Eigen::Matrix4d m_RoomToDriverMatrix = Eigen::Matrix4d::Identity();
+		bool m_RoomMatrixStatus = false;
 
+		Eigen::Matrix4d m_RoomToDriverMatrix = Eigen::Matrix4d::Identity();
 		bool m_velocityEnable = true;
 		int m_receivePort = 39570;
 		int m_sendPort = 39571;
-
-		bool m_RoomMatrixStatus = false;
+		bool m_optoutTrackingRole = true;
+		bool m_HMDisIndex0 = true;
 
 	public:
 		static CommunicationManager* GetInstance();
@@ -75,5 +76,7 @@ namespace VMTDriver {
 
 		bool GetVelocityEnable();
 		void SetRoomMatrixStatus(bool ok);
+		bool GetOptoutTrackingRole();
+		bool GetHMDisIndex0();
 	};
 }
