@@ -38,7 +38,7 @@ C#製管理ツールです。ドライバのインストールやアンインス
 |timeoffset|float| 補正時間。通常0です。|
 |x,y,z|float| 座標|
 |qx,qy,qz,qw|float| 回転(クォータニオン)|
-|serial|string| 対象デバイスシリアル番号(LHR-xxxxxxx)|
+|serial|string| 対象デバイスシリアル番号(LHR-xxxxxxx) or HMD(HMD)|
 
 ※種別(トラッカー or コントローラ)は初回のみ反映されます。  
 

@@ -87,7 +87,7 @@ Caution: If Port 39571 used be another application, Manager won't works.
 |timeoffset|float| TimeOffset, normaly 0|
 |x,y,z|float| Position|
 |qx,qy,qz,qw|float| Rotaion(Quaternion)|
-|serial|string| Target device serial(LHR-xxxxxxx)|
+|serial|string| Target device serial(LHR-xxxxxxx) or HMD(HMD)|
 
 ***Type(Tracker or Controller) only works in first registration time.***  
 
