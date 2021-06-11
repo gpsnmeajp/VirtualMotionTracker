@@ -58,7 +58,7 @@ namespace vmt_manager
     /// </summary>
     public partial class MainWindow : Window
     {
-        const string Version = "VMT_011";
+        const string Version = "VMT_012";
         private DispatcherTimer dispatcherTimer;
         Random rnd;
         string title = "";
@@ -68,6 +68,8 @@ namespace vmt_manager
         bool ReceiveError = false;
         EasyOpenVRUtil util;
         OSC osc;
+
+        bool loadTest = false;
 
         public MainWindow()
         {
@@ -340,6 +342,10 @@ namespace vmt_manager
                 }
 
                 InputVMTHapticTextBox.Background = new SolidColorBrush(Color.FromRgb(255, 255, 255));
+
+                if (loadTest) {
+                    ShowAllButton(null, null);
+                }
             }
             catch (Exception ex)
             {
@@ -447,7 +453,7 @@ namespace vmt_manager
         {
             if (CoordinateCombo.SelectedIndex == 1)
             {
-                osc.Send(new OscMessage("/VMT/Joint/Unity",
+                osc.Send(new OscMessage("/VMT/Follow/Unity",
                     1, 1, 0f,
                     -0.1f, 0f, -0.5f,
                     0f, 0f, 0f, 1f,
@@ -455,7 +461,7 @@ namespace vmt_manager
             }
             else
             {
-                osc.Send(new OscMessage("/VMT/Joint/Driver",
+                osc.Send(new OscMessage("/VMT/Follow/Driver",
                     1, 1, 0f,
                     -0.1f, 0f, -0.5f,
                     0f, 0f, 0f, 1f,
@@ -809,6 +815,11 @@ namespace vmt_manager
             {
                 MessageBox.Show(ex.Message + "\n" + ex.StackTrace, title);
             }
+        }
+
+        private void LoadTestCheckBoxEvent(object sender, RoutedEventArgs e)
+        {
+            loadTest = LoadTestCheckBox.IsChecked.Value;
         }
     }
 }

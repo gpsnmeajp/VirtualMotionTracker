@@ -4,7 +4,7 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:vmt_manager"
-		Width="370"
+		Width="390"
 		Height="350"
         mc:Ignorable="d"
         Title="VMT Manager" Loaded="Window_Loaded" Closed="Window_Closed" ResizeMode="NoResize">
@@ -76,7 +76,7 @@
 							<TextBox Name="JointSerialNoTextBox" Text="HMD" DockPanel.Dock="Top" Margin="1"/>
 							<Button Content="Check VMT__0 Position &#xA;(Try set JointPos=[0.1,0.0,-0.5] )" DockPanel.Dock="Top" Click="CheckJointPositionButton" Margin="1"/>
 							<TextBox Name="JointSerialNo2TextBox" Text="LHR-xxxxxxxxx" DockPanel.Dock="Top" Margin="1"/>
-							<Button Content="Check VMT__1 Position &#xA;(Try set JointPos=[-0.1,0.0,-0.5] )" DockPanel.Dock="Top" Click="CheckJointPosition2Button" Margin="1"/>
+							<Button Content="Check VMT__1 Position &#xA;(Try set FollowPos=[-0.1,0.0,-0.5] )" DockPanel.Dock="Top" Click="CheckJointPosition2Button" Margin="1"/>
 						</DockPanel>
 					</Grid>
 				</DockPanel>
@@ -94,6 +94,7 @@
 							<Button Content="Show all" DockPanel.Dock="Top" Click="ShowAllButton" Margin="1"/>
 							<Button Content="Enable Auto Pose Udate" DockPanel.Dock="Top" Click="EnableAutoPoseUdateButton" Margin="1"/>
 							<Button Content="Disable Auto Pose Udate" DockPanel.Dock="Top" Click="DisableAutoPoseUdateButton" Margin="1"/>
+							<CheckBox Content="Load Testing" Name="LoadTestCheckBox" DockPanel.Dock="Top" IsChecked="False" Checked="LoadTestCheckBoxEvent" Unchecked="LoadTestCheckBoxEvent" Margin="1"/>
 						</DockPanel>
 					</Grid>
 				</DockPanel>
