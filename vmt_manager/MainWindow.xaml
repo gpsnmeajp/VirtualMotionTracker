@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:vmt_manager"
 		Width="390"
-		Height="350"
+		Height="400"
         mc:Ignorable="d"
         Title="VMT Manager" Loaded="Window_Loaded" Closed="Window_Closed" ResizeMode="NoResize">
 	<DockPanel LastChildFill="True">
@@ -71,6 +71,8 @@
 							<TextBox Name="CheckPositionTextBox" IsEnabled="False" IsReadOnly="True" Text="-,-,-" DockPanel.Dock="Top" Margin="1"/>
 							<TextBlock Text="VMT_0 Raw Position" DockPanel.Dock="Top" Margin="1"/>
 							<TextBox Name="CheckPositionRawTextBox" IsEnabled="False" IsReadOnly="True" Text="-,-,-" DockPanel.Dock="Top" Margin="1"/>
+							<TextBlock Text="VMT_0 Speed" DockPanel.Dock="Top" Margin="1"/>
+							<TextBox Name="CheckPositionRawSpeedTextBox" IsEnabled="False" IsReadOnly="True" Text="-,-,-" DockPanel.Dock="Top" Margin="1"/>
 							<Button Content="Check VMT__0 Position &#xA;(Try set RoomPos=[1,1,1] )" DockPanel.Dock="Top" Click="CheckPositionButton" Margin="1"/>
 							<TextBlock Text="VMT_0 Joint Serial No" DockPanel.Dock="Top" Margin="1"/>
 							<TextBox Name="JointSerialNoTextBox" Text="HMD" DockPanel.Dock="Top" Margin="1"/>

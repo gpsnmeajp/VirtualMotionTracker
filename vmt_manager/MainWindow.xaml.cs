@@ -327,6 +327,7 @@ namespace vmt_manager
                 if (t2 != null)
                 {
                     CheckPositionRawTextBox.Text = string.Format("{0:0.00}, {1:0.00}, {2:0.00}", t2.position.X, t2.position.Y, t2.position.Z);
+                    CheckPositionRawSpeedTextBox.Text = string.Format("{0:0.00}, {1:0.00}, {2:0.00}", t2.velocity.X, t2.velocity.Y, t2.velocity.Z);                    
                 }
 
                 if (aliveCnt > 90)

@@ -275,7 +275,7 @@ namespace VMTDriver {
 				}
 				if (!j.contains("VelocityEnable"))
 				{
-					j["VelocityEnable"] = true;
+					j["VelocityEnable"] = false;
 				}
 				if (!j.contains("ReceivePort"))
 				{
@@ -297,6 +297,11 @@ namespace VMTDriver {
 				{
 					j["RejectWhenCannotTracking"] = true;
 				}
+				if (!j.contains("DefaultAutoPoseUpdateOn"))
+				{
+					j["DefaultAutoPoseUpdateOn"] = true;
+				}
+
 				j["RoomMatrix"] = { m1,m2,m3,m4,m5,m6,m7,m8,m9,m10,m11,m12 };
 				CommunicationManager::GetInstance()->GetServer()->SaveJson(j);
 				SendLog(0, "Set Room Matrix Done.");
@@ -464,6 +469,11 @@ namespace VMTDriver {
 			if (j.contains("RejectWhenCannotTracking"))
 			{
 				m_RejectWhenCannotTracking = j["RejectWhenCannotTracking"];
+			}
+			if (j.contains("DefaultAutoPoseUpdateOn"))
+			{
+				m_DefaultAutoPoseUpdateOn = j["DefaultAutoPoseUpdateOn"];
+				TrackedDeviceServerDriver::SetAutoUpdate(m_DefaultAutoPoseUpdateOn);
 			}
 		}
 		catch (...) {
