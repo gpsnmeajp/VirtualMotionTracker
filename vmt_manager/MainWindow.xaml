@@ -65,6 +65,9 @@
 								<ComboBoxItem>Driver Coordinate</ComboBoxItem>
 								<ComboBoxItem>Unity Coordinate</ComboBoxItem>
 							</ComboBox>
+							<TextBlock Text="VMT_0 Joint Serial No" DockPanel.Dock="Top" Margin="1"/>
+							<TextBox Name="JointSerialNoTextBox" Text="HMD" DockPanel.Dock="Top" Margin="1"/>
+							<Button Content="Check VMT__0 Position &#xA;(Try set JointPos=[0.1,0.0,-0.5] )" DockPanel.Dock="Top" Click="CheckJointPositionButton" Margin="1"/>
 						</DockPanel>
 						<DockPanel Grid.Column="1" Margin="2" LastChildFill="False">
 							<TextBlock Text="VMT_0 Room Position" DockPanel.Dock="Top" Margin="1"/>
@@ -74,11 +77,10 @@
 							<TextBlock Text="VMT_0 Speed" DockPanel.Dock="Top" Margin="1"/>
 							<TextBox Name="CheckPositionRawSpeedTextBox" IsEnabled="False" IsReadOnly="True" Text="-,-,-" DockPanel.Dock="Top" Margin="1"/>
 							<Button Content="Check VMT__0 Position &#xA;(Try set RoomPos=[1,1,1] )" DockPanel.Dock="Top" Click="CheckPositionButton" Margin="1"/>
-							<TextBlock Text="VMT_0 Joint Serial No" DockPanel.Dock="Top" Margin="1"/>
-							<TextBox Name="JointSerialNoTextBox" Text="HMD" DockPanel.Dock="Top" Margin="1"/>
-							<Button Content="Check VMT__0 Position &#xA;(Try set JointPos=[0.1,0.0,-0.5] )" DockPanel.Dock="Top" Click="CheckJointPositionButton" Margin="1"/>
+							<TextBlock Text="VMT_1 Joint Serial No" DockPanel.Dock="Top" Margin="1"/>
 							<TextBox Name="JointSerialNo2TextBox" Text="LHR-xxxxxxxxx" DockPanel.Dock="Top" Margin="1"/>
-							<Button Content="Check VMT__1 Position &#xA;(Try set FollowPos=[-0.1,0.0,-0.5] )" DockPanel.Dock="Top" Click="CheckJointPosition2Button" Margin="1"/>
+							<Button Content="Check VMT__1 Position &#xA;(FollowPos=[-0.1,0.0,-0.5] )" DockPanel.Dock="Top" Click="CheckJointPosition2Button" Margin="1"/>
+							<Button Content="Check VMT__1 Position &#xA;(FollowRotYPos=[-0.1,0.0,-0.5] )"  DockPanel.Dock="Top" Click="CheckJointPosition2YButton" Margin="1"/>
 						</DockPanel>
 					</Grid>
 				</DockPanel>

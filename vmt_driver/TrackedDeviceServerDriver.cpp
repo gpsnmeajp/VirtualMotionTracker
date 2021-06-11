@@ -186,6 +186,14 @@ namespace VMTDriver {
                         //回転をルーム基準にしたりデバイス基準にしたりする
                         Eigen::Quaterniond rot;
                         switch (m_rawPose.mode) {
+                        case ReferMode_t::FollowRotY:
+                        {
+                            //Y軸回転だけ取り出す
+                            Eigen::Vector3d rotAng = rootDeviceToAbsoluteTracking.rotation().eulerAngles(1, 1, 1);
+                            double roty = rotAng[0];
+                            rot = Eigen::AngleAxisd(roty, Eigen::Vector3d::UnitY());
+                            break;
+                        }
                         case ReferMode_t::Follow:
                             rot = Eigen::Quaterniond(RoomToDriverAffin.rotation());
                             break;
@@ -246,6 +254,14 @@ namespace VMTDriver {
                         //回転をルーム基準にしたりデバイス基準にしたりする
                         Eigen::Quaterniond rot;
                         switch (m_rawPose.mode) {
+                        case ReferMode_t::FollowRotY:
+                        {
+                            //Y軸回転だけ取り出す
+                            Eigen::Vector3d rotAng = rootDeviceToAbsoluteTracking.rotation().eulerAngles(0,1,2);
+                            double roty = rotAng.y();
+                            rot = Eigen::AngleAxisd(roty, Eigen::Vector3d::UnitY());
+                            break;
+                        }
                         case ReferMode_t::Follow:
                             rot = Eigen::Quaterniond(RoomToDriverAffin.rotation());
                             break;

@@ -469,6 +469,25 @@ namespace vmt_manager
                     JointSerialNo2TextBox.Text));
             }
         }
+        private void CheckJointPosition2YButton(object sender, RoutedEventArgs e)
+        {
+            if (CoordinateCombo.SelectedIndex == 1)
+            {
+                osc.Send(new OscMessage("/VMT/FollowRotY/Unity",
+                    1, 1, 0f,
+                    -0.1f, 0f, -0.5f,
+                    0f, 0f, 0f, 1f,
+                    JointSerialNo2TextBox.Text));
+            }
+            else
+            {
+                osc.Send(new OscMessage("/VMT/FollowRotY/Driver",
+                    1, 1, 0f,
+                    -0.1f, 0f, -0.5f,
+                    0f, 0f, 0f, 1f,
+                    JointSerialNo2TextBox.Text));
+            }
+        }
 
         private void InstallButton(object sender, RoutedEventArgs e)
         {

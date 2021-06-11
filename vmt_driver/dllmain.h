@@ -55,6 +55,7 @@ namespace VMTDriver {
 		None = 0,   // ルーム座標を使用する
 		Joint = 1,  // Position, Rotation共に他のトラッカーデバイスの座標系を参照する
 		Follow = 2, // Positionは他のトラッカーデバイスを参照するが、Rotationはルーム座標を参照する
+		FollowRotY = 3, // Positionは他のトラッカーデバイスを参照するが、Rotationはルーム座標を参照する。ただしY軸回りだけ反映する
 	};
 }
 

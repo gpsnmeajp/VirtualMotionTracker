@@ -197,6 +197,28 @@ namespace VMTDriver {
 
 				SetPose(false, idx, enable, x, y, z, qx, qy, qz, qw, timeoffset, root_sn, ReferMode_t::Follow);
 			}
+			else if (adr == "/VMT/FollowRotY/Unity")
+			{
+				int idx, enable;
+				float timeoffset;
+				float x, y, z, qx, qy, qz, qw;
+				const char* root_sn = nullptr;
+				osc::ReceivedMessageArgumentStream args = m.ArgumentStream();
+				args >> idx >> enable >> timeoffset >> x >> y >> z >> qx >> qy >> qz >> qw >> root_sn >> osc::EndMessage;
+
+				SetPose(false, idx, enable, x, y, -z, qx, qy, -qz, -qw, timeoffset, root_sn, ReferMode_t::FollowRotY);
+			}
+			else if (adr == "/VMT/FollowRotY/Driver")
+			{
+				int idx, enable;
+				float timeoffset;
+				float x, y, z, qx, qy, qz, qw;
+				const char* root_sn = nullptr;
+				osc::ReceivedMessageArgumentStream args = m.ArgumentStream();
+				args >> idx >> enable >> timeoffset >> x >> y >> z >> qx >> qy >> qz >> qw >> root_sn >> osc::EndMessage;
+
+				SetPose(false, idx, enable, x, y, z, qx, qy, qz, qw, timeoffset, root_sn, ReferMode_t::FollowRotY);
+			}
 			else if (adr == "/VMT/Input/Button")
 			{
 				int idx, ButtonIndex;
