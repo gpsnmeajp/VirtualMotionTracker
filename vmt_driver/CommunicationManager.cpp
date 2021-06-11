@@ -390,6 +390,8 @@ namespace VMTDriver {
 		m_server = server;
 
 		LoadSetting();
+		TrackedDeviceServerDriver::SetAutoUpdate(m_DefaultAutoPoseUpdateOn);
+
 		DirectOSC::OSC::GetInstance()->Open(&m_rcv, m_receivePort, m_sendPort);
 		m_opened = true;
 
@@ -473,7 +475,6 @@ namespace VMTDriver {
 			if (j.contains("DefaultAutoPoseUpdateOn"))
 			{
 				m_DefaultAutoPoseUpdateOn = j["DefaultAutoPoseUpdateOn"];
-				TrackedDeviceServerDriver::SetAutoUpdate(m_DefaultAutoPoseUpdateOn);
 			}
 		}
 		catch (...) {
