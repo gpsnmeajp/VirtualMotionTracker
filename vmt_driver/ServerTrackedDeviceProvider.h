@@ -32,12 +32,17 @@ namespace VMTDriver {
         vector<TrackedDeviceServerDriver> m_devices;
         int m_devicesNum = 0;
         IVRDriverContext* m_pDriverContext = nullptr;
+        string m_installPath = "";
+
 
     public:
         vector<TrackedDeviceServerDriver>& GetDevices();
+        TrackedDeviceServerDriver& GetDevice(int index);
+        void DeviceResetAll();
         json LoadJson();
         void SaveJson(json);
-
+        bool IsVMTDeviceIndex(int index);
+        string GetInstallPath();
 
         virtual EVRInitError Init(IVRDriverContext* pDriverContext) override;
         virtual void Cleanup() override;

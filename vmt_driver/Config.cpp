@@ -33,50 +33,63 @@ namespace VMTDriver {
 		return &c;
 	}
 
-	void Config::InitSetting()
+	void Config::ErrorCheck()
 	{
-		json j = VMTDriver::GetServer()->LoadJson();
+		bool error = false;
+		json j = GetServer()->LoadJson();
 		if (!j.contains("RoomMatrix"))
 		{
 			j["RoomMatrix"] = {};
+			error = true;
 		}
 		if (!j.contains("VelocityEnable"))
 		{
 			j["VelocityEnable"] = false;
+			error = true;
 		}
 		if (!j.contains("ReceivePort"))
 		{
 			j["ReceivePort"] = -1;
+			error = true;
 		}
 		if (!j.contains("SendPort"))
 		{
 			j["SendPort"] = -1;
+			error = true;
 		}
 		if (!j.contains("OptoutTrackingRole"))
 		{
 			j["OptoutTrackingRole"] = true;
+			error = true;
 		}
 		if (!j.contains("HMDisIndex0"))
 		{
 			j["HMDisIndex0"] = true;
+			error = true;
 		}
 		if (!j.contains("RejectWhenCannotTracking"))
 		{
 			j["RejectWhenCannotTracking"] = true;
+			error = true;
 		}
 		if (!j.contains("DefaultAutoPoseUpdateOn"))
 		{
 			j["DefaultAutoPoseUpdateOn"] = true;
+			error = true;
 		}
-		VMTDriver::GetServer()->SaveJson(j);
+		if (error) {
+			GetServer()->SaveJson(j);
+		}
 	}
 
 	void Config::LoadSetting()
 	{
+		ErrorCheck();
+
 		try {
 			SetRoomMatrixStatus(false); //ルーム行列セット状態をクリア
 
-			json j = VMTDriver::GetServer()->LoadJson();
+			json j = GetServer()->LoadJson();
 			if (j.contains("RoomMatrix"))
 			{
 				m_RoomToDriverMatrix
@@ -123,6 +136,14 @@ namespace VMTDriver {
 			m_RoomToDriverMatrix = Eigen::Matrix4d::Identity();
 		}
 	}
+	void Config::SaveJsonRoomToDriverMatrix(float m1, float m2, float m3, float m4, float m5, float m6, float m7, float m8, float m9, float m10, float m11, float m12)
+	{
+		ErrorCheck();
+
+		json j = GetServer()->LoadJson();
+		j["RoomMatrix"] = { m1,m2,m3,m4,m5,m6,m7,m8,m9,m10,m11,m12 };
+		GetServer()->SaveJson(j);
+	}
 	void Config::SetRoomMatrixStatus(bool ok)
 	{
 		m_RoomMatrixStatus = ok;
@@ -156,6 +177,19 @@ namespace VMTDriver {
 	bool Config::GetRoomMatrixStatus()
 	{
 		return m_RoomMatrixStatus;
+	}
+	void Config::SetRoomMatrix(bool save, float m1, float m2, float m3, float m4, float m5, float m6, float m7, float m8, float m9, float m10, float m11, float m12)
+	{
+		m_RoomToDriverMatrix
+			<< m1, m2, m3, m4
+			, m5, m6, m7, m8
+			, m9, m10, m11, m12
+			, 0, 0, 0, 1;
+		SetRoomMatrixStatus(true); //ルーム行列がセットされた
+
+		if (save) {
+			SaveJsonRoomToDriverMatrix(m1, m2, m3, m4, m5, m6, m7, m8, m9, m10, m11, m12);
+		}
 	}
 	bool Config::GetRejectWhenCannotTracking()
 	{

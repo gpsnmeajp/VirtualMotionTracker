@@ -31,6 +31,20 @@ namespace VMTDriver {
         return m_devices;
     }
 
+    TrackedDeviceServerDriver& ServerTrackedDeviceProvider::GetDevice(int index)
+    {
+        return m_devices[index];
+    }
+
+    void ServerTrackedDeviceProvider::DeviceResetAll()
+    {
+        //全トラッカーを0にする
+        for (int i = 0; i < m_devices.size(); i++)
+        {
+            m_devices[i].Reset(); //すでにVRシステムに登録済みのものだけ通知される
+        }
+    }
+
     json ServerTrackedDeviceProvider::LoadJson()
     {
         if (m_pDriverContext == nullptr) {
@@ -38,9 +52,8 @@ namespace VMTDriver {
         }
 
         //ドライバのインストールパス取得
-        string s = VRProperties()->GetStringProperty(m_pDriverContext->GetDriverHandle(), Prop_InstallPath_String);
-        if (!s.empty()) {
-            string filename = (s + "\\setting.json");
+        if (!m_installPath.empty()) {
+            string filename = (m_installPath + "\\setting.json");
             try {
                 std::ifstream inputStream(filename);
                 string inputData((std::istreambuf_iterator<char>(inputStream)), std::istreambuf_iterator<char>());
@@ -66,10 +79,8 @@ namespace VMTDriver {
             return;
         }
 
-        //ドライバのインストールパス取得
-        string s = VRProperties()->GetStringProperty(m_pDriverContext->GetDriverHandle(), Prop_InstallPath_String);
-        if (!s.empty()) {
-            string filename = (s + "\\setting.json");
+        if (!m_installPath.empty()) {
+            string filename = (m_installPath + "\\setting.json");
 
             std::ofstream outputStream(filename);
             outputStream << j.dump(3, ' ');
@@ -82,19 +93,30 @@ namespace VMTDriver {
         return;
     }
 
+    bool ServerTrackedDeviceProvider::IsVMTDeviceIndex(int index)
+    {
+        return (index >= 0 && index <= m_devices.size());
+    }
+
+    //インストールパスの取得
+    string ServerTrackedDeviceProvider::GetInstallPath()
+    {
+        return m_installPath;
+    }
+
     //初期化
     EVRInitError ServerTrackedDeviceProvider::Init(IVRDriverContext* pDriverContext)
     {
         VR_INIT_SERVER_DRIVER_CONTEXT(pDriverContext)
         m_pDriverContext = pDriverContext;
+
         Log::Open(VRDriverLog());
-        CommunicationManager::GetInstance()->Open();
 
         //ドライバのインストールパス取得
-        string installPath = VRProperties()->GetStringProperty(m_pDriverContext->GetDriverHandle(), Prop_InstallPath_String);
-        if (!installPath.empty()) {
-            CommunicationManager::GetInstance()->SetInstallPath(installPath);
-        }
+        m_installPath = VRProperties()->GetStringProperty(m_pDriverContext->GetDriverHandle(), Prop_InstallPath_String);
+
+        //通信のオープン
+        CommunicationManager::GetInstance()->Open();
 
 
         //デバイスを準備

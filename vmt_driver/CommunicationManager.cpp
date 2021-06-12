@@ -29,14 +29,16 @@ SOFTWARE.
 #include "DirectOSC.h"
 
 namespace VMTDriver {
-	//別スレッド
+	//別スレッドからのコール
+
+	//姿勢を各仮想デバイスに設定する
 	void OSCReceiver::SetPose(bool roomToDriver, int idx, int enable,
 	                          double x, double y, double z,
 	                          double qx, double qy, double qz, double qw,
 	                          double timeoffset,
 	                          const char* root_sn, ReferMode_t mode)
 	{
-		RawPose pose;
+		RawPose pose{};
 		pose.roomToDriver = roomToDriver;
 		pose.idx = idx;
 		pose.enable = enable;
@@ -52,17 +54,18 @@ namespace VMTDriver {
 		pose.root_sn = root_sn ? root_sn : "";
 		pose.time = std::chrono::system_clock::now();
 
-		ServerTrackedDeviceProvider* server = VMTDriver::GetServer();
-		if (idx >= 0 && idx <= server->GetDevices().size())
+		//範囲チェック
+		if (GetServer()->IsVMTDeviceIndex(idx))
 		{
-			server->GetDevices()[idx].RegisterToVRSystem(enable); //1=Tracker, 2=Controller Left, 3=Controller Right, 4=Tracking Reference
-			server->GetDevices()[idx].SetRawPose(pose);
+			GetServer()->GetDevice(idx).RegisterToVRSystem(enable); //1=Tracker, 2=Controller Left, 3=Controller Right, 4=Tracking Reference
+			GetServer()->GetDevice(idx).SetRawPose(pose);
 		}
 	}
 
+	//ログ情報を送信する(ダイアログを表示する)
 	void OSCReceiver::SendLog(int stat, string msg) {
 		const size_t bufsize = 8192;
-		char buf[bufsize];
+		char buf[bufsize]{};
 		osc::OutboundPacketStream packet(buf, bufsize);
 		packet << osc::BeginMessage("/VMT/Out/Log")
 			<< stat
@@ -71,21 +74,23 @@ namespace VMTDriver {
 		DirectOSC::OSC::GetInstance()->GetSocketTx()->Send(packet.Data(), packet.Size());
 	}
 
+	//生存信号を送信する
 	void OSCReceiver::SendAlive() {
 		const size_t bufsize = 8192;
-		char buf[bufsize];
+		char buf[bufsize]{};
 		osc::OutboundPacketStream packet(buf, bufsize);
 		packet << osc::BeginMessage("/VMT/Out/Alive")
 			<< Version.c_str()
-			<< CommunicationManager::GetInstance()->GetInstallPath().c_str()
+			<< GetServer()->GetInstallPath().c_str()
 			<< osc::EndMessage;
 		DirectOSC::OSC::GetInstance()->GetSocketTx()->Send(packet.Data(), packet.Size());
 	}
 
+	//振動情報を送信する
 	void OSCReceiver::SendHaptic(int index, float frequency, float amplitude, float duration)
 	{
 		const size_t bufsize = 8192;
-		char buf[bufsize];
+		char buf[bufsize]{};
 		osc::OutboundPacketStream packet(buf, bufsize);
 		packet << osc::BeginMessage("/VMT/Out/Haptic")
 			<< index
@@ -96,9 +101,10 @@ namespace VMTDriver {
 		DirectOSC::OSC::GetInstance()->GetSocketTx()->Send(packet.Data(), packet.Size());
 	}
 
+	//エラー情報を送信する
 	void OSCReceiver::SendUnavailable(int code, std::string reason) {
 		const size_t bufsize = 8192;
-		char buf[bufsize];
+		char buf[bufsize]{};
 		osc::OutboundPacketStream packet(buf, bufsize);
 		packet << osc::BeginMessage("/VMT/Out/Unavailable")
 			<< code
@@ -107,200 +113,138 @@ namespace VMTDriver {
 		DirectOSC::OSC::GetInstance()->GetSocketTx()->Send(packet.Data(), packet.Size());
 	}
 
-
-	//別スレッド
+	//受信処理
 	void OSCReceiver::ProcessMessage(const osc::ReceivedMessage& m, const IpEndpointName& remoteEndpoint)
 	{
+		int idx{};
+		int enable{};
+		float timeoffset{};
+		float x{};
+		float y{};
+		float z{};
+		float qx{};
+		float qy{};
+		float qz{};
+		float qw{};
+		int ButtonIndex{};
+		int ButtonValue{};
+		float TriggerValue{};
+		const char* root_sn = nullptr;
+
+		float m1{};
+		float m2{};
+		float m3{};
+		float m4{};
+		float m5{};
+		float m6{};
+		float m7{};
+		float m8{};
+		float m9{};
+		float m10{};
+		float m11{};
+		float m12{};
+
 		try {
 			string adr = m.AddressPattern();
+			osc::ReceivedMessageArgumentStream args = m.ArgumentStream();
+
+			//姿勢情報の受信
 			if (adr == "/VMT/Room/Unity")
 			{
-				int idx, enable;
-				float timeoffset;
-				float x, y, z, qx, qy, qz, qw;
-				osc::ReceivedMessageArgumentStream args = m.ArgumentStream();
 				args >> idx >> enable >> timeoffset >> x >> y >> z >> qx >> qy >> qz >> qw >> osc::EndMessage;
-
 				SetPose(true, idx, enable, x, y, -z, qx, qy, -qz, -qw, timeoffset);
 			}
 			else if (adr == "/VMT/Room/Driver")
 			{
-				int idx, enable;
-				float timeoffset;
-				float x, y, z, qx, qy, qz, qw;
-				osc::ReceivedMessageArgumentStream args = m.ArgumentStream();
 				args >> idx >> enable >> timeoffset >> x >> y >> z >> qx >> qy >> qz >> qw >> osc::EndMessage;
-
 				SetPose(true, idx, enable, x, y, z, qx, qy, qz, qw, timeoffset);
 			}
 			else if (adr == "/VMT/Raw/Unity")
 			{
-				int idx, enable;
-				float timeoffset;
-				float x, y, z, qx, qy, qz, qw;
-				osc::ReceivedMessageArgumentStream args = m.ArgumentStream();
 				args >> idx >> enable >> timeoffset >> x >> y >> z >> qx >> qy >> qz >> qw >> osc::EndMessage;
-
 				SetPose(false, idx, enable, x, y, -z, qx, qy, -qz, -qw, timeoffset);
 			}
 			else if (adr == "/VMT/Raw/Driver")
 			{
-				int idx, enable;
-				float timeoffset;
-				float x, y, z, qx, qy, qz, qw;
-				osc::ReceivedMessageArgumentStream args = m.ArgumentStream();
 				args >> idx >> enable >> timeoffset >> x >> y >> z >> qx >> qy >> qz >> qw >> osc::EndMessage;
-
 				SetPose(false, idx, enable, x, y, z, qx, qy, qz, qw, timeoffset);
 			}
 			else if (adr == "/VMT/Joint/Unity")
 			{
-				int idx, enable;
-				float timeoffset;
-				float x, y, z, qx, qy, qz, qw;
-				const char* root_sn = nullptr;
-				osc::ReceivedMessageArgumentStream args = m.ArgumentStream();
 				args >> idx >> enable >> timeoffset >> x >> y >> z >> qx >> qy >> qz >> qw >> root_sn >> osc::EndMessage;
-
 				SetPose(false, idx, enable, x, y, -z, qx, qy, -qz, -qw, timeoffset, root_sn, ReferMode_t::Joint);
 			}
 			else if (adr == "/VMT/Joint/Driver")
 			{
-				int idx, enable;
-				float timeoffset;
-				float x, y, z, qx, qy, qz, qw;
-				const char* root_sn = nullptr;
-				osc::ReceivedMessageArgumentStream args = m.ArgumentStream();
 				args >> idx >> enable >> timeoffset >> x >> y >> z >> qx >> qy >> qz >> qw >> root_sn >> osc::EndMessage;
-
 				SetPose(false, idx, enable, x, y, z, qx, qy, qz, qw, timeoffset, root_sn, ReferMode_t::Joint);
 			}
 			else if (adr == "/VMT/Follow/Unity")
 			{
-				int idx, enable;
-				float timeoffset;
-				float x, y, z, qx, qy, qz, qw;
-				const char* root_sn = nullptr;
-				osc::ReceivedMessageArgumentStream args = m.ArgumentStream();
 				args >> idx >> enable >> timeoffset >> x >> y >> z >> qx >> qy >> qz >> qw >> root_sn >> osc::EndMessage;
-
 				SetPose(false, idx, enable, x, y, -z, qx, qy, -qz, -qw, timeoffset, root_sn, ReferMode_t::Follow);
 			}
 			else if (adr == "/VMT/Follow/Driver")
 			{
-				int idx, enable;
-				float timeoffset;
-				float x, y, z, qx, qy, qz, qw;
-				const char* root_sn = nullptr;
-				osc::ReceivedMessageArgumentStream args = m.ArgumentStream();
 				args >> idx >> enable >> timeoffset >> x >> y >> z >> qx >> qy >> qz >> qw >> root_sn >> osc::EndMessage;
-
 				SetPose(false, idx, enable, x, y, z, qx, qy, qz, qw, timeoffset, root_sn, ReferMode_t::Follow);
 			}
+			//デバイス入力系の受信
 			else if (adr == "/VMT/Input/Button")
 			{
-				int idx, ButtonIndex;
-				float timeoffset;
-				int value;
-				osc::ReceivedMessageArgumentStream args = m.ArgumentStream();
-				args >> idx >> ButtonIndex >> timeoffset >> value >> osc::EndMessage;
-
-				ServerTrackedDeviceProvider* sever = VMTDriver::GetServer();
-				if (idx >= 0 && idx <= sever->GetDevices().size())
+				args >> idx >> ButtonIndex >> timeoffset >> ButtonValue >> osc::EndMessage;
+				if (GetServer()->IsVMTDeviceIndex(idx))
 				{
-					sever->GetDevices()[idx].UpdateButtonInput(ButtonIndex, value != 0, timeoffset);
+					GetServer()->GetDevice(idx).UpdateButtonInput(ButtonIndex, ButtonValue != 0, timeoffset);
 				}
 			}
 			else if (adr == "/VMT/Input/Trigger")
 			{
-				int idx, ButtonIndex;
-				float timeoffset;
-				float value;
-				osc::ReceivedMessageArgumentStream args = m.ArgumentStream();
-				args >> idx >> ButtonIndex >> timeoffset >> value >> osc::EndMessage;
-
-				ServerTrackedDeviceProvider* sever = VMTDriver::GetServer();
-				if (idx >= 0 && idx <= sever->GetDevices().size())
+				args >> idx >> ButtonIndex >> timeoffset >> TriggerValue >> osc::EndMessage;
+				if (GetServer()->IsVMTDeviceIndex(idx))
 				{
-					sever->GetDevices()[idx].UpdateTriggerInput(ButtonIndex, value, timeoffset);
+					GetServer()->GetDevice(idx).UpdateTriggerInput(ButtonIndex, TriggerValue, timeoffset);
 				}
 			}
 			else if (adr == "/VMT/Input/Joystick")
 			{
-				int idx, ButtonIndex;
-				float timeoffset;
-				float x,y;
-				osc::ReceivedMessageArgumentStream args = m.ArgumentStream();
 				args >> idx >> ButtonIndex >> timeoffset >> x >> y >> osc::EndMessage;
-
-				ServerTrackedDeviceProvider* sever = VMTDriver::GetServer();
-				if (idx >= 0 && idx <= sever->GetDevices().size())
+				if (GetServer()->IsVMTDeviceIndex(idx))
 				{
-					sever->GetDevices()[idx].UpdateJoystickInput(ButtonIndex, x, y, timeoffset);
+					GetServer()->GetDevice(idx).UpdateJoystickInput(ButtonIndex, x, y, timeoffset);
 				}
 			}
+			//すべてのデバイスのリセット
 			else if (adr == "/VMT/Reset")
 			{
-				//全トラッカーを0にする
-				ServerTrackedDeviceProvider* sever = VMTDriver::GetServer();
-				for (int i = 0; i < sever->GetDevices().size(); i++)
-				{
-					sever->GetDevices()[i].Reset(); //すでにVRシステムに登録済みのものだけ通知される
-				}
+				GetServer()->DeviceResetAll();
 			}
+			//設定の読み込み
 			else if (adr == "/VMT/LoadSetting")
 			{
 				Config::GetInstance()->LoadSetting();
 				SendLog(0, "Setting Loaded");
 			}
+			//ルーム変換行列の設定
 			else if (adr == "/VMT/SetRoomMatrix")
 			{
-				float m1, m2, m3, m4,
-					m5, m6, m7, m8,
-					m9, m10, m11, m12;
-				osc::ReceivedMessageArgumentStream args = m.ArgumentStream();
 				args >> m1 >> m2 >> m3 >> m4 >> m5 >> m6 >> m7 >> m8 >> m9 >> m10 >> m11 >> m12 >> osc::EndMessage;
-
-				Config::GetInstance()->GetRoomToDriverMatrix()
-					<< m1, m2, m3, m4
-					, m5, m6, m7, m8
-					, m9, m10, m11, m12
-					, 0, 0, 0, 1;
-				Config::GetInstance()->SetRoomMatrixStatus(true); //ルーム行列がセットされた
-
-				Config::GetInstance()->InitSetting();
-
-				json j = VMTDriver::GetServer()->LoadJson();
-				j["RoomMatrix"] = { m1,m2,m3,m4,m5,m6,m7,m8,m9,m10,m11,m12 };
-				VMTDriver::GetServer()->SaveJson(j);
-
+				Config::GetInstance()->SetRoomMatrix(true, m1, m2, m3, m4, m5, m6, m7, m8, m9, m10, m11, m12);
 				SendLog(0, "Set Room Matrix Done.");
 			}
 			else if (adr == "/VMT/SetRoomMatrix/Temporary")
 			{
-				float m1, m2, m3, m4,
-					m5, m6, m7, m8,
-					m9, m10, m11, m12;
-				osc::ReceivedMessageArgumentStream args = m.ArgumentStream();
 				args >> m1 >> m2 >> m3 >> m4 >> m5 >> m6 >> m7 >> m8 >> m9 >> m10 >> m11 >> m12 >> osc::EndMessage;
-
-				Config::GetInstance()->GetRoomToDriverMatrix()
-					<< m1, m2, m3, m4
-					, m5, m6, m7, m8
-					, m9, m10, m11, m12
-					, 0, 0, 0, 1;
-				Config::GetInstance()->SetRoomMatrixStatus(true); //ルーム行列がセットされた
-
+				Config::GetInstance()->SetRoomMatrix(false, m1, m2, m3, m4, m5, m6, m7, m8, m9, m10, m11, m12);
 				SendLog(0, "Set Room Matrix Done.(Temporary)");
 			}
+			//自動姿勢更新の設定
 			else if (adr == "/VMT/SetAutoPoseUpdate")
 			{
-				int enable;
-				osc::ReceivedMessageArgumentStream args = m.ArgumentStream();
 				args >> enable >> osc::EndMessage;
-
 				TrackedDeviceServerDriver::SetAutoUpdate(enable != 0);
 			}
+			//不明なパケット
 			else {
 				Log::printf("Unkown: %s", adr.c_str());
 			}
@@ -312,50 +256,49 @@ namespace VMTDriver {
 	}
 }
 namespace VMTDriver {
+	//通信クラスのコンストラクタ
 	CommunicationManager::CommunicationManager()
 	{
 	}
+
+	//通信クラスのシングルトンインスタンスの取得
 	CommunicationManager* CommunicationManager::GetInstance()
 	{
 		static CommunicationManager cm;
 		return &cm;
 	}
 
-	string CommunicationManager::GetInstallPath()
-	{
-		return m_installPath;
-	}
-
-	void CommunicationManager::SetInstallPath(string path)
-	{
-		m_installPath = path;
-	}
-
+	//通信のオープン
 	void CommunicationManager::Open()
 	{
+		//すでにオープン済みなら何もしない
 		if (m_opened) {
 			return;
 		}
 
-		Config* ci = Config::GetInstance();
+		Config* config = Config::GetInstance();
+		//起動時設定読み込み
+		config->LoadSetting();
+		TrackedDeviceServerDriver::SetAutoUpdate(config->GetDefaultAutoPoseUpdateOn());
 
-		ci->LoadSetting();
-		TrackedDeviceServerDriver::SetAutoUpdate(ci->GetDefaultAutoPoseUpdateOn());
-
-		DirectOSC::OSC::GetInstance()->Open(&m_rcv, ci->GetReceivePort(), ci->GetSendPort());
+		//通信ポートオープン
+		DirectOSC::OSC::GetInstance()->Open(&m_rcv, config->GetReceivePort(), config->GetSendPort());
 		m_opened = true;
 	}
+	//通信のクローズ
 	void CommunicationManager::Close()
 	{
 		DirectOSC::OSC::GetInstance()->Close();
 		m_opened = false;
 	}
+	//フレーム単位の処理
 	void CommunicationManager::Process()
 	{
-		//定期的に生存信号を送信
 		if (m_frame > frameCycle) {
+			//定期的に生存信号を送信
 			OSCReceiver::SendAlive();
 
+			//エラー状態を送信
 			if (!Config::GetInstance()->GetRoomMatrixStatus()) {
 				OSCReceiver::SendUnavailable(1, "Room Matrix has not been set.");
 			}

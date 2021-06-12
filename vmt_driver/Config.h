@@ -42,14 +42,17 @@ namespace VMTDriver {
 		bool m_RejectWhenCannotTracking = true;
 		bool m_DefaultAutoPoseUpdateOn = true;
 
+		void ErrorCheck();
+		void SaveJsonRoomToDriverMatrix(float m1, float m2, float m3, float m4, float m5, float m6, float m7, float m8, float m9, float m10, float m11, float m12);
+		void SetRoomMatrixStatus(bool ok);
 	public:
 		static Config* GetInstance();
 
-		void InitSetting();
 		void LoadSetting();
 
-		void SetRoomMatrixStatus(bool ok);
 		bool GetRoomMatrixStatus();
+
+		void SetRoomMatrix(bool save, float m1, float m2, float m3, float m4, float m5, float m6, float m7, float m8, float m9, float m10, float m11, float m12);
 
 		Eigen::Matrix4d& GetRoomToDriverMatrix();
 		bool GetVelocityEnable();

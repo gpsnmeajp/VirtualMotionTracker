@@ -50,15 +50,11 @@ namespace VMTDriver {
 		const int frameCycle = 120;
 		int m_frame = 0;
 
-		string m_installPath = "";
-
 		bool m_opened = false;
 		OSCReceiver m_rcv{};
 
 	public:
 		static CommunicationManager* GetInstance();
-		string GetInstallPath();
-		void SetInstallPath(string);
 
 		void Open();
 		void Close();
