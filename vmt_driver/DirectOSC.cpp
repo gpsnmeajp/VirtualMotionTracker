@@ -22,10 +22,12 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 #include "DirectOSC.h"
+
 namespace DirectOSC {
 	std::mutex Mutex;
 	std::thread* Thread;
 
+	//受信スレッド
 	void ThreadWorker()
 	{
 		OSC::GetInstance()->GetSocketRx()->RunUntilSigInt();
@@ -38,19 +40,26 @@ namespace DirectOSC {
 	{
 	}
 
+	//シングルトンインスタンスの取得
 	OSC* OSC::GetInstance()
 	{
 		static OSC osc;
 		return &osc;
 	}
+
+	//受信ソケットの取得
 	UdpListeningReceiveSocket* OSC::GetSocketRx()
 	{
 		return socketRx;
 	}
+
+	//送信ソケットの取得
 	UdpTransmitSocket* OSC::GetSocketTx()
 	{
 		return socketTx;
 	}
+
+	//oscpackを初期化し、受信処理を登録する。受信スレッドを立てる
 	void OSC::Open(osc::OscPacketListener* listen, int portRx,int portTx)
 	{
 		if (m_opened) {
@@ -63,6 +72,8 @@ namespace DirectOSC {
 		Thread = new std::thread(ThreadWorker);
 		m_opened = true;
 	}
+
+	//受信スレッドを停止し、処理を終える
 	void OSC::Close()
 	{
 		if (!m_opened) {

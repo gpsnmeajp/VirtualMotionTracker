@@ -23,33 +23,17 @@ SOFTWARE.
 */
 using System;
 using System.IO;
-using System.IO.MemoryMappedFiles;
-using System.Linq;
 using System.Text;
-using System.Text.Json;
-using System.Text.Json.Serialization;
-using System.Collections;
-using System.Collections.ObjectModel;
-using System.Collections.Generic;
 using System.Reflection;
-using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
-using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
-using System.Windows.Shapes;
 using System.Windows.Threading;
 using Valve.VR;
 using EasyLazyLibrary;
-using System.Numerics;
 using Rug.Osc;
-using System.Reflection.Emit;
-using System.Runtime.InteropServices;
 
 namespace vmt_manager
 {
@@ -58,7 +42,7 @@ namespace vmt_manager
     /// </summary>
     public partial class MainWindow : Window
     {
-        const string Version = "VMT_012";
+        const string Version = "VMT_013";
         private DispatcherTimer dispatcherTimer;
         Random rnd;
         string title = "";

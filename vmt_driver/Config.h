@@ -24,6 +24,7 @@ SOFTWARE.
 #pragma once
 #include "dllmain.h"
 
+//設定の読み書き、集約を行う
 namespace VMTDriver {
 	class Config {
 	private:
@@ -42,7 +43,10 @@ namespace VMTDriver {
 		bool m_RejectWhenCannotTracking = true;
 		bool m_DefaultAutoPoseUpdateOn = true;
 
-		void ErrorCheck();
+		json LoadJson();
+		void SaveJson(json j);
+
+		json ErrorCheck(json j);
 		void SaveJsonRoomToDriverMatrix(float m1, float m2, float m3, float m4, float m5, float m6, float m7, float m8, float m9, float m10, float m11, float m12);
 		void SetRoomMatrixStatus(bool ok);
 	public:

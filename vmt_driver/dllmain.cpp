@@ -23,26 +23,26 @@ SOFTWARE.
 */
 #include "dllmain.h"
 
-//OpenVRから参照されるため
+//OpenVRから参照されるためのDLL
 namespace VMTDriver {
     static ServerTrackedDeviceProvider g_ServerTrackedDeviceProvider;
     static VRWatchdogProvider g_VRWatchdogProvider;
 
+    //ServerTrackedDeviceProviderのインスタンスを返す
     ServerTrackedDeviceProvider* VMTDriver::GetServer()
     {
         return &g_ServerTrackedDeviceProvider;
     }
 
+    //VRWatchdogProviderのインスタンスを返す
     VRWatchdogProvider* VMTDriver::GetWatchdog()
     {
         return &g_VRWatchdogProvider;
     }
 }
 
-BOOL APIENTRY DllMain( HMODULE hModule,
-                       DWORD  ul_reason_for_call,
-                       LPVOID lpReserved
-                     )
+//DLLの基本処理(未使用)
+BOOL APIENTRY DllMain(HMODULE hModule, DWORD  ul_reason_for_call, LPVOID lpReserved)
 {
     switch (ul_reason_for_call)
     {
@@ -55,7 +55,7 @@ BOOL APIENTRY DllMain( HMODULE hModule,
     return TRUE;
 }
 
-//ファクトリ関数。これによりOpenVR側からクラスが参照されるようになる
+//OpenVRのファクトリ関数。これによりOpenVR側からクラスが参照されるようになる
 HMD_DLL_EXPORT void* HmdDriverFactory(const char* pInterfaceName, int* pReturnCode)
 {
     if (0 == strcmp(IServerTrackedDeviceProvider_Version, pInterfaceName))

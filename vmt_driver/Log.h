@@ -23,6 +23,8 @@ SOFTWARE.
 */
 #pragma once
 #include "dllmain.h"
+
+//OpenVRの開発者コンソールに表示するログを担うstaticクラス
 namespace VMTDriver {
     class Log {
     private:

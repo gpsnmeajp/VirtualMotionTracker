@@ -23,11 +23,13 @@ SOFTWARE.
 */
 #include "VRWatchdogProvider.h"
 namespace VMTDriver {
+    //OpenVRからの初期化処理
     EVRInitError VRWatchdogProvider::Init(IVRDriverContext* pDriverContext)
     {
         VR_INIT_WATCHDOG_DRIVER_CONTEXT(pDriverContext)
         return EVRInitError::VRInitError_None;
     }
+    //OpenVRからのクリーンアップ処理
     void VRWatchdogProvider::Cleanup()
     {
         VR_CLEANUP_WATCHDOG_DRIVER_CONTEXT()

@@ -24,72 +24,124 @@ SOFTWARE.
 #include "Config.h"
 
 namespace VMTDriver {
+	//コンストラクタ
 	Config::Config()
 	{
 	}
+	//シングルトンインスタンスの取得
 	Config* VMTDriver::Config::GetInstance()
 	{
 		static Config c;
 		return &c;
 	}
 
-	void Config::ErrorCheck()
+	//Jsonファイルの読み込み
+	json Config::LoadJson()
 	{
-		bool error = false;
-		json j = GetServer()->LoadJson();
+		//ドライバのインストールパス取得
+		string installPath = GetServer()->GetInstallPath();
+
+		if (!installPath.empty()) {
+			string filename = (installPath + "\\setting.json");
+			try {
+				//テキストの読み込み
+				std::ifstream inputStream(filename);
+				string inputData((std::istreambuf_iterator<char>(inputStream)), std::istreambuf_iterator<char>());
+				inputStream.close();
+
+				//Jsonパース
+				json j = json::parse(inputData);
+				Log::Output(("LoadJson:" + j.dump()).c_str());
+				return ErrorCheck(j);
+			}
+			catch (...) {
+				//パース失敗・ファイルなしなど
+				Log::Output("LoadJson: Parse error or load faild");
+				return ErrorCheck(json());
+			}
+		}
+
+		//インストールパスが取得できない
+		Log::Output("LoadJson: No Path");
+		return ErrorCheck(json());
+	}
+
+	//Jsonファイルの読み込み
+	void Config::SaveJson(json j)
+	{
+		//ドライバのインストールパス取得
+		string installPath = GetServer()->GetInstallPath();
+		json output = ErrorCheck(j);
+
+		if (!installPath.empty()) {
+			try {
+				//テキストの書き込み
+				string filename = (installPath + "\\setting.json");
+
+				std::ofstream outputStream(filename);
+				outputStream << output.dump(3, ' ');
+				outputStream.close();
+
+				Log::Output(("SaveJson:" + output.dump()).c_str());
+				return;
+			}
+			catch (...) {
+				//書き込みエラーなど
+				Log::Output("SaveJson: Save faild");
+				return;
+			}
+		}
+
+		//インストールパスが取得できない
+		Log::Output("SaveJson: No Path");
+		return;
+	}
+
+	//json内の不足する要素を初期値に設定する
+	json Config::ErrorCheck(json j)
+	{
 		if (!j.contains("RoomMatrix"))
 		{
 			j["RoomMatrix"] = {};
-			error = true;
 		}
 		if (!j.contains("VelocityEnable"))
 		{
 			j["VelocityEnable"] = false;
-			error = true;
 		}
 		if (!j.contains("ReceivePort"))
 		{
 			j["ReceivePort"] = -1;
-			error = true;
 		}
 		if (!j.contains("SendPort"))
 		{
 			j["SendPort"] = -1;
-			error = true;
 		}
 		if (!j.contains("OptoutTrackingRole"))
 		{
 			j["OptoutTrackingRole"] = true;
-			error = true;
 		}
 		if (!j.contains("HMDisIndex0"))
 		{
 			j["HMDisIndex0"] = true;
-			error = true;
 		}
 		if (!j.contains("RejectWhenCannotTracking"))
 		{
 			j["RejectWhenCannotTracking"] = true;
-			error = true;
 		}
 		if (!j.contains("DefaultAutoPoseUpdateOn"))
 		{
 			j["DefaultAutoPoseUpdateOn"] = true;
-			error = true;
 		}
-		if (error) {
-			GetServer()->SaveJson(j);
-		}
+		return j;
 	}
 
+	//jsonからの設定の読み込み
 	void Config::LoadSetting()
 	{
-		ErrorCheck();
-
 		try {
 			SetRoomMatrixStatus(false); //ルーム行列セット状態をクリア
 
-			json j = GetServer()->LoadJson();
+			json j = LoadJson();
 			if (j.contains("RoomMatrix"))
 			{
 				m_RoomToDriverMatrix
@@ -136,50 +188,67 @@ namespace VMTDriver {
 			m_RoomToDriverMatrix = Eigen::Matrix4d::Identity();
 		}
 	}
+
+	//ルーム変換行列をjsonに保存する
 	void Config::SaveJsonRoomToDriverMatrix(float m1, float m2, float m3, float m4, float m5, float m6, float m7, float m8, float m9, float m10, float m11, float m12)
 	{
-		ErrorCheck();
-
-		json j = GetServer()->LoadJson();
+		json j = LoadJson();
 		j["RoomMatrix"] = { m1,m2,m3,m4,m5,m6,m7,m8,m9,m10,m11,m12 };
-		GetServer()->SaveJson(j);
+		SaveJson(j);
 	}
+
+	//ルーム変換行列の設定状態を設定する
 	void Config::SetRoomMatrixStatus(bool ok)
 	{
 		m_RoomMatrixStatus = ok;
 	}
 
+	//ルーム変換行列の取得
 	Eigen::Matrix4d& Config::GetRoomToDriverMatrix()
 	{
 		return m_RoomToDriverMatrix;
 	}
 
+	//速度有効化の取得
 	bool Config::GetVelocityEnable()
 	{
 		return m_velocityEnable;
 	}
+
+	//受信ポートの取得
 	int Config::GetReceivePort()
 	{
 		return m_receivePort;
 	}
+
+	//送信ポートの取得
 	int Config::GetSendPort()
 	{
 		return m_sendPort;
 	}
+
+	//ロールのオプトアウトの取得
 	bool Config::GetOptoutTrackingRole()
 	{
 		return m_optoutTrackingRole;
 	}
+
+	//シリアル=HMDの有効化の取得
 	bool Config::GetHMDisIndex0()
 	{
 		return m_HMDisIndex0;
 	}
+
+	//ルーム変換行列の状態の取得
 	bool Config::GetRoomMatrixStatus()
 	{
 		return m_RoomMatrixStatus;
 	}
+
+	//ルーム変換行列の設定
 	void Config::SetRoomMatrix(bool save, float m1, float m2, float m3, float m4, float m5, float m6, float m7, float m8, float m9, float m10, float m11, float m12)
 	{
+		//セットする
 		m_RoomToDriverMatrix
 			<< m1, m2, m3, m4
 			, m5, m6, m7, m8
@@ -187,14 +256,19 @@ namespace VMTDriver {
 			, 0, 0, 0, 1;
 		SetRoomMatrixStatus(true); //ルーム行列がセットされた
 
+		//保存するなら保存する
 		if (save) {
 			SaveJsonRoomToDriverMatrix(m1, m2, m3, m4, m5, m6, m7, m8, m9, m10, m11, m12);
 		}
 	}
+
+	//エラー時にトラッキングを停止するかを取得する
 	bool Config::GetRejectWhenCannotTracking()
 	{
 		return m_RejectWhenCannotTracking;
 	}
+
+	//自動更新をデフォルトでオンにするかを取得する
 	bool Config::GetDefaultAutoPoseUpdateOn()
 	{
 		return m_DefaultAutoPoseUpdateOn;

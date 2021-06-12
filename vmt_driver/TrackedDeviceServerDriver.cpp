@@ -23,48 +23,59 @@ SOFTWARE.
 */
 #include "TrackedDeviceServerDriver.h"
 namespace VMTDriver {
+    //** 内部向け関数群 **
+
+    //自動更新を有効にするか
     bool TrackedDeviceServerDriver::s_autoUpdate = false;
 
+    //仮想デバイスのコンストラクタ。(Listから暗黙的にコールされる)
     TrackedDeviceServerDriver::TrackedDeviceServerDriver()
     {
         m_deviceIndex = k_unTrackedDeviceIndexInvalid;
         m_propertyContainer = k_ulInvalidPropertyContainer;
     }
+
+    //仮想デバイスのデストラクタ。(Listから暗黙的にコールされる)
     TrackedDeviceServerDriver::~TrackedDeviceServerDriver()
     {
     }
 
+    //仮想デバイスにシリアル番号を設定
     void TrackedDeviceServerDriver::SetDeviceSerial(string serial)
     {
         m_serial = serial;
     }
 
+    //仮想デバイスに内部Indexを設定
     void TrackedDeviceServerDriver::SetObjectIndex(uint32_t idx)
     {
         m_index = idx;
     }
 
+    //仮想デバイスにOpenVR姿勢を設定
     void TrackedDeviceServerDriver::SetPose(DriverPose_t pose)
     {
         m_pose = pose;
     }
 
+    //仮想デバイスに内部姿勢を設定
     void TrackedDeviceServerDriver::SetRawPose(RawPose rawPose)
     {
-        m_poweron = true; //電源オン状態にする
+        m_poweron = true; //有効な姿勢なので電源オン状態にする
 
         if (s_autoUpdate) {
-            //自動更新が有効ならPoseは自動計算される
+            //自動更新が有効なら内部姿勢を保存するのみ。(OpenVR姿勢は自動更新されるため)
             m_rawPose = rawPose;
         }
         else {
-            //自動更新が無効ならばPoseを更新する
+            //自動更新が無効ならば内部姿勢を保存し、OpenVR姿勢を更新する
             m_lastRawPose = m_rawPose; //差分を取るために前回値を取っておく
             m_rawPose = rawPose;
             SetPose(RawPoseToPose());
         }
     }
 
+    //内部姿勢→OpenVR姿勢の変換と、相対座標計算処理を行う
     DriverPose_t TrackedDeviceServerDriver::RawPoseToPose()
     {
         DriverPose_t pose{ 0 };
@@ -293,6 +304,7 @@ namespace VMTDriver {
         return pose;
     }
 
+    //仮想デバイスからOpenVRへデバイスの登録を依頼する
     void TrackedDeviceServerDriver::RegisterToVRSystem(int type)
     {
         if (!m_alreadyRegistered)
@@ -329,13 +341,8 @@ namespace VMTDriver {
         }
     }
 
-    //毎フレーム処理
-    void TrackedDeviceServerDriver::UpdatePoseToVRSystem()
-    {
-        if (!m_alreadyRegistered) { return; }
-        //姿勢を更新
-        VRServerDriverHost()->TrackedDevicePoseUpdated(m_deviceIndex, GetPose(), sizeof(DriverPose_t));
-    }
+
+    //仮想デバイスからOpenVRへデバイスのボタン状態の更新を通知する
     void TrackedDeviceServerDriver::UpdateButtonInput(uint32_t index, bool value, double timeoffset)
     {
         if (!m_alreadyRegistered) { return; }
@@ -344,6 +351,8 @@ namespace VMTDriver {
             VRDriverInput()->UpdateBooleanComponent(ButtonComponent[index], value, timeoffset);
         }
     }
+
+    //仮想デバイスからOpenVRへデバイスのトリガー(1軸)状態の更新を通知する
     void TrackedDeviceServerDriver::UpdateTriggerInput(uint32_t index, float value, double timeoffset)
     {
         if (!m_alreadyRegistered) { return; }
@@ -362,6 +371,8 @@ namespace VMTDriver {
             VRDriverInput()->UpdateScalarComponent(TriggerComponent[index], value, timeoffset);
         }
     }
+
+    //仮想デバイスからOpenVRへデバイスのジョイスティック(2軸)状態の更新を通知する
     void TrackedDeviceServerDriver::UpdateJoystickInput(uint32_t index, float x, float y, double timeoffset)
     {
         if (!m_alreadyRegistered) { return; }
@@ -371,6 +382,8 @@ namespace VMTDriver {
             VRDriverInput()->UpdateScalarComponent(JoystickComponent[index + 1], y, timeoffset);
         }
     }
+
+    //仮想デバイスの状態をリセットする
     void TrackedDeviceServerDriver::Reset()
     {
         m_poweron = false; //電源オフ状態にする
@@ -392,6 +405,16 @@ namespace VMTDriver {
             UpdateJoystickInput(i, 0, 0, 0);
         }
     }
+
+    //仮想デバイスからOpenVRへデバイスの姿勢の更新を通知する(サーバーから毎フレームコールされる)
+    void TrackedDeviceServerDriver::UpdatePoseToVRSystem()
+    {
+        if (!m_alreadyRegistered) { return; }
+        //姿勢を更新
+        VRServerDriverHost()->TrackedDevicePoseUpdated(m_deviceIndex, GetPose(), sizeof(DriverPose_t));
+    }
+
+    //仮想デバイスでOpenVRイベントを処理する(サーバーからイベントがあるタイミングでコールされる)
     void TrackedDeviceServerDriver::ProcessEvent(VREvent_t& VREvent)
     {
         //未登録 or 電源オフ時は反応しない
@@ -420,10 +443,19 @@ namespace VMTDriver {
             break;
         }
     }
+
+    //仮想デバイスの姿勢を、OpenVRに転送するたびに自動更新するか
     void TrackedDeviceServerDriver::SetAutoUpdate(bool enable)
     {
         s_autoUpdate = enable;
     }
+
+
+
+
+    //** OpenVR向け関数群 **
+
+    //OpenVRからのデバイス有効化コール
     EVRInitError TrackedDeviceServerDriver::Activate(uint32_t unObjectId)
     {
         m_deviceIndex = unObjectId;
@@ -525,20 +557,28 @@ namespace VMTDriver {
 
         return EVRInitError::VRInitError_None;
     }
+
+    //OpenVRからのデバイス無効化コール
     void TrackedDeviceServerDriver::Deactivate()
     {
         m_deviceIndex = k_unTrackedDeviceIndexInvalid;
         m_propertyContainer = k_ulInvalidPropertyContainer;
     }
+
+    //OpenVRからのデバイス電源オフコール
     void TrackedDeviceServerDriver::EnterStandby()
     {
         //電源オフ要求が来た
         Reset();
     }
+
+    //OpenVRからのデバイス固有機能の取得(ない場合はnullptrを返す)
     void* TrackedDeviceServerDriver::GetComponent(const char* pchComponentNameAndVersion)
     {
         return nullptr;
     }
+
+    //OpenVRからのデバイスのデバッグリクエスト
     void TrackedDeviceServerDriver::DebugRequest(const char* pchRequest, char* pchResponseBuffer, uint32_t unResponseBufferSize)
     {
         //デバッグ用
@@ -547,16 +587,19 @@ namespace VMTDriver {
             pchResponseBuffer[0] = '\0';
         }
     }
+
+    //OpenVRからのデバイス姿勢取得
     DriverPose_t TrackedDeviceServerDriver::GetPose()
     {
-        //自動更新が有効 AND デバイス登録済み AND 電源オン状態
+        //自動更新が有効 AND デバイス登録済み AND 電源オン状態の場合
         if (s_autoUpdate && m_alreadyRegistered && m_poweron) {
-            //加速度計算の自動更新
+            //加速度計算の自動更新を行う
             m_lastRawPose = m_rawPose;
             m_rawPose.time = std::chrono::system_clock::now();
             //姿勢情報の更新(他デバイス連動時に効果あり)
             SetPose(RawPoseToPose());
         }
+        //現在のOpenVR向け姿勢を返却する
         return m_pose;
     }
 }

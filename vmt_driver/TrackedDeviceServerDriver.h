@@ -24,6 +24,8 @@ SOFTWARE.
 #pragma once
 #include "dllmain.h"
 
+//OpenVRデバイス
+//サーバーにぶら下がる子である
 namespace VMTDriver {
     const HmdQuaternion_t HmdQuaternion_Identity{ 1,0,0,0 };
 
@@ -67,6 +69,7 @@ namespace VMTDriver {
 
         static bool s_autoUpdate;
     public:
+        //内部向け
         TrackedDeviceServerDriver();
         ~TrackedDeviceServerDriver();
 
@@ -86,8 +89,7 @@ namespace VMTDriver {
 
         static void SetAutoUpdate(bool enable);
 
-        //---------------
-
+        //OpenVR向け
         virtual EVRInitError Activate(uint32_t unObjectId) override;
         virtual void Deactivate() override;
         virtual void EnterStandby() override;

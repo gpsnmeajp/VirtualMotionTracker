@@ -36,7 +36,7 @@ SOFTWARE.
 #include "Eigen/Dense"
 #include "json.hpp"
 
-
+//DLL定義
 #define HMD_DLL_EXPORT extern "C" __declspec( dllexport )
 using Eigen::MatrixXd;
 

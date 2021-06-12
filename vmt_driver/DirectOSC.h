@@ -38,6 +38,7 @@ SOFTWARE.
 #include "osc/OscPacketListener.h"
 #include "ip/UdpSocket.h"
 
+//oscpackを使ったOSC通信クラス(受信用スレッドを持っている)
 namespace DirectOSC {
 	class OSC {
 	private:

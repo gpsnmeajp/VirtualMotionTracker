@@ -25,14 +25,19 @@ SOFTWARE.
 namespace VMTDriver {
     IVRDriverLog* Log::handle = nullptr;
 
+    //ログをオープンする
     void Log::Open(IVRDriverLog* hnd)
     {
         handle = hnd;
     }
+
+    //ログをクローズする
     void Log::Close()
     {
         handle = nullptr;
     }
+
+    //ログに出力する
     void Log::Output(const char* msg)
     {
         if (handle != nullptr) {
@@ -40,6 +45,7 @@ namespace VMTDriver {
         }
     }
 
+    //ログに書式付きで出力する
     int Log::printf(const char* fmt, ...)
     {
         if (handle == nullptr) {
@@ -49,12 +55,13 @@ namespace VMTDriver {
         const int size = 8192;
         char output[size] = { 0 };
 
-        //ログ出力(状況に合わせて切り替えられるように)
+        //書式月出力
         va_list arg;
         va_start(arg, fmt);
         int ret = vsnprintf(output, size, fmt, arg);
         va_end(arg);
 
+        //文字数オーバー時に確実に出力するためのフェールセーフ
         output[size - 1] = '\0';
         handle->Log(output);
 

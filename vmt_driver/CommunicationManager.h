@@ -24,6 +24,7 @@ SOFTWARE.
 #pragma once
 #include "dllmain.h"
 
+//通信系の処理の管理、OSC情報の送受信を行う
 namespace VMTDriver {
 	const string Version = "VMT_013";
 

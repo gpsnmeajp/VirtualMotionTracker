@@ -24,26 +24,25 @@ SOFTWARE.
 #pragma once
 #include "dllmain.h"
 
+//OpenVRデバイスサーバー
+//デバイスを管理する親であり、この下に子としてデバイスがぶら下がる
 namespace VMTDriver {
-    //デバイスサーバー
     class ServerTrackedDeviceProvider : public IServerTrackedDeviceProvider
     {
     private:
         vector<TrackedDeviceServerDriver> m_devices;
-        int m_devicesNum = 0;
         IVRDriverContext* m_pDriverContext = nullptr;
         string m_installPath = "";
 
-
     public:
+        //内部向け
         vector<TrackedDeviceServerDriver>& GetDevices();
         TrackedDeviceServerDriver& GetDevice(int index);
         void DeviceResetAll();
-        json LoadJson();
-        void SaveJson(json);
         bool IsVMTDeviceIndex(int index);
         string GetInstallPath();
 
+        //OpenVR向け
         virtual EVRInitError Init(IVRDriverContext* pDriverContext) override;
         virtual void Cleanup() override;
         virtual const char* const* GetInterfaceVersions() override;
