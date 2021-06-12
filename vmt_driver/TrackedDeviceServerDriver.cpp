@@ -112,13 +112,13 @@ namespace VMTDriver {
 
     //Joint計算を行う
     void TrackedDeviceServerDriver::CalcJoint(DriverPose_t& pose, string serial, ReferMode_t mode, Eigen::Affine3d& RoomToDriverAffin) {
-        vr::TrackedDevicePose_t poses[k_unMaxTrackedDeviceCount]{};
+        vr::TrackedDevicePose_t devicePoses[k_unMaxTrackedDeviceCount]{};
 
         //OpenVRから全トラッキングデバイスの情報を取得する
-        VRServerDriverHost()->GetRawTrackedDevicePoses(0.0f, poses, k_unMaxTrackedDeviceCount);
+        VRServerDriverHost()->GetRawTrackedDevicePoses(0.0f, devicePoses, k_unMaxTrackedDeviceCount);
 
         //接続済みのデバイスの中から、シリアル番号でデバイスを検索する
-        int index = SearchDevice(poses, serial);
+        int index = SearchDevice(devicePoses, serial);
 
         //探索エラーが帰ってきたら
         if (index == k_unTrackedDeviceIndexInvalid) {
@@ -127,13 +127,16 @@ namespace VMTDriver {
             return;
         }
 
-        //参照元のトラッキングステータスを継承させる
-        pose.result = poses[index].eTrackingResult;
+        vr::TrackedDevicePose_t& devicePose = devicePoses[index];
+
+        //参照元のトラッキングステータスを継承させる(Reject無効化時に意味あり)
+        pose.poseIsValid = devicePose.bPoseIsValid;
+        pose.result = devicePose.eTrackingResult;
 
         //デバイスのトラッキング状態が正常なら
-        if (poses[index].eTrackingResult == ETrackingResult::TrackingResult_Running_OK) {
+        if (devicePose.eTrackingResult == ETrackingResult::TrackingResult_Running_OK) {
             //デバイスの変換行列を取得し、Eigenの行列に変換
-            float* m = (float*)(poses[index].mDeviceToAbsoluteTracking.m);
+            float* m = (float*)(devicePose.mDeviceToAbsoluteTracking.m);
 
             Eigen::Affine3d rootDeviceToAbsoluteTracking;
             rootDeviceToAbsoluteTracking.matrix() <<
