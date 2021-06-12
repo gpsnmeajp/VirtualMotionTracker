@@ -60,6 +60,41 @@ namespace vmt_manager
             InitializeComponent();
         }
 
+        private void TopErrorMessage(string message)
+        {
+            TopErrorTextBlock.Visibility = Visibility.Visible;
+            TopErrorTextBlock.Text = message;
+            TopErrorTextBlock.Background = new SolidColorBrush(Color.FromRgb(255, 0, 0));
+            TopErrorTextBlock.Foreground = new SolidColorBrush(Color.FromRgb(255, 255, 255));
+            TopNotInstalledTextBlock.Visibility = Visibility.Collapsed;
+            InstallButtonName.IsEnabled = false;
+
+            //Top以外を削除する
+            int count = MainTabControl.Items.Count;
+            for (int i = 1; i < count; i++)
+            {
+                MainTabControl.Items.Remove(MainTabControl.Items[1]);
+            }
+        }
+        private void TopWarningMessage(string message, bool enable = false)
+        {
+            TopErrorTextBlock.Visibility = Visibility.Visible;
+            TopErrorTextBlock.Text = message;
+            TopErrorTextBlock.Background = new SolidColorBrush(Color.FromRgb(255, 255, 0));
+            TopErrorTextBlock.Foreground = new SolidColorBrush(Color.FromRgb(0, 0, 0));
+            MainTabControl.SelectedIndex = 0;
+            TopNotInstalledTextBlock.Visibility = Visibility.Collapsed;
+
+            //Top以外を削除する
+            if (!enable) {
+                int count = MainTabControl.Items.Count;
+                for (int i = 1; i < count; i++)
+                {
+                    MainTabControl.Items.Remove(MainTabControl.Items[1]);
+                }
+            }
+        }
+
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
             try
@@ -67,43 +102,47 @@ namespace vmt_manager
                 Console.WriteLine("Loaded");
                 title = this.Title;
                 ManagerVersion.Text = Version;
-                DriverVersion.Text = "-";
+                DriverVersion.Text = " - ";
 
                 rnd = new Random();
-
-                util = new EasyOpenVRUtil();
-                if (!util.StartOpenVR())
-                {
-                    var result = MessageBox.Show("Steam VR not ready. Maybe not ready for HMD or Tracking system.\nStream VRが利用できません。HMDやトラッキングシステムが利用できない状態の可能性があります。", title, MessageBoxButton.OK, MessageBoxImage.Error);
-                    Close();
-                    return;
-                }
-
                 osc = new OSC("127.0.0.1", 39571, 39570, OnBundle, OnMessage);
-
-                //セーフモードチェック
-                EVRSettingsError eVRSettingsError = EVRSettingsError.None;
-                bool safemode = OpenVR.Settings.GetBool("driver_vmt", OpenVR.k_pch_Driver_BlockedBySafemode_Bool, ref eVRSettingsError);
-                if (eVRSettingsError == EVRSettingsError.None && safemode)
-                {
-                    var result = MessageBox.Show("SteamVR runnning on safe mode and VMT has blocked.\nPlease unblock, and restart SteamVR.\n\nSteamVRがセーフモードで動作し、VMTがブロックされています。\nブロックを解除し、SteamVRを再起動してください。", title, MessageBoxButton.OK, MessageBoxImage.Error);
-                }
-                //Enableチェック
-                eVRSettingsError = EVRSettingsError.None;
-                bool enable = OpenVR.Settings.GetBool("driver_vmt", OpenVR.k_pch_Driver_Enable_Bool, ref eVRSettingsError);
-                if (eVRSettingsError == EVRSettingsError.None && !enable)
-                {
-                    var result = MessageBox.Show("VMT has disabled in Steam VR setting.\nPlease enable, and restart SteamVR.\n\nVMTはSteamVR上で無効に設定されています。\n有効にし、SteamVRを再起動してください。", title, MessageBoxButton.OK, MessageBoxImage.Error);
-                }
-
-                //デバッグのためにセーフモードを有効化
-                //OpenVR.Settings.SetBool(OpenVR.k_pch_SteamVR_Section, OpenVR.k_pch_SteamVR_EnableSafeMode, true,ref eVRSettingsError);
 
                 //タイマー起動
                 dispatcherTimer = new DispatcherTimer();
                 dispatcherTimer.Interval = new TimeSpan(0, 0, 0, 0, 100);
                 dispatcherTimer.Tick += new EventHandler(GenericTimer);
                 dispatcherTimer.Start();
+
+                util = new EasyOpenVRUtil();
+                if (!util.StartOpenVR())
+                {
+                    //var result = MessageBox.Show("Steam VR not ready. Maybe not ready for HMD or Tracking system.\nStream VRが利用できません。HMDやトラッキングシステムが利用できない状態の可能性があります。", title, MessageBoxButton.OK, MessageBoxImage.Error);
+                    TopErrorMessage("Steam VR not ready. Maybe not ready for HMD or Tracking system.\nStream VRが利用できません。HMDやトラッキングシステムが利用できない状態の可能性があります。");
+                    //Close();
+                    return;
+                }
+
+                //セーフモードチェック
+                EVRSettingsError eVRSettingsError = EVRSettingsError.None;
+                bool safemode = OpenVR.Settings.GetBool("driver_vmt", OpenVR.k_pch_Driver_BlockedBySafemode_Bool, ref eVRSettingsError);
+                if (eVRSettingsError == EVRSettingsError.None && safemode)
+                {
+                    //var result = MessageBox.Show("SteamVR runnning on safe mode and VMT has blocked.\nPlease unblock, and restart SteamVR.\n\nSteamVRがセーフモードで動作し、VMTがブロックされています。\nブロックを解除し、SteamVRを再起動してください。", title, MessageBoxButton.OK, MessageBoxImage.Error);
+                    TopErrorMessage("SteamVR runnning on safe mode and VMT has blocked.\nPlease unblock, and restart SteamVR.\n\nSteamVRがセーフモードで動作し、VMTがブロックされています。\nブロックを解除し、SteamVRを再起動してください。");
+                    return;
+                }
+                //Enableチェック
+                eVRSettingsError = EVRSettingsError.None;
+                bool enable = OpenVR.Settings.GetBool("driver_vmt", OpenVR.k_pch_Driver_Enable_Bool, ref eVRSettingsError);
+                if (eVRSettingsError == EVRSettingsError.None && !enable)
+                {
+                    //var result = MessageBox.Show("VMT has disabled in Steam VR setting.\nPlease enable, and restart SteamVR.\n\nVMTはSteamVR上で無効に設定されています。\n有効にし、SteamVRを再起動してください。", title, MessageBoxButton.OK, MessageBoxImage.Error);
+                    TopErrorMessage("VMT has disabled in Steam VR setting.\nPlease enable, and restart SteamVR.\n\nVMTはSteamVR上で無効に設定されています。\n有効にし、SteamVRを再起動してください。");
+                    return;
+                }
+
+                //デバッグのためにセーフモードを有効化
+                //OpenVR.Settings.SetBool(OpenVR.k_pch_SteamVR_Section, OpenVR.k_pch_SteamVR_EnableSafeMode, true,ref eVRSettingsError);
 
                 string[] args = System.Environment.GetCommandLineArgs();
                 if (args.Length > 1)
@@ -177,11 +216,13 @@ namespace vmt_manager
                         if (versionFromOSC != Version)
                         {
                             DriverVersion.Foreground = new SolidColorBrush(Color.FromRgb(255, 100, 100));
+                            TopWarningMessage("Different version VMT detected. You can not use VMT Manager for setting. but you can use this to uninstall VMT driver.\n\n違うバージョンのVMTがインストールされています。このVMT Managerでは設定はできません。VMTをアンインストールすることは出来ます。");
                         }
                         else
                         {
                             DriverVersion.Foreground = new SolidColorBrush(Color.FromRgb(0, 255, 0));
                         }
+                        TopNotInstalledTextBlock.Visibility = Visibility.Collapsed;
 
                         aliveCnt = 0;
                     });
@@ -317,7 +358,7 @@ namespace vmt_manager
                 if (aliveCnt > 90)
                 {
                     installPath = "";
-                    DriverVersion.Text = "-";
+                    DriverVersion.Text = " - ";
                     DriverVersion.Foreground = new SolidColorBrush(Color.FromRgb(255, 255, 255));
                     ControlDock.IsEnabled = false;
                 }
@@ -456,9 +497,10 @@ namespace vmt_manager
 
         private void InstallButton(object sender, RoutedEventArgs e)
         {
-            if (DriverVersion.Text != "-")
+            if (DriverVersion.Text != " - ")
             {
-                MessageBox.Show("Please uninstall VMT before install.\nインストールを続ける前に、VMTをアンインストールしてください", title, MessageBoxButton.OK, MessageBoxImage.Error);
+                //MessageBox.Show("Please uninstall VMT before install.\nインストールを続ける前に、VMTをアンインストールしてください", title, MessageBoxButton.OK, MessageBoxImage.Error);
+                TopWarningMessage("Please uninstall VMT before install.\nインストールを続ける前に、VMTをアンインストールしてください", true);
                 return;
             }
 
@@ -512,7 +554,7 @@ namespace vmt_manager
             else
             {
                 //場所不明だがとりあえず現在の場所としてアンインストールしようとするか確認する
-                var res = MessageBox.Show("Other VMT Driver version detected.\nIn many cases, this driver located on different path.\nmanager can not uninstallation these.\nIf you want to remove currently installed VMT driver, press cancel and please use manager of drivers itself.\n\nPress OK, Try uninstallation anyway. (it will fail in many cases.)\n\n違うバージョンのVMTドライバを検出しました。\n多くの場合これは別のパスにあります。\n本Managerではアンインストールできません。\nアンインストールしたい場合は、キャンセルを押し、そのVMTドライバに付属のManagerを使用してください\n\nOKを押すと、とにかくアンインストールを試します。(多くの場合失敗します。)", title, MessageBoxButton.OKCancel, MessageBoxImage.Error);
+                var res = MessageBox.Show("Manager couldn't communication to VMT Driver.\nOther VMT Driver version maybe installed.\nIn many cases, this driver located on different path.\nmanager can not uninstallation these.\nIf you want to remove currently installed VMT driver, press cancel and please use manager of drivers itself.\n\nIf you want to try uninstallation anyway, press OK. (it will fail in many cases.)\n\nVMTドライバと通信できませんでした。\n違うバージョンのVMTドライバが入っている可能性があります。\n多くの場合これは別のパスにあります。\n本Managerではアンインストールできません。\nアンインストールしたい場合は、キャンセルを押し、そのVMTドライバに付属のManagerを使用してください\n\nOKを押すと、とにかくアンインストールを試します。(多くの場合失敗します。)", title, MessageBoxButton.OKCancel, MessageBoxImage.Error);
                 if (res != MessageBoxResult.OK)
                 {
                     return;
@@ -529,7 +571,22 @@ namespace vmt_manager
                 process.Start();
                 process.WaitForExit();
 
-                MessageBox.Show("OK (ExitCode=" + process.ExitCode + ")\nPlease restart SteamVR.", title);
+                if (File.Exists(driverPath + @"\setting.json"))
+                {
+                    var res = MessageBox.Show("Do you want to remove setting.json?(Recommended: Yes)\nSetting.jsonを消去しますか?(推奨: はい)\n\n" + installPath + @"\setting.json", title, MessageBoxButton.YesNo, MessageBoxImage.Question);
+                    if (res != MessageBoxResult.Yes)
+                    {
+                        MessageBox.Show("OK (ExitCode=" + process.ExitCode + ")\nPlease restart SteamVR.", title);
+                        return;
+                    }
+                    File.Delete(driverPath + @"\setting.json");
+                    MessageBox.Show("OK and remove setting.json(ExitCode=" + process.ExitCode + ")\nPlease restart SteamVR.", title);
+                    return;
+                }
+                else {
+                    MessageBox.Show("OK (ExitCode=" + process.ExitCode + ")\nPlease restart SteamVR.", title);
+                    return;
+                }
             }
             catch (Exception ex)
             {

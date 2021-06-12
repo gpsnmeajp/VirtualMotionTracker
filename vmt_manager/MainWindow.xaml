@@ -14,7 +14,7 @@
 				<TextBlock Name="StatusBarTextBlock" Text="Virtual Motion Tracker" FontWeight="Bold" />
 			</StatusBarItem>
 		</StatusBar>
-		<TabControl DockPanel.Dock="Top">
+		<TabControl DockPanel.Dock="Top" Name="MainTabControl">
 			<TabItem Header="Install">
 				<DockPanel LastChildFill="False">
 					<DockPanel.Background>
@@ -23,12 +23,14 @@
 							<GradientStop Color="#FF111111" Offset="1"/>
 						</LinearGradientBrush>
 					</DockPanel.Background>
-					<Grid  DockPanel.Dock="Top" Margin="1">
+					<TextBlock Text="" Name="TopErrorTextBlock" Visibility="Collapsed" DockPanel.Dock="Top" Background="Red" Foreground="White" TextWrapping="Wrap" />
+					<TextBlock Text="VMT is not installed. Click install button to start use VMT.&#xA;VMTはインストールされていません。&#xA;使い始めるにはInstallボタンを押してください。" Name="TopNotInstalledTextBlock" DockPanel.Dock="Top" Background="Green" Foreground="White" TextWrapping="Wrap" />
+					<Grid  DockPanel.Dock="Top" Margin="1" Name="InstallGrid">
 						<Grid.ColumnDefinitions>
 							<ColumnDefinition/>
 							<ColumnDefinition/>
 						</Grid.ColumnDefinitions>
-						<Button Content="Install" DockPanel.Dock="Top" Click="InstallButton" Grid.Column="0" Margin="1"/>
+						<Button Content="Install" Name="InstallButtonName" DockPanel.Dock="Top" Click="InstallButton" Grid.Column="0" Margin="1"/>
 						<Button Content="Uninstall" DockPanel.Dock="Top" Click="UninstallButton" Grid.Column="1" Margin="1"/>
 					</Grid>
 					<Grid DockPanel.Dock="Top" Margin="2">
