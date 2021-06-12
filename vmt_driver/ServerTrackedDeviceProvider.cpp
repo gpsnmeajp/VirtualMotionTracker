@@ -88,7 +88,7 @@ namespace VMTDriver {
         VR_INIT_SERVER_DRIVER_CONTEXT(pDriverContext)
         m_pDriverContext = pDriverContext;
         Log::Open(VRDriverLog());
-        CommunicationManager::GetInstance()->Open(this);
+        CommunicationManager::GetInstance()->Open();
 
         //ドライバのインストールパス取得
         string installPath = VRProperties()->GetStringProperty(m_pDriverContext->GetDriverHandle(), Prop_InstallPath_String);

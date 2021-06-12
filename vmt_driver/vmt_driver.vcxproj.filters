@@ -90,6 +90,9 @@
     <ClInclude Include="..\oscpack_1_1_0\osc\MessageMappingOscPacketListener.h">
       <Filter>ヘッダー ファイル\oscpack_1_1_0</Filter>
     </ClInclude>
+    <ClInclude Include="Config.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="dllmain.cpp">
@@ -133,6 +136,9 @@
     </ClCompile>
     <ClCompile Include="..\oscpack_1_1_0\osc\OscTypes.cpp">
       <Filter>ソース ファイル\oscpack_1_1_0</Filter>
+    </ClCompile>
+    <ClCompile Include="Config.cpp">
+      <Filter>ソース ファイル</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

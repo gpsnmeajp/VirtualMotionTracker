@@ -52,7 +52,7 @@ namespace VMTDriver {
 		pose.root_sn = root_sn ? root_sn : "";
 		pose.time = std::chrono::system_clock::now();
 
-		ServerTrackedDeviceProvider* server = CommunicationManager::GetInstance()->GetServer();
+		ServerTrackedDeviceProvider* server = VMTDriver::GetServer();
 		if (idx >= 0 && idx <= server->GetDevices().size())
 		{
 			server->GetDevices()[idx].RegisterToVRSystem(enable); //1=Tracker, 2=Controller Left, 3=Controller Right, 4=Tracking Reference
@@ -205,7 +205,7 @@ namespace VMTDriver {
 				osc::ReceivedMessageArgumentStream args = m.ArgumentStream();
 				args >> idx >> ButtonIndex >> timeoffset >> value >> osc::EndMessage;
 
-				ServerTrackedDeviceProvider* sever = CommunicationManager::GetInstance()->GetServer();
+				ServerTrackedDeviceProvider* sever = VMTDriver::GetServer();
 				if (idx >= 0 && idx <= sever->GetDevices().size())
 				{
 					sever->GetDevices()[idx].UpdateButtonInput(ButtonIndex, value != 0, timeoffset);
@@ -219,7 +219,7 @@ namespace VMTDriver {
 				osc::ReceivedMessageArgumentStream args = m.ArgumentStream();
 				args >> idx >> ButtonIndex >> timeoffset >> value >> osc::EndMessage;
 
-				ServerTrackedDeviceProvider* sever = CommunicationManager::GetInstance()->GetServer();
+				ServerTrackedDeviceProvider* sever = VMTDriver::GetServer();
 				if (idx >= 0 && idx <= sever->GetDevices().size())
 				{
 					sever->GetDevices()[idx].UpdateTriggerInput(ButtonIndex, value, timeoffset);
@@ -233,7 +233,7 @@ namespace VMTDriver {
 				osc::ReceivedMessageArgumentStream args = m.ArgumentStream();
 				args >> idx >> ButtonIndex >> timeoffset >> x >> y >> osc::EndMessage;
 
-				ServerTrackedDeviceProvider* sever = CommunicationManager::GetInstance()->GetServer();
+				ServerTrackedDeviceProvider* sever = VMTDriver::GetServer();
 				if (idx >= 0 && idx <= sever->GetDevices().size())
 				{
 					sever->GetDevices()[idx].UpdateJoystickInput(ButtonIndex, x, y, timeoffset);
@@ -242,7 +242,7 @@ namespace VMTDriver {
 			else if (adr == "/VMT/Reset")
 			{
 				//全トラッカーを0にする
-				ServerTrackedDeviceProvider* sever = CommunicationManager::GetInstance()->GetServer();
+				ServerTrackedDeviceProvider* sever = VMTDriver::GetServer();
 				for (int i = 0; i < sever->GetDevices().size(); i++)
 				{
 					sever->GetDevices()[i].Reset(); //すでにVRシステムに登録済みのものだけ通知される
@@ -250,7 +250,7 @@ namespace VMTDriver {
 			}
 			else if (adr == "/VMT/LoadSetting")
 			{
-				CommunicationManager::GetInstance()->LoadSetting();
+				Config::GetInstance()->LoadSetting();
 				SendLog(0, "Setting Loaded");
 			}
 			else if (adr == "/VMT/SetRoomMatrix")
@@ -261,49 +261,19 @@ namespace VMTDriver {
 				osc::ReceivedMessageArgumentStream args = m.ArgumentStream();
 				args >> m1 >> m2 >> m3 >> m4 >> m5 >> m6 >> m7 >> m8 >> m9 >> m10 >> m11 >> m12 >> osc::EndMessage;
 
-				CommunicationManager::GetInstance()->GetRoomToDriverMatrix()
+				Config::GetInstance()->GetRoomToDriverMatrix()
 					<< m1, m2, m3, m4
 					, m5, m6, m7, m8
 					, m9, m10, m11, m12
 					, 0, 0, 0, 1;
-				CommunicationManager::GetInstance()->SetRoomMatrixStatus(true); //ルーム行列がセットされた
+				Config::GetInstance()->SetRoomMatrixStatus(true); //ルーム行列がセットされた
 
-				json j = CommunicationManager::GetInstance()->GetServer()->LoadJson();
-				if (!j.contains("RoomMatrix"))
-				{
-					j["RoomMatrix"] = {};
-				}
-				if (!j.contains("VelocityEnable"))
-				{
-					j["VelocityEnable"] = false;
-				}
-				if (!j.contains("ReceivePort"))
-				{
-					j["ReceivePort"] = -1;
-				}
-				if (!j.contains("SendPort"))
-				{
-					j["SendPort"] = -1;
-				}
-				if (!j.contains("OptoutTrackingRole"))
-				{
-					j["OptoutTrackingRole"] = true;
-				}
-				if (!j.contains("HMDisIndex0"))
-				{
-					j["HMDisIndex0"] = true;
-				}
-				if (!j.contains("RejectWhenCannotTracking"))
-				{
-					j["RejectWhenCannotTracking"] = true;
-				}
-				if (!j.contains("DefaultAutoPoseUpdateOn"))
-				{
-					j["DefaultAutoPoseUpdateOn"] = true;
-				}
+				Config::GetInstance()->InitSetting();
 
+				json j = VMTDriver::GetServer()->LoadJson();
 				j["RoomMatrix"] = { m1,m2,m3,m4,m5,m6,m7,m8,m9,m10,m11,m12 };
-				CommunicationManager::GetInstance()->GetServer()->SaveJson(j);
+				VMTDriver::GetServer()->SaveJson(j);
+
 				SendLog(0, "Set Room Matrix Done.");
 			}
 			else if (adr == "/VMT/SetRoomMatrix/Temporary")
@@ -314,12 +284,12 @@ namespace VMTDriver {
 				osc::ReceivedMessageArgumentStream args = m.ArgumentStream();
 				args >> m1 >> m2 >> m3 >> m4 >> m5 >> m6 >> m7 >> m8 >> m9 >> m10 >> m11 >> m12 >> osc::EndMessage;
 
-				CommunicationManager::GetInstance()->GetRoomToDriverMatrix()
+				Config::GetInstance()->GetRoomToDriverMatrix()
 					<< m1, m2, m3, m4
 					, m5, m6, m7, m8
 					, m9, m10, m11, m12
 					, 0, 0, 0, 1;
-				CommunicationManager::GetInstance()->SetRoomMatrixStatus(true); //ルーム行列がセットされた
+				Config::GetInstance()->SetRoomMatrixStatus(true); //ルーム行列がセットされた
 
 				SendLog(0, "Set Room Matrix Done.(Temporary)");
 			}
@@ -340,36 +310,15 @@ namespace VMTDriver {
 			Log::printf("Exp: %s\n", e.what());
 		}
 	}
-	/*
-	void sendXYZ(DirectOSC::OSC* osc, float x, float y, float z) {
-		const size_t bufsize = 1024;
-		char buf[bufsize];
-		osc::OutboundPacketStream packet(buf, bufsize);
-		packet << osc::BeginMessage("/test1")
-			<< x
-			<< y
-			<< z
-			<< osc::EndMessage;
-		osc->GetSocketTx()->Send(packet.Data(), packet.Size());
-	}
-	*/
 }
 namespace VMTDriver {
-
+	CommunicationManager::CommunicationManager()
+	{
+	}
 	CommunicationManager* CommunicationManager::GetInstance()
 	{
 		static CommunicationManager cm;
 		return &cm;
-	}
-
-	ServerTrackedDeviceProvider* CommunicationManager::GetServer()
-	{
-		return m_server;
-	}
-
-	Eigen::Matrix4d& CommunicationManager::GetRoomToDriverMatrix()
-	{
-		return m_RoomToDriverMatrix;
 	}
 
 	string CommunicationManager::GetInstallPath()
@@ -382,31 +331,19 @@ namespace VMTDriver {
 		m_installPath = path;
 	}
 
-	void CommunicationManager::Open(ServerTrackedDeviceProvider* server)
+	void CommunicationManager::Open()
 	{
 		if (m_opened) {
 			return;
 		}
-		m_server = server;
 
-		LoadSetting();
-		TrackedDeviceServerDriver::SetAutoUpdate(m_DefaultAutoPoseUpdateOn);
+		Config* ci = Config::GetInstance();
 
-		DirectOSC::OSC::GetInstance()->Open(&m_rcv, m_receivePort, m_sendPort);
+		ci->LoadSetting();
+		TrackedDeviceServerDriver::SetAutoUpdate(ci->GetDefaultAutoPoseUpdateOn());
+
+		DirectOSC::OSC::GetInstance()->Open(&m_rcv, ci->GetReceivePort(), ci->GetSendPort());
 		m_opened = true;
-
-		/*
-		m_RoomToDriverMatrix << -0.9998478, 0,          -0.01745246,     0,
-                     			0,          1,           0,              0,
-			                    0.01745246, 0,          -0.9998478,      0,
-			                    0.5270745, -2.244383,   -0.778713,       1;
-								*/
-		/*
-		m_RoomToDriverMatrix << -0.9998478, 0, 0.01745246, 0.5270745,
-			0, 1, 0, -2.244383,
-			-0.01745246, 0, -0.9998478, -0.778713,
-			0, 0, 0, 1;
-			*/
 	}
 	void CommunicationManager::Close()
 	{
@@ -419,7 +356,7 @@ namespace VMTDriver {
 		if (m_frame > frameCycle) {
 			OSCReceiver::SendAlive();
 
-			if (!m_RoomMatrixStatus) {
+			if (!Config::GetInstance()->GetRoomMatrixStatus()) {
 				OSCReceiver::SendUnavailable(1, "Room Matrix has not been set.");
 			}
 			else {
@@ -428,81 +365,5 @@ namespace VMTDriver {
 			m_frame = 0;
 		}
 		m_frame++;
-	}
-	void CommunicationManager::LoadSetting()
-	{
-		try {
-			SetRoomMatrixStatus(false); //ルーム行列セット状態をクリア
-
-			json j = CommunicationManager::GetInstance()->GetServer()->LoadJson();
-			if (j.contains("RoomMatrix"))
-			{
-				m_RoomToDriverMatrix
-					<< j["RoomMatrix"][0], j["RoomMatrix"][1], j["RoomMatrix"][2], j["RoomMatrix"][3]
-					, j["RoomMatrix"][4], j["RoomMatrix"][5], j["RoomMatrix"][6], j["RoomMatrix"][7]
-					, j["RoomMatrix"][8], j["RoomMatrix"][9], j["RoomMatrix"][10], j["RoomMatrix"][11]
-					, 0, 0, 0, 1;
-				SetRoomMatrixStatus(true); //ルーム行列がセットされた
-			}
-			if (j.contains("VelocityEnable"))
-			{
-				m_velocityEnable = j["VelocityEnable"];
-			}
-			if (j.contains("ReceivePort"))
-			{
-				if (j["ReceivePort"] > 0) {
-					m_receivePort = j["ReceivePort"];
-				}
-			}
-			if (j.contains("SendPort"))
-			{
-				if (j["SendPort"] > 0) {
-					m_sendPort = j["SendPort"];
-				}
-			}
-			if (j.contains("OptoutTrackingRole"))
-			{
-				m_optoutTrackingRole = j["OptoutTrackingRole"];
-			}
-			if (j.contains("HMDisIndex0"))
-			{
-				m_HMDisIndex0 = j["HMDisIndex0"];
-			}
-			if (j.contains("RejectWhenCannotTracking"))
-			{
-				m_RejectWhenCannotTracking = j["RejectWhenCannotTracking"];
-			}
-			if (j.contains("DefaultAutoPoseUpdateOn"))
-			{
-				m_DefaultAutoPoseUpdateOn = j["DefaultAutoPoseUpdateOn"];
-			}
-		}
-		catch (...) {
-			m_RoomToDriverMatrix = Eigen::Matrix4d::Identity();
-		}
-	}
-	bool CommunicationManager::GetVelocityEnable()
-	{
-		return m_velocityEnable;
-	}
-	void CommunicationManager::SetRoomMatrixStatus(bool ok)
-	{
-		m_RoomMatrixStatus = ok;
-	}
-	bool CommunicationManager::GetOptoutTrackingRole()
-	{
-		return m_optoutTrackingRole;
-	}
-	bool CommunicationManager::GetHMDisIndex0()
-	{
-		return m_HMDisIndex0;
-	}
-	bool CommunicationManager::GetRoomMatrixStatus()
-	{
-		return m_RoomMatrixStatus;
-	}
-	bool CommunicationManager::GetRejectWhenCannotTracking()
-	{
-		return m_RejectWhenCannotTracking;
 	}
 }

@@ -23,17 +23,41 @@ SOFTWARE.
 */
 #pragma once
 #include "dllmain.h"
+
 namespace VMTDriver {
-    class Log {
-    private:
-        static IVRDriverLog* handle;
-        Log();
-    public:
+	class Config {
+	private:
+		Config();
 
-        static void Open(IVRDriverLog*);
-        static void Close();
-        static void Output(const char*);
+		//Status
+		bool m_RoomMatrixStatus = false;
 
-        static int printf(const char* fmt, ...);
-    };
+		//Config
+		Eigen::Matrix4d m_RoomToDriverMatrix = Eigen::Matrix4d::Identity();
+		bool m_velocityEnable = false;
+		int m_receivePort = 39570;
+		int m_sendPort = 39571;
+		bool m_optoutTrackingRole = true;
+		bool m_HMDisIndex0 = true;
+		bool m_RejectWhenCannotTracking = true;
+		bool m_DefaultAutoPoseUpdateOn = true;
+
+	public:
+		static Config* GetInstance();
+
+		void InitSetting();
+		void LoadSetting();
+
+		void SetRoomMatrixStatus(bool ok);
+		bool GetRoomMatrixStatus();
+
+		Eigen::Matrix4d& GetRoomToDriverMatrix();
+		bool GetVelocityEnable();
+		int GetReceivePort();
+		int GetSendPort();
+		bool GetOptoutTrackingRole();
+		bool GetHMDisIndex0();
+		bool GetRejectWhenCannotTracking();
+		bool GetDefaultAutoPoseUpdateOn();
+	};
 }

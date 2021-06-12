@@ -85,7 +85,7 @@ namespace VMTDriver {
         }
 
         Eigen::Affine3d RoomToDriverAffin;
-        RoomToDriverAffin = CommunicationManager::GetInstance()->GetRoomToDriverMatrix();
+        RoomToDriverAffin = Config::GetInstance()->GetRoomToDriverMatrix();
 
         //座標を設定
         pose.vecPosition[0] = m_rawPose.x;
@@ -99,7 +99,7 @@ namespace VMTDriver {
         //経過時間を計算
         double duration_sec = std::chrono::duration_cast<std::chrono::microseconds>((m_rawPose.time - m_lastRawPose.time)).count() / (1000.0*1000.0);
         //速度・角速度を計算
-        if (duration_sec > std::numeric_limits<double>::epsilon() && CommunicationManager::GetInstance()->GetVelocityEnable())
+        if (duration_sec > std::numeric_limits<double>::epsilon() && Config::GetInstance()->GetVelocityEnable())
         {
             pose.vecVelocity[0] = (m_rawPose.x - m_lastRawPose.x) / duration_sec;
             pose.vecVelocity[1] = (m_rawPose.y - m_lastRawPose.y) / duration_sec;
@@ -155,7 +155,7 @@ namespace VMTDriver {
             bool deviceFound = false;
 
             //シリアルナンバーがHMDである場合(かつオンになっている場合)は、index 0(k_unTrackedDeviceIndex_Hmd)を参照する
-            if (m_rawPose.root_sn == "HMD" && CommunicationManager::GetInstance()->GetHMDisIndex0()) {
+            if (m_rawPose.root_sn == "HMD" && Config::GetInstance()->GetHMDisIndex0()) {
                 TrackedDevicePose_t* const p = poses + 0;
 
                 //そのデバイスがつながっている
@@ -279,14 +279,14 @@ namespace VMTDriver {
                 pose.qWorldFromDriverRotation.w = 1.0;
 
                 //[?]表示にする
-                if (CommunicationManager::GetInstance()->GetRejectWhenCannotTracking()) {
+                if (Config::GetInstance()->GetRejectWhenCannotTracking()) {
                     pose.poseIsValid = false;
                 }
             }
         }
 
         //ルームマトリクスが設定されていない
-        if (!CommunicationManager::GetInstance()->GetRoomMatrixStatus() && CommunicationManager::GetInstance()->GetRejectWhenCannotTracking()) {
+        if (!Config::GetInstance()->GetRoomMatrixStatus() && Config::GetInstance()->GetRejectWhenCannotTracking()) {
             pose.poseIsValid = false;
         }
 
@@ -300,7 +300,7 @@ namespace VMTDriver {
             switch (type)
             {
             case 4://TrackingReference
-                if (CommunicationManager::GetInstance()->GetOptoutTrackingRole()) {
+                if (Config::GetInstance()->GetOptoutTrackingRole()) {
                     VRProperties()->SetInt32Property(m_propertyContainer, Prop_ControllerRoleHint_Int32, ETrackedControllerRole::TrackedControllerRole_OptOut); //手に割り当てないように
                 }
                 VRServerDriverHost()->TrackedDeviceAdded(m_serial.c_str(), ETrackedDeviceClass::TrackedDeviceClass_TrackingReference, this);
@@ -317,7 +317,7 @@ namespace VMTDriver {
                 m_alreadyRegistered = true;
                 break;
             case 1://Tracker
-                if (CommunicationManager::GetInstance()->GetOptoutTrackingRole()) {
+                if (Config::GetInstance()->GetOptoutTrackingRole()) {
                     VRProperties()->SetInt32Property(m_propertyContainer, Prop_ControllerRoleHint_Int32, ETrackedControllerRole::TrackedControllerRole_OptOut); //手に割り当てないように
                 }
                 VRServerDriverHost()->TrackedDeviceAdded(m_serial.c_str(), ETrackedDeviceClass::TrackedDeviceClass_GenericTracker, this);

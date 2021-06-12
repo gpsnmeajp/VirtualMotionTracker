@@ -25,7 +25,7 @@ SOFTWARE.
 #include "dllmain.h"
 
 namespace VMTDriver {
-	const string Version = "VMT_012";
+	const string Version = "VMT_013";
 
 	class OSCReceiver : public osc::OscPacketListener {
 	private:
@@ -35,7 +35,7 @@ namespace VMTDriver {
 		             double timeoffset,
 		             const char* root_sn = nullptr,
 		             ReferMode_t mode = ReferMode_t::None);
-		virtual void ProcessMessage(const osc::ReceivedMessage& m, const IpEndpointName& remoteEndpoint);
+		virtual void ProcessMessage(const osc::ReceivedMessage& m, const IpEndpointName& remoteEndpoint) override;
 	public:
 		static void OSCReceiver::SendLog(int stat, string msg);
 		static void OSCReceiver::SendAlive();
@@ -45,6 +45,8 @@ namespace VMTDriver {
 
 	class CommunicationManager {
 	private:
+		CommunicationManager();
+
 		const int frameCycle = 120;
 		int m_frame = 0;
 
@@ -52,34 +54,14 @@ namespace VMTDriver {
 
 		bool m_opened = false;
 		OSCReceiver m_rcv{};
-		ServerTrackedDeviceProvider* m_server{};
-		bool m_RoomMatrixStatus = false;
 
-		Eigen::Matrix4d m_RoomToDriverMatrix = Eigen::Matrix4d::Identity();
-		bool m_velocityEnable = false;
-		int m_receivePort = 39570;
-		int m_sendPort = 39571;
-		bool m_optoutTrackingRole = true;
-		bool m_HMDisIndex0 = true;
-		bool m_RejectWhenCannotTracking = true;
-		bool m_DefaultAutoPoseUpdateOn = true;
 	public:
 		static CommunicationManager* GetInstance();
-		ServerTrackedDeviceProvider* GetServer();
-		Eigen::Matrix4d& GetRoomToDriverMatrix();
 		string GetInstallPath();
 		void SetInstallPath(string);
 
-		void Open(ServerTrackedDeviceProvider* server);
+		void Open();
 		void Close();
 		void Process();
-		void LoadSetting();
-
-		bool GetVelocityEnable();
-		void SetRoomMatrixStatus(bool ok);
-		bool GetOptoutTrackingRole();
-		bool GetHMDisIndex0();
-		bool GetRoomMatrixStatus();
-		bool GetRejectWhenCannotTracking();
 	};
 }

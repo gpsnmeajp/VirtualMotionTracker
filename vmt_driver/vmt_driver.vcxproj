@@ -191,6 +191,7 @@
     <ClInclude Include="..\oscpack_1_1_0\osc\OscReceivedElements.h" />
     <ClInclude Include="..\oscpack_1_1_0\osc\OscTypes.h" />
     <ClInclude Include="CommunicationManager.h" />
+    <ClInclude Include="Config.h" />
     <ClInclude Include="DirectOSC.h" />
     <ClInclude Include="framework.h" />
     <ClInclude Include="dllmain.h" />
@@ -208,6 +209,7 @@
     <ClCompile Include="..\oscpack_1_1_0\osc\OscReceivedElements.cpp" />
     <ClCompile Include="..\oscpack_1_1_0\osc\OscTypes.cpp" />
     <ClCompile Include="CommunicationManager.cpp" />
+    <ClCompile Include="Config.cpp" />
     <ClCompile Include="DirectOSC.cpp" />
     <ClCompile Include="dllmain.cpp" />
     <ClCompile Include="Log.cpp" />
@@ -218,7 +220,6 @@
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
-  
   <PropertyGroup Condition="'$(Language)'=='C++'">
     <CAExcludePath>..\json.hpp;..\openvr\;..\eigen-3.3.7\;..\oscpack_1_1_0\;$(CAExcludePath)</CAExcludePath>
   </PropertyGroup>
