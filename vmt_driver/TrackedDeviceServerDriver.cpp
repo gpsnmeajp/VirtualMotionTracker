@@ -134,7 +134,7 @@ namespace VMTDriver {
         pose.result = devicePose.eTrackingResult;
 
         //デバイスのトラッキング状態が正常なら
-        if (devicePose.eTrackingResult == ETrackingResult::TrackingResult_Running_OK) {
+        if (devicePose.bPoseIsValid) {
             //デバイスの変換行列を取得し、Eigenの行列に変換
             float* m = (float*)(devicePose.mDeviceToAbsoluteTracking.m);
 
