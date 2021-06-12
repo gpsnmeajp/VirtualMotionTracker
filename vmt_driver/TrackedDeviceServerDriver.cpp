@@ -458,9 +458,13 @@ namespace VMTDriver {
     //OpenVRからのデバイス有効化コール
     EVRInitError TrackedDeviceServerDriver::Activate(uint32_t unObjectId)
     {
+        //OpenVR Indexの記録
         m_deviceIndex = unObjectId;
+
+        //OpenVR プロパティコンテナの保持
         m_propertyContainer = VRProperties()->TrackedDeviceToPropertyContainer(unObjectId);
 
+        //OpenVR デバイスプロパティの設定
         VRProperties()->SetStringProperty(m_propertyContainer, Prop_TrackingSystemName_String, "VirtualMotionTracker");
         VRProperties()->SetStringProperty(m_propertyContainer, Prop_ModelNumber_String, m_serial.c_str());
         VRProperties()->SetStringProperty(m_propertyContainer, Prop_SerialNumber_String, m_serial.c_str());
@@ -538,6 +542,8 @@ namespace VMTDriver {
         //VRProperties()->SetStringProperty(m_propertyContainer, vmt_profile.json, "NO_SETTING"); //設定不可
         VRProperties()->SetInt32Property(m_propertyContainer, Prop_ControllerHandSelectionPriority_Int32, 0);
 
+
+        //OpenVR デバイス入力情報の定義
         VRDriverInput()->CreateBooleanComponent(m_propertyContainer, "/input/Button0/click", &ButtonComponent[0]);
         VRDriverInput()->CreateBooleanComponent(m_propertyContainer, "/input/Button1/click", &ButtonComponent[1]);
         VRDriverInput()->CreateBooleanComponent(m_propertyContainer, "/input/Button2/click", &ButtonComponent[2]);
