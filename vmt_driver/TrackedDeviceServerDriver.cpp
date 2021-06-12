@@ -76,41 +76,11 @@ namespace VMTDriver {
     }
 
     //内部姿勢→OpenVR姿勢の変換と、相対座標計算処理を行う
-    DriverPose_t TrackedDeviceServerDriver::RawPoseToPose()
-    {
-        DriverPose_t pose{ 0 };
-        pose.poseTimeOffset = m_rawPose.timeoffset;
-        pose.qRotation = VMTDriver::HmdQuaternion_Identity;
-        pose.qWorldFromDriverRotation = VMTDriver::HmdQuaternion_Identity;
-        pose.qDriverFromHeadRotation = VMTDriver::HmdQuaternion_Identity;
-
-        if (m_rawPose.enable != 0) {
-            pose.deviceIsConnected = true;
-            pose.poseIsValid = true;
-            pose.result = TrackingResult_Running_OK;
-        }
-        else {
-            pose.deviceIsConnected = false;
-            pose.poseIsValid = false;
-            pose.result = ETrackingResult::TrackingResult_Calibrating_OutOfRange;
-        }
-
-        Eigen::Affine3d RoomToDriverAffin;
-        RoomToDriverAffin = Config::GetInstance()->GetRoomToDriverMatrix();
-
-        //座標を設定
-        pose.vecPosition[0] = m_rawPose.x;
-        pose.vecPosition[1] = m_rawPose.y;
-        pose.vecPosition[2] = m_rawPose.z;
-        pose.qRotation.x = m_rawPose.qx;
-        pose.qRotation.y = m_rawPose.qy;
-        pose.qRotation.z = m_rawPose.qz;
-        pose.qRotation.w = m_rawPose.qw;
-
+    void TrackedDeviceServerDriver::CalcVelocity(DriverPose_t& pose) {
         //経過時間を計算
-        double duration_sec = std::chrono::duration_cast<std::chrono::microseconds>((m_rawPose.time - m_lastRawPose.time)).count() / (1000.0*1000.0);
+        double duration_sec = std::chrono::duration_cast<std::chrono::microseconds>((m_rawPose.time - m_lastRawPose.time)).count() / (1000.0 * 1000.0);
         //速度・角速度を計算
-        if (duration_sec > std::numeric_limits<double>::epsilon() && Config::GetInstance()->GetVelocityEnable())
+        if (duration_sec > std::numeric_limits<double>::epsilon())
         {
             pose.vecVelocity[0] = (m_rawPose.x - m_lastRawPose.x) / duration_sec;
             pose.vecVelocity[1] = (m_rawPose.y - m_lastRawPose.y) / duration_sec;
@@ -138,169 +108,242 @@ namespace VMTDriver {
             pose.vecAngularVelocity[1] = 0.0f;
             pose.vecAngularVelocity[2] = 0.0f;
         }
+    }
 
-        //Jointでない場合
-        if (m_rawPose.mode == ReferMode_t::None || m_rawPose.root_sn.empty()) {
-            //ワールド・ドライバ変換行列を設定
-            Eigen::Translation3d pos(RoomToDriverAffin.translation());
-            Eigen::Quaterniond rot(RoomToDriverAffin.rotation());
+    //Joint計算を行う
+    void TrackedDeviceServerDriver::CalcJoint(DriverPose_t& pose, string serial, ReferMode_t mode, Eigen::Affine3d& RoomToDriverAffin) {
+        vr::TrackedDevicePose_t poses[k_unMaxTrackedDeviceCount]{};
+
+        //OpenVRから全トラッキングデバイスの情報を取得する
+        VRServerDriverHost()->GetRawTrackedDevicePoses(0.0f, poses, k_unMaxTrackedDeviceCount);
+
+        //接続済みのデバイスの中から、シリアル番号でデバイスを検索する
+        int index = SearchDevice(poses, serial);
+
+        //探索エラーが帰ってきたら
+        if (index == k_unTrackedDeviceIndexInvalid) {
+            //デバイス = 接続済み・無効
+            RejectTracking(pose);
+            return;
+        }
+
+        //参照元のトラッキングステータスを継承させる
+        pose.result = poses[index].eTrackingResult;
+
+        //デバイスのトラッキング状態が正常なら
+        if (poses[index].eTrackingResult == ETrackingResult::TrackingResult_Running_OK) {
+            //デバイスの変換行列を取得し、Eigenの行列に変換
+            float* m = (float*)(poses[index].mDeviceToAbsoluteTracking.m);
+
+            Eigen::Affine3d rootDeviceToAbsoluteTracking;
+            rootDeviceToAbsoluteTracking.matrix() <<
+                m[0 * 4 + 0], m[0 * 4 + 1], m[0 * 4 + 2], m[0 * 4 + 3],
+                m[1 * 4 + 0], m[1 * 4 + 1], m[1 * 4 + 2], m[1 * 4 + 3],
+                m[2 * 4 + 0], m[2 * 4 + 1], m[2 * 4 + 2], m[2 * 4 + 3],
+                0.0, 0.0, 0.0, 1.0;
+
+            //位置の座標系をデバイス基準にする
+            Eigen::Translation3d pos(rootDeviceToAbsoluteTracking.translation());
             pose.vecWorldFromDriverTranslation[0] = pos.x();
             pose.vecWorldFromDriverTranslation[1] = pos.y();
             pose.vecWorldFromDriverTranslation[2] = pos.z();
+
+            //回転の座標系をルーム基準にしたりデバイス基準にしたりする
+            Eigen::Quaterniond rot;
+            switch (m_rawPose.mode) {
+            case ReferMode_t::Follow:
+                rot = Eigen::Quaterniond(RoomToDriverAffin.rotation());
+                break;
+            case ReferMode_t::Joint:
+            default:
+                rot = Eigen::Quaterniond(rootDeviceToAbsoluteTracking.rotation());
+                break;
+            }
+
             pose.qWorldFromDriverRotation.x = rot.x();
             pose.qWorldFromDriverRotation.y = rot.y();
             pose.qWorldFromDriverRotation.z = rot.z();
             pose.qWorldFromDriverRotation.w = rot.w();
-        } else {
-            //Joint時
-            // 既存のトラッキングデバイスの座標系を参照する
 
-            // 参照元のPoseを取得
-            vr::TrackedDevicePose_t poses[k_unMaxTrackedDeviceCount];
-            VRServerDriverHost()->GetRawTrackedDevicePoses(0.0f, poses, k_unMaxTrackedDeviceCount);
+            //デバイス = 接続済み・有効・特殊座標系
+            return;
+        }
+        else {
+            //デバイス = 接続済み・無効
+            RejectTracking(pose);
+            return;
+        }
+    }
 
-            IVRProperties* props = VRPropertiesRaw();
-            CVRPropertyHelpers* helper = VRProperties();
+    //デバイスをシリアル番号から探す
+    int TrackedDeviceServerDriver::SearchDevice(vr::TrackedDevicePose_t* poses, string serial)
+    {
+        IVRProperties* props = VRPropertiesRaw();
+        CVRPropertyHelpers* helper = VRProperties();
 
-            //デバイスが見つかったフラグ
-            bool deviceFound = false;
+        //デバイスシリアルが空白
+        if (serial.empty()) {
+            //探索エラーを返す
+            return k_unTrackedDeviceIndexInvalid;
+        }
 
-            //シリアルナンバーがHMDである場合(かつオンになっている場合)は、index 0(k_unTrackedDeviceIndex_Hmd)を参照する
-            if (m_rawPose.root_sn == "HMD" && Config::GetInstance()->GetHMDisIndex0()) {
-                TrackedDevicePose_t* const p = poses + 0;
-
-                //そのデバイスがつながっている
-                if (p->bDeviceIsConnected) {
-                    // 仮想デバイスが有効なら、参照元のトラッキングステータスを継承させる
-                    if (m_rawPose.enable != 0) {
-                        pose.result = (vr::ETrackingResult)p->eTrackingResult;
-                    }
-
-                    //デバイスのトラッキング状態が正常なら
-                    if (p->eTrackingResult == ETrackingResult::TrackingResult_Running_OK) {
-                        //デバイスの変換行列を取得し、Eigenの行列に変換
-                        float* m = (float*)p->mDeviceToAbsoluteTracking.m;
-
-                        Eigen::Affine3d rootDeviceToAbsoluteTracking;
-                        rootDeviceToAbsoluteTracking.matrix() <<
-                            m[0 * 4 + 0], m[0 * 4 + 1], m[0 * 4 + 2], m[0 * 4 + 3],
-                            m[1 * 4 + 0], m[1 * 4 + 1], m[1 * 4 + 2], m[1 * 4 + 3],
-                            m[2 * 4 + 0], m[2 * 4 + 1], m[2 * 4 + 2], m[2 * 4 + 3],
-                            0.0, 0.0, 0.0, 1.0;
-
-                        //変換行列から位置変換をセット
-                        Eigen::Translation3d pos(rootDeviceToAbsoluteTracking.translation());
-                        pose.vecWorldFromDriverTranslation[0] = pos.x();
-                        pose.vecWorldFromDriverTranslation[1] = pos.y();
-                        pose.vecWorldFromDriverTranslation[2] = pos.z();
-
-                        //回転をルーム基準にしたりデバイス基準にしたりする
-                        Eigen::Quaterniond rot;
-                        switch (m_rawPose.mode) {
-                        case ReferMode_t::Follow:
-                            rot = Eigen::Quaterniond(RoomToDriverAffin.rotation());
-                            break;
-                        case ReferMode_t::Joint:
-                        default:
-                            rot = Eigen::Quaterniond(rootDeviceToAbsoluteTracking.rotation());
-                            break;
-                        }
-
-                        pose.qWorldFromDriverRotation.x = rot.x();
-                        pose.qWorldFromDriverRotation.y = rot.y();
-                        pose.qWorldFromDriverRotation.z = rot.z();
-                        pose.qWorldFromDriverRotation.w = rot.w();
-
-                        //正常なデバイスを見つけた
-                        deviceFound = true;
-                    }
-                }
+        //デバイスシリアルがHMD(でかつ、HMD特別処理が有効なら)
+        if (serial == "HMD" && Config::GetInstance()->GetHMDisIndex0()) {
+            //HMDが接続OKなら
+            if (poses[k_unTrackedDeviceIndex_Hmd].bDeviceIsConnected) {
+                //HMDのインデックスを返す
+                return k_unTrackedDeviceIndex_Hmd;
             }
             else {
-                //インデックス順にデバイスを探索する
-                for (uint32_t i = 0; i < k_unMaxTrackedDeviceCount; i++) {
-                    TrackedDevicePose_t* const p = poses + i;
-
-                    //そのデバイスがつながっていないなら次のデバイスへ
-                    if (!p->bDeviceIsConnected) continue;
-
-                    //デバイスがつながっているので、シリアルナンバーを取得する
-                    PropertyContainerHandle_t h = props->TrackedDeviceToPropertyContainer(i);
-                    string SerialNumber = helper->GetStringProperty(h, ETrackedDeviceProperty::Prop_SerialNumber_String);
-
-                    //対象シリアルナンバーと比較し、違うデバイスなら、次のデバイスへ
-                    if (SerialNumber.compare(m_rawPose.root_sn) != 0) continue;
-
-                    // 仮想デバイスが有効なら、参照元のトラッキングステータスを継承させる
-                    if (m_rawPose.enable != 0) {
-                        pose.result = (vr::ETrackingResult)p->eTrackingResult;
-                    }
-
-                    //デバイスのトラッキング状態が正常なら
-                    if (p->eTrackingResult == ETrackingResult::TrackingResult_Running_OK) {
-                        //デバイスの変換行列を取得し、Eigenの行列に変換
-                        float* m = (float*)p->mDeviceToAbsoluteTracking.m;
-
-                        Eigen::Affine3d rootDeviceToAbsoluteTracking;
-                        rootDeviceToAbsoluteTracking.matrix() <<
-                            m[0 * 4 + 0], m[0 * 4 + 1], m[0 * 4 + 2], m[0 * 4 + 3],
-                            m[1 * 4 + 0], m[1 * 4 + 1], m[1 * 4 + 2], m[1 * 4 + 3],
-                            m[2 * 4 + 0], m[2 * 4 + 1], m[2 * 4 + 2], m[2 * 4 + 3],
-                            0.0, 0.0, 0.0, 1.0;
-
-                        //変換行列から位置変換をセット
-                        Eigen::Translation3d pos(rootDeviceToAbsoluteTracking.translation());
-                        pose.vecWorldFromDriverTranslation[0] = pos.x();
-                        pose.vecWorldFromDriverTranslation[1] = pos.y();
-                        pose.vecWorldFromDriverTranslation[2] = pos.z();
-
-                        //回転をルーム基準にしたりデバイス基準にしたりする
-                        Eigen::Quaterniond rot;
-                        switch (m_rawPose.mode) {
-                        case ReferMode_t::Follow:
-                            rot = Eigen::Quaterniond(RoomToDriverAffin.rotation());
-                            break;
-                        case ReferMode_t::Joint:
-                        default:
-                            rot = Eigen::Quaterniond(rootDeviceToAbsoluteTracking.rotation());
-                            break;
-                        }
-
-                        pose.qWorldFromDriverRotation.x = rot.x();
-                        pose.qWorldFromDriverRotation.y = rot.y();
-                        pose.qWorldFromDriverRotation.z = rot.z();
-                        pose.qWorldFromDriverRotation.w = rot.w();
-
-                        //正常なデバイスを見つけた
-                        deviceFound = true;
-                    }
-                    //正常異常問わず、目的のデバイスは見つかっているので終了
-                    break;
-                }
-            }
-
-            //正常なデバイスが検出できなかった場合、変換行列を0にする
-            if (!deviceFound) {
-                pose.vecWorldFromDriverTranslation[0] = 0.0;
-                pose.vecWorldFromDriverTranslation[1] = 0.0;
-                pose.vecWorldFromDriverTranslation[2] = 0.0;
-                pose.qWorldFromDriverRotation.x = 0.0;
-                pose.qWorldFromDriverRotation.y = 0.0;
-                pose.qWorldFromDriverRotation.z = 0.0;
-                pose.qWorldFromDriverRotation.w = 1.0;
-
-                //[?]表示にする
-                if (Config::GetInstance()->GetRejectWhenCannotTracking()) {
-                    pose.poseIsValid = false;
-                }
+                //(HMDがつながっていないのは普通ありえないが)探索エラーを返す
+                return k_unTrackedDeviceIndexInvalid;
             }
         }
 
-        //ルームマトリクスが設定されていない
-        if (!Config::GetInstance()->GetRoomMatrixStatus() && Config::GetInstance()->GetRejectWhenCannotTracking()) {
+        //デバイスをOpenVR index順に調べる
+        for (uint32_t i = 0; i < k_unMaxTrackedDeviceCount; i++) {
+            //そのデバイスがつながっていないなら次のデバイスへ
+            if (poses[i].bDeviceIsConnected != true) {
+                continue;
+            }
+
+            //デバイスがつながっているので、シリアルナンバーを取得する
+            PropertyContainerHandle_t h = props->TrackedDeviceToPropertyContainer(i);
+            string SerialNumber = helper->GetStringProperty(h, ETrackedDeviceProperty::Prop_SerialNumber_String);
+
+            //対象シリアルナンバーと比較し、違うデバイスなら、次のデバイスへ
+            if (serial != SerialNumber) {
+                continue;
+            };
+
+            //目的のデバイスを見つけたので返却
+            return i;
+        }
+        //最後まで探したが、目的のデバイスは見つからなかった
+        return k_unTrackedDeviceIndexInvalid;
+    }
+
+    //デバイスをトラッキング失敗状態にする
+    void TrackedDeviceServerDriver::RejectTracking(DriverPose_t& pose)
+    {
+        //(ただし、設定から有効な場合のみ。そうでない場合は無視してトラッキングを継続する)
+        if (Config::GetInstance()->GetRejectWhenCannotTracking()) {
+            //デバイス = 接続済み・無効
             pose.poseIsValid = false;
+            pose.result = TrackingResult_Running_OutOfRange;
+        }
+    }
+
+    DriverPose_t TrackedDeviceServerDriver::RawPoseToPose()
+    {
+        DriverPose_t pose{ 0 };
+
+        //ルーム変換行列の変換
+        Eigen::Affine3d RoomToDriverAffin;
+        RoomToDriverAffin = Config::GetInstance()->GetRoomToDriverMatrix();
+
+        Eigen::Translation3d pos(RoomToDriverAffin.translation());
+        Eigen::Quaterniond rot(RoomToDriverAffin.rotation());
+
+        //OpenVR姿勢へ、一旦通常のデータを書き込む
+        pose.poseTimeOffset = m_rawPose.timeoffset;
+
+        pose.qWorldFromDriverRotation.x = rot.x();
+        pose.qWorldFromDriverRotation.y = rot.y();
+        pose.qWorldFromDriverRotation.z = rot.z();
+        pose.qWorldFromDriverRotation.w = rot.w();
+
+        pose.vecWorldFromDriverTranslation[0] = pos.x();
+        pose.vecWorldFromDriverTranslation[1] = pos.y();
+        pose.vecWorldFromDriverTranslation[2] = pos.z();
+
+        pose.qDriverFromHeadRotation = VMTDriver::HmdQuaternion_Identity;
+
+        pose.vecDriverFromHeadTranslation[0] = 0.0f;
+        pose.vecDriverFromHeadTranslation[1] = 0.0f;
+        pose.vecDriverFromHeadTranslation[2] = 0.0f;
+
+        pose.vecPosition[0] = m_rawPose.x;
+        pose.vecPosition[1] = m_rawPose.y;
+        pose.vecPosition[2] = m_rawPose.z;
+
+        pose.vecVelocity[0] = 0.0f;
+        pose.vecVelocity[1] = 0.0f;
+        pose.vecVelocity[2] = 0.0f;
+
+        pose.vecAcceleration[0] = 0.0f;
+        pose.vecAcceleration[1] = 0.0f;
+        pose.vecAcceleration[2] = 0.0f;
+
+        pose.qRotation.x = m_rawPose.qx;
+        pose.qRotation.y = m_rawPose.qy;
+        pose.qRotation.z = m_rawPose.qz;
+        pose.qRotation.w = m_rawPose.qw;
+
+        pose.vecAngularVelocity[0] = 0.0f;
+        pose.vecAngularVelocity[1] = 0.0f;
+        pose.vecAngularVelocity[2] = 0.0f;
+
+        pose.vecAngularAcceleration[0] = 0.0f;
+        pose.vecAngularAcceleration[1] = 0.0f;
+        pose.vecAngularAcceleration[2] = 0.0f;
+
+        pose.result = TrackingResult_Running_OK;
+
+        pose.poseIsValid = true;
+        pose.willDriftInYaw = false;
+        pose.shouldApplyHeadModel = false;
+
+        pose.deviceIsConnected = true;
+
+        //デバイスが有効でない場合、ステータスを無効で更新し、ここで返却
+        if (m_rawPose.enable == 0) {
+            pose.deviceIsConnected = false;
+            pose.poseIsValid = false;
+            pose.result = ETrackingResult::TrackingResult_Calibrating_OutOfRange;
+            //デバイス = 非接続・無効
+            return pose;
         }
 
+        //ルームマトリクスが設定されていないとき、ステータスを無効で更新し、ここで返却
+        if (!Config::GetInstance()->GetRoomMatrixStatus()) {
+            //デバイス = 接続済み・無効
+            RejectTracking(pose);
+            return pose;
+        }
+
+        //速度エミュレーションが有効な場合、速度・各速度の計算を行い、更新する
+        if (Config::GetInstance()->GetVelocityEnable()) {
+            CalcVelocity(pose);
+        }
+
+        //トラッキングモードに合わせて処理する
+        switch (m_rawPose.mode) {
+            case ReferMode_t::None: {
+                //通常のトラッキングモードの場合、何もしない
+                //デバイス = 接続済み・有効・ルーム座標系
+
+                //do noting
+                break;
+            }
+
+            case ReferMode_t::Follow: {
+                //デバイス = 接続済み・有効・デバイス位置座標系
+                CalcJoint(pose, m_rawPose.root_sn, ReferMode_t::Follow, RoomToDriverAffin);
+                break;
+            }
+
+            case ReferMode_t::Joint: {
+                //デバイス = 接続済み・有効・デバイス位置回転座標系
+                CalcJoint(pose, m_rawPose.root_sn, ReferMode_t::Joint, RoomToDriverAffin);
+                break;
+            }
+            default: {
+                //デバイス = 接続済み・無効
+                RejectTracking(pose);
+                break;
+            }
+        }
         return pose;
     }
 
