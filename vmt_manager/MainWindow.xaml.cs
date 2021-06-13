@@ -1,4 +1,4 @@
-﻿/*
+/*
 MIT License
 
 Copyright (c) 2020 gpsnmeajp
@@ -107,20 +107,28 @@ namespace vmt_manager
                 rnd = new Random();
                 osc = new OSC("127.0.0.1", 39571, 39570, OnBundle, OnMessage);
 
+                util = new EasyOpenVRUtil();
+                if (!util.StartOpenVR())
+                {
+                    //var result = MessageBox.Show("Steam VR not ready. Maybe not ready for HMD or Tracking system.\nStream VRが利用できません。HMDやトラッキングシステムが利用できない状態の可能性があります。", title, MessageBoxButton.OK, MessageBoxImage.Error);
+                    TopErrorMessage("Steam VR not ready. Maybe not ready for HMD or Tracking system.\nStream VRが利用できません。HMDやトラッキングシステムが利用できない状態の可能性があります。\n\nPlease set requireHmd to false on SteamVR If you want to use without HMD. (Almost functions will not work.)\nHMDなしで利用したい場合は、SteamVRにてrequireHmdをfalseにして再起動してください。(殆どの機能は利用できません)");
+                    //Close();
+                    //タイマー起動してはいけない
+                    return;
+                }
+
+                if (Environment.Is64BitOperatingSystem == false)
+                {
+                    TopErrorMessage("VMT works 64bit OS only.\n VMTは64bit OSでのみ動作します。");
+                    //タイマー起動してはいけない
+                    return;
+                }
+
                 //タイマー起動
                 dispatcherTimer = new DispatcherTimer();
                 dispatcherTimer.Interval = new TimeSpan(0, 0, 0, 0, 100);
                 dispatcherTimer.Tick += new EventHandler(GenericTimer);
                 dispatcherTimer.Start();
-
-                util = new EasyOpenVRUtil();
-                if (!util.StartOpenVR())
-                {
-                    //var result = MessageBox.Show("Steam VR not ready. Maybe not ready for HMD or Tracking system.\nStream VRが利用できません。HMDやトラッキングシステムが利用できない状態の可能性があります。", title, MessageBoxButton.OK, MessageBoxImage.Error);
-                    TopErrorMessage("Steam VR not ready. Maybe not ready for HMD or Tracking system.\nStream VRが利用できません。HMDやトラッキングシステムが利用できない状態の可能性があります。");
-                    //Close();
-                    return;
-                }
 
                 //セーフモードチェック
                 EVRSettingsError eVRSettingsError = EVRSettingsError.None;
@@ -139,6 +147,14 @@ namespace vmt_manager
                     //var result = MessageBox.Show("VMT has disabled in Steam VR setting.\nPlease enable, and restart SteamVR.\n\nVMTはSteamVR上で無効に設定されています。\n有効にし、SteamVRを再起動してください。", title, MessageBoxButton.OK, MessageBoxImage.Error);
                     TopErrorMessage("VMT has disabled in Steam VR setting.\nPlease enable, and restart SteamVR.\n\nVMTはSteamVR上で無効に設定されています。\n有効にし、SteamVRを再起動してください。");
                     return;
+                }
+                //requireHmdチェック
+                eVRSettingsError = EVRSettingsError.None;
+                bool requireHmd = OpenVR.Settings.GetBool("steamvr", OpenVR.k_pch_SteamVR_RequireHmd_String, ref eVRSettingsError);
+                if (eVRSettingsError == EVRSettingsError.None && !requireHmd)
+                {
+                    //var result = MessageBox.Show("VMT has disabled in Steam VR setting.\nPlease enable, and restart SteamVR.\n\nVMTはSteamVR上で無効に設定されています。\n有効にし、SteamVRを再起動してください。", title, MessageBoxButton.OK, MessageBoxImage.Error);
+                    TopWarningMessage("Manager detected requireHmd is false on SteamVR. Some functions will not work probably.\nSteamVRにてrequireHmdがfalseに設定されています。いくつかの機能は正常に動かない可能性があります。",true);
                 }
 
                 //デバッグのためにセーフモードを有効化
