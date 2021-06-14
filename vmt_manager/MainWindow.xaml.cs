@@ -527,6 +527,39 @@ namespace vmt_manager
                 Console.WriteLine(OpenVR.RuntimePath() + @"\bin\win64");
                 Console.WriteLine(driverPath);
 
+                if (driverPath.Length > 100)
+                {
+                    MessageBox.Show("Path length over 100. it couldn't install.\nパスの長さが100を超えています。インストールできません。\n\n" + driverPath, title, MessageBoxButton.OK, MessageBoxImage.Error);
+                    return;
+                }
+
+                if (driverPath.Contains("Program Files"))
+                {
+                    MessageBox.Show("Path contains \"Program Files\". it couldn't install.\nパスに\"Program Files\"が入っています。インストールできません。\n\n" + driverPath, title, MessageBoxButton.OK, MessageBoxImage.Error);
+                    return;
+                }
+
+                if (driverPath.Contains(" ")) {
+                    MessageBox.Show("Path contains space. it couldn't install.\nパスにスペースが入っています。インストールできません。\n\n"+driverPath, title, MessageBoxButton.OK, MessageBoxImage.Error);
+                    return;
+                }
+
+                if (!File.Exists(driverPath+ @"\bin\win64\driver_vmt.dll"))
+                {
+                    MessageBox.Show("driver_vmt.dll not found. Do not break apart files. it couldn't install.\ndriver_vmt.dllが見つかりませんでした。ファイル構成をバラバラにしないでください。。インストールできません。\n\n" + driverPath, title, MessageBoxButton.OK, MessageBoxImage.Error);
+                    return;
+                }
+
+                Encoding enc = Encoding.GetEncoding("us-ascii", new EncoderExceptionFallback(), new DecoderExceptionFallback());
+                try
+                {
+                    enc.GetBytes(driverPath);
+                }
+                catch (EncoderFallbackException) {
+                    MessageBox.Show("Path contains non-ascii (Japanese, Chinese, emoji, or other). it couldn't install.\nパスに非ASCII文字(日本語、中国語、絵文字、その他)が入っています。インストールできません。\n\n" + driverPath, title, MessageBoxButton.OK, MessageBoxImage.Error);
+                    return;
+                }
+
                 System.Diagnostics.Process process = new System.Diagnostics.Process();
                 process.StartInfo.WorkingDirectory = OpenVR.RuntimePath() + @"\bin\win64";
                 process.StartInfo.FileName = OpenVR.RuntimePath() + @"\bin\win64\vrpathreg.exe";
