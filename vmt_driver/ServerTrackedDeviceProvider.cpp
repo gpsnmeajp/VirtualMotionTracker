@@ -81,10 +81,10 @@ namespace VMTDriver {
         CommunicationManager::GetInstance()->Open();
 
         //仮想デバイスを準備
-        m_devices.resize(58); //58デバイス(全合計64に満たないくらい)
+        m_devices.resize(59); //58+1デバイス(全合計64に満たないくらい)
 
         //仮想デバイスを初期化
-        for (int i = 0; i < m_devices.size(); i++)
+        for (int i = 0; i < m_devices.size()-1; i++)
         {
             //シリアル番号を準備
             string name = "VMT_";
@@ -94,6 +94,13 @@ namespace VMTDriver {
             //仮想デバイス内部インデックス(OpenVRのindexではなく、Listのindex)をセット
             m_devices[i].SetObjectIndex(i);
         }
+
+        //HMD
+        size_t hmd_index = m_devices.size() - 1;
+        m_devices[hmd_index].SetDeviceSerial("VMT_HMD");
+        m_devices[hmd_index].SetObjectIndex((uint32_t)hmd_index);
+        m_devices[hmd_index].RegisterToVRSystem(5);
+        m_devices[hmd_index].SetRawPose(RawPose{false,(int)hmd_index,true,0,0,0,0,0,0,1,0,ReferMode_t::None,"",std::chrono::system_clock::now()});
 
         //起動完了
         Log::Output("Startup OK");

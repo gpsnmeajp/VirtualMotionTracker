@@ -57,7 +57,7 @@ namespace VMTDriver {
 		//範囲チェック
 		if (GetServer()->IsVMTDeviceIndex(idx))
 		{
-			GetServer()->GetDevice(idx).RegisterToVRSystem(enable); //1=Tracker, 2=Controller Left, 3=Controller Right, 4=Tracking Reference
+			GetServer()->GetDevice(idx).RegisterToVRSystem(enable); //1=Tracker, 2=Controller Left, 3=Controller Right, 4=Tracking Reference, 5=HMD
 			GetServer()->GetDevice(idx).SetRawPose(pose);
 		}
 	}

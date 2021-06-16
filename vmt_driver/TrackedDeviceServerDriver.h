@@ -47,7 +47,7 @@ namespace VMTDriver {
     };
 
     //個々のデバイス
-    class TrackedDeviceServerDriver : public ITrackedDeviceServerDriver
+    class TrackedDeviceServerDriver : public ITrackedDeviceServerDriver, IVRDisplayComponent
     {
     private:
         bool m_alreadyRegistered = false;
@@ -100,5 +100,14 @@ namespace VMTDriver {
         virtual void* GetComponent(const char* pchComponentNameAndVersion) override;
         virtual void DebugRequest(const char* pchRequest, char* pchResponseBuffer, uint32_t unResponseBufferSize) override;
         virtual DriverPose_t GetPose() override;
+
+        // IVRDisplayComponent を介して継承されました
+        virtual void GetWindowBounds(int32_t* pnX, int32_t* pnY, uint32_t* pnWidth, uint32_t* pnHeight) override;
+        virtual bool IsDisplayOnDesktop() override;
+        virtual bool IsDisplayRealDisplay() override;
+        virtual void GetRecommendedRenderTargetSize(uint32_t* pnWidth, uint32_t* pnHeight) override;
+        virtual void GetEyeOutputViewport(EVREye eEye, uint32_t* pnX, uint32_t* pnY, uint32_t* pnWidth, uint32_t* pnHeight) override;
+        virtual void GetProjectionRaw(EVREye eEye, float* pfLeft, float* pfRight, float* pfTop, float* pfBottom) override;
+        virtual DistortionCoordinates_t ComputeDistortion(EVREye eEye, float fU, float fV) override;
     };
 }

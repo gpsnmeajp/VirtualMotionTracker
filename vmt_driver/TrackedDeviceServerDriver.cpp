@@ -357,6 +357,10 @@ namespace VMTDriver {
         {
             switch (type)
             {
+            case 5://HMD
+                VRServerDriverHost()->TrackedDeviceAdded(m_serial.c_str(), ETrackedDeviceClass::TrackedDeviceClass_HMD, this);
+                m_alreadyRegistered = true;
+                break;
             case 4://TrackingReference
                 if (Config::GetInstance()->GetOptoutTrackingRole()) {
                     VRProperties()->SetInt32Property(m_propertyContainer, Prop_ControllerRoleHint_Int32, ETrackedControllerRole::TrackedControllerRole_OptOut); //手に割り当てないように
@@ -536,6 +540,12 @@ namespace VMTDriver {
         VRProperties()->SetUint64Property(m_propertyContainer, Prop_DongleVersion_Uint64, 0);
 
 
+        VRProperties()->SetBoolProperty(m_propertyContainer, Prop_IsOnDesktop_Bool, false);
+        VRProperties()->SetFloatProperty(m_propertyContainer, Prop_UserIpdMeters_Float, 0.058f);
+        VRProperties()->SetFloatProperty(m_propertyContainer, Prop_UserHeadToEyeDepthMeters_Float, 0.0f);
+        VRProperties()->SetFloatProperty(m_propertyContainer, Prop_DisplayFrequency_Float, 90);
+        VRProperties()->SetFloatProperty(m_propertyContainer, Prop_SecondsFromVsyncToPhotons_Float, 0.011f);
+
 
         VRProperties()->SetBoolProperty(m_propertyContainer, Prop_DeviceProvidesBatteryStatus_Bool, true);
         VRProperties()->SetBoolProperty(m_propertyContainer, Prop_DeviceCanPowerOff_Bool, true);
@@ -653,5 +663,58 @@ namespace VMTDriver {
         }
         //現在のOpenVR向け姿勢を返却する
         return m_pose;
+    }
+
+    void TrackedDeviceServerDriver::GetWindowBounds(int32_t* pnX, int32_t* pnY, uint32_t* pnWidth, uint32_t* pnHeight)
+    {
+        *pnX = 500;
+        *pnY = 500;
+        *pnWidth = 800;
+        *pnHeight = 400;
+    }
+    bool TrackedDeviceServerDriver::IsDisplayOnDesktop()
+    {
+        return true;
+    }
+    bool TrackedDeviceServerDriver::IsDisplayRealDisplay()
+    {
+        return false;
+    }
+    void TrackedDeviceServerDriver::GetRecommendedRenderTargetSize(uint32_t* pnWidth, uint32_t* pnHeight)
+    {
+        *pnWidth = 800;
+        *pnHeight = 400;
+    }
+    void TrackedDeviceServerDriver::GetEyeOutputViewport(EVREye eEye, uint32_t* pnX, uint32_t* pnY, uint32_t* pnWidth, uint32_t* pnHeight)
+    {
+        *pnY = 0;
+        *pnWidth = 400;
+        *pnHeight = 400;
+
+        if (eEye == Eye_Left) {        
+            *pnX = 0;
+        }
+        else {
+            *pnX = 400;
+        }
+    }
+    void TrackedDeviceServerDriver::GetProjectionRaw(EVREye eEye, float* pfLeft, float* pfRight, float* pfTop, float* pfBottom)
+    {
+        *pfLeft = -1.0;
+        *pfRight = -1.0;
+        *pfTop = -1.0;
+        *pfBottom = -1.0;
+    }
+    DistortionCoordinates_t TrackedDeviceServerDriver::ComputeDistortion(EVREye eEye, float fU, float fV)
+    {
+        DistortionCoordinates_t cood{};
+        cood.rfBlue[0] = fU;
+        cood.rfBlue[1] = fV;
+        cood.rfGreen[0] = fU;
+        cood.rfGreen[1] = fV;
+        cood.rfRed[0] = fU;
+        cood.rfRed[1] = fV;
+
+        return cood;
     }
 }
