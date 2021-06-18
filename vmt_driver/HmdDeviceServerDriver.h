@@ -27,8 +27,9 @@ SOFTWARE.
 //OpenVRデバイス
 //サーバーにぶら下がる子である
 namespace VMTDriver {
+
     //個々のデバイス
-    class TrackedDeviceServerDriver : public ITrackedDeviceServerDriver
+    class HmdDeviceServerDriver : public ITrackedDeviceServerDriver, IVRDisplayComponent
     {
     private:
         bool m_alreadyRegistered = false;
@@ -41,35 +42,21 @@ namespace VMTDriver {
         RawPose m_rawPose{ 0 };
         RawPose m_lastRawPose{ 0 };
 
-        VRInputComponentHandle_t ButtonComponent[8]{ 0 };
-        VRInputComponentHandle_t TriggerComponent[2]{ 0 };
-        VRInputComponentHandle_t JoystickComponent[2]{ 0 };
-        VRInputComponentHandle_t HapticComponent{ 0 };
-
-        bool m_poweron = false;
-
         static bool s_autoUpdate;
     public:
         //内部向け
-        TrackedDeviceServerDriver();
-        ~TrackedDeviceServerDriver();
+        HmdDeviceServerDriver();
+        ~HmdDeviceServerDriver();
 
         void SetDeviceSerial(string);
         void SetObjectIndex(uint32_t);
         void SetPose(DriverPose_t pose);
         void SetRawPose(RawPose rawPose);
         DriverPose_t RawPoseToPose();
-        void RegisterToVRSystem(int type);
+        void RegisterToVRSystem();
         void UpdatePoseToVRSystem();
-        void UpdateButtonInput(uint32_t index, bool value, double timeoffset);
-        void UpdateTriggerInput(uint32_t index, float value, double timeoffset);
-        void UpdateJoystickInput(uint32_t index, float x, float y, double timeoffset);
         void Reset();
 
-        void CalcVelocity(DriverPose_t& pose);
-        void CalcJoint(DriverPose_t& pose, string serial, ReferMode_t mode, Eigen::Affine3d& RoomToDriverAffin);
-        int SearchDevice(vr::TrackedDevicePose_t* poses, string serial);
-        void RejectTracking(DriverPose_t& pose);
         void ProcessEvent(VREvent_t &VREvent);
 
         static void SetAutoUpdate(bool enable);
@@ -81,5 +68,14 @@ namespace VMTDriver {
         virtual void* GetComponent(const char* pchComponentNameAndVersion) override;
         virtual void DebugRequest(const char* pchRequest, char* pchResponseBuffer, uint32_t unResponseBufferSize) override;
         virtual DriverPose_t GetPose() override;
+
+        // IVRDisplayComponent を介して継承されました
+        virtual void GetWindowBounds(int32_t* pnX, int32_t* pnY, uint32_t* pnWidth, uint32_t* pnHeight) override;
+        virtual bool IsDisplayOnDesktop() override;
+        virtual bool IsDisplayRealDisplay() override;
+        virtual void GetRecommendedRenderTargetSize(uint32_t* pnWidth, uint32_t* pnHeight) override;
+        virtual void GetEyeOutputViewport(EVREye eEye, uint32_t* pnX, uint32_t* pnY, uint32_t* pnWidth, uint32_t* pnHeight) override;
+        virtual void GetProjectionRaw(EVREye eEye, float* pfLeft, float* pfRight, float* pfTop, float* pfBottom) override;
+        virtual DistortionCoordinates_t ComputeDistortion(EVREye eEye, float fU, float fV) override;
     };
 }

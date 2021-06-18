@@ -47,15 +47,37 @@ using json = nlohmann::json;
 
 namespace VMTDriver {
 	class ServerTrackedDeviceProvider;
-	class TrackedDeviceServerDriver;
-	class VRWatchdogProvider;
+    class TrackedDeviceServerDriver;
+    class HmdDeviceServerDriver;
+    class VRWatchdogProvider;
 	class Log;
+
+    const string Version = "VMT_014";
 
 	enum class ReferMode_t {
 		None = 0,   // ルーム座標を使用する
 		Joint = 1,  // Position, Rotation共に他のトラッカーデバイスの座標系を参照する
 		Follow = 2, // Positionは他のトラッカーデバイスを参照するが、Rotationはルーム座標を参照する
 	};
+
+    const HmdQuaternion_t HmdQuaternion_Identity{ 1,0,0,0 };
+
+    struct RawPose {
+        bool roomToDriver{};
+        int idx{};
+        int enable{};
+        double x{};
+        double y{};
+        double z{};
+        double qx{};
+        double qy{};
+        double qz{};
+        double qw{};
+        double timeoffset{};
+        ReferMode_t mode{};
+        std::string root_sn{};
+        std::chrono::system_clock::time_point time{};
+    };
 
 	ServerTrackedDeviceProvider* GetServer();
 	VRWatchdogProvider* GetWatchdog();
@@ -68,6 +90,7 @@ namespace DirectOSC {
 #include "DirectOSC.h"
 #include "ServerTrackedDeviceProvider.h"
 #include "TrackedDeviceServerDriver.h"
+#include "HmdDeviceServerDriver.h"
 #include "VRWatchdogProvider.h"
 #include "Log.h"
 #include "CommunicationManager.h"

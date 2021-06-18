@@ -195,6 +195,7 @@
     <ClInclude Include="DirectOSC.h" />
     <ClInclude Include="framework.h" />
     <ClInclude Include="dllmain.h" />
+    <ClInclude Include="HmdDeviceServerDriver.h" />
     <ClInclude Include="Log.h" />
     <ClInclude Include="ServerTrackedDeviceProvider.h" />
     <ClInclude Include="TrackedDeviceServerDriver.h" />
@@ -212,6 +213,7 @@
     <ClCompile Include="Config.cpp" />
     <ClCompile Include="DirectOSC.cpp" />
     <ClCompile Include="dllmain.cpp" />
+    <ClCompile Include="HmdDeviceServerDriver.cpp" />
     <ClCompile Include="Log.cpp" />
     <ClCompile Include="ServerTrackedDeviceProvider.cpp" />
     <ClCompile Include="TrackedDeviceServerDriver.cpp" />

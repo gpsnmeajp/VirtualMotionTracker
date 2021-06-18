@@ -31,6 +31,11 @@ namespace VMTDriver {
         return m_devices;
     }
 
+    vector<HmdDeviceServerDriver>& ServerTrackedDeviceProvider::GetHmds()
+    {
+        return m_hmds;
+    }
+
     //特定仮想デバイスを返す
     TrackedDeviceServerDriver& ServerTrackedDeviceProvider::GetDevice(int index)
     {
@@ -44,6 +49,7 @@ namespace VMTDriver {
         {
             m_devices[i].Reset();
         }
+        m_hmds[0].Reset();
     }
 
     //仮想デバイス内部インデックスの範囲内に収まっているかをチェックする
@@ -82,6 +88,7 @@ namespace VMTDriver {
 
         //仮想デバイスを準備
         m_devices.resize(58); //58デバイス(全合計64に満たないくらい)
+        m_hmds.resize(1);
 
         //仮想デバイスを初期化
         for (int i = 0; i < m_devices.size(); i++)
@@ -94,6 +101,10 @@ namespace VMTDriver {
             //仮想デバイス内部インデックス(OpenVRのindexではなく、Listのindex)をセット
             m_devices[i].SetObjectIndex(i);
         }
+
+        m_hmds[0].SetDeviceSerial("VMT_HMD");
+        m_hmds[0].SetObjectIndex(0);
+        m_hmds[0].RegisterToVRSystem();
 
         //起動完了
         Log::Output("Startup OK");
@@ -132,6 +143,7 @@ namespace VMTDriver {
         {
             m_devices[i].UpdatePoseToVRSystem();
         }
+        m_hmds[0].UpdatePoseToVRSystem();
 
         //OpenVRイベントの取得
         VREvent_t VREvent;
@@ -142,6 +154,7 @@ namespace VMTDriver {
         {
             m_devices[i].ProcessEvent(VREvent);
         }
+        m_hmds[0].ProcessEvent(VREvent);
     }
 
     //OpenVRからのスタンバイブロック問い合わせ

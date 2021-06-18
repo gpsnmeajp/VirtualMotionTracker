@@ -55,7 +55,9 @@ namespace VMTDriver {
 		pose.time = std::chrono::system_clock::now();
 
 		//範囲チェック
-		if (GetServer()->IsVMTDeviceIndex(idx))
+		if (idx == 0) {
+			GetServer()->GetHmds()[0].SetRawPose(pose);
+		}else if (GetServer()->IsVMTDeviceIndex(idx))
 		{
 			GetServer()->GetDevice(idx).RegisterToVRSystem(enable); //1=Tracker, 2=Controller Left, 3=Controller Right, 4=Tracking Reference
 			GetServer()->GetDevice(idx).SetRawPose(pose);

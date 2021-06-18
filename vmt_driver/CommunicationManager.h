@@ -26,8 +26,6 @@ SOFTWARE.
 
 //通信系の処理の管理、OSC情報の送受信を行う
 namespace VMTDriver {
-	const string Version = "VMT_013";
-
 	class OSCReceiver : public osc::OscPacketListener {
 	private:
 		void SetPose(bool roomToDriver, int idx, int enable,
