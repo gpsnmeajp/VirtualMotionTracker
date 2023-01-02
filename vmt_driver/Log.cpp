@@ -24,6 +24,7 @@ SOFTWARE.
 #include "Log.h"
 namespace VMTDriver {
     IVRDriverLog* Log::handle = nullptr;
+    int Log::s_logCounter = 0;
 
     //ログをオープンする
     void Log::Open(IVRDriverLog* hnd)
@@ -39,10 +40,21 @@ namespace VMTDriver {
     }
 
     //ログに出力する
+    const int logMax = 30;
     void Log::Output(std::string msg)
     {
+        //多すぎるログは止める(1間隔あたり30まで)
+        if (s_logCounter > logMax) {
+            return;
+        }
+        s_logCounter++;
+
         if (handle != nullptr) {
             handle->Log(("[VMT] " + msg).c_str());
+
+            if (s_logCounter > logMax) {
+                handle->Log("[VMT] Too many log");
+            }
         }
     }
 

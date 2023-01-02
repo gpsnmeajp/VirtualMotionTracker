@@ -357,7 +357,7 @@ namespace VMTDriver {
     //(ここではm_propertyContainerの操作はできない。この後にActivateがコールされる)
     void TrackedDeviceServerDriver::RegisterToVRSystem(int type)
     {
-        if (!m_alreadyRegistered)
+        if (!m_alreadyRegistered && !m_registrationInProgress)
         {
             switch (type)
             {
@@ -386,8 +386,8 @@ namespace VMTDriver {
                 m_deviceClass = ETrackedDeviceClass::TrackedDeviceClass_Invalid;
                 return; //中止
             }
+            m_registrationInProgress = true;
             LogIfFalse(VRServerDriverHost()->TrackedDeviceAdded(m_serial.c_str(), m_deviceClass, this));
-            m_alreadyRegistered = true;
         }
     }
 
@@ -632,15 +632,21 @@ namespace VMTDriver {
             LogIfETrackedPropertyError(VRProperties()->SetInt32Property(m_propertyContainer, Prop_ControllerRoleHint_Int32, ETrackedControllerRole::TrackedControllerRole_LeftHand));
             //指ボーン制限なし(既定の握りこぶしを使用)
             LogIfEVRInputError(VRDriverInput()->CreateSkeletonComponent(m_propertyContainer, "/input/skeleton/left", "/skeleton/hand/left", "/pose/raw", EVRSkeletalTrackingLevel::VRSkeletalTracking_Partial, nullptr, 0, &SkeletonComponent));
+            LogInfo("Skeleton: %s", "Left");
         }
         else if (m_controllerRole == ControllerRole::Right) {
             LogIfETrackedPropertyError(VRProperties()->SetInt32Property(m_propertyContainer, Prop_ControllerRoleHint_Int32, ETrackedControllerRole::TrackedControllerRole_RightHand));
             //指ボーン制限なし(既定の握りこぶしを使用)
             LogIfEVRInputError(VRDriverInput()->CreateSkeletonComponent(m_propertyContainer, "/input/skeleton/right", "/skeleton/hand/right", "/pose/raw", EVRSkeletalTrackingLevel::VRSkeletalTracking_Partial, nullptr, 0, &SkeletonComponent));
+            LogInfo("Skeleton: %s", "Right");
         }
         else {
             if (Config::GetInstance()->GetOptoutTrackingRole()) {
                 LogIfETrackedPropertyError(VRProperties()->SetInt32Property(m_propertyContainer, Prop_ControllerRoleHint_Int32, ETrackedControllerRole::TrackedControllerRole_OptOut)); //手に割り当てないように
+                LogInfo("Optout: %s", "Yes");
+            }
+            else {
+                LogInfo("Optout: %s", "No");
             }
         }
 
@@ -662,6 +668,8 @@ namespace VMTDriver {
 
         LogIfEVRInputError(VRDriverInput()->CreateHapticComponent(m_propertyContainer, "/output/haptic", &HapticComponent));
 
+        m_alreadyRegistered = true;
+        m_registrationInProgress = false;
         return EVRInitError::VRInitError_None;
     }
 

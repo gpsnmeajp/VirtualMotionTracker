@@ -76,6 +76,8 @@ namespace VMTDriver {
 		bone.orientation.y = qy;
 		bone.orientation.z = qz;
 		bone.orientation.w = qw;
+
+		//LogInfo("%d %lf %lf %lf %lf %lf %lf %lf ", boneIndex, x, y, z, qx, qy, qz, qw);
 		//範囲チェック
 		if (GetServer()->IsVMTDeviceIndex(deviceIndex))
 		{
@@ -86,6 +88,7 @@ namespace VMTDriver {
 	//骨格を仮想デバイスに反映
 	void OSCReceiver::ApplySkeleton(int deviceIndex, double timeoffset)
 	{
+		//LogInfo("Apply");
 		//範囲チェック
 		if (GetServer()->IsVMTDeviceIndex(deviceIndex))
 		{
@@ -224,12 +227,12 @@ namespace VMTDriver {
 			}
 			else if (adr == "/VMT/Skeleton/Unity")
 			{
-				args >> idx >> i >> timeoffset >> x >> y >> z >> qx >> qy >> qz >> qw >> osc::EndMessage;
+				args >> idx >> i >> x >> y >> z >> qx >> qy >> qz >> qw >> osc::EndMessage;
 				WriteSkeletonBone(idx, i, x, y, -z, qx, qy, -qz, -qw);
 			}
 			else if (adr == "/VMT/Skeleton/Driver")
 			{
-				args >> idx >> i >> timeoffset >> x >> y >> z >> qx >> qy >> qz >> qw >> osc::EndMessage;
+				args >> idx >> i >> x >> y >> z >> qx >> qy >> qz >> qw >> osc::EndMessage;
 				WriteSkeletonBone(idx, i, x, y, z, qx, qy, qz, qw);
 			}
 			else if (adr == "/VMT/Skeleton/Apply")
@@ -356,6 +359,9 @@ namespace VMTDriver {
 			else {
 				OSCReceiver::SendUnavailable(0, "OK");
 			}
+			//ログカウンタをリセットする
+			Log::s_logCounter = 0;
+
 			m_frame = 0;
 		}
 		m_frame++;

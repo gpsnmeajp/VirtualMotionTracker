@@ -101,6 +101,7 @@ namespace VMTDriver {
     {
     private:
         bool m_alreadyRegistered = false;
+        bool m_registrationInProgress = false;
         string m_serial{ "" };
         TrackedDeviceIndex_t m_deviceIndex{ 0 };
         PropertyContainerHandle_t m_propertyContainer{ 0 };

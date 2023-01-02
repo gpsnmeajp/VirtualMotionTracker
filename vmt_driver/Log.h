@@ -39,6 +39,7 @@ namespace VMTDriver {
         static IVRDriverLog* handle;
         Log();
     public:
+        static int s_logCounter;
 
         static void Open(IVRDriverLog*);
         static void Close();
