@@ -25,7 +25,7 @@ SOFTWARE.
 
 namespace DirectOSC {
 	std::mutex Mutex;
-	std::thread* Thread;
+	std::unique_ptr<std::thread> Thread;
 
 	//受信スレッド
 	void ThreadWorker()
@@ -50,13 +50,13 @@ namespace DirectOSC {
 	//受信ソケットの取得
 	UdpListeningReceiveSocket* OSC::GetSocketRx()
 	{
-		return socketRx;
+		return socketRx.get();
 	}
 
 	//送信ソケットの取得
 	UdpTransmitSocket* OSC::GetSocketTx()
 	{
-		return socketTx;
+		return socketTx.get();
 	}
 
 	//oscpackを初期化し、受信処理を登録する。受信スレッドを立てる
@@ -66,10 +66,10 @@ namespace DirectOSC {
 			return;
 		}
 		this->listener = listen;
-		socketRx = new UdpListeningReceiveSocket(IpEndpointName(IpEndpointName::ANY_ADDRESS, portRx), listener);
-		socketTx = new UdpTransmitSocket(IpEndpointName("127.0.0.1", portTx));
+		socketRx = std::make_unique<UdpListeningReceiveSocket>(IpEndpointName(IpEndpointName::ANY_ADDRESS, portRx), listener);
+		socketTx = std::make_unique<UdpTransmitSocket>(IpEndpointName("127.0.0.1", portTx));
 
-		Thread = new std::thread(ThreadWorker);
+		Thread = std::make_unique<std::thread>(ThreadWorker);
 		m_opened = true;
 	}
 
@@ -82,14 +82,7 @@ namespace DirectOSC {
 		socketRx->AsynchronousBreak();
 		Thread->join();
 
-		delete socketRx;
-		delete socketTx;
-		delete Thread;
-		socketRx = nullptr;
-		socketTx = nullptr;
-		Thread = nullptr;
 		listener = nullptr;
-
 		m_opened = false;
 	}
 }

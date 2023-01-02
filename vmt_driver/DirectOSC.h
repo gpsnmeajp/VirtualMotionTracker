@@ -32,6 +32,7 @@ SOFTWARE.
 #include <thread>
 #include <mutex>
 #include <deque>
+#include <memory>
 
 #include "osc/OscOutboundPacketStream.h"
 #include "osc/OscReceivedElements.h"
@@ -44,8 +45,8 @@ namespace DirectOSC {
 	private:
 		bool m_opened = false;
 		osc::OscPacketListener* listener = nullptr;
-		UdpListeningReceiveSocket* socketRx = nullptr;
-		UdpTransmitSocket* socketTx = nullptr;
+		std::unique_ptr<UdpListeningReceiveSocket> socketRx;
+		std::unique_ptr<UdpTransmitSocket> socketTx;
 
 		OSC();
 		~OSC();
