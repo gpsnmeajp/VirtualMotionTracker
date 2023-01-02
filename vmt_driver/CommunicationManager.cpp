@@ -32,7 +32,7 @@ namespace VMTDriver {
 	//別スレッドからのコール
 
 	//姿勢を各仮想デバイスに設定する
-	void OSCReceiver::SetPose(bool roomToDriver, int idx, int enable,
+	void OSCReceiver::SetPose(bool roomToDriver, int deviceIndex, int enable,
 	                          double x, double y, double z,
 	                          double qx, double qy, double qz, double qw,
 	                          double timeoffset,
@@ -40,7 +40,7 @@ namespace VMTDriver {
 	{
 		RawPose pose{};
 		pose.roomToDriver = roomToDriver;
-		pose.idx = idx;
+		pose.idx = deviceIndex;
 		pose.enable = enable;
 		pose.x = x;
 		pose.y = y;
@@ -55,10 +55,41 @@ namespace VMTDriver {
 		pose.time = std::chrono::system_clock::now();
 
 		//範囲チェック
-		if (GetServer()->IsVMTDeviceIndex(idx))
+		if (GetServer()->IsVMTDeviceIndex(deviceIndex))
 		{
-			GetServer()->GetDevice(idx).RegisterToVRSystem(enable); //1=Tracker, 2=Controller Left, 3=Controller Right, 4=Tracking Reference
-			GetServer()->GetDevice(idx).SetRawPose(pose);
+			GetServer()->GetDevice(deviceIndex).RegisterToVRSystem(enable); //1=Tracker, 2=Controller Left, 3=Controller Right, 4=Tracking Reference
+			GetServer()->GetDevice(deviceIndex).SetRawPose(pose);
+		}
+	}
+
+	//骨格をバッファに書き込み
+	void OSCReceiver::WriteSkeletonBone(int deviceIndex, int boneIndex,
+		double x, double y, double z,
+		double qx, double qy, double qz, double qw)
+	{
+		VRBoneTransform_t bone{};
+		bone.position.v[0] = x;
+		bone.position.v[1] = y;
+		bone.position.v[2] = z;
+		bone.position.v[3] = 0;
+		bone.orientation.x = qx;
+		bone.orientation.y = qy;
+		bone.orientation.z = qz;
+		bone.orientation.w = qw;
+		//範囲チェック
+		if (GetServer()->IsVMTDeviceIndex(deviceIndex))
+		{
+			GetServer()->GetDevice(deviceIndex).WriteSkeletonInputBuffer(boneIndex, bone);
+		}
+	}
+
+	//骨格を仮想デバイスに反映
+	void OSCReceiver::ApplySkeleton(int deviceIndex, double timeoffset)
+	{
+		//範囲チェック
+		if (GetServer()->IsVMTDeviceIndex(deviceIndex))
+		{
+			GetServer()->GetDevice(deviceIndex).UpdateSkeletonInput(timeoffset);
 		}
 	}
 
@@ -131,6 +162,8 @@ namespace VMTDriver {
 		float TriggerValue{};
 		const char* root_sn = nullptr;
 
+		int i{};
+
 		float m1{};
 		float m2{};
 		float m3{};
@@ -188,6 +221,21 @@ namespace VMTDriver {
 			{
 				args >> idx >> enable >> timeoffset >> x >> y >> z >> qx >> qy >> qz >> qw >> root_sn >> osc::EndMessage;
 				SetPose(false, idx, enable, x, y, z, qx, qy, qz, qw, timeoffset, root_sn, ReferMode_t::Follow);
+			}
+			else if (adr == "/VMT/Skeleton/Unity")
+			{
+				args >> idx >> i >> timeoffset >> x >> y >> z >> qx >> qy >> qz >> qw >> osc::EndMessage;
+				WriteSkeletonBone(idx, i, x, y, -z, qx, qy, -qz, -qw);
+			}
+			else if (adr == "/VMT/Skeleton/Driver")
+			{
+				args >> idx >> i >> timeoffset >> x >> y >> z >> qx >> qy >> qz >> qw >> osc::EndMessage;
+				WriteSkeletonBone(idx, i, x, y, z, qx, qy, qz, qw);
+			}
+			else if (adr == "/VMT/Skeleton/Apply")
+			{
+				args >> idx >> timeoffset >> osc::EndMessage;
+				ApplySkeleton(idx, timeoffset);
 			}
 			//デバイス入力系の受信
 			else if (adr == "/VMT/Input/Button")

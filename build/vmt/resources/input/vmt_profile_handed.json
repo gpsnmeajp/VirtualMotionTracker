@@ -82,6 +82,18 @@
         "binding_image_point" : [ 0, 0 ],
         "order" : 1
     },
+    "/input/skeleton/left" : { 
+        "type" : "skeleton",
+        "skeleton" : "/skeleton/hand/left",
+        "side" : "left",
+        "binding_image_point" : [ 0, 0 ]
+    },
+    "/input/skeleton/right" : { 
+        "type" : "skeleton",
+        "skeleton" : "/skeleton/hand/right",
+        "side" : "right",
+        "binding_image_point" : [ 0, 0 ]
+    },
     "/pose/raw" : {
         "type" : "pose",
         "binding_image_point" : [ 0, 0 ]

@@ -354,6 +354,7 @@ namespace VMTDriver {
     }
 
     //仮想デバイスからOpenVRへデバイスの登録を依頼する
+    //(ここではm_propertyContainerの操作はできない。この後にActivateがコールされる)
     void TrackedDeviceServerDriver::RegisterToVRSystem(int type)
     {
         if (!m_alreadyRegistered)
@@ -395,9 +396,12 @@ namespace VMTDriver {
     void TrackedDeviceServerDriver::UpdateButtonInput(uint32_t index, bool value, double timeoffset)
     {
         if (!m_alreadyRegistered) { return; }
-        if (0 <= index && index <= 7)
+        if (0 <= index && index < buttonCount)
         {
             LogIfEVRInputError(VRDriverInput()->UpdateBooleanComponent(ButtonComponent[index], value, timeoffset));
+        }
+        else {
+            LogError("Index out of range: %u", index);
         }
     }
 
@@ -415,9 +419,12 @@ namespace VMTDriver {
             value = 0;
         }
 
-        if (0 <= index && index <= 1)
+        if (0 <= index && index < triggerCount)
         {
             LogIfEVRInputError(VRDriverInput()->UpdateScalarComponent(TriggerComponent[index], value, timeoffset));
+        }
+        else {
+            LogError("Index out of range: %u", index);
         }
     }
 
@@ -425,11 +432,34 @@ namespace VMTDriver {
     void TrackedDeviceServerDriver::UpdateJoystickInput(uint32_t index, float x, float y, double timeoffset)
     {
         if (!m_alreadyRegistered) { return; }
-        if (index == 0)
+        if (0 <= index && index < joystickCount/2)
         {
-            LogIfEVRInputError(VRDriverInput()->UpdateScalarComponent(JoystickComponent[index + 0], x, timeoffset));
-            LogIfEVRInputError(VRDriverInput()->UpdateScalarComponent(JoystickComponent[index + 1], y, timeoffset));
+            LogIfEVRInputError(VRDriverInput()->UpdateScalarComponent(JoystickComponent[(index/2) + 0], x, timeoffset));
+            LogIfEVRInputError(VRDriverInput()->UpdateScalarComponent(JoystickComponent[(index/2) + 1], y, timeoffset));
         }
+        else {
+            LogError("Index out of range: %u", index);
+        }
+    }
+
+    //仮想デバイスからデバイスバッファへ骨格状態を書き込む
+    void TrackedDeviceServerDriver::WriteSkeletonInputBuffer(uint32_t index, VRBoneTransform_t bone)
+    {
+        if (!m_alreadyRegistered) { return; }
+        if (0 <= index && index < skeletonBoneCount)
+        {
+            m_boneTransform[index] = bone;
+        }
+        else {
+            LogError("Index out of range: %u", index);
+        }
+    }
+    //仮想デバイスからOpenVRへデバイスバッファの骨格状態の更新を通知する
+    void TrackedDeviceServerDriver::UpdateSkeletonInput(double timeoffset)
+    {
+        if (!m_alreadyRegistered) { return; }
+        LogIfEVRInputError(VRDriverInput()->UpdateSkeletonComponent(SkeletonComponent, EVRSkeletalMotionRange::VRSkeletalMotionRange_WithController, m_boneTransform, skeletonBoneCount));
+        LogIfEVRInputError(VRDriverInput()->UpdateSkeletonComponent(SkeletonComponent, EVRSkeletalMotionRange::VRSkeletalMotionRange_WithoutController, m_boneTransform, skeletonBoneCount));
     }
 
     //仮想デバイスの状態をリセットする
@@ -449,9 +479,13 @@ namespace VMTDriver {
         SetPose(pose);
 
         //全状態を初期化する
-        for (int i = 0; i < 16; i++) {
+        for (int i = 0; i < buttonCount; i++) {
             UpdateButtonInput(i, false, 0);
+        }
+        for (int i = 0; i < triggerCount; i++) {
             UpdateTriggerInput(i, 0, 0);
+        }
+        for (int i = 0; i < joystickCount/2; i++) {
             UpdateJoystickInput(i, 0, 0, 0);
         }
     }
@@ -575,22 +609,6 @@ namespace VMTDriver {
         LogIfETrackedPropertyError(VRProperties()->SetFloatProperty(m_propertyContainer, Prop_DisplayMinAnalogGain_Float, 1.0f));
         LogIfETrackedPropertyError(VRProperties()->SetFloatProperty(m_propertyContainer, Prop_DisplayMaxAnalogGain_Float, 1.0f));
 
-        if (m_controllerRole == ControllerRole::Left) {
-            LogIfETrackedPropertyError(VRProperties()->SetInt32Property(m_propertyContainer, Prop_ControllerRoleHint_Int32, ETrackedControllerRole::TrackedControllerRole_LeftHand));
-            //既定の握りこぶしを使用
-            LogIfEVRInputError(VRDriverInput()->CreateSkeletonComponent(m_propertyContainer, "/input/skeleton/left", "/skeleton/hand/left", "/pose/raw", EVRSkeletalTrackingLevel::VRSkeletalTracking_Partial, nullptr, 0, &SkeletonComponent));
-        }
-        else if (m_controllerRole == ControllerRole::Right) {
-            LogIfETrackedPropertyError(VRProperties()->SetInt32Property(m_propertyContainer, Prop_ControllerRoleHint_Int32, ETrackedControllerRole::TrackedControllerRole_RightHand));
-            //既定の握りこぶしを使用
-            LogIfEVRInputError(VRDriverInput()->CreateSkeletonComponent(m_propertyContainer, "/input/skeleton/right", "/skeleton/hand/right", "/pose/raw", EVRSkeletalTrackingLevel::VRSkeletalTracking_Partial, nullptr, 0, &SkeletonComponent));
-        }
-        else {
-            if (Config::GetInstance()->GetOptoutTrackingRole()) {
-                LogIfETrackedPropertyError(VRProperties()->SetInt32Property(m_propertyContainer, Prop_ControllerRoleHint_Int32, ETrackedControllerRole::TrackedControllerRole_OptOut)); //手に割り当てないように
-            }
-        }
-
         LogIfETrackedPropertyError(VRProperties()->SetStringProperty(m_propertyContainer, Prop_NamedIconPathDeviceOff_String, "{vmt}/icons/Off32x32.png"));
         LogIfETrackedPropertyError(VRProperties()->SetStringProperty(m_propertyContainer, Prop_NamedIconPathDeviceSearching_String, "{vmt}/icons/Searching32x32.png"));
         LogIfETrackedPropertyError(VRProperties()->SetStringProperty(m_propertyContainer, Prop_NamedIconPathDeviceSearchingAlert_String, "{vmt}/icons/SearchingAlert32x32.png"));
@@ -609,6 +627,22 @@ namespace VMTDriver {
         //LogIfETrackedPropertyError(VRProperties()->SetStringProperty(m_propertyContainer, vmt_profile.json, "NO_SETTING")); //設定不可
         LogIfETrackedPropertyError(VRProperties()->SetInt32Property(m_propertyContainer, Prop_ControllerHandSelectionPriority_Int32, 0));
 
+        //コントローラロール登録
+        if (m_controllerRole == ControllerRole::Left) {
+            LogIfETrackedPropertyError(VRProperties()->SetInt32Property(m_propertyContainer, Prop_ControllerRoleHint_Int32, ETrackedControllerRole::TrackedControllerRole_LeftHand));
+            //指ボーン制限なし(既定の握りこぶしを使用)
+            LogIfEVRInputError(VRDriverInput()->CreateSkeletonComponent(m_propertyContainer, "/input/skeleton/left", "/skeleton/hand/left", "/pose/raw", EVRSkeletalTrackingLevel::VRSkeletalTracking_Partial, nullptr, 0, &SkeletonComponent));
+        }
+        else if (m_controllerRole == ControllerRole::Right) {
+            LogIfETrackedPropertyError(VRProperties()->SetInt32Property(m_propertyContainer, Prop_ControllerRoleHint_Int32, ETrackedControllerRole::TrackedControllerRole_RightHand));
+            //指ボーン制限なし(既定の握りこぶしを使用)
+            LogIfEVRInputError(VRDriverInput()->CreateSkeletonComponent(m_propertyContainer, "/input/skeleton/right", "/skeleton/hand/right", "/pose/raw", EVRSkeletalTrackingLevel::VRSkeletalTracking_Partial, nullptr, 0, &SkeletonComponent));
+        }
+        else {
+            if (Config::GetInstance()->GetOptoutTrackingRole()) {
+                LogIfETrackedPropertyError(VRProperties()->SetInt32Property(m_propertyContainer, Prop_ControllerRoleHint_Int32, ETrackedControllerRole::TrackedControllerRole_OptOut)); //手に割り当てないように
+            }
+        }
 
         //OpenVR デバイス入力情報の定義
         LogIfEVRInputError(VRDriverInput()->CreateBooleanComponent(m_propertyContainer, "/input/Button0/click", &ButtonComponent[0]));
