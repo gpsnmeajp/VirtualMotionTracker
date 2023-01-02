@@ -30,7 +30,7 @@ namespace DirectOSC {
 	//受信スレッド
 	void ThreadWorker()
 	{
-		OSC::GetInstance()->GetSocketRx()->RunUntilSigInt();
+		OSC::GetInstance().GetSocketRx().RunUntilSigInt();
 	}
 
 	OSC::OSC()
@@ -41,22 +41,22 @@ namespace DirectOSC {
 	}
 
 	//シングルトンインスタンスの取得
-	OSC* OSC::GetInstance()
+	OSC& OSC::GetInstance()
 	{
 		static OSC osc;
-		return &osc;
+		return osc;
 	}
 
 	//受信ソケットの取得
-	UdpListeningReceiveSocket* OSC::GetSocketRx()
+	UdpListeningReceiveSocket& OSC::GetSocketRx()
 	{
-		return socketRx.get();
+		return *socketRx;
 	}
 
 	//送信ソケットの取得
-	UdpTransmitSocket* OSC::GetSocketTx()
+	UdpTransmitSocket& OSC::GetSocketTx()
 	{
-		return socketTx.get();
+		return *socketTx;
 	}
 
 	//oscpackを初期化し、受信処理を登録する。受信スレッドを立てる

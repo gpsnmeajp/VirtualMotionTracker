@@ -51,18 +51,18 @@ namespace VMTDriver {
 
 				//Jsonパース
 				json j = json::parse(inputData);
-				Log::Output(("LoadJson:" + j.dump()).c_str());
+				LogInfo("LoadJson: %s", j.dump().c_str());
 				return ErrorCheck(j);
 			}
 			catch (...) {
 				//パース失敗・ファイルなしなど
-				Log::Output("LoadJson: Parse error or load faild");
+				LogError("LoadJson: Parse error or load faild");
 				return ErrorCheck(json());
 			}
 		}
 
 		//インストールパスが取得できない
-		Log::Output("LoadJson: No Path");
+		LogError("LoadJson: No Path");
 		return ErrorCheck(json());
 	}
 
@@ -82,18 +82,18 @@ namespace VMTDriver {
 				outputStream << output.dump(3, ' ');
 				outputStream.close();
 
-				Log::Output(("SaveJson:" + output.dump()).c_str());
+				LogInfo("SaveJson: %s", output.dump().c_str());
 				return;
 			}
 			catch (...) {
 				//書き込みエラーなど
-				Log::Output("SaveJson: Save faild");
+				LogError("SaveJson: Save faild");
 				return;
 			}
 		}
 
 		//インストールパスが取得できない
-		Log::Output("SaveJson: No Path");
+		LogError("SaveJson: No Path");
 		return;
 	}
 

@@ -71,7 +71,7 @@ namespace VMTDriver {
 			<< stat
 			<< msg.c_str()
 			<< osc::EndMessage;
-		DirectOSC::OSC::GetInstance()->GetSocketTx()->Send(packet.Data(), packet.Size());
+		DirectOSC::OSC::GetInstance().GetSocketTx().Send(packet.Data(), packet.Size());
 	}
 
 	//生存信号を送信する
@@ -83,7 +83,7 @@ namespace VMTDriver {
 			<< Version.c_str()
 			<< GetServer()->GetInstallPath().c_str()
 			<< osc::EndMessage;
-		DirectOSC::OSC::GetInstance()->GetSocketTx()->Send(packet.Data(), packet.Size());
+		DirectOSC::OSC::GetInstance().GetSocketTx().Send(packet.Data(), packet.Size());
 	}
 
 	//振動情報を送信する
@@ -98,7 +98,7 @@ namespace VMTDriver {
 			<< amplitude
 			<< duration
 			<< osc::EndMessage;
-		DirectOSC::OSC::GetInstance()->GetSocketTx()->Send(packet.Data(), packet.Size());
+		DirectOSC::OSC::GetInstance().GetSocketTx().Send(packet.Data(), packet.Size());
 	}
 
 	//エラー情報を送信する
@@ -110,7 +110,7 @@ namespace VMTDriver {
 			<< code
 			<< reason.c_str()
 			<< osc::EndMessage;
-		DirectOSC::OSC::GetInstance()->GetSocketTx()->Send(packet.Data(), packet.Size());
+		DirectOSC::OSC::GetInstance().GetSocketTx().Send(packet.Data(), packet.Size());
 	}
 
 	//受信処理
@@ -246,12 +246,12 @@ namespace VMTDriver {
 			}
 			//不明なパケット
 			else {
-				Log::printf("Unkown: %s", adr.c_str());
+				LogError("Unkown: %s", adr.c_str());
 			}
 		}
 		catch (osc::Exception& e)
 		{
-			Log::printf("Exp: %s\n", e.what());
+			LogError("Exp: %s\n", e.what());
 		}
 	}
 }
@@ -275,6 +275,7 @@ namespace VMTDriver {
 		if (m_opened) {
 			return;
 		}
+		LogMarker();
 
 		Config* config = Config::GetInstance();
 		//起動時設定読み込み
@@ -282,13 +283,15 @@ namespace VMTDriver {
 		TrackedDeviceServerDriver::SetAutoUpdate(config->GetDefaultAutoPoseUpdateOn());
 
 		//通信ポートオープン
-		DirectOSC::OSC::GetInstance()->Open(&m_rcv, config->GetReceivePort(), config->GetSendPort());
+		DirectOSC::OSC::GetInstance().Open(&m_rcv, config->GetReceivePort(), config->GetSendPort());
 		m_opened = true;
 	}
 	//通信のクローズ
 	void CommunicationManager::Close()
 	{
-		DirectOSC::OSC::GetInstance()->Close();
+		LogMarker();
+
+		DirectOSC::OSC::GetInstance().Close();
 		m_opened = false;
 	}
 	//フレーム単位の処理

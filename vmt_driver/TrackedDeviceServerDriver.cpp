@@ -22,6 +22,9 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 #include "TrackedDeviceServerDriver.h"
+
+#pragma warning(push)
+#pragma warning(disable: 26812 )
 namespace VMTDriver {
     //** 内部向け関数群 **
 
@@ -357,33 +360,33 @@ namespace VMTDriver {
         {
             switch (type)
             {
-            case 4://TrackingReference
-                if (Config::GetInstance()->GetOptoutTrackingRole()) {
-                    VRProperties()->SetInt32Property(m_propertyContainer, Prop_ControllerRoleHint_Int32, ETrackedControllerRole::TrackedControllerRole_OptOut); //手に割り当てないように
-                }
-                VRServerDriverHost()->TrackedDeviceAdded(m_serial.c_str(), ETrackedDeviceClass::TrackedDeviceClass_TrackingReference, this);
-                m_alreadyRegistered = true;
-                break;
-            case 3://Controller Right
-                VRProperties()->SetInt32Property(m_propertyContainer, Prop_ControllerRoleHint_Int32, ETrackedControllerRole::TrackedControllerRole_RightHand);
-                VRServerDriverHost()->TrackedDeviceAdded(m_serial.c_str(), ETrackedDeviceClass::TrackedDeviceClass_Controller, this);
-                m_alreadyRegistered = true;
+            case 1://Tracker
+                LogInfo("RegisterToVRSystem: %s", "ETrackedDeviceClass::TrackedDeviceClass_GenericTracker");
+                m_controllerRole = ControllerRole::None;
+                m_deviceClass = ETrackedDeviceClass::TrackedDeviceClass_GenericTracker;
                 break;
             case 2://Controller Left
-                VRProperties()->SetInt32Property(m_propertyContainer, Prop_ControllerRoleHint_Int32, ETrackedControllerRole::TrackedControllerRole_LeftHand);
-                VRServerDriverHost()->TrackedDeviceAdded(m_serial.c_str(), ETrackedDeviceClass::TrackedDeviceClass_Controller, this);
-                m_alreadyRegistered = true;
+                LogInfo("RegisterToVRSystem: %s", "ETrackedDeviceClass::TrackedDeviceClass_Controller (Left)");
+                m_controllerRole = ControllerRole::Left;
+                m_deviceClass = ETrackedDeviceClass::TrackedDeviceClass_Controller;
                 break;
-            case 1://Tracker
-                if (Config::GetInstance()->GetOptoutTrackingRole()) {
-                    VRProperties()->SetInt32Property(m_propertyContainer, Prop_ControllerRoleHint_Int32, ETrackedControllerRole::TrackedControllerRole_OptOut); //手に割り当てないように
-                }
-                VRServerDriverHost()->TrackedDeviceAdded(m_serial.c_str(), ETrackedDeviceClass::TrackedDeviceClass_GenericTracker, this);
-                m_alreadyRegistered = true;
+            case 3://Controller Right
+                LogInfo("RegisterToVRSystem: %s", "ETrackedDeviceClass::TrackedDeviceClass_Controller (Right)");
+                m_controllerRole = ControllerRole::Right;
+                m_deviceClass = ETrackedDeviceClass::TrackedDeviceClass_Controller;
+                break;
+            case 4://TrackingReference
+                LogInfo("RegisterToVRSystem: %s", "ETrackedDeviceClass::TrackedDeviceClass_TrackingReference");
+                m_controllerRole = ControllerRole::None;
+                m_deviceClass = ETrackedDeviceClass::TrackedDeviceClass_TrackingReference;
                 break;
             default:
-                break;
+                LogError("RegisterToVRSystem: %s", "Unknown Type");
+                m_deviceClass = ETrackedDeviceClass::TrackedDeviceClass_Invalid;
+                return; //中止
             }
+            LogIfFalse(VRServerDriverHost()->TrackedDeviceAdded(m_serial.c_str(), m_deviceClass, this));
+            m_alreadyRegistered = true;
         }
     }
 
@@ -394,7 +397,7 @@ namespace VMTDriver {
         if (!m_alreadyRegistered) { return; }
         if (0 <= index && index <= 7)
         {
-            VRDriverInput()->UpdateBooleanComponent(ButtonComponent[index], value, timeoffset);
+            LogIfEVRInputError(VRDriverInput()->UpdateBooleanComponent(ButtonComponent[index], value, timeoffset));
         }
     }
 
@@ -414,7 +417,7 @@ namespace VMTDriver {
 
         if (0 <= index && index <= 1)
         {
-            VRDriverInput()->UpdateScalarComponent(TriggerComponent[index], value, timeoffset);
+            LogIfEVRInputError(VRDriverInput()->UpdateScalarComponent(TriggerComponent[index], value, timeoffset));
         }
     }
 
@@ -424,14 +427,15 @@ namespace VMTDriver {
         if (!m_alreadyRegistered) { return; }
         if (index == 0)
         {
-            VRDriverInput()->UpdateScalarComponent(JoystickComponent[index + 0], x, timeoffset);
-            VRDriverInput()->UpdateScalarComponent(JoystickComponent[index + 1], y, timeoffset);
+            LogIfEVRInputError(VRDriverInput()->UpdateScalarComponent(JoystickComponent[index + 0], x, timeoffset));
+            LogIfEVRInputError(VRDriverInput()->UpdateScalarComponent(JoystickComponent[index + 1], y, timeoffset));
         }
     }
 
     //仮想デバイスの状態をリセットする
     void TrackedDeviceServerDriver::Reset()
     {
+        LogMarker();
         m_poweron = false; //電源オフ状態にする
 
         if (!m_alreadyRegistered) { return; }
@@ -504,6 +508,8 @@ namespace VMTDriver {
     //OpenVRからのデバイス有効化コール
     EVRInitError TrackedDeviceServerDriver::Activate(uint32_t unObjectId)
     {
+        LogInfo("Activate: %u", unObjectId);
+
         //OpenVR Indexの記録
         m_deviceIndex = unObjectId;
 
@@ -511,101 +517,116 @@ namespace VMTDriver {
         m_propertyContainer = VRProperties()->TrackedDeviceToPropertyContainer(unObjectId);
 
         //OpenVR デバイスプロパティの設定
-        VRProperties()->SetStringProperty(m_propertyContainer, Prop_TrackingSystemName_String, "VirtualMotionTracker");
-        VRProperties()->SetStringProperty(m_propertyContainer, Prop_ModelNumber_String, m_serial.c_str());
-        VRProperties()->SetStringProperty(m_propertyContainer, Prop_SerialNumber_String, m_serial.c_str());
-        VRProperties()->SetStringProperty(m_propertyContainer, Prop_RenderModelName_String, "{vmt}vmt_rendermodel");
-        VRProperties()->SetBoolProperty(m_propertyContainer, Prop_WillDriftInYaw_Bool, false);
-        VRProperties()->SetStringProperty(m_propertyContainer, Prop_ManufacturerName_String, "VirtualMotionTracker");
-        VRProperties()->SetStringProperty(m_propertyContainer, Prop_TrackingFirmwareVersion_String, Version.c_str());
-        VRProperties()->SetStringProperty(m_propertyContainer, Prop_HardwareRevision_String, Version.c_str());
+        LogIfETrackedPropertyError(VRProperties()->SetStringProperty(m_propertyContainer, Prop_TrackingSystemName_String, "VirtualMotionTracker"));
+        LogIfETrackedPropertyError(VRProperties()->SetStringProperty(m_propertyContainer, Prop_ModelNumber_String, m_serial.c_str()));
+        LogIfETrackedPropertyError(VRProperties()->SetStringProperty(m_propertyContainer, Prop_SerialNumber_String, m_serial.c_str()));
+        LogIfETrackedPropertyError(VRProperties()->SetStringProperty(m_propertyContainer, Prop_RenderModelName_String, "{vmt}vmt_rendermodel"));
+        LogIfETrackedPropertyError(VRProperties()->SetBoolProperty(m_propertyContainer, Prop_WillDriftInYaw_Bool, false));
+        LogIfETrackedPropertyError(VRProperties()->SetStringProperty(m_propertyContainer, Prop_ManufacturerName_String, "VirtualMotionTracker"));
+        LogIfETrackedPropertyError(VRProperties()->SetStringProperty(m_propertyContainer, Prop_TrackingFirmwareVersion_String, Version.c_str()));
+        LogIfETrackedPropertyError(VRProperties()->SetStringProperty(m_propertyContainer, Prop_HardwareRevision_String, Version.c_str()));
 
-        VRProperties()->SetStringProperty(m_propertyContainer, Prop_ConnectedWirelessDongle_String, Version.c_str());
-        VRProperties()->SetBoolProperty(m_propertyContainer, Prop_DeviceIsWireless_Bool, true);
-        VRProperties()->SetBoolProperty(m_propertyContainer, Prop_DeviceIsCharging_Bool, false);
-        VRProperties()->SetFloatProperty(m_propertyContainer, Prop_DeviceBatteryPercentage_Float, 1.0f);
+        LogIfETrackedPropertyError(VRProperties()->SetStringProperty(m_propertyContainer, Prop_ConnectedWirelessDongle_String, Version.c_str()));
+        LogIfETrackedPropertyError(VRProperties()->SetBoolProperty(m_propertyContainer, Prop_DeviceIsWireless_Bool, true));
+        LogIfETrackedPropertyError(VRProperties()->SetBoolProperty(m_propertyContainer, Prop_DeviceIsCharging_Bool, false));
+        LogIfETrackedPropertyError(VRProperties()->SetFloatProperty(m_propertyContainer, Prop_DeviceBatteryPercentage_Float, 1.0f));
 
-        VRProperties()->SetBoolProperty(m_propertyContainer, Prop_Firmware_UpdateAvailable_Bool, false);
-        VRProperties()->SetBoolProperty(m_propertyContainer, Prop_Firmware_ManualUpdate_Bool, true);
-        VRProperties()->SetStringProperty(m_propertyContainer, Prop_Firmware_ManualUpdateURL_String, "https://github.com/gpsnmeajp/VirtualMotionTracker");
-        VRProperties()->SetUint64Property(m_propertyContainer, Prop_HardwareRevision_Uint64, 0);
-        VRProperties()->SetUint64Property(m_propertyContainer, Prop_FirmwareVersion_Uint64, 0);
-        VRProperties()->SetUint64Property(m_propertyContainer, Prop_FPGAVersion_Uint64, 0);
-        VRProperties()->SetUint64Property(m_propertyContainer, Prop_VRCVersion_Uint64, 0);
-        VRProperties()->SetUint64Property(m_propertyContainer, Prop_RadioVersion_Uint64, 0);
-        VRProperties()->SetUint64Property(m_propertyContainer, Prop_DongleVersion_Uint64, 0);
+        LogIfETrackedPropertyError(VRProperties()->SetBoolProperty(m_propertyContainer, Prop_Firmware_UpdateAvailable_Bool, false));
+        LogIfETrackedPropertyError(VRProperties()->SetBoolProperty(m_propertyContainer, Prop_Firmware_ManualUpdate_Bool, true));
+        LogIfETrackedPropertyError(VRProperties()->SetStringProperty(m_propertyContainer, Prop_Firmware_ManualUpdateURL_String, "https://github.com/gpsnmeajp/VirtualMotionTracker"));
+        LogIfETrackedPropertyError(VRProperties()->SetUint64Property(m_propertyContainer, Prop_HardwareRevision_Uint64, 0));
+        LogIfETrackedPropertyError(VRProperties()->SetUint64Property(m_propertyContainer, Prop_FirmwareVersion_Uint64, 0));
+        LogIfETrackedPropertyError(VRProperties()->SetUint64Property(m_propertyContainer, Prop_FPGAVersion_Uint64, 0));
+        LogIfETrackedPropertyError(VRProperties()->SetUint64Property(m_propertyContainer, Prop_VRCVersion_Uint64, 0));
+        LogIfETrackedPropertyError(VRProperties()->SetUint64Property(m_propertyContainer, Prop_RadioVersion_Uint64, 0));
+        LogIfETrackedPropertyError(VRProperties()->SetUint64Property(m_propertyContainer, Prop_DongleVersion_Uint64, 0));
 
 
 
-        VRProperties()->SetBoolProperty(m_propertyContainer, Prop_DeviceProvidesBatteryStatus_Bool, true);
-        VRProperties()->SetBoolProperty(m_propertyContainer, Prop_DeviceCanPowerOff_Bool, true);
-        VRProperties()->SetStringProperty(m_propertyContainer, Prop_Firmware_ProgrammingTarget_String, Version.c_str());
+        LogIfETrackedPropertyError(VRProperties()->SetBoolProperty(m_propertyContainer, Prop_DeviceProvidesBatteryStatus_Bool, true));
+        LogIfETrackedPropertyError(VRProperties()->SetBoolProperty(m_propertyContainer, Prop_DeviceCanPowerOff_Bool, true));
+        LogIfETrackedPropertyError(VRProperties()->SetStringProperty(m_propertyContainer, Prop_Firmware_ProgrammingTarget_String, Version.c_str()));
 
 
         
-        VRProperties()->SetBoolProperty(m_propertyContainer, Prop_Firmware_ForceUpdateRequired_Bool, false);
+        LogIfETrackedPropertyError(VRProperties()->SetBoolProperty(m_propertyContainer, Prop_Firmware_ForceUpdateRequired_Bool, false));
 
-        VRProperties()->SetUint64Property(m_propertyContainer, Prop_ParentDriver_Uint64, 0);
-        VRProperties()->SetStringProperty(m_propertyContainer, Prop_ResourceRoot_String, "vmt");
+        LogIfETrackedPropertyError(VRProperties()->SetUint64Property(m_propertyContainer, Prop_ParentDriver_Uint64, 0));
+        LogIfETrackedPropertyError(VRProperties()->SetStringProperty(m_propertyContainer, Prop_ResourceRoot_String, "vmt"));
         std::string RegisteredDeviceType_String = std::string("vmt/");
         RegisteredDeviceType_String += m_serial.c_str();
-        VRProperties()->SetStringProperty(m_propertyContainer, Prop_RegisteredDeviceType_String, RegisteredDeviceType_String.c_str());
-        VRProperties()->SetStringProperty(m_propertyContainer, Prop_InputProfilePath_String, "{vmt}/input/vmt_profile.json"); //vmt_profile.jsonに影響する
-        VRProperties()->SetBoolProperty(m_propertyContainer, Prop_NeverTracked_Bool, false);
+        LogIfETrackedPropertyError(VRProperties()->SetStringProperty(m_propertyContainer, Prop_RegisteredDeviceType_String, RegisteredDeviceType_String.c_str()));
+        LogIfETrackedPropertyError(VRProperties()->SetStringProperty(m_propertyContainer, Prop_InputProfilePath_String, "{vmt}/input/vmt_profile.json")); //vmt_profile.jsonに影響する
+        LogIfETrackedPropertyError(VRProperties()->SetBoolProperty(m_propertyContainer, Prop_NeverTracked_Bool, false));
 
 
-        VRProperties()->SetBoolProperty(m_propertyContainer, Prop_Identifiable_Bool, true);
-        VRProperties()->SetBoolProperty(m_propertyContainer, Prop_CanWirelessIdentify_Bool, true);
+        LogIfETrackedPropertyError(VRProperties()->SetBoolProperty(m_propertyContainer, Prop_Identifiable_Bool, true));
+        LogIfETrackedPropertyError(VRProperties()->SetBoolProperty(m_propertyContainer, Prop_CanWirelessIdentify_Bool, true));
 
-        VRProperties()->SetBoolProperty(m_propertyContainer, Prop_Firmware_RemindUpdate_Bool, false);
+        LogIfETrackedPropertyError(VRProperties()->SetBoolProperty(m_propertyContainer, Prop_Firmware_RemindUpdate_Bool, false));
 
-        VRProperties()->SetBoolProperty(m_propertyContainer, Prop_ReportsTimeSinceVSync_Bool, false);
+        LogIfETrackedPropertyError(VRProperties()->SetBoolProperty(m_propertyContainer, Prop_ReportsTimeSinceVSync_Bool, false));
 
-        VRProperties()->SetUint64Property(m_propertyContainer, Prop_CurrentUniverseId_Uint64, 2);
-        VRProperties()->SetUint64Property(m_propertyContainer, Prop_PreviousUniverseId_Uint64, 2);
+        LogIfETrackedPropertyError(VRProperties()->SetUint64Property(m_propertyContainer, Prop_CurrentUniverseId_Uint64, 2));
+        LogIfETrackedPropertyError(VRProperties()->SetUint64Property(m_propertyContainer, Prop_PreviousUniverseId_Uint64, 2));
 
-        VRProperties()->SetBoolProperty(m_propertyContainer, Prop_DisplaySupportsRuntimeFramerateChange_Bool, false);
-        VRProperties()->SetBoolProperty(m_propertyContainer, Prop_DisplaySupportsAnalogGain_Bool, false);
-        VRProperties()->SetFloatProperty(m_propertyContainer, Prop_DisplayMinAnalogGain_Float, 1.0f);
-        VRProperties()->SetFloatProperty(m_propertyContainer, Prop_DisplayMaxAnalogGain_Float, 1.0f);
+        LogIfETrackedPropertyError(VRProperties()->SetBoolProperty(m_propertyContainer, Prop_DisplaySupportsRuntimeFramerateChange_Bool, false));
+        LogIfETrackedPropertyError(VRProperties()->SetBoolProperty(m_propertyContainer, Prop_DisplaySupportsAnalogGain_Bool, false));
+        LogIfETrackedPropertyError(VRProperties()->SetFloatProperty(m_propertyContainer, Prop_DisplayMinAnalogGain_Float, 1.0f));
+        LogIfETrackedPropertyError(VRProperties()->SetFloatProperty(m_propertyContainer, Prop_DisplayMaxAnalogGain_Float, 1.0f));
 
+        if (m_controllerRole == ControllerRole::Left) {
+            LogIfETrackedPropertyError(VRProperties()->SetInt32Property(m_propertyContainer, Prop_ControllerRoleHint_Int32, ETrackedControllerRole::TrackedControllerRole_LeftHand));
+            //既定の握りこぶしを使用
+            LogIfEVRInputError(VRDriverInput()->CreateSkeletonComponent(m_propertyContainer, "/input/skeleton/left", "/skeleton/hand/left", "/pose/raw", EVRSkeletalTrackingLevel::VRSkeletalTracking_Partial, nullptr, 0, &SkeletonComponent));
+        }
+        else if (m_controllerRole == ControllerRole::Right) {
+            LogIfETrackedPropertyError(VRProperties()->SetInt32Property(m_propertyContainer, Prop_ControllerRoleHint_Int32, ETrackedControllerRole::TrackedControllerRole_RightHand));
+            //既定の握りこぶしを使用
+            LogIfEVRInputError(VRDriverInput()->CreateSkeletonComponent(m_propertyContainer, "/input/skeleton/right", "/skeleton/hand/right", "/pose/raw", EVRSkeletalTrackingLevel::VRSkeletalTracking_Partial, nullptr, 0, &SkeletonComponent));
+        }
+        else {
+            if (Config::GetInstance()->GetOptoutTrackingRole()) {
+                LogIfETrackedPropertyError(VRProperties()->SetInt32Property(m_propertyContainer, Prop_ControllerRoleHint_Int32, ETrackedControllerRole::TrackedControllerRole_OptOut)); //手に割り当てないように
+            }
+        }
 
-        VRProperties()->SetStringProperty(m_propertyContainer, Prop_NamedIconPathDeviceOff_String, "{vmt}/icons/Off32x32.png");
-        VRProperties()->SetStringProperty(m_propertyContainer, Prop_NamedIconPathDeviceSearching_String, "{vmt}/icons/Searching32x32.png");
-        VRProperties()->SetStringProperty(m_propertyContainer, Prop_NamedIconPathDeviceSearchingAlert_String, "{vmt}/icons/SearchingAlert32x32.png");
-        VRProperties()->SetStringProperty(m_propertyContainer, Prop_NamedIconPathDeviceReady_String, "{vmt}/icons/Ready32x32.png");
-        VRProperties()->SetStringProperty(m_propertyContainer, Prop_NamedIconPathDeviceReadyAlert_String, "{vmt}/icons/ReadyAlert32x32.png");
-        VRProperties()->SetStringProperty(m_propertyContainer, Prop_NamedIconPathDeviceNotReady_String, "{vmt}/icons/NotReady32x32.png");
-        VRProperties()->SetStringProperty(m_propertyContainer, Prop_NamedIconPathDeviceStandby_String, "{vmt}/icons/Standby32x32.png");
-        VRProperties()->SetStringProperty(m_propertyContainer, Prop_NamedIconPathDeviceStandbyAlert_String, "{vmt}/icons/StandbyAlert32x32.png");
-        VRProperties()->SetStringProperty(m_propertyContainer, Prop_NamedIconPathDeviceAlertLow_String, "{vmt}/icons/AlertLow32x32.png");
+        LogIfETrackedPropertyError(VRProperties()->SetStringProperty(m_propertyContainer, Prop_NamedIconPathDeviceOff_String, "{vmt}/icons/Off32x32.png"));
+        LogIfETrackedPropertyError(VRProperties()->SetStringProperty(m_propertyContainer, Prop_NamedIconPathDeviceSearching_String, "{vmt}/icons/Searching32x32.png"));
+        LogIfETrackedPropertyError(VRProperties()->SetStringProperty(m_propertyContainer, Prop_NamedIconPathDeviceSearchingAlert_String, "{vmt}/icons/SearchingAlert32x32.png"));
+        LogIfETrackedPropertyError(VRProperties()->SetStringProperty(m_propertyContainer, Prop_NamedIconPathDeviceReady_String, "{vmt}/icons/Ready32x32.png"));
+        LogIfETrackedPropertyError(VRProperties()->SetStringProperty(m_propertyContainer, Prop_NamedIconPathDeviceReadyAlert_String, "{vmt}/icons/ReadyAlert32x32.png"));
+        LogIfETrackedPropertyError(VRProperties()->SetStringProperty(m_propertyContainer, Prop_NamedIconPathDeviceNotReady_String, "{vmt}/icons/NotReady32x32.png"));
+        LogIfETrackedPropertyError(VRProperties()->SetStringProperty(m_propertyContainer, Prop_NamedIconPathDeviceStandby_String, "{vmt}/icons/Standby32x32.png"));
+        LogIfETrackedPropertyError(VRProperties()->SetStringProperty(m_propertyContainer, Prop_NamedIconPathDeviceStandbyAlert_String, "{vmt}/icons/StandbyAlert32x32.png"));
+        LogIfETrackedPropertyError(VRProperties()->SetStringProperty(m_propertyContainer, Prop_NamedIconPathDeviceAlertLow_String, "{vmt}/icons/AlertLow32x32.png"));
 
-        VRProperties()->SetBoolProperty(m_propertyContainer, Prop_HasDisplayComponent_Bool, false);
-        VRProperties()->SetBoolProperty(m_propertyContainer, Prop_HasCameraComponent_Bool, false);
-        VRProperties()->SetBoolProperty(m_propertyContainer, Prop_HasDriverDirectModeComponent_Bool, false);
-        VRProperties()->SetBoolProperty(m_propertyContainer, Prop_HasVirtualDisplayComponent_Bool, false);
+        LogIfETrackedPropertyError(VRProperties()->SetBoolProperty(m_propertyContainer, Prop_HasDisplayComponent_Bool, false));
+        LogIfETrackedPropertyError(VRProperties()->SetBoolProperty(m_propertyContainer, Prop_HasCameraComponent_Bool, false));
+        LogIfETrackedPropertyError(VRProperties()->SetBoolProperty(m_propertyContainer, Prop_HasDriverDirectModeComponent_Bool, false));
+        LogIfETrackedPropertyError(VRProperties()->SetBoolProperty(m_propertyContainer, Prop_HasVirtualDisplayComponent_Bool, false));
 
-        //VRProperties()->SetStringProperty(m_propertyContainer, vmt_profile.json, "NO_SETTING"); //設定不可
-        VRProperties()->SetInt32Property(m_propertyContainer, Prop_ControllerHandSelectionPriority_Int32, 0);
+        //LogIfETrackedPropertyError(VRProperties()->SetStringProperty(m_propertyContainer, vmt_profile.json, "NO_SETTING")); //設定不可
+        LogIfETrackedPropertyError(VRProperties()->SetInt32Property(m_propertyContainer, Prop_ControllerHandSelectionPriority_Int32, 0));
 
 
         //OpenVR デバイス入力情報の定義
-        VRDriverInput()->CreateBooleanComponent(m_propertyContainer, "/input/Button0/click", &ButtonComponent[0]);
-        VRDriverInput()->CreateBooleanComponent(m_propertyContainer, "/input/Button1/click", &ButtonComponent[1]);
-        VRDriverInput()->CreateBooleanComponent(m_propertyContainer, "/input/Button2/click", &ButtonComponent[2]);
-        VRDriverInput()->CreateBooleanComponent(m_propertyContainer, "/input/Button3/click", &ButtonComponent[3]);
-        VRDriverInput()->CreateBooleanComponent(m_propertyContainer, "/input/Button4/click", &ButtonComponent[4]);
-        VRDriverInput()->CreateBooleanComponent(m_propertyContainer, "/input/Button5/click", &ButtonComponent[5]);
-        VRDriverInput()->CreateBooleanComponent(m_propertyContainer, "/input/Button6/click", &ButtonComponent[6]);
-        VRDriverInput()->CreateBooleanComponent(m_propertyContainer, "/input/Button7/click", &ButtonComponent[7]);
+        LogIfEVRInputError(VRDriverInput()->CreateBooleanComponent(m_propertyContainer, "/input/Button0/click", &ButtonComponent[0]));
+        LogIfEVRInputError(VRDriverInput()->CreateBooleanComponent(m_propertyContainer, "/input/Button1/click", &ButtonComponent[1]));
+        LogIfEVRInputError(VRDriverInput()->CreateBooleanComponent(m_propertyContainer, "/input/Button2/click", &ButtonComponent[2]));
+        LogIfEVRInputError(VRDriverInput()->CreateBooleanComponent(m_propertyContainer, "/input/Button3/click", &ButtonComponent[3]));
+        LogIfEVRInputError(VRDriverInput()->CreateBooleanComponent(m_propertyContainer, "/input/Button4/click", &ButtonComponent[4]));
+        LogIfEVRInputError(VRDriverInput()->CreateBooleanComponent(m_propertyContainer, "/input/Button5/click", &ButtonComponent[5]));
+        LogIfEVRInputError(VRDriverInput()->CreateBooleanComponent(m_propertyContainer, "/input/Button6/click", &ButtonComponent[6]));
+        LogIfEVRInputError(VRDriverInput()->CreateBooleanComponent(m_propertyContainer, "/input/Button7/click", &ButtonComponent[7]));
 
-        VRDriverInput()->CreateScalarComponent(m_propertyContainer, "/input/Trigger0/value", &TriggerComponent[0], EVRScalarType::VRScalarType_Absolute, EVRScalarUnits::VRScalarUnits_NormalizedOneSided);
-        VRDriverInput()->CreateScalarComponent(m_propertyContainer, "/input/Trigger1/value", &TriggerComponent[1], EVRScalarType::VRScalarType_Absolute, EVRScalarUnits::VRScalarUnits_NormalizedOneSided);
+        LogIfEVRInputError(VRDriverInput()->CreateScalarComponent(m_propertyContainer, "/input/Trigger0/value", &TriggerComponent[0], EVRScalarType::VRScalarType_Absolute, EVRScalarUnits::VRScalarUnits_NormalizedOneSided));
+        LogIfEVRInputError(VRDriverInput()->CreateScalarComponent(m_propertyContainer, "/input/Trigger1/value", &TriggerComponent[1], EVRScalarType::VRScalarType_Absolute, EVRScalarUnits::VRScalarUnits_NormalizedOneSided));
 
-        VRDriverInput()->CreateScalarComponent(m_propertyContainer, "/input/Joystick0/x", &JoystickComponent[0], EVRScalarType::VRScalarType_Absolute, EVRScalarUnits::VRScalarUnits_NormalizedTwoSided);
-        VRDriverInput()->CreateScalarComponent(m_propertyContainer, "/input/Joystick0/y", &JoystickComponent[1], EVRScalarType::VRScalarType_Absolute, EVRScalarUnits::VRScalarUnits_NormalizedTwoSided);
+        LogIfEVRInputError(VRDriverInput()->CreateScalarComponent(m_propertyContainer, "/input/Joystick0/x", &JoystickComponent[0], EVRScalarType::VRScalarType_Absolute, EVRScalarUnits::VRScalarUnits_NormalizedTwoSided));
+        LogIfEVRInputError(VRDriverInput()->CreateScalarComponent(m_propertyContainer, "/input/Joystick0/y", &JoystickComponent[1], EVRScalarType::VRScalarType_Absolute, EVRScalarUnits::VRScalarUnits_NormalizedTwoSided));
 
-        VRDriverInput()->CreateHapticComponent(m_propertyContainer, "/output/haptic", &HapticComponent);
+        LogIfEVRInputError(VRDriverInput()->CreateHapticComponent(m_propertyContainer, "/output/haptic", &HapticComponent));
 
         return EVRInitError::VRInitError_None;
     }
@@ -613,6 +634,7 @@ namespace VMTDriver {
     //OpenVRからのデバイス無効化コール
     void TrackedDeviceServerDriver::Deactivate()
     {
+        LogMarker();
         m_deviceIndex = k_unTrackedDeviceIndexInvalid;
         m_propertyContainer = k_ulInvalidPropertyContainer;
     }
@@ -620,6 +642,7 @@ namespace VMTDriver {
     //OpenVRからのデバイス電源オフコール
     void TrackedDeviceServerDriver::EnterStandby()
     {
+        LogMarker();
         //電源オフ要求が来た
         Reset();
     }
@@ -633,6 +656,8 @@ namespace VMTDriver {
     //OpenVRからのデバイスのデバッグリクエスト
     void TrackedDeviceServerDriver::DebugRequest(const char* pchRequest, char* pchResponseBuffer, uint32_t unResponseBufferSize)
     {
+        LogMarker();
+
         //デバッグ用
         //Log::printf("DebugRequest: %s", pchRequest);
         if (unResponseBufferSize > 0) {
@@ -655,3 +680,4 @@ namespace VMTDriver {
         return m_pose;
     }
 }
+#pragma warning(pop)

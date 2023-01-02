@@ -40,6 +40,7 @@ namespace VMTDriver {
     //全仮想デバイスにリセットを指示する
     void ServerTrackedDeviceProvider::DeviceResetAll()
     {
+        LogMarker();
         for (int i = 0; i < m_devices.size(); i++)
         {
             m_devices[i].Reset();
@@ -76,6 +77,7 @@ namespace VMTDriver {
 
         //ドライバのインストールパス取得
         m_installPath = VRProperties()->GetStringProperty(m_pDriverContext->GetDriverHandle(), Prop_InstallPath_String);
+        LogInfo("Install Path: %s", m_installPath.c_str());
 
         //通信のオープン
         CommunicationManager::GetInstance()->Open();
@@ -96,13 +98,15 @@ namespace VMTDriver {
         }
 
         //起動完了
-        Log::Output("Startup OK");
+        LogInfo("Startup OK");
         return EVRInitError::VRInitError_None;
     }
 
     //OpenVRからのデバイスサーバー停止処理
     void ServerTrackedDeviceProvider::Cleanup()
     {
+        LogMarker();
+
         //OpenVR定形の開放処理を実行
         VR_CLEANUP_SERVER_DRIVER_CONTEXT()
         m_pDriverContext = nullptr;
@@ -134,7 +138,7 @@ namespace VMTDriver {
         }
 
         //OpenVRイベントの取得
-        VREvent_t VREvent;
+        VREvent_t VREvent{};
         VRServerDriverHost()->PollNextEvent(&VREvent, sizeof(VREvent_t));
 
         //各仮想デバイスのイベントを処理

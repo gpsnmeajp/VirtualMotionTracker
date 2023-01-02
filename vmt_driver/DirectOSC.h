@@ -51,9 +51,9 @@ namespace DirectOSC {
 		OSC();
 		~OSC();
 	public:
-		static OSC* GetInstance();
-		UdpListeningReceiveSocket* GetSocketRx();
-		UdpTransmitSocket* GetSocketTx();
+		static OSC& GetInstance();
+		UdpListeningReceiveSocket& GetSocketRx();
+		UdpTransmitSocket& GetSocketTx();
 
 		void Open(osc::OscPacketListener* listen, int portRx, int portTx);
 		void Close();

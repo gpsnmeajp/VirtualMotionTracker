@@ -30,9 +30,9 @@ namespace VMTDriver {
     class ServerTrackedDeviceProvider : public IServerTrackedDeviceProvider
     {
     private:
-        vector<TrackedDeviceServerDriver> m_devices;
+        vector<TrackedDeviceServerDriver> m_devices{};
         IVRDriverContext* m_pDriverContext = nullptr;
-        string m_installPath = "";
+        string m_installPath{ "" };
 
     public:
         //内部向け

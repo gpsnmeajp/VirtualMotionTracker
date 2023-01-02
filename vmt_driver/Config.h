@@ -31,17 +31,17 @@ namespace VMTDriver {
 		Config();
 
 		//Status
-		bool m_RoomMatrixStatus = false;
+		bool m_RoomMatrixStatus{ false };
 
 		//Config
 		Eigen::Matrix4d m_RoomToDriverMatrix = Eigen::Matrix4d::Identity();
-		bool m_velocityEnable = false;
-		int m_receivePort = 39570;
-		int m_sendPort = 39571;
-		bool m_optoutTrackingRole = true;
-		bool m_HMDisIndex0 = true;
-		bool m_RejectWhenCannotTracking = true;
-		bool m_DefaultAutoPoseUpdateOn = true;
+		bool m_velocityEnable{ false };
+		int m_receivePort{ 39570 };
+		int m_sendPort{ 39571 };
+		bool m_optoutTrackingRole{ true };
+		bool m_HMDisIndex0{ true };
+		bool m_RejectWhenCannotTracking{ true };
+		bool m_DefaultAutoPoseUpdateOn{ true };
 
 		json LoadJson();
 		void SaveJson(json j);

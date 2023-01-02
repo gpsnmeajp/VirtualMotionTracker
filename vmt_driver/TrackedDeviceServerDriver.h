@@ -28,6 +28,7 @@ SOFTWARE.
 //サーバーにぶら下がる子である
 namespace VMTDriver {
     const HmdQuaternion_t HmdQuaternion_Identity{ 1,0,0,0 };
+    const int boneCount{ 31 };
 
     struct RawPose {
         bool roomToDriver{};
@@ -46,12 +47,18 @@ namespace VMTDriver {
         std::chrono::system_clock::time_point time{};
     };
 
+    enum class ControllerRole {
+        None,
+        Left,
+        Right
+    };
+
     //個々のデバイス
     class TrackedDeviceServerDriver : public ITrackedDeviceServerDriver
     {
     private:
         bool m_alreadyRegistered = false;
-        string m_serial = "";
+        string m_serial{ "" };
         TrackedDeviceIndex_t m_deviceIndex{ 0 };
         PropertyContainerHandle_t m_propertyContainer{ 0 };
         uint32_t m_index = k_unTrackedDeviceIndexInvalid;
@@ -60,12 +67,17 @@ namespace VMTDriver {
         RawPose m_rawPose{ 0 };
         RawPose m_lastRawPose{ 0 };
 
+        VRBoneTransform_t m_boneTransform[boneCount]{ 0 };
+
         VRInputComponentHandle_t ButtonComponent[8]{ 0 };
         VRInputComponentHandle_t TriggerComponent[2]{ 0 };
         VRInputComponentHandle_t JoystickComponent[2]{ 0 };
         VRInputComponentHandle_t HapticComponent{ 0 };
+        VRInputComponentHandle_t SkeletonComponent{ 0 };
 
-        bool m_poweron = false;
+        ETrackedDeviceClass m_deviceClass{ ETrackedDeviceClass::TrackedDeviceClass_Invalid };
+        ControllerRole m_controllerRole{ ControllerRole::None };
+        bool m_poweron{ false };
 
         static bool s_autoUpdate;
     public:

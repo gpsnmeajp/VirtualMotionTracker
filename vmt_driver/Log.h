@@ -24,6 +24,14 @@ SOFTWARE.
 #pragma once
 #include "dllmain.h"
 
+#define LogMarker()  Log::printf("Marker:L%d:%s", __LINE__ , __FUNCTION__)
+#define LogInfo(fmt, ...)  Log::printf("Info:L%d:%s\n> " fmt , __LINE__ , __FUNCTION__, __VA_ARGS__)
+#define LogError(fmt, ...) Log::printf(" !!!! Error !!!! :L%d:%s\n> " fmt , __LINE__ , __FUNCTION__, __VA_ARGS__)
+
+#define LogIfFalse(status) do{ if(!status){Log::printf(" !!!! Error !!!! :L%d:%s", __LINE__ , __FUNCTION__);} }while(0)
+#define LogIfETrackedPropertyError(status) do{ if(status != ETrackedPropertyError::TrackedProp_Success){Log::printf(" !!!! Error !!!! :L%d:%s:%s", __LINE__ , __FUNCTION__, Log::ETrackedPropertyErrorToString(status));} }while(0)
+#define LogIfEVRInputError(status) do{ if(status != EVRInputError::VRInputError_None){Log::printf(" !!!! Error !!!! :L%d:%s:%s", __LINE__ , __FUNCTION__, Log::EVRInputErrorToString(status));} }while(0)
+
 //OpenVRの開発者コンソールに表示するログを担うstaticクラス
 namespace VMTDriver {
     class Log {
@@ -34,8 +42,11 @@ namespace VMTDriver {
 
         static void Open(IVRDriverLog*);
         static void Close();
-        static void Output(const char*);
+        static void Output(std::string msg);
 
         static int printf(const char* fmt, ...);
+
+        static const char* ETrackedPropertyErrorToString(ETrackedPropertyError status);
+        static const char* EVRInputErrorToString(EVRInputError status);
     };
 }
