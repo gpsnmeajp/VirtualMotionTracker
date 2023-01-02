@@ -82,7 +82,7 @@
     <LinkIncremental>true</LinkIncremental>
     <TargetName>driver_vmt</TargetName>
     <OutDir>$(SolutionDir)..\build\vmt\bin\win64\</OutDir>
-    <IncludePath>..\;..\openvr\headers;..\eigen-3.3.7;..\oscpack_1_1_0;$(IncludePath)</IncludePath>
+    <IncludePath>..\;..\openvr-1.23.7\headers;..\eigen-3.3.7;..\oscpack_1_1_0;$(IncludePath)</IncludePath>
     <RunCodeAnalysis>true</RunCodeAnalysis>
     <EnableClangTidyCodeAnalysis>false</EnableClangTidyCodeAnalysis>
   </PropertyGroup>
@@ -148,7 +148,7 @@
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableUAC>false</EnableUAC>
-      <AdditionalDependencies>ws2_32.lib;winmm.lib;..\openvr\lib\win64\openvr_api.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>ws2_32.lib;winmm.lib;..\openvr-1.23.7\lib\win64\openvr_api.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -176,7 +176,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="..\json.hpp" />
-    <ClInclude Include="..\openvr\headers\openvr_driver.h" />
+    <ClInclude Include="..\openvr-1.23.7\headers\openvr_driver.h" />
     <ClInclude Include="..\oscpack_1_1_0\ip\IpEndpointName.h" />
     <ClInclude Include="..\oscpack_1_1_0\ip\NetworkingUtils.h" />
     <ClInclude Include="..\oscpack_1_1_0\ip\PacketListener.h" />

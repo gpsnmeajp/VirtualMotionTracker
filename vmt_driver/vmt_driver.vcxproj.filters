@@ -45,9 +45,6 @@
     <ClInclude Include="..\json.hpp">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="..\openvr\headers\openvr_driver.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
     <ClInclude Include="DirectOSC.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
@@ -91,6 +88,9 @@
       <Filter>ヘッダー ファイル\oscpack_1_1_0</Filter>
     </ClInclude>
     <ClInclude Include="Config.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="..\openvr-1.23.7\headers\openvr_driver.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
   </ItemGroup>
