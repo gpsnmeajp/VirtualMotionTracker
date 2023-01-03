@@ -797,6 +797,15 @@ namespace vmt_manager
                 }
             }
         }
+        private void DebugCommandButton(object sender, RoutedEventArgs e)
+        {
+            var index = GetInputIndex();
+            if (index.ok)
+            {
+                osc.Send(new OscMessage("/VMT/Debug",
+                    index.i, InputVMTDebugTextBox.Text));
+            }
+        }
 
         private void Hyperlink_RequestNavigate(object sender, RequestNavigateEventArgs e)
         {

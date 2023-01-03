@@ -162,9 +162,14 @@
 					</Grid>
 					<DockPanel DockPanel.Dock="Top" Margin="1">
 						<TextBlock VerticalAlignment="Center" Text="Haptic:" DockPanel.Dock="Left" />
+						<Button Content="Haptic Test"  Margin="1" Click="HapticTestButton" DockPanel.Dock="Right"/>
 						<TextBox Name="InputVMTHapticTextBox" Text="-" IsReadOnly="True" IsEnabled="False" />
 					</DockPanel>
-					<Button Content="Haptic Test"  Margin="1" Click="HapticTestButton" DockPanel.Dock="Top"/>
+					<DockPanel DockPanel.Dock="Top" Margin="1">
+						<TextBlock VerticalAlignment="Center" Text="Debug:" DockPanel.Dock="Left" />
+						<Button Content="Send"  Margin="1" Click="DebugCommandButton" DockPanel.Dock="Right"/>
+						<TextBox Name="InputVMTDebugTextBox" Text="" />
+					</DockPanel>
 				</DockPanel>
 			</TabItem>
 			<TabItem Header="Device">

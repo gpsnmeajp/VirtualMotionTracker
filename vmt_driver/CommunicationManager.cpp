@@ -179,6 +179,7 @@ namespace VMTDriver {
 		float m10{};
 		float m11{};
 		float m12{};
+		const char* command = nullptr;
 
 		try {
 			string adr = m.AddressPattern();
@@ -294,6 +295,20 @@ namespace VMTDriver {
 			{
 				args >> enable >> osc::EndMessage;
 				TrackedDeviceServerDriver::SetAutoUpdate(enable != 0);
+			}
+			//デバッグコマンド
+			else if (adr == "/VMT/Debug")
+			{
+				args >> idx >> command >> osc::EndMessage;
+				std::string report(command);
+				report += std::string(" -> ");
+
+				if (GetServer()->IsVMTDeviceIndex(idx))
+				{
+					report += GetServer()->GetDevice(idx).VMTDebugCommand(command);
+				}
+
+				OSCReceiver::SendUnavailable(0, report.c_str());
 			}
 			//不明なパケット
 			else {

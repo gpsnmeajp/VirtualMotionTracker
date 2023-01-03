@@ -58,6 +58,13 @@ namespace VMTDriver {
         Right
     };
 
+    //コントローラの役割
+    enum class SkeletonBonePoseStatic {
+        BindHand,
+        OpenHand,
+        Fist
+    };
+
     //手骨格ボーン
     enum class SkeletonBone {
         //手の原点
@@ -141,8 +148,11 @@ namespace VMTDriver {
         void UpdateJoystickInput(uint32_t index, float x, float y, double timeoffset);
 
         void WriteSkeletonInputBuffer(uint32_t index, VRBoneTransform_t bone);
+        void WriteSkeletonInputBufferStatic(SkeletonBonePoseStatic type);
         void UpdateSkeletonInput(double timeoffset);
         void Reset();
+
+        std::string VMTDebugCommand(std::string command);
 
         void CalcJoint(DriverPose_t& pose, string serial, ReferMode_t mode, Eigen::Affine3d& RoomToDriverAffin);
         int SearchDevice(vr::TrackedDevicePose_t* poses, string serial);
