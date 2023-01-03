@@ -64,8 +64,8 @@ namespace VMTDriver {
 
 	//骨格をバッファに書き込み
 	void OSCReceiver::WriteSkeletonBone(int deviceIndex, int boneIndex,
-		double x, double y, double z,
-		double qx, double qy, double qz, double qw)
+		float x, float y, float z,
+		float qx, float qy, float qz, float qw)
 	{
 		VRBoneTransform_t bone{};
 		bone.position.v[0] = x;

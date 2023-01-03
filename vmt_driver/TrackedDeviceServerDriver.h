@@ -32,7 +32,8 @@ namespace VMTDriver {
     const int buttonCount{ 8 };
     const int triggerCount{ 2 };
     const int joystickCount{ 2 };
-
+   
+    //生姿勢
     struct RawPose {
         bool roomToDriver{};
         int idx{};
@@ -50,6 +51,7 @@ namespace VMTDriver {
         std::chrono::system_clock::time_point time{};
     };
 
+    //コントローラの役割
     enum class ControllerRole {
         None,
         Left,
@@ -61,39 +63,37 @@ namespace VMTDriver {
         //手の原点
         Root = 0,
         //手のボーン
-        Wrist,
-        Thumb0,
-        Thumb1,
-        Thumb2,
-        Thumb3,
-        IndexFinger0,
-        IndexFinger1,
-        IndexFinger2,
-        IndexFinger3,
-        IndexFinger4,
-        MiddleFinger0,
-        MiddleFinger1,
-        MiddleFinger2,
-        MiddleFinger3,
-        MiddleFinger4,
-        RingFinger0,
-        RingFinger1,
-        RingFinger2,
-        RingFinger3,
-        RingFinger4,
-        PinkyFinger0,
-        PinkyFinger1,
-        PinkyFinger2,
-        PinkyFinger3,
-        PinkyFinger4,
+        Wrist = 1,
+        Thumb0_ThumbProximal = 2,
+        Thumb1_ThumbIntermediate = 3,
+        Thumb2_ThumbDistal = 4,
+        Thumb3_ThumbEnd = 5,
+        IndexFinger0_IndexProximal = 6,
+        IndexFinger1_IndexIntermediate = 7,
+        IndexFinger2_IndexDistal = 8,
+        IndexFinger3_IndexDistal2 = 9,
+        IndexFinger4_IndexEnd = 10,
+        MiddleFinger0_MiddleProximal = 11,
+        MiddleFinger1_MiddleIntermediate = 12,
+        MiddleFinger2_MiddleDistal = 13,
+        MiddleFinger3_MiddleDistal2 = 14,
+        MiddleFinger4_MiddleEnd = 15,
+        RingFinger0_RingProximal = 16,
+        RingFinger1_RingIntermediate = 17,
+        RingFinger2_RingDistal = 18,
+        RingFinger3_RingDistal2 = 19,
+        RingFinger4_RingEnd = 20,
+        PinkyFinger0_LittleProximal = 21,
+        PinkyFinger1_LittleIntermediate = 22,
+        PinkyFinger2_LittleDistal = 23,
+        PinkyFinger3_LittleDistal2 = 24,
+        PinkyFinger4_LittleEnd = 25,
         //補助ボーン(ルートの子)
-        Aux_Thumb,
-        Aux_IndexFinger,
-        Aux_MiddleFinger,
-        Aux_RingFinger,
-        Aux_PinkyFinger,
-        //番兵
-        ENUM_MAX
+        Aux_Thumb_ThumbHelper = 26,
+        Aux_IndexFinger_IndexHelper = 27,
+        Aux_MiddleFinger_MiddleHelper = 28,
+        Aux_RingFinger_RingHelper = 29,
+        Aux_PinkyFinger_LittleHelper = 30,
     };
 
     //個々のデバイス

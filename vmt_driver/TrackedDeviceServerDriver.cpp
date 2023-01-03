@@ -458,6 +458,7 @@ namespace VMTDriver {
     void TrackedDeviceServerDriver::UpdateSkeletonInput(double timeoffset)
     {
         if (!m_alreadyRegistered) { return; }
+        if (m_controllerRole == ControllerRole::None) { return;  } //コントローラでなければ受け付けない
         LogIfEVRInputError(VRDriverInput()->UpdateSkeletonComponent(SkeletonComponent, EVRSkeletalMotionRange::VRSkeletalMotionRange_WithController, m_boneTransform, skeletonBoneCount));
         LogIfEVRInputError(VRDriverInput()->UpdateSkeletonComponent(SkeletonComponent, EVRSkeletalMotionRange::VRSkeletalMotionRange_WithoutController, m_boneTransform, skeletonBoneCount));
     }
