@@ -78,41 +78,6 @@ namespace VMTDriver {
         }
     }
 
-    //内部姿勢→OpenVR姿勢の変換と、相対座標計算処理を行う
-    void TrackedDeviceServerDriver::CalcVelocity(DriverPose_t& pose) {
-        //経過時間を計算
-        double duration_sec = std::chrono::duration_cast<std::chrono::microseconds>((m_rawPose.time - m_lastRawPose.time)).count() / (1000.0 * 1000.0);
-        //速度・角速度を計算
-        if (duration_sec > std::numeric_limits<double>::epsilon())
-        {
-            pose.vecVelocity[0] = (m_rawPose.x - m_lastRawPose.x) / duration_sec;
-            pose.vecVelocity[1] = (m_rawPose.y - m_lastRawPose.y) / duration_sec;
-            pose.vecVelocity[2] = (m_rawPose.z - m_lastRawPose.z) / duration_sec;
-
-            Eigen::Quaterniond q1(m_rawPose.qw, m_rawPose.qx, m_rawPose.qy, m_rawPose.qz);
-            Eigen::Quaterniond q2(m_lastRawPose.qw, m_lastRawPose.qx, m_lastRawPose.qy, m_lastRawPose.qz);
-
-            Eigen::Quaterniond dq = q1 * q2.inverse();
-            Eigen::AngleAxisd dAAx(dq);
-            double angle = dAAx.angle();
-            double angularVelocity = angle / duration_sec;
-            Eigen::Vector3d axis = dAAx.axis();
-            Eigen::Vector3d vecAngularVelocity = axis * angularVelocity;
-
-            pose.vecAngularVelocity[0] = vecAngularVelocity.x();
-            pose.vecAngularVelocity[1] = vecAngularVelocity.y();
-            pose.vecAngularVelocity[2] = vecAngularVelocity.z();
-        }
-        else {
-            pose.vecVelocity[0] = 0.0f;
-            pose.vecVelocity[1] = 0.0f;
-            pose.vecVelocity[2] = 0.0f;
-            pose.vecAngularVelocity[0] = 0.0f;
-            pose.vecAngularVelocity[1] = 0.0f;
-            pose.vecAngularVelocity[2] = 0.0f;
-        }
-    }
-
     //Joint計算を行う
     void TrackedDeviceServerDriver::CalcJoint(DriverPose_t& pose, string serial, ReferMode_t mode, Eigen::Affine3d& RoomToDriverAffin) {
         vr::TrackedDevicePose_t devicePoses[k_unMaxTrackedDeviceCount]{};
@@ -318,11 +283,6 @@ namespace VMTDriver {
             return pose;
         }
 
-        //速度エミュレーションが有効な場合、速度・各速度の計算を行い、更新する
-        if (Config::GetInstance()->GetVelocityEnable()) {
-            CalcVelocity(pose);
-        }
-
         //トラッキングモードに合わせて処理する
         switch (m_rawPose.mode) {
             case ReferMode_t::None: {
@@ -466,7 +426,6 @@ namespace VMTDriver {
     //仮想デバイスの状態をリセットする
     void TrackedDeviceServerDriver::Reset()
     {
-        LogMarker();
         m_poweron = false; //電源オフ状態にする
 
         if (!m_alreadyRegistered) { return; }

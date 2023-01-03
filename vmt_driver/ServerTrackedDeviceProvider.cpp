@@ -97,6 +97,12 @@ namespace VMTDriver {
             m_devices[i].SetObjectIndex(i);
         }
 
+        //起動時に既定のコントローラとして登録する処理
+        if (Config::GetInstance()->GetDefaultControllerDeviceRegistration()) {
+            m_devices[0].RegisterToVRSystem(2);//VMT_0 = Controller Left
+            m_devices[1].RegisterToVRSystem(3);//VMT_1 = Controller Right
+        }
+
         //起動完了
         LogInfo("Startup OK");
         return EVRInitError::VRInitError_None;

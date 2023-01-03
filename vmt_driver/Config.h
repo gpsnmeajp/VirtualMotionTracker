@@ -35,13 +35,13 @@ namespace VMTDriver {
 
 		//Config
 		Eigen::Matrix4d m_RoomToDriverMatrix = Eigen::Matrix4d::Identity();
-		bool m_velocityEnable{ false };
 		int m_receivePort{ 39570 };
 		int m_sendPort{ 39571 };
 		bool m_optoutTrackingRole{ true };
 		bool m_HMDisIndex0{ true };
 		bool m_RejectWhenCannotTracking{ true };
 		bool m_DefaultAutoPoseUpdateOn{ true };
+		bool m_DefaultControllerDeviceRegistration{ false };
 
 		json LoadJson();
 		void SaveJson(json j);
@@ -59,12 +59,12 @@ namespace VMTDriver {
 		void SetRoomMatrix(bool save, float m1, float m2, float m3, float m4, float m5, float m6, float m7, float m8, float m9, float m10, float m11, float m12);
 
 		Eigen::Matrix4d& GetRoomToDriverMatrix();
-		bool GetVelocityEnable();
 		int GetReceivePort();
 		int GetSendPort();
 		bool GetOptoutTrackingRole();
 		bool GetHMDisIndex0();
 		bool GetRejectWhenCannotTracking();
 		bool GetDefaultAutoPoseUpdateOn();
+		bool GetDefaultControllerDeviceRegistration();
 	};
 }

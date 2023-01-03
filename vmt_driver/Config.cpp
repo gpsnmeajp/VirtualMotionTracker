@@ -132,6 +132,10 @@ namespace VMTDriver {
 		{
 			j["DefaultAutoPoseUpdateOn"] = true;
 		}
+		if (!j.contains("DefaultControllerDeviceRegistration"))
+		{
+			j["DefaultControllerDeviceRegistration"] = false;
+		}
 		return j;
 	}
 
@@ -150,10 +154,6 @@ namespace VMTDriver {
 					, j["RoomMatrix"][8], j["RoomMatrix"][9], j["RoomMatrix"][10], j["RoomMatrix"][11]
 					, 0, 0, 0, 1;
 				SetRoomMatrixStatus(true); //ルーム行列がセットされた
-			}
-			if (j.contains("VelocityEnable"))
-			{
-				m_velocityEnable = j["VelocityEnable"];
 			}
 			if (j.contains("ReceivePort"))
 			{
@@ -183,6 +183,11 @@ namespace VMTDriver {
 			{
 				m_DefaultAutoPoseUpdateOn = j["DefaultAutoPoseUpdateOn"];
 			}
+			if (j.contains("DefaultControllerDeviceRegistration"))
+			{
+				m_DefaultControllerDeviceRegistration = j["DefaultControllerDeviceRegistration"];
+			}
+			SaveJson(j);
 		}
 		catch (...) {
 			m_RoomToDriverMatrix = Eigen::Matrix4d::Identity();
@@ -207,12 +212,6 @@ namespace VMTDriver {
 	Eigen::Matrix4d& Config::GetRoomToDriverMatrix()
 	{
 		return m_RoomToDriverMatrix;
-	}
-
-	//速度有効化の取得
-	bool Config::GetVelocityEnable()
-	{
-		return m_velocityEnable;
 	}
 
 	//受信ポートの取得
@@ -272,5 +271,11 @@ namespace VMTDriver {
 	bool Config::GetDefaultAutoPoseUpdateOn()
 	{
 		return m_DefaultAutoPoseUpdateOn;
+	}
+
+	//起動直後にコントローラとして登録するかを取得する
+	bool Config::GetDefaultControllerDeviceRegistration()
+	{
+		return m_DefaultControllerDeviceRegistration;
 	}
 }

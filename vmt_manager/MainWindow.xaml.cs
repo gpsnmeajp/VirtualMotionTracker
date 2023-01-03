@@ -886,7 +886,8 @@ namespace vmt_manager
             try
             {
                 JsonTextBox.Text = File.ReadAllText(jsonPath, new UTF8Encoding(false));
-                MessageBox.Show("Loaded.", title, MessageBoxButton.OK, MessageBoxImage.Information);
+                System.Media.SystemSounds.Beep.Play();
+                //MessageBox.Show("Loaded.", title, MessageBoxButton.OK, MessageBoxImage.Information);
             }
             catch (Exception ex) {
                 MessageBox.Show(ex.Message + "\n" + ex.StackTrace, title);
@@ -900,7 +901,8 @@ namespace vmt_manager
             try
             {
                 File.WriteAllText(jsonPath, JsonTextBox.Text, new UTF8Encoding(false));
-                MessageBox.Show("Saved.", title, MessageBoxButton.OK, MessageBoxImage.Information);
+                System.Media.SystemSounds.Beep.Play();
+                //MessageBox.Show("Saved.", title, MessageBoxButton.OK, MessageBoxImage.Information);
             }
             catch (Exception ex)
             {

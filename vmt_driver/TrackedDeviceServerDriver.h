@@ -144,7 +144,6 @@ namespace VMTDriver {
         void UpdateSkeletonInput(double timeoffset);
         void Reset();
 
-        void CalcVelocity(DriverPose_t& pose);
         void CalcJoint(DriverPose_t& pose, string serial, ReferMode_t mode, Eigen::Affine3d& RoomToDriverAffin);
         int SearchDevice(vr::TrackedDevicePose_t* poses, string serial);
         void RejectTracking(DriverPose_t& pose);
