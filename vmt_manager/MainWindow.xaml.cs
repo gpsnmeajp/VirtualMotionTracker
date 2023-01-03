@@ -316,6 +316,8 @@ namespace vmt_manager
                 HmdMatrix34_t m = new HmdMatrix34_t();
                 OpenVR.ChaperoneSetup.GetWorkingStandingZeroPoseToRawTrackingPose(ref m);
 
+                StatusBarDashboardAlertTextBlock.Visibility = OpenVR.Overlay.IsDashboardVisible()?Visibility.Visible:Visibility.Collapsed;
+
                 RoomMatrixTextBox.Text =
                     String.Format("{0:0.00}, {1:0.00}, {2:0.00}, {3:0.00}\n{4:0.00}, {5:0.00}, {6:0.00}, {7:0.00}\n{8:0.00}, {9:0.00}, {10:0.00}, {11:0.00}\n", m.m0, m.m1, m.m2, m.m3, m.m4, m.m5, m.m6, m.m7, m.m8, m.m9, m.m10, m.m11);
                 if (

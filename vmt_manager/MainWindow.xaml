@@ -5,13 +5,16 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:vmt_manager"
 		Width="390"
-		Height="400"
+		Height="450"
         mc:Ignorable="d"
         Title="VMT Manager" Loaded="Window_Loaded" Closed="Window_Closed" ResizeMode="NoResize">
 	<DockPanel LastChildFill="True">
 		<StatusBar DockPanel.Dock="Bottom" Name="StatusBar">
 			<StatusBarItem>
-				<TextBlock Name="StatusBarTextBlock" Text="Virtual Motion Tracker" FontWeight="Bold" />
+				<DockPanel>
+					<TextBlock Name="StatusBarTextBlock" Text="Virtual Motion Tracker" FontWeight="Bold" DockPanel.Dock="Top" />
+					<TextBlock Name="StatusBarDashboardAlertTextBlock" Visibility="Collapsed" Text="Steam VR Dashboard is opening. Button, Finger does not working.&#xA;SteamVR ダッシュボードが開いています。ボタン操作・指姿勢は無効です。" Background="Red" Foreground="White" FontWeight="Bold" DockPanel.Dock="Top" />
+				</DockPanel>
 			</StatusBarItem>
 		</StatusBar>
 		<TabControl DockPanel.Dock="Top" Name="MainTabControl">
@@ -199,10 +202,26 @@
 				</DockPanel>
 			</TabItem>
 			<TabItem Header="Device">
-				<DockPanel LastChildFill="False">
+				<DockPanel LastChildFill="True">
 					<Button Content="Reload" Margin="1" Click="DeviceReloadButton" DockPanel.Dock="Top"/>
 					<Button Content="Copy to Clipboard" Margin="1" Click="DeviceCopyButton" DockPanel.Dock="Top"/>
 					<ListView Name="DeviceListView" Margin="1" DockPanel.Dock="Top"/>
+				</DockPanel>
+			</TabItem>
+			<TabItem Header="Settings">
+				<DockPanel LastChildFill="False">
+					<DockPanel LastChildFill="True" DockPanel.Dock="Top">
+						<Button Content="false" Width="50" Margin="0,0,5,0" DockPanel.Dock="Right"/>
+						<Button Content="true" Width="50" Margin="0,0,5,0" DockPanel.Dock="Right"/>
+						<TextBlock Text="Hello" DockPanel.Dock="Left"/>
+					</DockPanel>
+					<Border Height="1" Margin="0,2,0,2" Background="#AAA" DockPanel.Dock="Top" />
+					<DockPanel LastChildFill="True" DockPanel.Dock="Top">
+						<Button Content="false" Width="50" Margin="0,0,5,0" DockPanel.Dock="Right"/>
+						<Button Content="true" Width="50" Margin="0,0,5,0" DockPanel.Dock="Right"/>
+						<TextBlock Text="Hello" DockPanel.Dock="Left"/>
+					</DockPanel>
+					<Border Height="1" Margin="0,2,0,2" Background="#AAA" DockPanel.Dock="Top" />
 				</DockPanel>
 			</TabItem>
 			<TabItem Header="Json">
