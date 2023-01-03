@@ -170,6 +170,32 @@
 						<Button Content="Send"  Margin="1" Click="DebugCommandButton" DockPanel.Dock="Right"/>
 						<TextBox Name="InputVMTDebugTextBox" Text="" />
 					</DockPanel>
+
+					<DockPanel DockPanel.Dock="Top" Margin="1">
+						<TextBlock Text="RootAndWrist" DockPanel.Dock="Left" Width="80" />
+						<Slider Minimum="0" Maximum="1" Value="0" Name="RootAndWristSlider" ValueChanged="RootAndWristSlider_ValueChanged" DockPanel.Dock="Left"/>
+					</DockPanel>
+					<DockPanel DockPanel.Dock="Top" Margin="1">
+						<TextBlock Text="Thumb" DockPanel.Dock="Left" Width="80" />
+						<Slider Minimum="0" Maximum="1" Value="0" Name="ThumbSlider" ValueChanged="ThumbSlider_ValueChanged" DockPanel.Dock="Left"/>
+					</DockPanel>
+					<DockPanel DockPanel.Dock="Top" Margin="1">
+						<TextBlock Text="Index" DockPanel.Dock="Left" Width="80" />
+						<Slider Minimum="0" Maximum="1" Value="0" Name="IndexSlider" ValueChanged="IndexSlider_ValueChanged" DockPanel.Dock="Left"/>
+					</DockPanel>
+					<DockPanel DockPanel.Dock="Top" Margin="1">
+						<TextBlock Text="Middle" DockPanel.Dock="Left" Width="80" />
+						<Slider Minimum="0" Maximum="1" Value="0" Name="MiddleSlider" ValueChanged="MiddleSlider_ValueChanged" DockPanel.Dock="Left"/>
+					</DockPanel>
+					<DockPanel DockPanel.Dock="Top" Margin="1">
+						<TextBlock Text="Ring" DockPanel.Dock="Left" Width="80" />
+						<Slider Minimum="0" Maximum="1" Value="0" Name="RingSlider" ValueChanged="RingSlider_ValueChanged" DockPanel.Dock="Left"/>
+					</DockPanel>
+					<DockPanel DockPanel.Dock="Top" Margin="1">
+						<TextBlock Text="PinkyLittle" DockPanel.Dock="Left" Width="80" />
+						<Slider Minimum="0" Maximum="1" Value="0" Name="PinkyLittleSlider" ValueChanged="PinkyLittleSlider_ValueChanged" DockPanel.Dock="Left"/>
+					</DockPanel>
+
 				</DockPanel>
 			</TabItem>
 			<TabItem Header="Device">

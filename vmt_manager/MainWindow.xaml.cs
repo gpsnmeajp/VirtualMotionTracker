@@ -807,6 +807,91 @@ namespace vmt_manager
             }
         }
 
+        private void RootAndWristSlider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
+        {
+            var index = GetInputIndex();
+
+            int fingerIndex = 0;
+            float timeoffset = 0;
+            if (index.ok && RootAndWristSlider != null)
+            {
+                osc.Send(new OscMessage("/VMT/Skeleton/Scalar",
+                    index.i, fingerIndex, (float)RootAndWristSlider.Value));
+                osc.Send(new OscMessage("/VMT/Skeleton/Apply",
+                    index.i, timeoffset));
+            }
+        }
+        private void ThumbSlider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
+        {
+            var index = GetInputIndex();
+
+            int fingerIndex = 1;
+            float timeoffset = 0;
+            if (index.ok && ThumbSlider != null)
+            {
+                osc.Send(new OscMessage("/VMT/Skeleton/Scalar",
+                    index.i, fingerIndex, (float)ThumbSlider.Value));
+                osc.Send(new OscMessage("/VMT/Skeleton/Apply",
+                    index.i, timeoffset));
+            }
+        }
+        private void IndexSlider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
+        {
+            var index = GetInputIndex();
+
+            int fingerIndex = 2;
+            float timeoffset = 0;
+            if (index.ok && IndexSlider != null)
+            {
+                osc.Send(new OscMessage("/VMT/Skeleton/Scalar",
+                    index.i, fingerIndex, (float)IndexSlider.Value));
+                osc.Send(new OscMessage("/VMT/Skeleton/Apply",
+                    index.i, timeoffset));
+            }
+        }
+        private void MiddleSlider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
+        {
+            var index = GetInputIndex();
+
+            int fingerIndex = 3;
+            float timeoffset = 0;
+            if (index.ok && MiddleSlider != null)
+            {
+                osc.Send(new OscMessage("/VMT/Skeleton/Scalar",
+                    index.i, fingerIndex, (float)MiddleSlider.Value));
+                osc.Send(new OscMessage("/VMT/Skeleton/Apply",
+                    index.i, timeoffset));
+            }
+        }
+        private void RingSlider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
+        {
+            var index = GetInputIndex();
+
+            int fingerIndex = 4;
+            float timeoffset = 0;
+            if (index.ok && RingSlider != null)
+            {
+                osc.Send(new OscMessage("/VMT/Skeleton/Scalar",
+                    index.i, fingerIndex, (float)RingSlider.Value));
+                osc.Send(new OscMessage("/VMT/Skeleton/Apply",
+                    index.i, timeoffset));
+            }
+        }
+        private void PinkyLittleSlider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
+        {
+            var index = GetInputIndex();
+
+            int fingerIndex = 5;
+            float timeoffset = 0;
+            if (index.ok && PinkyLittleSlider != null)
+            {
+                osc.Send(new OscMessage("/VMT/Skeleton/Scalar",
+                    index.i, fingerIndex, (float)PinkyLittleSlider.Value));
+                osc.Send(new OscMessage("/VMT/Skeleton/Apply",
+                    index.i, timeoffset));
+            }
+        }
+
         private void Hyperlink_RequestNavigate(object sender, RequestNavigateEventArgs e)
         {
             System.Diagnostics.Process.Start(e.Uri.AbsoluteUri);

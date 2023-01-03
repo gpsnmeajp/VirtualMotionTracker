@@ -616,6 +616,107 @@ namespace VMTDriver {
         }
     }
 
+    //仮想デバイスからデバイスバッファへ指定Indexのボーンについて静的骨格をLerpした値を書き込む
+    void TrackedDeviceServerDriver::WriteSkeletonInputBufferStaticLerpFinger(uint32_t finger, double t) {
+        if (!m_alreadyRegistered) { return; }
+        if (m_controllerRole == ControllerRole::None) { return; } //コントローラでなければ受け付けない
+
+        switch ((SkeletonLerpFinder)finger) {
+        case SkeletonLerpFinder::RootAndWrist:
+            WriteSkeletonInputBufferStaticLerpBone((uint32_t)SkeletonBone::Root, t);
+            WriteSkeletonInputBufferStaticLerpBone((uint32_t)SkeletonBone::Wrist, t);
+            break;
+        case SkeletonLerpFinder::Thumb:
+            WriteSkeletonInputBufferStaticLerpBone((uint32_t)SkeletonBone::Thumb0_ThumbProximal, t);
+            WriteSkeletonInputBufferStaticLerpBone((uint32_t)SkeletonBone::Thumb1_ThumbIntermediate, t);
+            WriteSkeletonInputBufferStaticLerpBone((uint32_t)SkeletonBone::Thumb2_ThumbDistal, t);
+            WriteSkeletonInputBufferStaticLerpBone((uint32_t)SkeletonBone::Thumb3_ThumbEnd, t);
+            WriteSkeletonInputBufferStaticLerpBone((uint32_t)SkeletonBone::Aux_Thumb_ThumbHelper, t);
+            break;
+        case SkeletonLerpFinder::Index:
+            WriteSkeletonInputBufferStaticLerpBone((uint32_t)SkeletonBone::IndexFinger0_IndexProximal, t);
+            WriteSkeletonInputBufferStaticLerpBone((uint32_t)SkeletonBone::IndexFinger1_IndexIntermediate, t);
+            WriteSkeletonInputBufferStaticLerpBone((uint32_t)SkeletonBone::IndexFinger2_IndexDistal, t);
+            WriteSkeletonInputBufferStaticLerpBone((uint32_t)SkeletonBone::IndexFinger3_IndexDistal2, t);
+            WriteSkeletonInputBufferStaticLerpBone((uint32_t)SkeletonBone::IndexFinger4_IndexEnd, t);
+            WriteSkeletonInputBufferStaticLerpBone((uint32_t)SkeletonBone::Aux_IndexFinger_IndexHelper, t);
+            break;
+        case SkeletonLerpFinder::Middle:
+            WriteSkeletonInputBufferStaticLerpBone((uint32_t)SkeletonBone::MiddleFinger0_MiddleProximal, t);
+            WriteSkeletonInputBufferStaticLerpBone((uint32_t)SkeletonBone::MiddleFinger1_MiddleIntermediate, t);
+            WriteSkeletonInputBufferStaticLerpBone((uint32_t)SkeletonBone::MiddleFinger2_MiddleDistal, t);
+            WriteSkeletonInputBufferStaticLerpBone((uint32_t)SkeletonBone::MiddleFinger3_MiddleDistal2, t);
+            WriteSkeletonInputBufferStaticLerpBone((uint32_t)SkeletonBone::MiddleFinger4_MiddleEnd, t);
+            WriteSkeletonInputBufferStaticLerpBone((uint32_t)SkeletonBone::Aux_MiddleFinger_MiddleHelper, t);
+            break;
+        case SkeletonLerpFinder::Ring:
+            WriteSkeletonInputBufferStaticLerpBone((uint32_t)SkeletonBone::RingFinger0_RingProximal, t);
+            WriteSkeletonInputBufferStaticLerpBone((uint32_t)SkeletonBone::RingFinger1_RingIntermediate, t);
+            WriteSkeletonInputBufferStaticLerpBone((uint32_t)SkeletonBone::RingFinger2_RingDistal, t);
+            WriteSkeletonInputBufferStaticLerpBone((uint32_t)SkeletonBone::RingFinger3_RingDistal2, t);
+            WriteSkeletonInputBufferStaticLerpBone((uint32_t)SkeletonBone::RingFinger4_RingEnd, t);
+            WriteSkeletonInputBufferStaticLerpBone((uint32_t)SkeletonBone::Aux_RingFinger_RingHelper, t);
+            break;
+        case SkeletonLerpFinder::PinkyLittle:
+            WriteSkeletonInputBufferStaticLerpBone((uint32_t)SkeletonBone::PinkyFinger0_LittleProximal, t);
+            WriteSkeletonInputBufferStaticLerpBone((uint32_t)SkeletonBone::PinkyFinger1_LittleIntermediate, t);
+            WriteSkeletonInputBufferStaticLerpBone((uint32_t)SkeletonBone::PinkyFinger2_LittleDistal, t);
+            WriteSkeletonInputBufferStaticLerpBone((uint32_t)SkeletonBone::PinkyFinger3_LittleDistal2, t);
+            WriteSkeletonInputBufferStaticLerpBone((uint32_t)SkeletonBone::PinkyFinger4_LittleEnd, t);
+            WriteSkeletonInputBufferStaticLerpBone((uint32_t)SkeletonBone::Aux_PinkyFinger_LittleHelper, t);
+            break;
+        default:LogError("Finger out of range: %u", finger); 
+            break;
+        }
+    }
+
+
+    //仮想デバイスからデバイスバッファへ指定Indexのボーンについて静的骨格をLerpした値を書き込む
+    void TrackedDeviceServerDriver::WriteSkeletonInputBufferStaticLerpBone(uint32_t index, double t)
+    {
+        if (!m_alreadyRegistered) { return; }
+        if (m_controllerRole == ControllerRole::None) { return; } //コントローラでなければ受け付けない
+
+        if (0 <= index && index < skeletonBoneCount)
+        {
+            if (m_controllerRole == ControllerRole::Left) {
+                Eigen::Quaterniond a(FistParentSpaceBonesLeft[index].orientation.w, FistParentSpaceBonesLeft[index].orientation.x, FistParentSpaceBonesLeft[index].orientation.y, FistParentSpaceBonesLeft[index].orientation.z);
+                Eigen::Quaterniond b(OpenHandParentSpaceBonesLeft[index].orientation.w, OpenHandParentSpaceBonesLeft[index].orientation.x, OpenHandParentSpaceBonesLeft[index].orientation.y, OpenHandParentSpaceBonesLeft[index].orientation.z);
+                Eigen::Quaterniond r = a.slerp(t, b);
+
+                VRBoneTransform_t bone{};
+                bone.position.v[0] = FistParentSpaceBonesLeft[index].position.v[0] * (1.0 - t) + OpenHandParentSpaceBonesLeft[index].position.v[0] * t;
+                bone.position.v[1] = FistParentSpaceBonesLeft[index].position.v[1] * (1.0 - t) + OpenHandParentSpaceBonesLeft[index].position.v[1] * t;
+                bone.position.v[2] = FistParentSpaceBonesLeft[index].position.v[2] * (1.0 - t) + OpenHandParentSpaceBonesLeft[index].position.v[2] * t;
+                bone.orientation.x = r.x();
+                bone.orientation.y = r.y();
+                bone.orientation.z = r.z();
+                bone.orientation.w = r.w();
+
+                m_boneTransform[index] = bone;
+            }
+            else {
+                Eigen::Quaterniond a(FistParentSpaceBonesRight[index].orientation.w, FistParentSpaceBonesRight[index].orientation.x, FistParentSpaceBonesRight[index].orientation.y, FistParentSpaceBonesRight[index].orientation.z);
+                Eigen::Quaterniond b(OpenHandParentSpaceBonesRight[index].orientation.w, OpenHandParentSpaceBonesRight[index].orientation.x, OpenHandParentSpaceBonesRight[index].orientation.y, OpenHandParentSpaceBonesRight[index].orientation.z);
+                Eigen::Quaterniond r = a.slerp(t, b);
+
+                VRBoneTransform_t bone{};
+                bone.position.v[0] = FistParentSpaceBonesRight[index].position.v[0] * (1.0 - t) + OpenHandParentSpaceBonesRight[index].position.v[0] * t;
+                bone.position.v[1] = FistParentSpaceBonesRight[index].position.v[1] * (1.0 - t) + OpenHandParentSpaceBonesRight[index].position.v[1] * t;
+                bone.position.v[2] = FistParentSpaceBonesRight[index].position.v[2] * (1.0 - t) + OpenHandParentSpaceBonesRight[index].position.v[2] * t;
+                bone.orientation.x = r.x();
+                bone.orientation.y = r.y();
+                bone.orientation.z = r.z();
+                bone.orientation.w = r.w();
+
+                m_boneTransform[index] = bone;
+            }
+        }
+        else {
+            LogError("Index out of range: %u", index);
+        }
+    }
+
     //仮想デバイスからデバイスバッファへ静的骨格状態を書き込む
     void TrackedDeviceServerDriver::WriteSkeletonInputBufferStatic(SkeletonBonePoseStatic type)
     {
@@ -699,17 +800,21 @@ namespace VMTDriver {
         for (int i = 0; i < joystickCount / 2; i++) {
             UpdateJoystickInput(i, 0, 0, 0);
         }
-        /*
-        for (int i = 0; i < skeletonBoneCount; i++) {
-            WriteSkeletonInputBuffer(i, FistParentSpaceBones[i]);
-        }
+
+        //骨格初期値を設定(コントローラのみ)
+        WriteSkeletonInputBufferStatic(SkeletonBonePoseStatic::BindHand);
         UpdateSkeletonInput(0);
-        */
     }
 
     //デバッグコマンド処理(VMT Managerから送られてくる)
     std::string TrackedDeviceServerDriver::VMTDebugCommand(std::string command)
     {
+        int index =0 ;
+        float t = 0;
+        sscanf(command.c_str(), "%d:%f", &index, &t);
+
+        WriteSkeletonInputBufferStaticLerpFinger(index, t);
+        /*
         if (command == "1") {
             WriteSkeletonInputBufferStatic(SkeletonBonePoseStatic::BindHand);
             UpdateSkeletonInput(0);
@@ -726,6 +831,8 @@ namespace VMTDriver {
             return "OpenHand OK";
         }
         return "? NG";
+        */
+        return std::to_string(index) + ":"+std::to_string(t);
     }
 
     //仮想デバイスからOpenVRへデバイスの姿勢の更新を通知する(サーバーから毎フレームコールされる)
@@ -872,8 +979,6 @@ namespace VMTDriver {
             LogIfETrackedPropertyError(VRProperties()->SetInt32Property(m_propertyContainer, Prop_ControllerRoleHint_Int32, ETrackedControllerRole::TrackedControllerRole_LeftHand));
             //指ボーン制限なし(既定の握りこぶしを使用)
             LogIfEVRInputError(VRDriverInput()->CreateSkeletonComponent(m_propertyContainer, "/input/skeleton/left", "/skeleton/hand/left", "/pose/raw", EVRSkeletalTrackingLevel::VRSkeletalTracking_Partial, nullptr, 0, &SkeletonComponent));
-            //骨格初期値を設定
-            WriteSkeletonInputBufferStatic(SkeletonBonePoseStatic::BindHand);
         }
         else if (m_controllerRole == ControllerRole::Right) {
             LogInfo("Skeleton: %s", "Right");
@@ -881,8 +986,6 @@ namespace VMTDriver {
             LogIfETrackedPropertyError(VRProperties()->SetInt32Property(m_propertyContainer, Prop_ControllerRoleHint_Int32, ETrackedControllerRole::TrackedControllerRole_RightHand));
             //指ボーン制限なし(既定の握りこぶしを使用)
             LogIfEVRInputError(VRDriverInput()->CreateSkeletonComponent(m_propertyContainer, "/input/skeleton/right", "/skeleton/hand/right", "/pose/raw", EVRSkeletalTrackingLevel::VRSkeletalTracking_Partial, nullptr, 0, &SkeletonComponent));
-            //骨格初期値を設定
-            WriteSkeletonInputBufferStatic(SkeletonBonePoseStatic::BindHand);
         }
         else {
             if (Config::GetInstance()->GetOptoutTrackingRole()) {
@@ -914,6 +1017,10 @@ namespace VMTDriver {
 
         m_alreadyRegistered = true;
         m_registrationInProgress = false;
+
+        //骨格初期値を設定(コントローラのみ)
+        WriteSkeletonInputBufferStatic(SkeletonBonePoseStatic::BindHand);
+
         return EVRInitError::VRInitError_None;
     }
 
@@ -952,6 +1059,7 @@ namespace VMTDriver {
     }
 
     //OpenVRからのデバイス姿勢取得
+    float t = 0;
     DriverPose_t TrackedDeviceServerDriver::GetPose()
     {
         //自動更新が有効 AND デバイス登録済み AND 電源オン状態の場合
@@ -964,6 +1072,7 @@ namespace VMTDriver {
             //骨格情報の更新(これをしないと反映されないため)
             UpdateSkeletonInput(0);
         }
+
         //現在のOpenVR向け姿勢を返却する
         return m_pose;
     }

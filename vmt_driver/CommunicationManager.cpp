@@ -85,17 +85,6 @@ namespace VMTDriver {
 		}
 	}
 
-	//骨格を仮想デバイスに反映
-	void OSCReceiver::ApplySkeleton(int deviceIndex, double timeoffset)
-	{
-		//LogInfo("Apply");
-		//範囲チェック
-		if (GetServer()->IsVMTDeviceIndex(deviceIndex))
-		{
-			GetServer()->GetDevice(deviceIndex).UpdateSkeletonInput(timeoffset);
-		}
-	}
-
 	//ログ情報を送信する(ダイアログを表示する)
 	void OSCReceiver::SendLog(int stat, string msg) {
 		const size_t bufsize = 8192;
@@ -236,10 +225,21 @@ namespace VMTDriver {
 				args >> idx >> i >> x >> y >> z >> qx >> qy >> qz >> qw >> osc::EndMessage;
 				WriteSkeletonBone(idx, i, x, y, z, qx, qy, qz, qw);
 			}
+			else if (adr == "/VMT/Skeleton/Scalar")
+			{
+				args >> idx >> i >> x >> osc::EndMessage;
+				if (GetServer()->IsVMTDeviceIndex(idx))
+				{
+					GetServer()->GetDevice(idx).WriteSkeletonInputBufferStaticLerpFinger(i, x);
+				}
+			}
 			else if (adr == "/VMT/Skeleton/Apply")
 			{
 				args >> idx >> timeoffset >> osc::EndMessage;
-				ApplySkeleton(idx, timeoffset);
+				if (GetServer()->IsVMTDeviceIndex(idx))
+				{
+					GetServer()->GetDevice(idx).UpdateSkeletonInput(timeoffset);
+				}
 			}
 			//デバイス入力系の受信
 			else if (adr == "/VMT/Input/Button")

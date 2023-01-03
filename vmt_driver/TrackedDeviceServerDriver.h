@@ -65,6 +65,16 @@ namespace VMTDriver {
         Fist
     };
 
+    //手骨格補間指
+    enum class SkeletonLerpFinder {
+        RootAndWrist = 0,
+        Thumb = 1,
+        Index = 2,
+        Middle = 3,
+        Ring = 4,
+        PinkyLittle = 5,
+    };
+
     //手骨格ボーン
     enum class SkeletonBone {
         //手の原点
@@ -148,6 +158,8 @@ namespace VMTDriver {
         void UpdateJoystickInput(uint32_t index, float x, float y, double timeoffset);
 
         void WriteSkeletonInputBuffer(uint32_t index, VRBoneTransform_t bone);
+        void WriteSkeletonInputBufferStaticLerpFinger(uint32_t finger, double t);
+        void WriteSkeletonInputBufferStaticLerpBone(uint32_t index, double t);
         void WriteSkeletonInputBufferStatic(SkeletonBonePoseStatic type);
         void UpdateSkeletonInput(double timeoffset);
         void Reset();

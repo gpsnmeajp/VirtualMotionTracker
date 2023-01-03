@@ -39,7 +39,6 @@ namespace VMTDriver {
 		void WriteSkeletonBone(int deviceIndex, int boneIndex, 
 			float x, float y, float z,
 			float qx, float qy, float qz, float qw);
-		void ApplySkeleton(int deviceIndex, double timeoffset);
 
 		virtual void ProcessMessage(const osc::ReceivedMessage& m, const IpEndpointName& remoteEndpoint) override;
 	public:
