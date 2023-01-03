@@ -111,7 +111,7 @@ namespace vmt_manager
                 if (!util.StartOpenVR())
                 {
                     //var result = MessageBox.Show("Steam VR not ready. Maybe not ready for HMD or Tracking system.\nStream VRが利用できません。HMDやトラッキングシステムが利用できない状態の可能性があります。", title, MessageBoxButton.OK, MessageBoxImage.Error);
-                    TopErrorMessage("Steam VR not ready. Maybe not ready for HMD or Tracking system.\nStream VRが利用できません。HMDやトラッキングシステムが利用できない状態の可能性があります。\n\nPlease set requireHmd to false on SteamVR If you want to use without HMD. (Almost functions will not work.)\nHMDなしで利用したい場合は、SteamVRにてrequireHmdをfalseにして再起動してください。(殆どの機能は利用できません)");
+                    TopErrorMessage("Steam VR not ready. Maybe not ready for HMD or Tracking system.\nStream VRが利用できません。HMDやトラッキングシステムが利用できない状態の可能性があります。\n\nPlease enable Null driver on SteamVR If you want to use without HMD. \nHMDなしで利用したい場合は、SteamVRにてNull driverを有効にして再起動してください。");
                     //Close();
                     //タイマー起動してはいけない
                     return;

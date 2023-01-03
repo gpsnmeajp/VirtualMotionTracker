@@ -33,8 +33,8 @@
 							<ColumnDefinition/>
 							<ColumnDefinition/>
 						</Grid.ColumnDefinitions>
-						<Button Content="Install" Name="InstallButtonName" DockPanel.Dock="Top" Click="InstallButton" Grid.Column="0" Margin="1"/>
-						<Button Content="Uninstall" DockPanel.Dock="Top" Click="UninstallButton" Grid.Column="1" Margin="1"/>
+						<Button Content="Install" Name="InstallButtonName" Click="InstallButton" Grid.Column="0" Margin="1"/>
+						<Button Content="Uninstall" Click="UninstallButton" Grid.Column="1" Margin="1"/>
 					</Grid>
 					<Grid DockPanel.Dock="Top" Margin="2">
 						<Grid.ColumnDefinitions>
@@ -164,13 +164,13 @@
 						</DockPanel>
 					</Grid>
 					<DockPanel DockPanel.Dock="Top" Margin="1">
-						<TextBlock VerticalAlignment="Center" Text="Haptic:" DockPanel.Dock="Left" />
-						<Button Content="Haptic Test"  Margin="1" Click="HapticTestButton" DockPanel.Dock="Right"/>
+						<TextBlock VerticalAlignment="Center" Text="Haptic:" DockPanel.Dock="Left" Margin="0,0,5,0" />
+						<Button Content="Haptic Test"  Margin="5,0,0,0" Padding="5,0,5,0" Click="HapticTestButton" DockPanel.Dock="Right"/>
 						<TextBox Name="InputVMTHapticTextBox" Text="-" IsReadOnly="True" IsEnabled="False" />
 					</DockPanel>
 					<DockPanel DockPanel.Dock="Top" Margin="1">
-						<TextBlock VerticalAlignment="Center" Text="Debug:" DockPanel.Dock="Left" />
-						<Button Content="Send"  Margin="1" Click="DebugCommandButton" DockPanel.Dock="Right"/>
+						<TextBlock VerticalAlignment="Center" Text="Debug:" DockPanel.Dock="Left" Margin="0,0,5,0" />
+						<Button Content="Send"  Margin="5,0,0,0" Padding="5,0,5,0" Click="DebugCommandButton" DockPanel.Dock="Right"/>
 						<TextBox Name="InputVMTDebugTextBox" Text="" />
 					</DockPanel>
 
