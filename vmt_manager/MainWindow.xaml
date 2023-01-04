@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:vmt_manager"
 		Width="390"
-		Height="450"
+		Height="650"
         mc:Ignorable="d"
         Title="VMT Manager" Loaded="Window_Loaded" Closed="Window_Closed" ResizeMode="NoResize">
 	<DockPanel LastChildFill="True">
@@ -19,7 +19,7 @@
 		</StatusBar>
 		<TabControl DockPanel.Dock="Top" Name="MainTabControl">
 			<TabItem Header="Install">
-				<DockPanel LastChildFill="False">
+				<DockPanel LastChildFill="True">
 					<DockPanel.Background>
 						<LinearGradientBrush EndPoint="1,1" StartPoint="0,0">
 							<GradientStop Color="#FF636363" Offset="0"/>
@@ -49,47 +49,56 @@
 						<TextBlock Name="DriverVersion"  Grid.Column="3" Foreground="LightGray" />
 					</Grid>
 					<TextBlock DockPanel.Dock="Bottom" TextAlignment="Center" Margin="1"><Hyperlink Foreground="LightSkyBlue" NavigateUri="https://github.com/gpsnmeajp/VirtualMotionTracker" RequestNavigate="Hyperlink_RequestNavigate">https://github.com/gpsnmeajp/VirtualMotionTracker</Hyperlink></TextBlock>
-					<Image DockPanel.Dock="Bottom" Source="Resources/VMTlogo.png" Margin="0,5,0,0"/>
+					<TextBlock DockPanel.Dock="Bottom" TextAlignment="Center" Margin="1" Foreground="Yellow" FontWeight="Bold" Text="No support provided. サポートは提供していません"></TextBlock>
+					<TextBlock DockPanel.Dock="Bottom" TextAlignment="Center" Margin="1" Foreground="White" Text="An easy-to-use virtual tracker driver for OpenVR. &#xA; With your own device, your own software, and any."></TextBlock>
+					<Image DockPanel.Dock="Bottom" Source="Resources/VMTlogo.png" Margin="20,5,20,0"/>
 				</DockPanel>
 			</TabItem>
 			<TabItem Header="RoomSetup">
 				<DockPanel Name="ControlDock" IsEnabled="False">
-					<Grid>
+					<TextBlock Text="★ここに説明文を書く★" DockPanel.Dock="Top" Background="#EEEEEE" />
+					<Grid VerticalAlignment="Top">
 						<Grid.ColumnDefinitions>
 							<ColumnDefinition/>
 							<ColumnDefinition/>
 						</Grid.ColumnDefinitions>
-						<DockPanel Grid.Column="0" Margin="2"  LastChildFill="False">
-							<TextBlock Text="RoomMatrix" DockPanel.Dock="Top" Margin="1"/>
-							<TextBox Name="RoomMatrixTextBox" IsEnabled="False" IsReadOnly="True" Text="" DockPanel.Dock="Top" Height="69" Margin="1"/>
-							<CheckBox Content="Temporary" DockPanel.Dock="Top" Name="SetRoomMatrixTemporaryCheckBox"></CheckBox>
-							<Button Content="Set RoomMatrix" DockPanel.Dock="Top" Name="SetRoomMatrixButtonName" Click="SetRoomMatrixButton" Margin="1"/>
-							<Button Content="Reset RoomMatrix" DockPanel.Dock="Top" Click="ResetRoomMatrixButton" Margin="1"/>
-							<TextBlock Text="Position Coordinate" DockPanel.Dock="Top" Margin="1"/>
-							<ComboBox DockPanel.Dock="Top" Name="CoordinateCombo" SelectedIndex="0">
-								<ComboBoxItem>Driver Coordinate</ComboBoxItem>
-								<ComboBoxItem>Unity Coordinate</ComboBoxItem>
-							</ComboBox>
-						</DockPanel>
-						<DockPanel Grid.Column="1" Margin="2" LastChildFill="False">
-							<TextBlock Text="VMT_0 Room Position" DockPanel.Dock="Top" Margin="1"/>
-							<TextBox Name="CheckPositionTextBox" IsEnabled="False" IsReadOnly="True" Text="-,-,-" DockPanel.Dock="Top" Margin="1"/>
-							<TextBlock Text="VMT_0 Raw Position" DockPanel.Dock="Top" Margin="1"/>
-							<TextBox Name="CheckPositionRawTextBox" IsEnabled="False" IsReadOnly="True" Text="-,-,-" DockPanel.Dock="Top" Margin="1"/>
-							<TextBlock Text="VMT_0 Speed" DockPanel.Dock="Top" Margin="1"/>
-							<TextBox Name="CheckPositionRawSpeedTextBox" IsEnabled="False" IsReadOnly="True" Text="-,-,-" DockPanel.Dock="Top" Margin="1"/>
-							<Button Content="Check VMT__0 Position &#xA;(Try set RoomPos=[1,1,1] )" DockPanel.Dock="Top" Click="CheckPositionButton" Margin="1"/>
-							<TextBlock Text="VMT_0 Joint Serial No" DockPanel.Dock="Top" Margin="1"/>
-							<TextBox Name="JointSerialNoTextBox" Text="HMD" DockPanel.Dock="Top" Margin="1"/>
-							<Button Content="Check VMT__0 Position &#xA;(Try set JointPos=[0.1,0.0,-0.5] )" DockPanel.Dock="Top" Click="CheckJointPositionButton" Margin="1"/>
-							<TextBox Name="JointSerialNo2TextBox" Text="LHR-xxxxxxxxx" DockPanel.Dock="Top" Margin="1"/>
-							<Button Content="Check VMT__1 Position &#xA;(Try set FollowPos=[-0.1,0.0,-0.5] )" DockPanel.Dock="Top" Click="CheckJointPosition2Button" Margin="1"/>
-						</DockPanel>
+						<GroupBox Header="★★★★★" Grid.Column="0">
+							<DockPanel Margin="2"  LastChildFill="False">
+								<TextBlock Text="RoomMatrix" DockPanel.Dock="Top" Margin="1"/>
+								<TextBox Name="RoomMatrixTextBox" IsEnabled="False" IsReadOnly="True" Text="" DockPanel.Dock="Top" Height="69" Margin="1"/>
+								<CheckBox Content="Temporary" DockPanel.Dock="Top" Name="SetRoomMatrixTemporaryCheckBox"></CheckBox>
+								<Button Content="Set RoomMatrix" DockPanel.Dock="Top" Name="SetRoomMatrixButtonName" Click="SetRoomMatrixButton" Margin="1"/>
+								<Button Content="Reset RoomMatrix" DockPanel.Dock="Top" Click="ResetRoomMatrixButton" Margin="1"/>
+								<TextBlock Text="Position Coordinate" DockPanel.Dock="Top" Margin="1"/>
+								<ComboBox DockPanel.Dock="Top" Name="CoordinateCombo" SelectedIndex="0">
+									<ComboBoxItem>Driver Coordinate</ComboBoxItem>
+									<ComboBoxItem>Unity Coordinate</ComboBoxItem>
+								</ComboBox>
+							</DockPanel>
+						</GroupBox>
+						<GroupBox Header="★★★★★" Grid.Column="1">
+							<DockPanel Margin="2" LastChildFill="False">
+								<TextBlock Text="VMT_0 Room Position" DockPanel.Dock="Top" Margin="1"/>
+								<TextBox Name="CheckPositionTextBox" IsEnabled="False" IsReadOnly="True" Text="-,-,-" DockPanel.Dock="Top" Margin="1"/>
+								<TextBlock Text="VMT_0 Raw Position" DockPanel.Dock="Top" Margin="1"/>
+								<TextBox Name="CheckPositionRawTextBox" IsEnabled="False" IsReadOnly="True" Text="-,-,-" DockPanel.Dock="Top" Margin="1"/>
+								<TextBlock Text="VMT_0 Speed" DockPanel.Dock="Top" Margin="1"/>
+								<TextBox Name="CheckPositionRawSpeedTextBox" IsEnabled="False" IsReadOnly="True" Text="-,-,-" DockPanel.Dock="Top" Margin="1"/>
+								<Button Content="Check VMT__0 Position &#xA;(Try set RoomPos=[1,1,1] )" DockPanel.Dock="Top" Click="CheckPositionButton" Margin="1"/>
+								<TextBlock Text="VMT_0 Joint Serial No" DockPanel.Dock="Top" Margin="1"/>
+								<TextBox Name="JointSerialNoTextBox" Text="HMD" DockPanel.Dock="Top" Margin="1"/>
+								<Button Content="Check VMT__0 Position &#xA;(Try set JointPos=[0.1,0.0,-0.5] )" DockPanel.Dock="Top" Click="CheckJointPositionButton" Margin="1"/>
+								<TextBox Name="JointSerialNo2TextBox" Text="LHR-xxxxxxxxx" DockPanel.Dock="Top" Margin="1"/>
+								<Button Content="Check VMT__1 Position &#xA;(Try set FollowPos=[-0.1,0.0,-0.5] )" DockPanel.Dock="Top" Click="CheckJointPosition2Button" Margin="1"/>
+							</DockPanel>
+						</GroupBox>
 					</Grid>
 				</DockPanel>
 			</TabItem>
 			<TabItem Header="Control">
 				<DockPanel>
+					<TextBlock Text="★ここに説明文を書く★" DockPanel.Dock="Top" Background="#EEEEEE" />
+
 					<Grid>
 						<Grid.ColumnDefinitions>
 							<ColumnDefinition/>
@@ -108,101 +117,121 @@
 			</TabItem>
 			<TabItem Header="Input">
 				<DockPanel LastChildFill="False">
-					<DockPanel DockPanel.Dock="Top" Margin="1">
-						<TextBlock VerticalAlignment="Center" Text="VMT:" DockPanel.Dock="Left" Margin="1" />
-						<Button Content="Ref" Width="50" DockPanel.Dock="Right" Margin="1" Click="TrackingReferenceButton"/>
-						<Button Content="Right" Width="50" DockPanel.Dock="Right" Margin="1" Click="RightHandButton"/>
-						<Button Content="Left" Width="50" DockPanel.Dock="Right" Margin="1" Click="LeftHandButton"/>
-						<Button Content="Tracker" Width="50" DockPanel.Dock="Right" Margin="1" Click="TrackerButton"/>
-						<TextBox Name="InputVMTNoTextBox" Text="0" DockPanel.Dock="Left" Margin="1" />
-					</DockPanel>
-					<Grid DockPanel.Dock="Top">
-						<Grid.ColumnDefinitions>
-							<ColumnDefinition/>
-							<ColumnDefinition/>
-						</Grid.ColumnDefinitions>
-						<DockPanel Grid.Column="0" Margin="2"  LastChildFill="False">
-							<Grid DockPanel.Dock="Top">
-								<Grid.ColumnDefinitions>
-									<ColumnDefinition/>
-									<ColumnDefinition/>
-								</Grid.ColumnDefinitions>
-								<Grid.RowDefinitions>
-									<RowDefinition/>
-									<RowDefinition/>
-									<RowDefinition/>
-									<RowDefinition/>
-								</Grid.RowDefinitions>
-								<Button Content="Button 0" PreviewMouseDown="Button0_MouseDown" PreviewMouseUp="Button0_MouseUp"  Margin="1" Grid.Column="0" Grid.Row="0" />
-								<Button Content="Button 1" PreviewMouseDown="Button1_MouseDown" PreviewMouseUp="Button1_MouseUp"  Margin="1" Grid.Column="1" Grid.Row="0" />
-								<Button Content="Button 2" PreviewMouseDown="Button2_MouseDown" PreviewMouseUp="Button2_MouseUp"  Margin="1" Grid.Column="0" Grid.Row="1" />
-								<Button Content="Button 3" PreviewMouseDown="Button3_MouseDown" PreviewMouseUp="Button3_MouseUp"  Margin="1" Grid.Column="1" Grid.Row="1" />
-								<Button Content="Button 4" PreviewMouseDown="Button4_MouseDown" PreviewMouseUp="Button4_MouseUp"  Margin="1" Grid.Column="0" Grid.Row="2" />
-								<Button Content="Button 5" PreviewMouseDown="Button5_MouseDown" PreviewMouseUp="Button5_MouseUp"  Margin="1" Grid.Column="1" Grid.Row="2" />
-								<Button Content="Button 6" PreviewMouseDown="Button6_MouseDown" PreviewMouseUp="Button6_MouseUp"  Margin="1" Grid.Column="0" Grid.Row="3" />
-								<Button Content="Button 7" PreviewMouseDown="Button7_MouseDown" PreviewMouseUp="Button7_MouseUp"  Margin="1" Grid.Column="1" Grid.Row="3" />
-							</Grid>
+					<TextBlock Text="★ここに説明文を書く★" DockPanel.Dock="Top" Background="#EEEEEE" />
+					<GroupBox Header="★★★★★" DockPanel.Dock="Top">
+						<DockPanel Margin="1">
+							<TextBlock VerticalAlignment="Center" Text="VMT:" DockPanel.Dock="Left" Margin="1" />
+							<TextBox Name="InputVMTNoTextBox" Text="0" DockPanel.Dock="Left" Margin="1" />
 						</DockPanel>
-						<DockPanel Grid.Column="1" Margin="2" LastChildFill="False">
-							<DockPanel DockPanel.Dock="Top" Margin="1">
-								<TextBlock Text="Trigger 0" DockPanel.Dock="Left" />
-								<Slider Minimum="0" Maximum="1" Value="0" Name="Slider0" ValueChanged="Slider0_ValueChanged" DockPanel.Dock="Left"/>
-							</DockPanel>
-							<DockPanel DockPanel.Dock="Top" Margin="1">
-								<TextBlock Text="Trigger 1" DockPanel.Dock="Left" />
-								<Slider Minimum="0" Maximum="1" Value="0" Name="Slider1" ValueChanged="Slider1_ValueChanged" DockPanel.Dock="Left"/>
-							</DockPanel>
-							<DockPanel DockPanel.Dock="Top" Margin="1">
-								<TextBlock Text="Joystick X" DockPanel.Dock="Left" />
-								<Slider Minimum="-1" Maximum="1" Value="0" Name="SliderX" ValueChanged="SliderXY_ValueChanged" DockPanel.Dock="Left"/>
-							</DockPanel>
-							<DockPanel DockPanel.Dock="Top" Margin="1">
-								<TextBlock Text="Joystick Y" DockPanel.Dock="Left" />
-								<Slider Minimum="-1" Maximum="1" Value="0" Name="SliderY" ValueChanged="SliderXY_ValueChanged" DockPanel.Dock="Left"/>
-							</DockPanel>
-							<Button Content="Input Reset"  Margin="1" Click="InputResetButton" DockPanel.Dock="Top"/>
-						</DockPanel>
-					</Grid>
-					<DockPanel DockPanel.Dock="Top" Margin="1">
-						<TextBlock VerticalAlignment="Center" Text="Haptic:" DockPanel.Dock="Left" Margin="0,0,5,0" />
-						<Button Content="Haptic Test"  Margin="5,0,0,0" Padding="5,0,5,0" Click="HapticTestButton" DockPanel.Dock="Right"/>
-						<TextBox Name="InputVMTHapticTextBox" Text="-" IsReadOnly="True" IsEnabled="False" />
-					</DockPanel>
-					<DockPanel DockPanel.Dock="Top" Margin="1">
-						<TextBlock VerticalAlignment="Center" Text="Debug:" DockPanel.Dock="Left" Margin="0,0,5,0" />
-						<Button Content="Send"  Margin="5,0,0,0" Padding="5,0,5,0" Click="DebugCommandButton" DockPanel.Dock="Right"/>
-						<TextBox Name="InputVMTDebugTextBox" Text="" />
-					</DockPanel>
+					</GroupBox>
 
-					<DockPanel DockPanel.Dock="Top" Margin="1">
-						<TextBlock Text="RootAndWrist" DockPanel.Dock="Left" Width="80" />
-						<Slider Minimum="0" Maximum="1" Value="0" Name="RootAndWristSlider" ValueChanged="RootAndWristSlider_ValueChanged" DockPanel.Dock="Left"/>
-					</DockPanel>
-					<DockPanel DockPanel.Dock="Top" Margin="1">
-						<TextBlock Text="Thumb" DockPanel.Dock="Left" Width="80" />
-						<Slider Minimum="0" Maximum="1" Value="0" Name="ThumbSlider" ValueChanged="ThumbSlider_ValueChanged" DockPanel.Dock="Left"/>
-					</DockPanel>
-					<DockPanel DockPanel.Dock="Top" Margin="1">
-						<TextBlock Text="Index" DockPanel.Dock="Left" Width="80" />
-						<Slider Minimum="0" Maximum="1" Value="0" Name="IndexSlider" ValueChanged="IndexSlider_ValueChanged" DockPanel.Dock="Left"/>
-					</DockPanel>
-					<DockPanel DockPanel.Dock="Top" Margin="1">
-						<TextBlock Text="Middle" DockPanel.Dock="Left" Width="80" />
-						<Slider Minimum="0" Maximum="1" Value="0" Name="MiddleSlider" ValueChanged="MiddleSlider_ValueChanged" DockPanel.Dock="Left"/>
-					</DockPanel>
-					<DockPanel DockPanel.Dock="Top" Margin="1">
-						<TextBlock Text="Ring" DockPanel.Dock="Left" Width="80" />
-						<Slider Minimum="0" Maximum="1" Value="0" Name="RingSlider" ValueChanged="RingSlider_ValueChanged" DockPanel.Dock="Left"/>
-					</DockPanel>
-					<DockPanel DockPanel.Dock="Top" Margin="1">
-						<TextBlock Text="PinkyLittle" DockPanel.Dock="Left" Width="80" />
-						<Slider Minimum="0" Maximum="1" Value="0" Name="PinkyLittleSlider" ValueChanged="PinkyLittleSlider_ValueChanged" DockPanel.Dock="Left"/>
-					</DockPanel>
+					<GroupBox Header="★★★★★" DockPanel.Dock="Top">
+						<UniformGrid Columns="4" Rows="1">
+							<Button Content="Ref" DockPanel.Dock="Right" Margin="1" Click="TrackingReferenceButton"/>
+							<Button Content="Right" DockPanel.Dock="Right" Margin="1" Click="RightHandButton"/>
+							<Button Content="Left" DockPanel.Dock="Right" Margin="1" Click="LeftHandButton"/>
+							<Button Content="Tracker" DockPanel.Dock="Right" Margin="1" Click="TrackerButton"/>
+						</UniformGrid>
+					</GroupBox>
+					<GroupBox Header="★★★★★" DockPanel.Dock="Top">
+						<Grid>
+							<Grid.ColumnDefinitions>
+								<ColumnDefinition/>
+								<ColumnDefinition/>
+							</Grid.ColumnDefinitions>
+							<DockPanel Grid.Column="0" Margin="2"  LastChildFill="False">
+								<Grid DockPanel.Dock="Top">
+									<Grid.ColumnDefinitions>
+										<ColumnDefinition/>
+										<ColumnDefinition/>
+									</Grid.ColumnDefinitions>
+									<Grid.RowDefinitions>
+										<RowDefinition/>
+										<RowDefinition/>
+										<RowDefinition/>
+										<RowDefinition/>
+									</Grid.RowDefinitions>
+									<Button Content="Button 0&#xA;★★★★" PreviewMouseDown="Button0_MouseDown" PreviewMouseUp="Button0_MouseUp"  Margin="1" Grid.Column="0" Grid.Row="0" />
+									<Button Content="Button 1&#xA;★★★★" PreviewMouseDown="Button1_MouseDown" PreviewMouseUp="Button1_MouseUp"  Margin="1" Grid.Column="1" Grid.Row="0" />
+									<Button Content="Button 2&#xA;★★★★" PreviewMouseDown="Button2_MouseDown" PreviewMouseUp="Button2_MouseUp"  Margin="1" Grid.Column="0" Grid.Row="1" />
+									<Button Content="Button 3&#xA;★★★★" PreviewMouseDown="Button3_MouseDown" PreviewMouseUp="Button3_MouseUp"  Margin="1" Grid.Column="1" Grid.Row="1" />
+									<Button Content="Button 4&#xA;★★★★" PreviewMouseDown="Button4_MouseDown" PreviewMouseUp="Button4_MouseUp"  Margin="1" Grid.Column="0" Grid.Row="2" />
+									<Button Content="Button 5&#xA;★★★★" PreviewMouseDown="Button5_MouseDown" PreviewMouseUp="Button5_MouseUp"  Margin="1" Grid.Column="1" Grid.Row="2" />
+									<Button Content="Button 6&#xA;★★★★" PreviewMouseDown="Button6_MouseDown" PreviewMouseUp="Button6_MouseUp"  Margin="1" Grid.Column="0" Grid.Row="3" />
+									<Button Content="Button 7&#xA;★★★★" PreviewMouseDown="Button7_MouseDown" PreviewMouseUp="Button7_MouseUp"  Margin="1" Grid.Column="1" Grid.Row="3" />
+								</Grid>
+							</DockPanel>
+							<DockPanel Grid.Column="1" Margin="2" LastChildFill="False">
+								<DockPanel DockPanel.Dock="Top" Margin="1">
+									<TextBlock Text="Trigger 0" DockPanel.Dock="Left" />
+									<Slider Minimum="0" Maximum="1" Value="0" Name="Slider0" ValueChanged="Slider0_ValueChanged" DockPanel.Dock="Left"/>
+								</DockPanel>
+								<DockPanel DockPanel.Dock="Top" Margin="1">
+									<TextBlock Text="Trigger 1" DockPanel.Dock="Left" />
+									<Slider Minimum="0" Maximum="1" Value="0" Name="Slider1" ValueChanged="Slider1_ValueChanged" DockPanel.Dock="Left"/>
+								</DockPanel>
+								<DockPanel DockPanel.Dock="Top" Margin="1">
+									<TextBlock Text="Joystick X" DockPanel.Dock="Left" />
+									<Slider Minimum="-1" Maximum="1" Value="0" Name="SliderX" ValueChanged="SliderXY_ValueChanged" DockPanel.Dock="Left"/>
+								</DockPanel>
+								<DockPanel DockPanel.Dock="Top" Margin="1">
+									<TextBlock Text="Joystick Y" DockPanel.Dock="Left" />
+									<Slider Minimum="-1" Maximum="1" Value="0" Name="SliderY" ValueChanged="SliderXY_ValueChanged" DockPanel.Dock="Left"/>
+								</DockPanel>
+								<Button Content="Input Reset"  Margin="1" Click="InputResetButton" DockPanel.Dock="Top"/>
+							</DockPanel>
+						</Grid>
+					</GroupBox>
+					<GroupBox Header="★★★★★" DockPanel.Dock="Top">
+						<DockPanel Margin="1">
+							<TextBlock VerticalAlignment="Center" Text="Haptic:" DockPanel.Dock="Left" Margin="0,0,5,0" />
+							<Button Content="Haptic Test"  Margin="5,0,0,0" Padding="5,0,5,0" Click="HapticTestButton" DockPanel.Dock="Right"/>
+							<TextBox Name="InputVMTHapticTextBox" Text="-" IsReadOnly="True" IsEnabled="False" />
+						</DockPanel>
+					</GroupBox>
+					<GroupBox Header="★★★★★" DockPanel.Dock="Top">
+						<DockPanel Margin="1">
+							<TextBlock VerticalAlignment="Center" Text="Debug:" DockPanel.Dock="Left" Margin="0,0,5,0" />
+							<Button Content="Send"  Margin="5,0,0,0" Padding="5,0,5,0" Click="DebugCommandButton" DockPanel.Dock="Right"/>
+							<TextBox Name="InputVMTDebugTextBox" Text="" />
+						</DockPanel>
+					</GroupBox>
+
+					<GroupBox Header="★★★★★" DockPanel.Dock="Top">
+						<DockPanel>
+							<DockPanel DockPanel.Dock="Top" Margin="1">
+								<TextBlock Text="RootAndWrist" DockPanel.Dock="Left" Width="80" />
+								<Slider Minimum="0" Maximum="1" Value="0" Name="RootAndWristSlider" ValueChanged="RootAndWristSlider_ValueChanged" DockPanel.Dock="Left"/>
+							</DockPanel>
+							<DockPanel DockPanel.Dock="Top" Margin="1">
+								<TextBlock Text="Thumb" DockPanel.Dock="Left" Width="80" />
+								<Slider Minimum="0" Maximum="1" Value="0" Name="ThumbSlider" ValueChanged="ThumbSlider_ValueChanged" DockPanel.Dock="Left"/>
+							</DockPanel>
+							<DockPanel DockPanel.Dock="Top" Margin="1">
+								<TextBlock Text="Index" DockPanel.Dock="Left" Width="80" />
+								<Slider Minimum="0" Maximum="1" Value="0" Name="IndexSlider" ValueChanged="IndexSlider_ValueChanged" DockPanel.Dock="Left"/>
+							</DockPanel>
+							<DockPanel DockPanel.Dock="Top" Margin="1">
+								<TextBlock Text="Middle" DockPanel.Dock="Left" Width="80" />
+								<Slider Minimum="0" Maximum="1" Value="0" Name="MiddleSlider" ValueChanged="MiddleSlider_ValueChanged" DockPanel.Dock="Left"/>
+							</DockPanel>
+							<DockPanel DockPanel.Dock="Top" Margin="1">
+								<TextBlock Text="Ring" DockPanel.Dock="Left" Width="80" />
+								<Slider Minimum="0" Maximum="1" Value="0" Name="RingSlider" ValueChanged="RingSlider_ValueChanged" DockPanel.Dock="Left"/>
+							</DockPanel>
+							<DockPanel DockPanel.Dock="Top" Margin="1">
+								<TextBlock Text="PinkyLittle" DockPanel.Dock="Left" Width="80" />
+								<Slider Minimum="0" Maximum="1" Value="0" Name="PinkyLittleSlider" ValueChanged="PinkyLittleSlider_ValueChanged" DockPanel.Dock="Left"/>
+							</DockPanel>
+						</DockPanel>
+					</GroupBox>
 
 				</DockPanel>
 			</TabItem>
 			<TabItem Header="Device">
 				<DockPanel LastChildFill="True">
+					<TextBlock Text="★ここに説明文を書く★" DockPanel.Dock="Top" Background="#EEEEEE" />
+
 					<Button Content="Reload" Margin="1" Click="DeviceReloadButton" DockPanel.Dock="Top"/>
 					<Button Content="Copy to Clipboard" Margin="1" Click="DeviceCopyButton" DockPanel.Dock="Top"/>
 					<ListView Name="DeviceListView" Margin="1" DockPanel.Dock="Top"/>
@@ -210,6 +239,8 @@
 			</TabItem>
 			<TabItem Header="Settings">
 				<DockPanel LastChildFill="False">
+					<TextBlock Text="★ここに説明文を書く★" DockPanel.Dock="Top" Background="#EEEEEE" />
+
 					<DockPanel LastChildFill="True" DockPanel.Dock="Top">
 						<Button Content="false" Width="50" Margin="0,0,5,0" DockPanel.Dock="Right"/>
 						<Button Content="true" Width="50" Margin="0,0,5,0" DockPanel.Dock="Right"/>
@@ -226,6 +257,8 @@
 			</TabItem>
 			<TabItem Header="Json">
 				<DockPanel LastChildFill="True">
+					<TextBlock Text="★ここに説明文を書く★" DockPanel.Dock="Top" Background="#EEEEEE" />
+
 					<Button Content="Load json editor" Margin="1" Click="JsonLoadButton" DockPanel.Dock="Top"/>
 					<Button Content="Save json editor" Margin="1" Click="JsonSaveButton" DockPanel.Dock="Top"/>
 					<Button Content="Reload Setting" DockPanel.Dock="Bottom" Click="ReloadJsonButton" Margin="1"/>
