@@ -11,9 +11,9 @@
 	<DockPanel LastChildFill="True">
 		<StatusBar DockPanel.Dock="Bottom" Name="StatusBar">
 			<StatusBarItem>
-				<DockPanel>
-					<TextBlock Name="StatusBarTextBlock" Text="Virtual Motion Tracker" FontWeight="Bold" DockPanel.Dock="Top" />
-					<TextBlock Name="StatusBarDashboardAlertTextBlock" Visibility="Collapsed" Text="Steam VR Dashboard is opening. Button, Finger does not working.&#xA;SteamVR ダッシュボードが開いています。ボタン操作・指姿勢は無効です。" Background="Red" Foreground="White" FontWeight="Bold" DockPanel.Dock="Top" />
+				<DockPanel Width="470">
+					<TextBlock Padding="2,0,0,0" Name="StatusBarTextBlock" Text="Virtual Motion Tracker" FontWeight="Bold" DockPanel.Dock="Top" />
+					<TextBlock Padding="2,0,0,0" Name="StatusBarDashboardAlertTextBlock" Text="Steam VR Dashboard is opening. Button, Finger does not working.&#xA;SteamVR ダッシュボードが開いています。ボタン操作・指姿勢は無効です。" Background="Red" Foreground="White" FontWeight="Bold" DockPanel.Dock="Top" />
 				</DockPanel>
 			</StatusBarItem>
 		</StatusBar>
@@ -48,9 +48,10 @@
 						<TextBlock HorizontalAlignment="Left" Text="Driver: "  Grid.Column="2" Foreground="LightGray" />
 						<TextBlock Name="DriverVersion"  Grid.Column="3" Foreground="LightGray" />
 					</Grid>
+					<TextBlock DockPanel.Dock="Bottom" TextAlignment="Center" Margin="1" ><Hyperlink Foreground="IndianRed" NavigateUri="https://github.com/gpsnmeajp/VirtualMotionTracker/report/" RequestNavigate="Hyperlink_RequestNavigate">Send bug report.  不具合レポートを送る</Hyperlink></TextBlock>
 					<TextBlock DockPanel.Dock="Bottom" TextAlignment="Center" Margin="1"><Hyperlink Foreground="LightSkyBlue" NavigateUri="https://github.com/gpsnmeajp/VirtualMotionTracker" RequestNavigate="Hyperlink_RequestNavigate">https://github.com/gpsnmeajp/VirtualMotionTracker</Hyperlink></TextBlock>
 					<TextBlock DockPanel.Dock="Bottom" TextAlignment="Center" Margin="1" Foreground="Yellow" FontWeight="Bold" Text="No support provided. サポートは提供していません"></TextBlock>
-					<TextBlock DockPanel.Dock="Bottom" TextAlignment="Center" Margin="1" Foreground="White" Text="An easy-to-use virtual tracker driver for OpenVR. &#xA; With your own device, your own software, and any."></TextBlock>
+					<TextBlock DockPanel.Dock="Bottom" TextAlignment="Center" Margin="1" Foreground="White" Text="An easy-to-use virtual tracker driver for OpenVR. &#xA; With your own device, your own software, and any.&#xA;"></TextBlock>
 					<Image DockPanel.Dock="Bottom" Source="Resources/VMTlogo.png" Margin="20,5,20,0"/>
 				</DockPanel>
 			</TabItem>
@@ -89,7 +90,8 @@
 								<ComboBox DockPanel.Dock="Top" Name="CoordinateCombo" SelectedIndex="0">
 									<ComboBoxItem>Driver Coordinate</ComboBoxItem>
 									<ComboBoxItem>Unity Coordinate</ComboBoxItem>
-								</ComboBox>							</DockPanel>
+								</ComboBox>
+							</DockPanel>
 						</GroupBox>
 					</Grid>
 				</DockPanel>
@@ -215,6 +217,7 @@
 								<TextBlock Text="PinkyLittle" DockPanel.Dock="Left" Width="80" />
 								<Slider Minimum="0" Maximum="1" Value="0" Name="PinkyLittleSlider" ValueChanged="PinkyLittleSlider_ValueChanged" DockPanel.Dock="Left"/>
 							</DockPanel>
+							<CheckBox Content="Axis linking enable" Name="AxisLinkingEnableCheckBox"/>
 						</DockPanel>
 					</GroupBox>
 
@@ -241,34 +244,12 @@
 				<DockPanel>
 					<TextBlock TextAlignment="Center" Text="Driver Settings (Need reload to apply, Some value requires restart SteamVR.)" DockPanel.Dock="Top" Background="#EEEEEE" />
 					<Button Content="Reload Setting" DockPanel.Dock="Bottom" Click="ReloadJsonButton" Margin="1"/>
-					<TabControl>
-						<TabItem Header="Config">
-							<DockPanel LastChildFill="False">
+					<DockPanel LastChildFill="True">
 
-								<DockPanel LastChildFill="True" DockPanel.Dock="Top">
-								<Button Content="false" Width="50" Margin="0,0,5,0" DockPanel.Dock="Right"/>
-								<Button Content="true" Width="50" Margin="0,0,5,0" DockPanel.Dock="Right"/>
-								<TextBlock Text="Hello" DockPanel.Dock="Left"/>
-							</DockPanel>
-							<Border Height="1" Margin="0,2,0,2" Background="#AAA" DockPanel.Dock="Top" />
-							<DockPanel LastChildFill="True" DockPanel.Dock="Top">
-								<Button Content="false" Width="50" Margin="0,0,5,0" DockPanel.Dock="Right"/>
-								<Button Content="true" Width="50" Margin="0,0,5,0" DockPanel.Dock="Right"/>
-								<TextBlock Text="Hello" DockPanel.Dock="Left"/>
-							</DockPanel>
-							<Border Height="1" Margin="0,2,0,2" Background="#AAA" DockPanel.Dock="Top" />
-						</DockPanel>
-						</TabItem>
-
-							<TabItem Header="Json">
-								<DockPanel LastChildFill="True">
-
-									<Button Content="Load json editor" Margin="1" Click="JsonLoadButton" DockPanel.Dock="Top"/>
-									<Button Content="Save json editor" Margin="1" Click="JsonSaveButton" DockPanel.Dock="Top"/>
-									<TextBox Name="JsonTextBox" Margin="1" DockPanel.Dock="Top" VerticalScrollBarVisibility="Visible"/>
-								</DockPanel>
-							</TabItem>
-					</TabControl>
+						<Button Content="Load json editor" Margin="1" Click="JsonLoadButton" DockPanel.Dock="Top"/>
+						<Button Content="Save json editor" Margin="1" Click="JsonSaveButton" DockPanel.Dock="Top"/>
+						<TextBox Name="JsonTextBox" Margin="1" DockPanel.Dock="Top" VerticalScrollBarVisibility="Visible"/>
+					</DockPanel>
 				</DockPanel>
 			</TabItem>
 			<TabItem Header="Protocol">

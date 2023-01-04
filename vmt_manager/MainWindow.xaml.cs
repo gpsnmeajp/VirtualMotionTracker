@@ -820,7 +820,7 @@ namespace vmt_manager
             if (index.ok && RootAndWristSlider != null)
             {
                 osc.Send(new OscMessage("/VMT/Skeleton/Scalar",
-                    index.i, fingerIndex, (float)RootAndWristSlider.Value));
+                    index.i, fingerIndex, (float)RootAndWristSlider.Value, (int)0, (int)(AxisLinkingEnableCheckBox.IsChecked.Value ? 1 : 0)));
                 osc.Send(new OscMessage("/VMT/Skeleton/Apply",
                     index.i, timeoffset));
             }
@@ -834,7 +834,7 @@ namespace vmt_manager
             if (index.ok && ThumbSlider != null)
             {
                 osc.Send(new OscMessage("/VMT/Skeleton/Scalar",
-                    index.i, fingerIndex, (float)ThumbSlider.Value));
+                    index.i, fingerIndex, (float)ThumbSlider.Value, (int)0, (int)(AxisLinkingEnableCheckBox.IsChecked.Value ? 1 : 0)));
                 osc.Send(new OscMessage("/VMT/Skeleton/Apply",
                     index.i, timeoffset));
             }
@@ -848,7 +848,7 @@ namespace vmt_manager
             if (index.ok && IndexSlider != null)
             {
                 osc.Send(new OscMessage("/VMT/Skeleton/Scalar",
-                    index.i, fingerIndex, (float)IndexSlider.Value));
+                    index.i, fingerIndex, (float)IndexSlider.Value, (int)0, (int)(AxisLinkingEnableCheckBox.IsChecked.Value ? 1 : 0)));
                 osc.Send(new OscMessage("/VMT/Skeleton/Apply",
                     index.i, timeoffset));
             }
@@ -862,7 +862,7 @@ namespace vmt_manager
             if (index.ok && MiddleSlider != null)
             {
                 osc.Send(new OscMessage("/VMT/Skeleton/Scalar",
-                    index.i, fingerIndex, (float)MiddleSlider.Value));
+                    index.i, fingerIndex, (float)MiddleSlider.Value, (int)0, (int)(AxisLinkingEnableCheckBox.IsChecked.Value ? 1 : 0)));
                 osc.Send(new OscMessage("/VMT/Skeleton/Apply",
                     index.i, timeoffset));
             }
@@ -876,7 +876,7 @@ namespace vmt_manager
             if (index.ok && RingSlider != null)
             {
                 osc.Send(new OscMessage("/VMT/Skeleton/Scalar",
-                    index.i, fingerIndex, (float)RingSlider.Value));
+                    index.i, fingerIndex, (float)RingSlider.Value, (int)0, (int)(AxisLinkingEnableCheckBox.IsChecked.Value ? 1 : 0)));
                 osc.Send(new OscMessage("/VMT/Skeleton/Apply",
                     index.i, timeoffset));
             }
@@ -890,7 +890,7 @@ namespace vmt_manager
             if (index.ok && PinkyLittleSlider != null)
             {
                 osc.Send(new OscMessage("/VMT/Skeleton/Scalar",
-                    index.i, fingerIndex, (float)PinkyLittleSlider.Value));
+                    index.i, fingerIndex, (float)PinkyLittleSlider.Value, (int)0, (int)(AxisLinkingEnableCheckBox.IsChecked.Value ? 1 : 0)));
                 osc.Send(new OscMessage("/VMT/Skeleton/Apply",
                     index.i, timeoffset));
             }

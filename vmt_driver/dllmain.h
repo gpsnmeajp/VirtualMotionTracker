@@ -22,6 +22,8 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 #pragma once
+#pragma warning(disable: 26812 )
+
 #include "framework.h"
 #include <sstream>
 #include <fstream>

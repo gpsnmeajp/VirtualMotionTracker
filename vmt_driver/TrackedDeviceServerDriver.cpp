@@ -23,8 +23,6 @@ SOFTWARE.
 */
 #include "TrackedDeviceServerDriver.h"
 
-#pragma warning(push)
-#pragma warning(disable: 26812 )
 namespace VMTDriver {
     const VRBoneTransform_t BindHandParentSpaceBonesLeft[skeletonBoneCount] = {
         {{0.00000000f,0.00000000f,0.00000000f,1.00000000f},{1.00000000f,0.00000000f,0.00000000f,0.00000000f}},
@@ -357,8 +355,8 @@ namespace VMTDriver {
             return k_unTrackedDeviceIndexInvalid;
         }
 
-        //デバイスシリアルがHMD(でかつ、HMD特別処理が有効なら)
-        if (serial == "HMD" && Config::GetInstance()->GetHMDisIndex0()) {
+        //デバイスシリアルがHMDなら
+        if (serial == "HMD") {
             //HMDが接続OKなら
             if (poses[k_unTrackedDeviceIndex_Hmd].bDeviceIsConnected) {
                 //HMDのインデックスを返す
@@ -617,100 +615,138 @@ namespace VMTDriver {
     }
 
     //仮想デバイスからデバイスバッファへ指定Indexのボーンについて静的骨格をLerpした値を書き込む
-    void TrackedDeviceServerDriver::WriteSkeletonInputBufferStaticLerpFinger(uint32_t finger, double t) {
+    void TrackedDeviceServerDriver::WriteSkeletonInputBufferStaticLerpFinger(uint32_t finger, double t, uint32_t mode) {
         if (!m_alreadyRegistered) { return; }
         if (m_controllerRole == ControllerRole::None) { return; } //コントローラでなければ受け付けない
 
-        switch ((SkeletonLerpFinder)finger) {
-        case SkeletonLerpFinder::RootAndWrist:
-            WriteSkeletonInputBufferStaticLerpBone((uint32_t)SkeletonBone::Root, t);
-            WriteSkeletonInputBufferStaticLerpBone((uint32_t)SkeletonBone::Wrist, t);
-            break;
-        case SkeletonLerpFinder::Thumb:
-            WriteSkeletonInputBufferStaticLerpBone((uint32_t)SkeletonBone::Thumb0_ThumbProximal, t);
-            WriteSkeletonInputBufferStaticLerpBone((uint32_t)SkeletonBone::Thumb1_ThumbIntermediate, t);
-            WriteSkeletonInputBufferStaticLerpBone((uint32_t)SkeletonBone::Thumb2_ThumbDistal, t);
-            WriteSkeletonInputBufferStaticLerpBone((uint32_t)SkeletonBone::Thumb3_ThumbEnd, t);
-            WriteSkeletonInputBufferStaticLerpBone((uint32_t)SkeletonBone::Aux_Thumb_ThumbHelper, t);
-            break;
-        case SkeletonLerpFinder::Index:
-            WriteSkeletonInputBufferStaticLerpBone((uint32_t)SkeletonBone::IndexFinger0_IndexProximal, t);
-            WriteSkeletonInputBufferStaticLerpBone((uint32_t)SkeletonBone::IndexFinger1_IndexIntermediate, t);
-            WriteSkeletonInputBufferStaticLerpBone((uint32_t)SkeletonBone::IndexFinger2_IndexDistal, t);
-            WriteSkeletonInputBufferStaticLerpBone((uint32_t)SkeletonBone::IndexFinger3_IndexDistal2, t);
-            WriteSkeletonInputBufferStaticLerpBone((uint32_t)SkeletonBone::IndexFinger4_IndexEnd, t);
-            WriteSkeletonInputBufferStaticLerpBone((uint32_t)SkeletonBone::Aux_IndexFinger_IndexHelper, t);
-            break;
-        case SkeletonLerpFinder::Middle:
-            WriteSkeletonInputBufferStaticLerpBone((uint32_t)SkeletonBone::MiddleFinger0_MiddleProximal, t);
-            WriteSkeletonInputBufferStaticLerpBone((uint32_t)SkeletonBone::MiddleFinger1_MiddleIntermediate, t);
-            WriteSkeletonInputBufferStaticLerpBone((uint32_t)SkeletonBone::MiddleFinger2_MiddleDistal, t);
-            WriteSkeletonInputBufferStaticLerpBone((uint32_t)SkeletonBone::MiddleFinger3_MiddleDistal2, t);
-            WriteSkeletonInputBufferStaticLerpBone((uint32_t)SkeletonBone::MiddleFinger4_MiddleEnd, t);
-            WriteSkeletonInputBufferStaticLerpBone((uint32_t)SkeletonBone::Aux_MiddleFinger_MiddleHelper, t);
-            break;
-        case SkeletonLerpFinder::Ring:
-            WriteSkeletonInputBufferStaticLerpBone((uint32_t)SkeletonBone::RingFinger0_RingProximal, t);
-            WriteSkeletonInputBufferStaticLerpBone((uint32_t)SkeletonBone::RingFinger1_RingIntermediate, t);
-            WriteSkeletonInputBufferStaticLerpBone((uint32_t)SkeletonBone::RingFinger2_RingDistal, t);
-            WriteSkeletonInputBufferStaticLerpBone((uint32_t)SkeletonBone::RingFinger3_RingDistal2, t);
-            WriteSkeletonInputBufferStaticLerpBone((uint32_t)SkeletonBone::RingFinger4_RingEnd, t);
-            WriteSkeletonInputBufferStaticLerpBone((uint32_t)SkeletonBone::Aux_RingFinger_RingHelper, t);
-            break;
-        case SkeletonLerpFinder::PinkyLittle:
-            WriteSkeletonInputBufferStaticLerpBone((uint32_t)SkeletonBone::PinkyFinger0_LittleProximal, t);
-            WriteSkeletonInputBufferStaticLerpBone((uint32_t)SkeletonBone::PinkyFinger1_LittleIntermediate, t);
-            WriteSkeletonInputBufferStaticLerpBone((uint32_t)SkeletonBone::PinkyFinger2_LittleDistal, t);
-            WriteSkeletonInputBufferStaticLerpBone((uint32_t)SkeletonBone::PinkyFinger3_LittleDistal2, t);
-            WriteSkeletonInputBufferStaticLerpBone((uint32_t)SkeletonBone::PinkyFinger4_LittleEnd, t);
-            WriteSkeletonInputBufferStaticLerpBone((uint32_t)SkeletonBone::Aux_PinkyFinger_LittleHelper, t);
-            break;
-        default:LogError("Finger out of range: %u", finger); 
-            break;
+        //モード0: Fist - OpenHand
+        if (mode != 0) { 
+            LogError("Mode out of range: %u", mode);
+            return;
+        }
+
+        if (m_controllerRole == ControllerRole::Left) {
+            switch ((SkeletonLerpFinder)finger) {
+            case SkeletonLerpFinder::RootAndWrist:
+                WriteSkeletonInputBufferStaticLerpBone(FistParentSpaceBonesLeft, OpenHandParentSpaceBonesLeft, (uint32_t)SkeletonBone::Root, t);
+                WriteSkeletonInputBufferStaticLerpBone(FistParentSpaceBonesLeft, OpenHandParentSpaceBonesLeft, (uint32_t)SkeletonBone::Wrist, t);
+                break;
+            case SkeletonLerpFinder::Thumb:
+                WriteSkeletonInputBufferStaticLerpBone(FistParentSpaceBonesLeft, OpenHandParentSpaceBonesLeft, (uint32_t)SkeletonBone::Thumb0_ThumbProximal, t);
+                WriteSkeletonInputBufferStaticLerpBone(FistParentSpaceBonesLeft, OpenHandParentSpaceBonesLeft, (uint32_t)SkeletonBone::Thumb1_ThumbIntermediate, t);
+                WriteSkeletonInputBufferStaticLerpBone(FistParentSpaceBonesLeft, OpenHandParentSpaceBonesLeft, (uint32_t)SkeletonBone::Thumb2_ThumbDistal, t);
+                WriteSkeletonInputBufferStaticLerpBone(FistParentSpaceBonesLeft, OpenHandParentSpaceBonesLeft, (uint32_t)SkeletonBone::Thumb3_ThumbEnd, t);
+                WriteSkeletonInputBufferStaticLerpBone(FistParentSpaceBonesLeft, OpenHandParentSpaceBonesLeft, (uint32_t)SkeletonBone::Aux_Thumb_ThumbHelper, t);
+                break;
+            case SkeletonLerpFinder::Index:
+                WriteSkeletonInputBufferStaticLerpBone(FistParentSpaceBonesLeft, OpenHandParentSpaceBonesLeft, (uint32_t)SkeletonBone::IndexFinger0_IndexProximal, t);
+                WriteSkeletonInputBufferStaticLerpBone(FistParentSpaceBonesLeft, OpenHandParentSpaceBonesLeft, (uint32_t)SkeletonBone::IndexFinger1_IndexIntermediate, t);
+                WriteSkeletonInputBufferStaticLerpBone(FistParentSpaceBonesLeft, OpenHandParentSpaceBonesLeft, (uint32_t)SkeletonBone::IndexFinger2_IndexDistal, t);
+                WriteSkeletonInputBufferStaticLerpBone(FistParentSpaceBonesLeft, OpenHandParentSpaceBonesLeft, (uint32_t)SkeletonBone::IndexFinger3_IndexDistal2, t);
+                WriteSkeletonInputBufferStaticLerpBone(FistParentSpaceBonesLeft, OpenHandParentSpaceBonesLeft, (uint32_t)SkeletonBone::IndexFinger4_IndexEnd, t);
+                WriteSkeletonInputBufferStaticLerpBone(FistParentSpaceBonesLeft, OpenHandParentSpaceBonesLeft, (uint32_t)SkeletonBone::Aux_IndexFinger_IndexHelper, t);
+                break;
+            case SkeletonLerpFinder::Middle:
+                WriteSkeletonInputBufferStaticLerpBone(FistParentSpaceBonesLeft, OpenHandParentSpaceBonesLeft, (uint32_t)SkeletonBone::MiddleFinger0_MiddleProximal, t);
+                WriteSkeletonInputBufferStaticLerpBone(FistParentSpaceBonesLeft, OpenHandParentSpaceBonesLeft, (uint32_t)SkeletonBone::MiddleFinger1_MiddleIntermediate, t);
+                WriteSkeletonInputBufferStaticLerpBone(FistParentSpaceBonesLeft, OpenHandParentSpaceBonesLeft, (uint32_t)SkeletonBone::MiddleFinger2_MiddleDistal, t);
+                WriteSkeletonInputBufferStaticLerpBone(FistParentSpaceBonesLeft, OpenHandParentSpaceBonesLeft, (uint32_t)SkeletonBone::MiddleFinger3_MiddleDistal2, t);
+                WriteSkeletonInputBufferStaticLerpBone(FistParentSpaceBonesLeft, OpenHandParentSpaceBonesLeft, (uint32_t)SkeletonBone::MiddleFinger4_MiddleEnd, t);
+                WriteSkeletonInputBufferStaticLerpBone(FistParentSpaceBonesLeft, OpenHandParentSpaceBonesLeft, (uint32_t)SkeletonBone::Aux_MiddleFinger_MiddleHelper, t);
+                break;
+            case SkeletonLerpFinder::Ring:
+                WriteSkeletonInputBufferStaticLerpBone(FistParentSpaceBonesLeft, OpenHandParentSpaceBonesLeft, (uint32_t)SkeletonBone::RingFinger0_RingProximal, t);
+                WriteSkeletonInputBufferStaticLerpBone(FistParentSpaceBonesLeft, OpenHandParentSpaceBonesLeft, (uint32_t)SkeletonBone::RingFinger1_RingIntermediate, t);
+                WriteSkeletonInputBufferStaticLerpBone(FistParentSpaceBonesLeft, OpenHandParentSpaceBonesLeft, (uint32_t)SkeletonBone::RingFinger2_RingDistal, t);
+                WriteSkeletonInputBufferStaticLerpBone(FistParentSpaceBonesLeft, OpenHandParentSpaceBonesLeft, (uint32_t)SkeletonBone::RingFinger3_RingDistal2, t);
+                WriteSkeletonInputBufferStaticLerpBone(FistParentSpaceBonesLeft, OpenHandParentSpaceBonesLeft, (uint32_t)SkeletonBone::RingFinger4_RingEnd, t);
+                WriteSkeletonInputBufferStaticLerpBone(FistParentSpaceBonesLeft, OpenHandParentSpaceBonesLeft, (uint32_t)SkeletonBone::Aux_RingFinger_RingHelper, t);
+                break;
+            case SkeletonLerpFinder::PinkyLittle:
+                WriteSkeletonInputBufferStaticLerpBone(FistParentSpaceBonesLeft, OpenHandParentSpaceBonesLeft, (uint32_t)SkeletonBone::PinkyFinger0_LittleProximal, t);
+                WriteSkeletonInputBufferStaticLerpBone(FistParentSpaceBonesLeft, OpenHandParentSpaceBonesLeft, (uint32_t)SkeletonBone::PinkyFinger1_LittleIntermediate, t);
+                WriteSkeletonInputBufferStaticLerpBone(FistParentSpaceBonesLeft, OpenHandParentSpaceBonesLeft, (uint32_t)SkeletonBone::PinkyFinger2_LittleDistal, t);
+                WriteSkeletonInputBufferStaticLerpBone(FistParentSpaceBonesLeft, OpenHandParentSpaceBonesLeft, (uint32_t)SkeletonBone::PinkyFinger3_LittleDistal2, t);
+                WriteSkeletonInputBufferStaticLerpBone(FistParentSpaceBonesLeft, OpenHandParentSpaceBonesLeft, (uint32_t)SkeletonBone::PinkyFinger4_LittleEnd, t);
+                WriteSkeletonInputBufferStaticLerpBone(FistParentSpaceBonesLeft, OpenHandParentSpaceBonesLeft, (uint32_t)SkeletonBone::Aux_PinkyFinger_LittleHelper, t);
+                break;
+            default:LogError("Finger out of range: %u", finger);
+                break;
+            }
+        }
+        else {
+            switch ((SkeletonLerpFinder)finger) {
+            case SkeletonLerpFinder::RootAndWrist:
+                WriteSkeletonInputBufferStaticLerpBone(FistParentSpaceBonesRight, OpenHandParentSpaceBonesRight, (uint32_t)SkeletonBone::Root, t);
+                WriteSkeletonInputBufferStaticLerpBone(FistParentSpaceBonesRight, OpenHandParentSpaceBonesRight, (uint32_t)SkeletonBone::Wrist, t);
+                break;
+            case SkeletonLerpFinder::Thumb:
+                WriteSkeletonInputBufferStaticLerpBone(FistParentSpaceBonesRight, OpenHandParentSpaceBonesRight, (uint32_t)SkeletonBone::Thumb0_ThumbProximal, t);
+                WriteSkeletonInputBufferStaticLerpBone(FistParentSpaceBonesRight, OpenHandParentSpaceBonesRight, (uint32_t)SkeletonBone::Thumb1_ThumbIntermediate, t);
+                WriteSkeletonInputBufferStaticLerpBone(FistParentSpaceBonesRight, OpenHandParentSpaceBonesRight, (uint32_t)SkeletonBone::Thumb2_ThumbDistal, t);
+                WriteSkeletonInputBufferStaticLerpBone(FistParentSpaceBonesRight, OpenHandParentSpaceBonesRight, (uint32_t)SkeletonBone::Thumb3_ThumbEnd, t);
+                WriteSkeletonInputBufferStaticLerpBone(FistParentSpaceBonesRight, OpenHandParentSpaceBonesRight, (uint32_t)SkeletonBone::Aux_Thumb_ThumbHelper, t);
+                break;
+            case SkeletonLerpFinder::Index:
+                WriteSkeletonInputBufferStaticLerpBone(FistParentSpaceBonesRight, OpenHandParentSpaceBonesRight, (uint32_t)SkeletonBone::IndexFinger0_IndexProximal, t);
+                WriteSkeletonInputBufferStaticLerpBone(FistParentSpaceBonesRight, OpenHandParentSpaceBonesRight, (uint32_t)SkeletonBone::IndexFinger1_IndexIntermediate, t);
+                WriteSkeletonInputBufferStaticLerpBone(FistParentSpaceBonesRight, OpenHandParentSpaceBonesRight, (uint32_t)SkeletonBone::IndexFinger2_IndexDistal, t);
+                WriteSkeletonInputBufferStaticLerpBone(FistParentSpaceBonesRight, OpenHandParentSpaceBonesRight, (uint32_t)SkeletonBone::IndexFinger3_IndexDistal2, t);
+                WriteSkeletonInputBufferStaticLerpBone(FistParentSpaceBonesRight, OpenHandParentSpaceBonesRight, (uint32_t)SkeletonBone::IndexFinger4_IndexEnd, t);
+                WriteSkeletonInputBufferStaticLerpBone(FistParentSpaceBonesRight, OpenHandParentSpaceBonesRight, (uint32_t)SkeletonBone::Aux_IndexFinger_IndexHelper, t);
+                break;
+            case SkeletonLerpFinder::Middle:
+                WriteSkeletonInputBufferStaticLerpBone(FistParentSpaceBonesRight, OpenHandParentSpaceBonesRight, (uint32_t)SkeletonBone::MiddleFinger0_MiddleProximal, t);
+                WriteSkeletonInputBufferStaticLerpBone(FistParentSpaceBonesRight, OpenHandParentSpaceBonesRight, (uint32_t)SkeletonBone::MiddleFinger1_MiddleIntermediate, t);
+                WriteSkeletonInputBufferStaticLerpBone(FistParentSpaceBonesRight, OpenHandParentSpaceBonesRight, (uint32_t)SkeletonBone::MiddleFinger2_MiddleDistal, t);
+                WriteSkeletonInputBufferStaticLerpBone(FistParentSpaceBonesRight, OpenHandParentSpaceBonesRight, (uint32_t)SkeletonBone::MiddleFinger3_MiddleDistal2, t);
+                WriteSkeletonInputBufferStaticLerpBone(FistParentSpaceBonesRight, OpenHandParentSpaceBonesRight, (uint32_t)SkeletonBone::MiddleFinger4_MiddleEnd, t);
+                WriteSkeletonInputBufferStaticLerpBone(FistParentSpaceBonesRight, OpenHandParentSpaceBonesRight, (uint32_t)SkeletonBone::Aux_MiddleFinger_MiddleHelper, t);
+                break;
+            case SkeletonLerpFinder::Ring:
+                WriteSkeletonInputBufferStaticLerpBone(FistParentSpaceBonesRight, OpenHandParentSpaceBonesRight, (uint32_t)SkeletonBone::RingFinger0_RingProximal, t);
+                WriteSkeletonInputBufferStaticLerpBone(FistParentSpaceBonesRight, OpenHandParentSpaceBonesRight, (uint32_t)SkeletonBone::RingFinger1_RingIntermediate, t);
+                WriteSkeletonInputBufferStaticLerpBone(FistParentSpaceBonesRight, OpenHandParentSpaceBonesRight, (uint32_t)SkeletonBone::RingFinger2_RingDistal, t);
+                WriteSkeletonInputBufferStaticLerpBone(FistParentSpaceBonesRight, OpenHandParentSpaceBonesRight, (uint32_t)SkeletonBone::RingFinger3_RingDistal2, t);
+                WriteSkeletonInputBufferStaticLerpBone(FistParentSpaceBonesRight, OpenHandParentSpaceBonesRight, (uint32_t)SkeletonBone::RingFinger4_RingEnd, t);
+                WriteSkeletonInputBufferStaticLerpBone(FistParentSpaceBonesRight, OpenHandParentSpaceBonesRight, (uint32_t)SkeletonBone::Aux_RingFinger_RingHelper, t);
+                break;
+            case SkeletonLerpFinder::PinkyLittle:
+                WriteSkeletonInputBufferStaticLerpBone(FistParentSpaceBonesRight, OpenHandParentSpaceBonesRight, (uint32_t)SkeletonBone::PinkyFinger0_LittleProximal, t);
+                WriteSkeletonInputBufferStaticLerpBone(FistParentSpaceBonesRight, OpenHandParentSpaceBonesRight, (uint32_t)SkeletonBone::PinkyFinger1_LittleIntermediate, t);
+                WriteSkeletonInputBufferStaticLerpBone(FistParentSpaceBonesRight, OpenHandParentSpaceBonesRight, (uint32_t)SkeletonBone::PinkyFinger2_LittleDistal, t);
+                WriteSkeletonInputBufferStaticLerpBone(FistParentSpaceBonesRight, OpenHandParentSpaceBonesRight, (uint32_t)SkeletonBone::PinkyFinger3_LittleDistal2, t);
+                WriteSkeletonInputBufferStaticLerpBone(FistParentSpaceBonesRight, OpenHandParentSpaceBonesRight, (uint32_t)SkeletonBone::PinkyFinger4_LittleEnd, t);
+                WriteSkeletonInputBufferStaticLerpBone(FistParentSpaceBonesRight, OpenHandParentSpaceBonesRight, (uint32_t)SkeletonBone::Aux_PinkyFinger_LittleHelper, t);
+                break;
+            default:LogError("Finger out of range: %u", finger);
+                break;
+            }
         }
     }
 
-
-    //仮想デバイスからデバイスバッファへ指定Indexのボーンについて静的骨格をLerpした値を書き込む
-    void TrackedDeviceServerDriver::WriteSkeletonInputBufferStaticLerpBone(uint32_t index, double t)
+    //仮想デバイスからデバイスバッファへ指定Indexのボーンについて指定の骨格をLerpした値を書き込む
+    void TrackedDeviceServerDriver::WriteSkeletonInputBufferStaticLerpBone(const VRBoneTransform_t a[], const VRBoneTransform_t b[], uint32_t index, double t)
     {
         if (!m_alreadyRegistered) { return; }
         if (m_controllerRole == ControllerRole::None) { return; } //コントローラでなければ受け付けない
 
         if (0 <= index && index < skeletonBoneCount)
         {
-            if (m_controllerRole == ControllerRole::Left) {
-                Eigen::Quaterniond a(FistParentSpaceBonesLeft[index].orientation.w, FistParentSpaceBonesLeft[index].orientation.x, FistParentSpaceBonesLeft[index].orientation.y, FistParentSpaceBonesLeft[index].orientation.z);
-                Eigen::Quaterniond b(OpenHandParentSpaceBonesLeft[index].orientation.w, OpenHandParentSpaceBonesLeft[index].orientation.x, OpenHandParentSpaceBonesLeft[index].orientation.y, OpenHandParentSpaceBonesLeft[index].orientation.z);
-                Eigen::Quaterniond r = a.slerp(t, b);
+            Eigen::Quaterniond qa(a[index].orientation.w, a[index].orientation.x, a[index].orientation.y, a[index].orientation.z);
+            Eigen::Quaterniond qb(b[index].orientation.w, b[index].orientation.x, b[index].orientation.y, b[index].orientation.z);
+            Eigen::Quaterniond qr = qa.slerp(t, qb);
 
-                VRBoneTransform_t bone{};
-                bone.position.v[0] = FistParentSpaceBonesLeft[index].position.v[0] * (1.0 - t) + OpenHandParentSpaceBonesLeft[index].position.v[0] * t;
-                bone.position.v[1] = FistParentSpaceBonesLeft[index].position.v[1] * (1.0 - t) + OpenHandParentSpaceBonesLeft[index].position.v[1] * t;
-                bone.position.v[2] = FistParentSpaceBonesLeft[index].position.v[2] * (1.0 - t) + OpenHandParentSpaceBonesLeft[index].position.v[2] * t;
-                bone.orientation.x = r.x();
-                bone.orientation.y = r.y();
-                bone.orientation.z = r.z();
-                bone.orientation.w = r.w();
+            VRBoneTransform_t bone{};
+            bone.position.v[0] = (float)(a[index].position.v[0] * (1.0 - t) + b[index].position.v[0] * t);
+            bone.position.v[1] = (float)(a[index].position.v[1] * (1.0 - t) + b[index].position.v[1] * t);
+            bone.position.v[2] = (float)(a[index].position.v[2] * (1.0 - t) + b[index].position.v[2] * t);
+            bone.orientation.x = (float)qr.x();
+            bone.orientation.y = (float)qr.y();
+            bone.orientation.z = (float)qr.z();
+            bone.orientation.w = (float)qr.w();
 
-                m_boneTransform[index] = bone;
-            }
-            else {
-                Eigen::Quaterniond a(FistParentSpaceBonesRight[index].orientation.w, FistParentSpaceBonesRight[index].orientation.x, FistParentSpaceBonesRight[index].orientation.y, FistParentSpaceBonesRight[index].orientation.z);
-                Eigen::Quaterniond b(OpenHandParentSpaceBonesRight[index].orientation.w, OpenHandParentSpaceBonesRight[index].orientation.x, OpenHandParentSpaceBonesRight[index].orientation.y, OpenHandParentSpaceBonesRight[index].orientation.z);
-                Eigen::Quaterniond r = a.slerp(t, b);
-
-                VRBoneTransform_t bone{};
-                bone.position.v[0] = FistParentSpaceBonesRight[index].position.v[0] * (1.0 - t) + OpenHandParentSpaceBonesRight[index].position.v[0] * t;
-                bone.position.v[1] = FistParentSpaceBonesRight[index].position.v[1] * (1.0 - t) + OpenHandParentSpaceBonesRight[index].position.v[1] * t;
-                bone.position.v[2] = FistParentSpaceBonesRight[index].position.v[2] * (1.0 - t) + OpenHandParentSpaceBonesRight[index].position.v[2] * t;
-                bone.orientation.x = r.x();
-                bone.orientation.y = r.y();
-                bone.orientation.z = r.z();
-                bone.orientation.w = r.w();
-
-                m_boneTransform[index] = bone;
-            }
+            m_boneTransform[index] = bone;
         }
         else {
             LogError("Index out of range: %u", index);
@@ -771,6 +807,7 @@ namespace VMTDriver {
     {
         if (!m_alreadyRegistered) { return; }
         if (m_controllerRole == ControllerRole::None) { return;  } //コントローラでなければ受け付けない
+        if (Config::GetInstance()->GetSkeletonInput() == false) { return; } //骨格入力が無効なら行わない
         LogIfEVRInputError(VRDriverInput()->UpdateSkeletonComponent(SkeletonComponent, EVRSkeletalMotionRange::VRSkeletalMotionRange_WithController, m_boneTransform, skeletonBoneCount));
         LogIfEVRInputError(VRDriverInput()->UpdateSkeletonComponent(SkeletonComponent, EVRSkeletalMotionRange::VRSkeletalMotionRange_WithoutController, m_boneTransform, skeletonBoneCount));
     }
@@ -809,30 +846,7 @@ namespace VMTDriver {
     //デバッグコマンド処理(VMT Managerから送られてくる)
     std::string TrackedDeviceServerDriver::VMTDebugCommand(std::string command)
     {
-        int index =0 ;
-        float t = 0;
-        sscanf(command.c_str(), "%d:%f", &index, &t);
-
-        WriteSkeletonInputBufferStaticLerpFinger(index, t);
-        /*
-        if (command == "1") {
-            WriteSkeletonInputBufferStatic(SkeletonBonePoseStatic::BindHand);
-            UpdateSkeletonInput(0);
-            return "BindHand OK";
-        }
-        if (command == "2") {
-            WriteSkeletonInputBufferStatic(SkeletonBonePoseStatic::Fist);
-            UpdateSkeletonInput(0);
-            return "Fist OK";
-        }
-        if (command == "3") {
-            WriteSkeletonInputBufferStatic(SkeletonBonePoseStatic::OpenHand);
-            UpdateSkeletonInput(0);
-            return "OpenHand OK";
-        }
-        return "? NG";
-        */
-        return std::to_string(index) + ":"+std::to_string(t);
+        return "No command";
     }
 
     //仮想デバイスからOpenVRへデバイスの姿勢の更新を通知する(サーバーから毎フレームコールされる)
@@ -1077,4 +1091,3 @@ namespace VMTDriver {
         return m_pose;
     }
 }
-#pragma warning(pop)

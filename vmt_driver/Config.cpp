@@ -116,10 +116,6 @@ namespace VMTDriver {
 		{
 			j["OptoutTrackingRole"] = true;
 		}
-		if (!j.contains("HMDisIndex0"))
-		{
-			j["HMDisIndex0"] = true;
-		}
 		if (!j.contains("RejectWhenCannotTracking"))
 		{
 			j["RejectWhenCannotTracking"] = true;
@@ -131,6 +127,10 @@ namespace VMTDriver {
 		if (!j.contains("DefaultControllerDeviceRegistration"))
 		{
 			j["DefaultControllerDeviceRegistration"] = false;
+		}
+		if (!j.contains("SkeletonInput"))
+		{
+			j["SkeletonInput"] = true;
 		}
 		return j;
 	}
@@ -167,10 +167,6 @@ namespace VMTDriver {
 			{
 				m_optoutTrackingRole = j["OptoutTrackingRole"];
 			}
-			if (j.contains("HMDisIndex0"))
-			{
-				m_HMDisIndex0 = j["HMDisIndex0"];
-			}
 			if (j.contains("RejectWhenCannotTracking"))
 			{
 				m_RejectWhenCannotTracking = j["RejectWhenCannotTracking"];
@@ -182,6 +178,10 @@ namespace VMTDriver {
 			if (j.contains("DefaultControllerDeviceRegistration"))
 			{
 				m_DefaultControllerDeviceRegistration = j["DefaultControllerDeviceRegistration"];
+			}
+			if (j.contains("SkeletonInput"))
+			{
+				m_SkeletonInput = j["SkeletonInput"];
 			}
 			SaveJson(j);
 		}
@@ -228,12 +228,6 @@ namespace VMTDriver {
 		return m_optoutTrackingRole;
 	}
 
-	//シリアル=HMDの有効化の取得
-	bool Config::GetHMDisIndex0()
-	{
-		return m_HMDisIndex0;
-	}
-
 	//ルーム変換行列の状態の取得
 	bool Config::GetRoomMatrixStatus()
 	{
@@ -273,5 +267,11 @@ namespace VMTDriver {
 	bool Config::GetDefaultControllerDeviceRegistration()
 	{
 		return m_DefaultControllerDeviceRegistration;
+	}
+
+	//骨格入力が有効かを取得する
+	bool Config::GetSkeletonInput()
+	{
+		return m_SkeletonInput;
 	}
 }

@@ -158,8 +158,8 @@ namespace VMTDriver {
         void UpdateJoystickInput(uint32_t index, float x, float y, double timeoffset);
 
         void WriteSkeletonInputBuffer(uint32_t index, VRBoneTransform_t bone);
-        void WriteSkeletonInputBufferStaticLerpFinger(uint32_t finger, double t);
-        void WriteSkeletonInputBufferStaticLerpBone(uint32_t index, double t);
+        void WriteSkeletonInputBufferStaticLerpFinger(uint32_t finger, double t, uint32_t mode);
+        void WriteSkeletonInputBufferStaticLerpBone(const VRBoneTransform_t a[], const VRBoneTransform_t b[], uint32_t index, double t);
         void WriteSkeletonInputBufferStatic(SkeletonBonePoseStatic type);
         void UpdateSkeletonInput(double timeoffset);
         void Reset();

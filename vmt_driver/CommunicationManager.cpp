@@ -155,6 +155,7 @@ namespace VMTDriver {
 		const char* root_sn = nullptr;
 
 		int i{};
+		int mode{};
 
 		float m1{};
 		float m2{};
@@ -227,10 +228,16 @@ namespace VMTDriver {
 			}
 			else if (adr == "/VMT/Skeleton/Scalar")
 			{
-				args >> idx >> i >> x >> osc::EndMessage;
+				//デバイスインデックス、ボーンインデックス、モード(ブレンド先)、軸連動有効可否
+				args >> idx >> i >> x >> mode >> enable >> osc::EndMessage;
 				if (GetServer()->IsVMTDeviceIndex(idx))
 				{
-					GetServer()->GetDevice(idx).WriteSkeletonInputBufferStaticLerpFinger(i, x);
+					GetServer()->GetDevice(idx).WriteSkeletonInputBufferStaticLerpFinger(i, x, mode);
+
+					//軸連動が有効な場合
+					if (enable > 0) {
+						//TODO: 軸の連動処理をコールする
+					}
 				}
 			}
 			else if (adr == "/VMT/Skeleton/Apply")
