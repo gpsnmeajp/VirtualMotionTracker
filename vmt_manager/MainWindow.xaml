@@ -4,7 +4,7 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:vmt_manager"
-		Width="390"
+		Width="470"
 		Height="650"
         mc:Ignorable="d"
         Title="VMT Manager" Loaded="Window_Loaded" Closed="Window_Closed" ResizeMode="NoResize">
@@ -27,7 +27,7 @@
 						</LinearGradientBrush>
 					</DockPanel.Background>
 					<TextBlock Text="" Name="TopErrorTextBlock" Visibility="Collapsed" DockPanel.Dock="Top" Background="Red" Foreground="White" TextWrapping="Wrap" />
-					<TextBlock Text="VMT is not installed. Click install button to start use VMT.&#xA;VMTはインストールされていません。&#xA;使い始めるにはInstallボタンを押してください。" Name="TopNotInstalledTextBlock" DockPanel.Dock="Top" Background="Green" Foreground="White" TextWrapping="Wrap" />
+					<TextBlock Text="VMT is not installed. Click install button to start use VMT.&#xA;VMTはインストールされていません。使い始めるにはInstallボタンを押してください。" Name="TopNotInstalledTextBlock" DockPanel.Dock="Top" Background="Green" Foreground="White" TextWrapping="Wrap" />
 					<Grid  DockPanel.Dock="Top" Margin="1" Name="InstallGrid">
 						<Grid.ColumnDefinitions>
 							<ColumnDefinition/>
@@ -56,27 +56,22 @@
 			</TabItem>
 			<TabItem Header="RoomSetup">
 				<DockPanel Name="ControlDock" IsEnabled="False">
-					<TextBlock Text="★ここに説明文を書く★" DockPanel.Dock="Top" Background="#EEEEEE" />
+					<TextBlock TextAlignment="Center" Text="Initial setup &amp; Operation check" DockPanel.Dock="Top" Background="#EEEEEE" />
 					<Grid VerticalAlignment="Top">
 						<Grid.ColumnDefinitions>
 							<ColumnDefinition/>
 							<ColumnDefinition/>
 						</Grid.ColumnDefinitions>
-						<GroupBox Header="★★★★★" Grid.Column="0">
+						<GroupBox Header="Room Seup (Required)" Grid.Column="0">
 							<DockPanel Margin="2"  LastChildFill="False">
 								<TextBlock Text="RoomMatrix" DockPanel.Dock="Top" Margin="1"/>
 								<TextBox Name="RoomMatrixTextBox" IsEnabled="False" IsReadOnly="True" Text="" DockPanel.Dock="Top" Height="69" Margin="1"/>
 								<CheckBox Content="Temporary" DockPanel.Dock="Top" Name="SetRoomMatrixTemporaryCheckBox"></CheckBox>
 								<Button Content="Set RoomMatrix" DockPanel.Dock="Top" Name="SetRoomMatrixButtonName" Click="SetRoomMatrixButton" Margin="1"/>
 								<Button Content="Reset RoomMatrix" DockPanel.Dock="Top" Click="ResetRoomMatrixButton" Margin="1"/>
-								<TextBlock Text="Position Coordinate" DockPanel.Dock="Top" Margin="1"/>
-								<ComboBox DockPanel.Dock="Top" Name="CoordinateCombo" SelectedIndex="0">
-									<ComboBoxItem>Driver Coordinate</ComboBoxItem>
-									<ComboBoxItem>Unity Coordinate</ComboBoxItem>
-								</ComboBox>
 							</DockPanel>
 						</GroupBox>
-						<GroupBox Header="★★★★★" Grid.Column="1">
+						<GroupBox Header="Position Test" Grid.Column="1">
 							<DockPanel Margin="2" LastChildFill="False">
 								<TextBlock Text="VMT_0 Room Position" DockPanel.Dock="Top" Margin="1"/>
 								<TextBox Name="CheckPositionTextBox" IsEnabled="False" IsReadOnly="True" Text="-,-,-" DockPanel.Dock="Top" Margin="1"/>
@@ -90,14 +85,18 @@
 								<Button Content="Check VMT__0 Position &#xA;(Try set JointPos=[0.1,0.0,-0.5] )" DockPanel.Dock="Top" Click="CheckJointPositionButton" Margin="1"/>
 								<TextBox Name="JointSerialNo2TextBox" Text="LHR-xxxxxxxxx" DockPanel.Dock="Top" Margin="1"/>
 								<Button Content="Check VMT__1 Position &#xA;(Try set FollowPos=[-0.1,0.0,-0.5] )" DockPanel.Dock="Top" Click="CheckJointPosition2Button" Margin="1"/>
-							</DockPanel>
+								<TextBlock Text="Position Coordinate" DockPanel.Dock="Top" Margin="1"/>
+								<ComboBox DockPanel.Dock="Top" Name="CoordinateCombo" SelectedIndex="0">
+									<ComboBoxItem>Driver Coordinate</ComboBoxItem>
+									<ComboBoxItem>Unity Coordinate</ComboBoxItem>
+								</ComboBox>							</DockPanel>
 						</GroupBox>
 					</Grid>
 				</DockPanel>
 			</TabItem>
 			<TabItem Header="Control">
 				<DockPanel>
-					<TextBlock Text="★ここに説明文を書く★" DockPanel.Dock="Top" Background="#EEEEEE" />
+					<TextBlock TextAlignment="Center" Text="Control Command for all VMT Devices" DockPanel.Dock="Top" Background="#EEEEEE" />
 
 					<Grid>
 						<Grid.ColumnDefinitions>
@@ -117,23 +116,23 @@
 			</TabItem>
 			<TabItem Header="Input">
 				<DockPanel LastChildFill="False">
-					<TextBlock Text="★ここに説明文を書く★" DockPanel.Dock="Top" Background="#EEEEEE" />
-					<GroupBox Header="★★★★★" DockPanel.Dock="Top">
+					<TextBlock TextAlignment="Center" Text="Control panel for testing each VMT Devices" DockPanel.Dock="Top" Background="#EEEEEE" />
+					<GroupBox Header="Operation target (0～57)" DockPanel.Dock="Top">
 						<DockPanel Margin="1">
 							<TextBlock VerticalAlignment="Center" Text="VMT:" DockPanel.Dock="Left" Margin="1" />
 							<TextBox Name="InputVMTNoTextBox" Text="0" DockPanel.Dock="Left" Margin="1" />
 						</DockPanel>
 					</GroupBox>
 
-					<GroupBox Header="★★★★★" DockPanel.Dock="Top">
+					<GroupBox Header="Device registration (Only once each devices in one VR Session.)" DockPanel.Dock="Top">
 						<UniformGrid Columns="4" Rows="1">
-							<Button Content="Ref" DockPanel.Dock="Right" Margin="1" Click="TrackingReferenceButton"/>
-							<Button Content="Right" DockPanel.Dock="Right" Margin="1" Click="RightHandButton"/>
-							<Button Content="Left" DockPanel.Dock="Right" Margin="1" Click="LeftHandButton"/>
-							<Button Content="Tracker" DockPanel.Dock="Right" Margin="1" Click="TrackerButton"/>
+							<Button Content="Tracker" Margin="1" Click="TrackerButton"/>
+							<Button Content="Left Controller" Margin="1" Click="LeftHandButton"/>
+							<Button Content="Right Controller" Margin="1" Click="RightHandButton"/>
+							<Button Content="Tracking Reference" Margin="1" Click="TrackingReferenceButton"/>
 						</UniformGrid>
 					</GroupBox>
-					<GroupBox Header="★★★★★" DockPanel.Dock="Top">
+					<GroupBox Header="Button and Axis" DockPanel.Dock="Top">
 						<Grid>
 							<Grid.ColumnDefinitions>
 								<ColumnDefinition/>
@@ -182,22 +181,15 @@
 							</DockPanel>
 						</Grid>
 					</GroupBox>
-					<GroupBox Header="★★★★★" DockPanel.Dock="Top">
+					<GroupBox Header="Haptic monitor" DockPanel.Dock="Top">
 						<DockPanel Margin="1">
 							<TextBlock VerticalAlignment="Center" Text="Haptic:" DockPanel.Dock="Left" Margin="0,0,5,0" />
 							<Button Content="Haptic Test"  Margin="5,0,0,0" Padding="5,0,5,0" Click="HapticTestButton" DockPanel.Dock="Right"/>
 							<TextBox Name="InputVMTHapticTextBox" Text="-" IsReadOnly="True" IsEnabled="False" />
 						</DockPanel>
 					</GroupBox>
-					<GroupBox Header="★★★★★" DockPanel.Dock="Top">
-						<DockPanel Margin="1">
-							<TextBlock VerticalAlignment="Center" Text="Debug:" DockPanel.Dock="Left" Margin="0,0,5,0" />
-							<Button Content="Send"  Margin="5,0,0,0" Padding="5,0,5,0" Click="DebugCommandButton" DockPanel.Dock="Right"/>
-							<TextBox Name="InputVMTDebugTextBox" Text="" />
-						</DockPanel>
-					</GroupBox>
 
-					<GroupBox Header="★★★★★" DockPanel.Dock="Top">
+					<GroupBox Header="Finger control (scalar value)" DockPanel.Dock="Top">
 						<DockPanel>
 							<DockPanel DockPanel.Dock="Top" Margin="1">
 								<TextBlock Text="RootAndWrist" DockPanel.Dock="Left" Width="80" />
@@ -226,11 +218,19 @@
 						</DockPanel>
 					</GroupBox>
 
+					<GroupBox Header="Debug Command (See driver source code.)" DockPanel.Dock="Top">
+						<DockPanel Margin="1">
+							<TextBlock VerticalAlignment="Center" Text="Debug:" DockPanel.Dock="Left" Margin="0,0,5,0" />
+							<Button Content="Send"  Margin="5,0,0,0" Padding="5,0,5,0" Click="DebugCommandButton" DockPanel.Dock="Right"/>
+							<TextBox Name="InputVMTDebugTextBox" Text="" />
+						</DockPanel>
+					</GroupBox>
+
 				</DockPanel>
 			</TabItem>
 			<TabItem Header="Device">
 				<DockPanel LastChildFill="True">
-					<TextBlock Text="★ここに説明文を書く★" DockPanel.Dock="Top" Background="#EEEEEE" />
+					<TextBlock TextAlignment="Center" Text="OpenVR Device list" DockPanel.Dock="Top" Background="#EEEEEE" />
 
 					<Button Content="Reload" Margin="1" Click="DeviceReloadButton" DockPanel.Dock="Top"/>
 					<Button Content="Copy to Clipboard" Margin="1" Click="DeviceCopyButton" DockPanel.Dock="Top"/>
@@ -238,31 +238,45 @@
 				</DockPanel>
 			</TabItem>
 			<TabItem Header="Settings">
-				<DockPanel LastChildFill="False">
-					<TextBlock Text="★ここに説明文を書く★" DockPanel.Dock="Top" Background="#EEEEEE" />
+				<DockPanel>
+					<TextBlock TextAlignment="Center" Text="Driver Settings (Need reload to apply, Some value requires restart SteamVR.)" DockPanel.Dock="Top" Background="#EEEEEE" />
+					<Button Content="Reload Setting" DockPanel.Dock="Bottom" Click="ReloadJsonButton" Margin="1"/>
+					<TabControl>
+						<TabItem Header="Config">
+							<DockPanel LastChildFill="False">
 
-					<DockPanel LastChildFill="True" DockPanel.Dock="Top">
-						<Button Content="false" Width="50" Margin="0,0,5,0" DockPanel.Dock="Right"/>
-						<Button Content="true" Width="50" Margin="0,0,5,0" DockPanel.Dock="Right"/>
-						<TextBlock Text="Hello" DockPanel.Dock="Left"/>
-					</DockPanel>
-					<Border Height="1" Margin="0,2,0,2" Background="#AAA" DockPanel.Dock="Top" />
-					<DockPanel LastChildFill="True" DockPanel.Dock="Top">
-						<Button Content="false" Width="50" Margin="0,0,5,0" DockPanel.Dock="Right"/>
-						<Button Content="true" Width="50" Margin="0,0,5,0" DockPanel.Dock="Right"/>
-						<TextBlock Text="Hello" DockPanel.Dock="Left"/>
-					</DockPanel>
-					<Border Height="1" Margin="0,2,0,2" Background="#AAA" DockPanel.Dock="Top" />
+								<DockPanel LastChildFill="True" DockPanel.Dock="Top">
+								<Button Content="false" Width="50" Margin="0,0,5,0" DockPanel.Dock="Right"/>
+								<Button Content="true" Width="50" Margin="0,0,5,0" DockPanel.Dock="Right"/>
+								<TextBlock Text="Hello" DockPanel.Dock="Left"/>
+							</DockPanel>
+							<Border Height="1" Margin="0,2,0,2" Background="#AAA" DockPanel.Dock="Top" />
+							<DockPanel LastChildFill="True" DockPanel.Dock="Top">
+								<Button Content="false" Width="50" Margin="0,0,5,0" DockPanel.Dock="Right"/>
+								<Button Content="true" Width="50" Margin="0,0,5,0" DockPanel.Dock="Right"/>
+								<TextBlock Text="Hello" DockPanel.Dock="Left"/>
+							</DockPanel>
+							<Border Height="1" Margin="0,2,0,2" Background="#AAA" DockPanel.Dock="Top" />
+						</DockPanel>
+						</TabItem>
+
+							<TabItem Header="Json">
+								<DockPanel LastChildFill="True">
+
+									<Button Content="Load json editor" Margin="1" Click="JsonLoadButton" DockPanel.Dock="Top"/>
+									<Button Content="Save json editor" Margin="1" Click="JsonSaveButton" DockPanel.Dock="Top"/>
+									<TextBox Name="JsonTextBox" Margin="1" DockPanel.Dock="Top" VerticalScrollBarVisibility="Visible"/>
+								</DockPanel>
+							</TabItem>
+					</TabControl>
 				</DockPanel>
 			</TabItem>
-			<TabItem Header="Json">
+			<TabItem Header="Protocol">
 				<DockPanel LastChildFill="True">
-					<TextBlock Text="★ここに説明文を書く★" DockPanel.Dock="Top" Background="#EEEEEE" />
-
-					<Button Content="Load json editor" Margin="1" Click="JsonLoadButton" DockPanel.Dock="Top"/>
-					<Button Content="Save json editor" Margin="1" Click="JsonSaveButton" DockPanel.Dock="Top"/>
-					<Button Content="Reload Setting" DockPanel.Dock="Bottom" Click="ReloadJsonButton" Margin="1"/>
-					<TextBox Name="JsonTextBox" Margin="1" DockPanel.Dock="Top" VerticalScrollBarVisibility="Visible"/>
+					<TextBlock TextAlignment="Center" Text="Protocol overview" DockPanel.Dock="Top" Background="#EEEEEE" />
+					<ScrollViewer>
+						<TextBlock Name="ProtocolTextBlock" TextWrapping="Wrap" Text="Loading..."/>
+					</ScrollViewer>
 				</DockPanel>
 			</TabItem>
 		</TabControl>

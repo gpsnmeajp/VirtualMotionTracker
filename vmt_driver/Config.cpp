@@ -104,10 +104,6 @@ namespace VMTDriver {
 		{
 			j["RoomMatrix"] = {};
 		}
-		if (!j.contains("VelocityEnable"))
-		{
-			j["VelocityEnable"] = false;
-		}
 		if (!j.contains("ReceivePort"))
 		{
 			j["ReceivePort"] = -1;

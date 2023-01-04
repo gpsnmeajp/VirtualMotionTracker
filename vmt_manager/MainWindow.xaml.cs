@@ -104,6 +104,8 @@ namespace vmt_manager
                 ManagerVersion.Text = Version;
                 DriverVersion.Text = " - ";
 
+                ProtocolTextBlock.Text = File.ReadAllText(System.IO.Path.GetDirectoryName(Assembly.GetEntryAssembly().Location) + @"\..\PROTOCOL.md");
+
                 rnd = new Random();
                 osc = new OSC("127.0.0.1", 39571, 39570, OnBundle, OnMessage);
 
@@ -136,7 +138,7 @@ namespace vmt_manager
                 if (eVRSettingsError == EVRSettingsError.None && safemode)
                 {
                     //var result = MessageBox.Show("SteamVR runnning on safe mode and VMT has blocked.\nPlease unblock, and restart SteamVR.\n\nSteamVRがセーフモードで動作し、VMTがブロックされています。\nブロックを解除し、SteamVRを再起動してください。", title, MessageBoxButton.OK, MessageBoxImage.Error);
-                    TopErrorMessage("SteamVR runnning on safe mode and VMT has blocked.\nPlease unblock, and restart SteamVR.\n\nSteamVRがセーフモードで動作し、VMTがブロックされています。\nブロックを解除し、SteamVRを再起動してください。");
+                    TopErrorMessage("SteamVR runnning on safe mode and VMT has blocked.\nPlease unblock, and restart SteamVR.\n\nSteamVRがセーフモードで動作し、VMTがブロックされています。ブロックを解除し、SteamVRを再起動してください。");
                     return;
                 }
                 //Enableチェック
@@ -145,7 +147,7 @@ namespace vmt_manager
                 if (eVRSettingsError == EVRSettingsError.None && !enable)
                 {
                     //var result = MessageBox.Show("VMT has disabled in Steam VR setting.\nPlease enable, and restart SteamVR.\n\nVMTはSteamVR上で無効に設定されています。\n有効にし、SteamVRを再起動してください。", title, MessageBoxButton.OK, MessageBoxImage.Error);
-                    TopErrorMessage("VMT has disabled in Steam VR setting.\nPlease enable, and restart SteamVR.\n\nVMTはSteamVR上で無効に設定されています。\n有効にし、SteamVRを再起動してください。");
+                    TopErrorMessage("VMT has disabled in Steam VR setting.\nPlease enable, and restart SteamVR.\n\nVMTはSteamVR上で無効に設定されています。有効にし、SteamVRを再起動してください。");
                     return;
                 }
                 //requireHmdチェック
@@ -570,7 +572,7 @@ namespace vmt_manager
                 process.Start();
                 process.WaitForExit();
 
-                MessageBox.Show("OK (ExitCode=" + process.ExitCode + ")\nPlease restart SteamVR.", title);
+                MessageBox.Show("OK (ExitCode=" + process.ExitCode + ")\nPlease restart SteamVR.\nSteamVRを再起動してください。", title);
             }
             catch (Exception ex)
             {
@@ -627,15 +629,15 @@ namespace vmt_manager
                     var res = MessageBox.Show("Do you want to remove setting.json?(Recommended: Yes)\nSetting.jsonを消去しますか?(推奨: はい)\n\n" + installPath + @"\setting.json", title, MessageBoxButton.YesNo, MessageBoxImage.Question);
                     if (res != MessageBoxResult.Yes)
                     {
-                        MessageBox.Show("OK (ExitCode=" + process.ExitCode + ")\nPlease restart SteamVR.", title);
+                        MessageBox.Show("OK (ExitCode=" + process.ExitCode + ")\nPlease restart SteamVR.\nSteamVRを再起動してください。", title);
                         return;
                     }
                     File.Delete(driverPath + @"\setting.json");
-                    MessageBox.Show("OK and remove setting.json(ExitCode=" + process.ExitCode + ")\nPlease restart SteamVR.", title);
+                    MessageBox.Show("OK and remove setting.json(ExitCode=" + process.ExitCode + ")\nPlease restart SteamVR.\nSteamVRを再起動してください。", title);
                     return;
                 }
                 else {
-                    MessageBox.Show("OK (ExitCode=" + process.ExitCode + ")\nPlease restart SteamVR.", title);
+                    MessageBox.Show("OK (ExitCode=" + process.ExitCode + ")\nPlease restart SteamVR.\nSteamVRを再起動してください。", title);
                     return;
                 }
             }
