@@ -15,7 +15,6 @@
   {
     "image": "{vmt}/input/binding_image_light.png"
   },
-  "priority" : 6,
   "tracker_types" : {
     "TrackerRole_Handed":"{vmt}/input/vmt_profile_handed.json",
     "TrackerRole_LeftFoot":"{vmt}/input/vmt_profile_leftfoot.json",
