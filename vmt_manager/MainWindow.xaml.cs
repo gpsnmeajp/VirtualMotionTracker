@@ -104,6 +104,22 @@ namespace vmt_manager
                 ManagerVersion.Text = Version;
                 DriverVersion.Text = " - ";
 
+                InputPositionXTextBox.IsEnabled = false;
+                InputPositionYTextBox.IsEnabled = false;
+                InputPositionZTextBox.IsEnabled = false;
+                InputPositionSerialTextBox.IsEnabled = false;
+                InputPositionModeTextBox.IsEnabled = false;
+                InputPositionQXTextBox.IsEnabled = false;
+                InputPositionQYTextBox.IsEnabled = false;
+                InputPositionQZTextBox.IsEnabled = false;
+                InputPositionQWTextBox.IsEnabled = false;
+                InputPositionAixisLinkTextBox.IsEnabled = false;
+                InputPositionRXTextBox.IsEnabled = false;
+                InputPositionRYTextBox.IsEnabled = false;
+                InputPositionRZTextBox.IsEnabled = false;
+                InputPositionBoneTextBox.IsEnabled = false;
+                InputPositionValueTextBox.IsEnabled = false;
+
                 ProtocolTextBlock.Text = File.ReadAllText(System.IO.Path.GetDirectoryName(Assembly.GetEntryAssembly().Location) + @"\..\PROTOCOL.md");
 
                 rnd = new Random();
@@ -1181,5 +1197,222 @@ namespace vmt_manager
             loadTest = LoadTestCheckBox.IsChecked.Value;
         }
 
+        private void InputPositionComboBox_SelectionChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
+        {
+            if (InputPositionXTextBox != null) { 
+                InputPositionXTextBox.IsEnabled = false;
+                InputPositionYTextBox.IsEnabled = false;
+                InputPositionZTextBox.IsEnabled = false;
+                InputPositionSerialTextBox.IsEnabled = false;
+                InputPositionModeTextBox.IsEnabled = false;
+                InputPositionQXTextBox.IsEnabled = false;
+                InputPositionQYTextBox.IsEnabled = false;
+                InputPositionQZTextBox.IsEnabled = false;
+                InputPositionQWTextBox.IsEnabled = false;
+                InputPositionAixisLinkTextBox.IsEnabled = false;
+                InputPositionRXTextBox.IsEnabled = false;
+                InputPositionRYTextBox.IsEnabled = false;
+                InputPositionRZTextBox.IsEnabled = false;
+                InputPositionBoneTextBox.IsEnabled = false;
+                InputPositionValueTextBox.IsEnabled = false;
+
+                var s = InputPositionComboBox.SelectedItem.ToString();
+                if (s.Contains("Skeleton"))
+                {
+                    InputPositionBoneTextBox.IsEnabled = true;
+
+                    if (s.Contains("Unity") || s.Contains("Driver"))
+                    {
+                        InputPositionXTextBox.IsEnabled = true;
+                        InputPositionYTextBox.IsEnabled = true;
+                        InputPositionZTextBox.IsEnabled = true;
+                        InputPositionQXTextBox.IsEnabled = true;
+                        InputPositionQYTextBox.IsEnabled = true;
+                        InputPositionQZTextBox.IsEnabled = true;
+                        InputPositionQWTextBox.IsEnabled = true;
+                    }
+                    if (s.Contains("UEuler"))
+                    {
+                        InputPositionXTextBox.IsEnabled = true;
+                        InputPositionYTextBox.IsEnabled = true;
+                        InputPositionZTextBox.IsEnabled = true;
+                        InputPositionRXTextBox.IsEnabled = true;
+                        InputPositionRYTextBox.IsEnabled = true;
+                        InputPositionRZTextBox.IsEnabled = true;
+                    }
+                    if (s.Contains("Scalar"))
+                    {
+                        InputPositionModeTextBox.IsEnabled = true;
+                        InputPositionAixisLinkTextBox.IsEnabled = true;
+                    }
+                }
+                else {
+                    if (s.Contains("Unity") || s.Contains("Driver"))
+                    {
+                        InputPositionXTextBox.IsEnabled = true;
+                        InputPositionYTextBox.IsEnabled = true;
+                        InputPositionZTextBox.IsEnabled = true;
+                        InputPositionQXTextBox.IsEnabled = true;
+                        InputPositionQYTextBox.IsEnabled = true;
+                        InputPositionQZTextBox.IsEnabled = true;
+                        InputPositionQWTextBox.IsEnabled = true;
+                    }
+                    if (s.Contains("UEuler"))
+                    {
+                        InputPositionXTextBox.IsEnabled = true;
+                        InputPositionYTextBox.IsEnabled = true;
+                        InputPositionZTextBox.IsEnabled = true;
+                        InputPositionRXTextBox.IsEnabled = true;
+                        InputPositionRYTextBox.IsEnabled = true;
+                        InputPositionRZTextBox.IsEnabled = true;
+                    }
+                    if (s.Contains("Joint") || s.Contains("Follow"))
+                    {
+                        InputPositionSerialTextBox.IsEnabled = true;
+                    }
+                }
+            }
+        }
+
+        private void InputPositionSendButton_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                var index = GetInputIndex();
+                if (!index.ok)
+                {
+                    MessageBox.Show("No target", title, MessageBoxButton.OK, MessageBoxImage.Error);
+                    return;
+                }
+
+                int enable = int.Parse(InputPositionEnableTextBox.Text);
+                float x = float.Parse(InputPositionXTextBox.Text);
+                float y = float.Parse(InputPositionYTextBox.Text);
+                float z = float.Parse(InputPositionZTextBox.Text);
+                string serial = InputPositionSerialTextBox.Text;
+                int mode = int.Parse(InputPositionModeTextBox.Text);
+                float qx = float.Parse(InputPositionQXTextBox.Text);
+                float qy = float.Parse(InputPositionQYTextBox.Text);
+                float qz = float.Parse(InputPositionQZTextBox.Text);
+                float qw = float.Parse(InputPositionQWTextBox.Text);
+                int axisLink = int.Parse(InputPositionAixisLinkTextBox.Text);
+                float rx = float.Parse(InputPositionRXTextBox.Text);
+                float ry = float.Parse(InputPositionRYTextBox.Text);
+                float rz = float.Parse(InputPositionRZTextBox.Text);
+                float v = float.Parse(InputPositionValueTextBox.Text);
+                int bone = int.Parse(InputPositionBoneTextBox.Text);
+
+                var s = InputPositionComboBox.Text;
+                switch (s)
+                {
+                    case "/VMT/Room/Unity":
+                        osc.Send(new OscMessage("/VMT/Room/Unity",
+                            index.i, enable, 0f,
+                            x, y, z,
+                            qx, qy, qz, qw));
+                        break;
+                    case "/VMT/Room/UEuler":
+                        osc.Send(new OscMessage("/VMT/Room/UEuler",
+                            index.i, enable, 0f,
+                            x, y, z,
+                            rx, ry, rz));
+                        break;
+                    case "/VMT/Room/Driver":
+                        osc.Send(new OscMessage("/VMT/Room/Driver",
+                            index.i, enable, 0f,
+                            x, y, z,
+                            qx, qy, qz, qw));
+                        break;
+                    case "/VMT/Raw/Unity":
+                        osc.Send(new OscMessage("/VMT/Raw/Unity",
+                            index.i, enable, 0f,
+                            x, y, z,
+                            qx, qy, qz, qw));
+                        break;
+                    case "/VMT/Raw/UEuler":
+                        osc.Send(new OscMessage("/VMT/Raw/UEuler",
+                            index.i, enable, 0f,
+                            x, y, z,
+                            rx, ry, rz));
+                        break;
+                    case "/VMT/Raw/Driver":
+                        osc.Send(new OscMessage("/VMT/Raw/Driver",
+                            index.i, enable, 0f,
+                            x, y, z,
+                            qx, qy, qz, qw));
+                        break;
+                    case "/VMT/Joint/Unity":
+                        osc.Send(new OscMessage("/VMT/Joint/Unity",
+                            index.i, enable, 0f,
+                            x, y, z,
+                            qx, qy, qz, qw, serial));
+                        break;
+                    case "/VMT/Joint/UEuler":
+                        osc.Send(new OscMessage("/VMT/Joint/UEuler",
+                            index.i, enable, 0f,
+                            x, y, z,
+                            rx, ry, rz, serial));
+                        break;
+                    case "/VMT/Joint/Driver":
+                        osc.Send(new OscMessage("/VMT/Joint/Driver",
+                            index.i, enable, 0f,
+                            x, y, z,
+                            qx, qy, qz, qw, serial));
+                        break;
+                    case "/VMT/Follow/Unity":
+                        osc.Send(new OscMessage("/VMT/Follow/Unity",
+                            index.i, enable, 0f,
+                            x, y, z,
+                            qx, qy, qz, qw, serial));
+                        break;
+                    case "/VMT/Follow/UEuler":
+                        osc.Send(new OscMessage("/VMT/Follow/UEuler",
+                            index.i, enable, 0f,
+                            x, y, z,
+                            rx, ry, rz, serial));
+                        break;
+                    case "/VMT/Follow/Driver":
+                        osc.Send(new OscMessage("/VMT/Follow/Driver",
+                            index.i, enable, 0f,
+                            x, y, z,
+                            qx, qy, qz, qw, serial));
+                        break;
+                    case "/VMT/Skeleton/Unity":
+                        osc.Send(new OscMessage("/VMT/Skeleton/Unity",
+                            index.i, bone, 
+                            x, y, z,
+                            qx, qy, qz, qw));
+                        break;
+                    case "/VMT/Skeleton/UEuler":
+                        osc.Send(new OscMessage("/VMT/Skeleton/UEuler",
+                            index.i, bone, 
+                            x, y, z,
+                            rx, ry, rz));
+                        break;
+                    case "/VMT/Skeleton/Driver":
+                        osc.Send(new OscMessage("/VMT/Skeleton/Driver",
+                            index.i, bone, 
+                            x, y, z,
+                            qx, qy, qz, qw));
+                        break;
+                    case "/VMT/Skeleton/Scalar":
+                        osc.Send(new OscMessage("/VMT/Skeleton/Scalar",
+                            index.i, bone, v,
+                            mode, axisLink));
+                        break;
+                    case "/VMT/Skeleton/Apply":
+                        osc.Send(new OscMessage("/VMT/Skeleton/Apply",
+                            index.i, 0f));
+                        break;
+                    default:
+                        MessageBox.Show("Not found", title, MessageBoxButton.OK, MessageBoxImage.Error);
+                        break;
+                }
+                System.Media.SystemSounds.Beep.Play();
+            }
+            catch (Exception ex) {
+                MessageBox.Show(ex.Message, title, MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+        }
     }
 }
