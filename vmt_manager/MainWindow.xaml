@@ -11,7 +11,7 @@
 	<DockPanel LastChildFill="True">
 		<StatusBar DockPanel.Dock="Bottom" Name="StatusBar">
 			<StatusBarItem>
-				<DockPanel Width="470">
+				<DockPanel Width="520">
 					<TextBlock Padding="2,0,0,0" Name="StatusBarTextBlock" Text="Virtual Motion Tracker" FontWeight="Bold" DockPanel.Dock="Top" />
 					<TextBlock Padding="2,0,0,0" Name="StatusBarDashboardAlertTextBlock" Text="Steam VR Dashboard is opening. Button, Finger does not working.&#xA;SteamVR ダッシュボードが開いています。ボタン操作・指姿勢は無効です。" Background="Red" Foreground="White" FontWeight="Bold" DockPanel.Dock="Top" />
 				</DockPanel>
@@ -68,7 +68,7 @@
 								<TextBlock Text="RoomMatrix" DockPanel.Dock="Top" Margin="1"/>
 								<TextBox Name="RoomMatrixTextBox" IsEnabled="False" IsReadOnly="True" Text="" DockPanel.Dock="Top" Height="69" Margin="1"/>
 								<CheckBox Content="Temporary" DockPanel.Dock="Top" Name="SetRoomMatrixTemporaryCheckBox"></CheckBox>
-								<Button Content="Set RoomMatrix" DockPanel.Dock="Top" Name="SetRoomMatrixButtonName" Click="SetRoomMatrixButton" Margin="1"/>
+								<Button Content="Set RoomMatrix" Height="80" DockPanel.Dock="Top" Name="SetRoomMatrixButtonName" Click="SetRoomMatrixButton" Margin="1"/>
 								<Button Content="Reset RoomMatrix" DockPanel.Dock="Top" Click="ResetRoomMatrixButton" Margin="1"/>
 							</DockPanel>
 						</GroupBox>
@@ -80,11 +80,13 @@
 								<TextBlock Text="VMT_0 Speed" DockPanel.Dock="Top" Margin="1"/>
 								<TextBox Name="CheckPositionRawSpeedTextBox" IsEnabled="False" IsReadOnly="True" Text="-,-,-" DockPanel.Dock="Top" Margin="1"/>
 								<Button Content="Check VMT__0 Position &#xA;(Try set RoomPos=[1,1,1] )" DockPanel.Dock="Top" Click="CheckPositionButton" Margin="1"/>
+								<Button Content="Set Hand Position (Room)&#xA;(VMT__0, VMT__1)" DockPanel.Dock="Top" Click="CheckTemplatePosition1Button" Margin="1"/>
 								<TextBlock Text="VMT_0 Joint Serial No" DockPanel.Dock="Top" Margin="1"/>
 								<TextBox Name="JointSerialNoTextBox" Text="HMD" DockPanel.Dock="Top" Margin="1"/>
 								<Button Content="Check VMT__0 Position &#xA;(Try set JointPos=[0.1,0.0,-0.5] )" DockPanel.Dock="Top" Click="CheckJointPositionButton" Margin="1"/>
-								<TextBox Name="JointSerialNo2TextBox" Text="LHR-xxxxxxxxx" DockPanel.Dock="Top" Margin="1"/>
-								<Button Content="Check VMT__1 Position &#xA;(Try set FollowPos=[-0.1,0.0,-0.5] )" DockPanel.Dock="Top" Click="CheckJointPosition2Button" Margin="1"/>
+								<Button Content="Check VMT__0 Position &#xA;(Try set FollowPos=[-0.1,0.0,-0.5] )" DockPanel.Dock="Top" Click="CheckJointPosition2Button" Margin="1"/>
+								<Button Content="Set Hand Position(Joint) &#xA;(VMT__0, VMT__1)" DockPanel.Dock="Top" Click="CheckTemplatePosition1JointButton" Margin="1"/>
+								<Button Content="Set Hand Position(Follow) &#xA;(VMT__0, VMT__1)" DockPanel.Dock="Top" Click="CheckTemplatePosition1FollowButton" Margin="1"/>
 								<TextBlock Text="Position Coordinate" DockPanel.Dock="Top" Margin="1"/>
 								<ComboBox DockPanel.Dock="Top" Name="CoordinateCombo" SelectedIndex="0">
 									<ComboBoxItem>Driver Coordinate</ComboBoxItem>

@@ -240,6 +240,7 @@ namespace vmt_manager
                         {
                             DriverVersion.Foreground = new SolidColorBrush(Color.FromRgb(0, 255, 0));
                         }
+                        InstallButtonName.IsEnabled = false;
                         TopNotInstalledTextBlock.Visibility = Visibility.Collapsed;
 
                         aliveCnt = 0;
@@ -500,19 +501,57 @@ namespace vmt_manager
             if (CoordinateCombo.SelectedIndex == 1)
             {
                 osc.Send(new OscMessage("/VMT/Follow/Unity",
-                    1, 1, 0f,
+                    0, 1, 0f,
                     -0.1f, 0f, -0.5f,
                     0f, 0f, 0f, 1f,
-                    JointSerialNo2TextBox.Text));
+                    JointSerialNoTextBox.Text));
             }
             else
             {
                 osc.Send(new OscMessage("/VMT/Follow/Driver",
-                    1, 1, 0f,
+                    0, 1, 0f,
                     -0.1f, 0f, -0.5f,
                     0f, 0f, 0f, 1f,
-                    JointSerialNo2TextBox.Text));
+                    JointSerialNoTextBox.Text));
             }
+        }
+
+        private void CheckTemplatePosition1Button(object sender, RoutedEventArgs e)
+        {
+            osc.Send(new OscMessage("/VMT/Room/UEuler",
+                0, 1, 0f,
+                -0.15f, 0f, 0.26f,
+                -60f, 60f, 0f));
+            osc.Send(new OscMessage("/VMT/Room/UEuler",
+                1, 1, 0f,
+                0.15f, 0f, 0.26f,
+                -60f, -60f, 0f));
+        }
+        private void CheckTemplatePosition1JointButton(object sender, RoutedEventArgs e)
+        {
+            osc.Send(new OscMessage("/VMT/Joint/UEuler",
+                0, 1, 0f,
+                -0.15f, 0f, 0.26f,
+                -60f, 60f, 0f,
+                JointSerialNoTextBox.Text));
+            osc.Send(new OscMessage("/VMT/Joint/UEuler",
+                1, 1, 0f,
+                0.15f, 0f, 0.26f,
+                -60f, -60f, 0f,
+                JointSerialNoTextBox.Text));
+        }
+        private void CheckTemplatePosition1FollowButton(object sender, RoutedEventArgs e)
+        {
+            osc.Send(new OscMessage("/VMT/Follow/UEuler",
+                0, 1, 0f,
+                -0.15f, 0f, 0.26f,
+                -60f, 60f, 0f,
+                JointSerialNoTextBox.Text));
+            osc.Send(new OscMessage("/VMT/Follow/UEuler",
+                1, 1, 0f,
+                0.15f, 0f, 0.26f,
+                -60f, -60f, 0f,
+                JointSerialNoTextBox.Text));
         }
 
         private void InstallButton(object sender, RoutedEventArgs e)

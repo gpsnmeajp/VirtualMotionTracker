@@ -245,7 +245,7 @@ namespace VMTDriver {
 				args >> idx >> enable >> timeoffset >> x >> y >> z >> rx >> ry >> rz >> root_sn >> osc::EndMessage;
 				LogIfDiag("%s : %d : %d : %f : %f %f %f : %f %f %f : %s", adr.c_str(), idx, enable, timeoffset, x, y, z, rx, ry, rz, root_sn);
 
-				Eigen::Quaterniond q = UnityEtoQ(rx, ry, rz);
+				Eigen::Quaterniond q = UnityEulerToQuaternion(rx, ry, rz);
 				LogIfDiag("%lf %lf %lf %lf", q.x(), q.y(), q.z(), q.w());
 				SetPose(false, idx, enable, x, y, -z, q.x(), q.y(), -q.z(), -q.w(), timeoffset, root_sn, ReferMode_t::Joint);
 			}
@@ -289,7 +289,7 @@ namespace VMTDriver {
 
 				Eigen::Quaterniond q = UnityEulerToQuaternion(rx, ry, rz);
 				LogIfDiag("%lf %lf %lf %lf", q.x(), q.y(), q.z(), q.w());
-				WriteSkeletonBone(idx, i, x, y, -z, q.x(), q.y(), -q.z(), -q.w());
+				WriteSkeletonBone(idx, i, x, y, -z, (float)q.x(), (float)q.y(), (float)-q.z(), (float)-q.w());
 			}
 			else if (adr == "/VMT/Skeleton/Driver")
 			{
