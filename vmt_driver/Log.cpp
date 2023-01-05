@@ -25,6 +25,7 @@ SOFTWARE.
 namespace VMTDriver {
     IVRDriverLog* Log::handle = nullptr;
     int Log::s_logCounter = 0;
+    bool Log::s_diag = false;
 
     //ログをオープンする
     void Log::Open(IVRDriverLog* hnd)

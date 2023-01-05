@@ -770,6 +770,93 @@ namespace vmt_manager
                     index.i, triggerIndex, timeoffset, (float)Slider1.Value));
             }
         }
+
+        private void Slider2_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
+        {
+            var index = GetInputIndex();
+
+            int triggerIndex = 2;
+            float timeoffset = 0;
+            if (index.ok && Slider2 != null)
+            {
+                osc.Send(new OscMessage("/VMT/Input/Trigger",
+                    index.i, triggerIndex, timeoffset, (float)Slider2.Value));
+            }
+        }
+        private void Slider3_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
+        {
+            var index = GetInputIndex();
+
+            int triggerIndex = 3;
+            float timeoffset = 0;
+            if (index.ok && Slider3 != null)
+            {
+                osc.Send(new OscMessage("/VMT/Input/Trigger",
+                    index.i, triggerIndex, timeoffset, (float)Slider3.Value));
+            }
+        }
+        private void Slider4_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
+        {
+            var index = GetInputIndex();
+
+            int triggerIndex = 4;
+            float timeoffset = 0;
+            if (index.ok && Slider4 != null)
+            {
+                osc.Send(new OscMessage("/VMT/Input/Trigger",
+                    index.i, triggerIndex, timeoffset, (float)Slider4.Value));
+            }
+        }
+        private void Slider5_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
+        {
+            var index = GetInputIndex();
+
+            int triggerIndex = 5;
+            float timeoffset = 0;
+            if (index.ok && Slider5 != null)
+            {
+                osc.Send(new OscMessage("/VMT/Input/Trigger",
+                    index.i, triggerIndex, timeoffset, (float)Slider5.Value));
+            }
+        }
+        private void Slider6_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
+        {
+            var index = GetInputIndex();
+
+            int triggerIndex = 6;
+            float timeoffset = 0;
+            if (index.ok && Slider6 != null)
+            {
+                osc.Send(new OscMessage("/VMT/Input/Trigger",
+                    index.i, triggerIndex, timeoffset, (float)Slider6.Value));
+            }
+        }
+        private void Slider7_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
+        {
+            var index = GetInputIndex();
+
+            int triggerIndex = 7;
+            float timeoffset = 0;
+            if (index.ok && Slider7 != null)
+            {
+                osc.Send(new OscMessage("/VMT/Input/Trigger",
+                    index.i, triggerIndex, timeoffset, (float)Slider7.Value));
+            }
+        }
+        private void Slider8_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
+        {
+            var index = GetInputIndex();
+
+            int triggerIndex = 8;
+            float timeoffset = 0;
+            if (index.ok && Slider8 != null)
+            {
+                osc.Send(new OscMessage("/VMT/Input/Trigger",
+                    index.i, triggerIndex, timeoffset, (float)Slider8.Value));
+            }
+        }
+
+
         private void SliderXY_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
             var index = GetInputIndex();
@@ -782,12 +869,47 @@ namespace vmt_manager
                     index.i, joystickIndex, timeoffset, (float)SliderX.Value, (float)SliderY.Value));
             }
         }
+        private void SliderUV_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
+        {
+            var index = GetInputIndex();
+
+            int joystickIndex = 1;
+            float timeoffset = 0;
+            if (index.ok && SliderU != null && SliderV != null)
+            {
+                osc.Send(new OscMessage("/VMT/Input/Joystick",
+                    index.i, joystickIndex, timeoffset, (float)SliderU.Value, (float)SliderV.Value));
+            }
+        }
+        private void SliderAB_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
+        {
+            var index = GetInputIndex();
+
+            int joystickIndex = 2;
+            float timeoffset = 0;
+            if (index.ok && SliderA != null && SliderB != null)
+            {
+                osc.Send(new OscMessage("/VMT/Input/Joystick",
+                    index.i, joystickIndex, timeoffset, (float)SliderA.Value, (float)SliderB.Value));
+            }
+        }
         private void InputResetButton(object sender, RoutedEventArgs e)
         {
             Slider0.Value = 0f;
             Slider1.Value = 0f;
+            Slider2.Value = 0f;
+            Slider3.Value = 0f;
+            Slider4.Value = 0f;
+            Slider5.Value = 0f;
+            Slider6.Value = 0f;
+            Slider7.Value = 0f;
+            Slider8.Value = 0f;
             SliderX.Value = 0f;
             SliderY.Value = 0f;
+            SliderU.Value = 0f;
+            SliderV.Value = 0f;
+            SliderA.Value = 0f;
+            SliderB.Value = 0f;
         }
         private void HapticTestButton(object sender, RoutedEventArgs e)
         {
@@ -808,9 +930,16 @@ namespace vmt_manager
             {
                 osc.Send(new OscMessage("/VMT/Debug",
                     index.i, InputVMTDebugTextBox.Text));
+                InputVMTDebugTextBox.Text = "";
             }
         }
-
+        private void InputVMTDebugTextBox_PreviewKeyDown(object sender, KeyEventArgs e)
+        {
+            //Enterキーを押したら送信
+            if (e.Key == Key.Enter) {
+                DebugCommandButton(null, null);
+            }
+        }
         private void RootAndWristSlider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
             var index = GetInputIndex();
@@ -1012,5 +1141,6 @@ namespace vmt_manager
         {
             loadTest = LoadTestCheckBox.IsChecked.Value;
         }
+
     }
 }

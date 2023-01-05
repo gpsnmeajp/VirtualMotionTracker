@@ -30,9 +30,9 @@ namespace VMTDriver {
     const HmdQuaternion_t HmdQuaternion_Identity{ 1,0,0,0 };
     const int skeletonBoneCount{ 31 };
     const int buttonCount{ 8 };
-    const int triggerCount{ 2 };
-    const int joystickCount{ 2 };
-   
+    const int triggerCount{ 9 };
+    const int joystickCount{ 3 };
+
     //生姿勢
     struct RawPose {
         bool roomToDriver{};
@@ -132,7 +132,8 @@ namespace VMTDriver {
 
         VRInputComponentHandle_t ButtonComponent[buttonCount]{ 0 };
         VRInputComponentHandle_t TriggerComponent[triggerCount]{ 0 };
-        VRInputComponentHandle_t JoystickComponent[joystickCount]{ 0 };
+        VRInputComponentHandle_t JoystickXComponent[joystickCount]{ 0 };
+        VRInputComponentHandle_t JoystickYComponent[joystickCount]{ 0 };
         VRInputComponentHandle_t HapticComponent{ 0 };
         VRInputComponentHandle_t SkeletonComponent{ 0 };
 

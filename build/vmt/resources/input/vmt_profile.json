@@ -86,12 +86,57 @@
         "binding_image_point" : [ 0, 0 ],
         "order" : 1
     },
+    "/input/Joystick1" : { 
+        "type" : "joystick",
+        "binding_image_point" : [ 0, 0 ],
+        "order" : 1
+    },
+    "/input/Joystick2" : { 
+        "type" : "joystick",
+        "binding_image_point" : [ 0, 0 ],
+        "order" : 1
+    },
     "/input/Trigger0" : { 
         "type" : "trigger",
         "binding_image_point" : [ 0, 0 ],
         "order" : 1
     },
     "/input/Trigger1" : { 
+        "type" : "trigger",
+        "binding_image_point" : [ 0, 0 ],
+        "order" : 1
+    },
+    "/input/Trigger2" : { 
+        "type" : "trigger",
+        "binding_image_point" : [ 0, 0 ],
+        "order" : 1
+    },
+    "/input/Trigger3" : { 
+        "type" : "trigger",
+        "binding_image_point" : [ 0, 0 ],
+        "order" : 1
+    },
+    "/input/Trigger4" : { 
+        "type" : "trigger",
+        "binding_image_point" : [ 0, 0 ],
+        "order" : 1
+    },
+    "/input/Trigger5" : { 
+        "type" : "trigger",
+        "binding_image_point" : [ 0, 0 ],
+        "order" : 1
+    },
+    "/input/Trigger6" : { 
+        "type" : "trigger",
+        "binding_image_point" : [ 0, 0 ],
+        "order" : 1
+    },
+    "/input/Trigger7" : { 
+        "type" : "trigger",
+        "binding_image_point" : [ 0, 0 ],
+        "order" : 1
+    },
+    "/input/Trigger8" : { 
         "type" : "trigger",
         "binding_image_point" : [ 0, 0 ],
         "order" : 1
@@ -116,5 +161,11 @@
         "type" : "vibration",
         "binding_image_point" : [ 0, 0 ]
     }
-  }
+  },
+  "default_bindings": [
+    {
+      "app_key": "openvr.component.vrcompositor",
+      "binding_url": "vrcompositor_binding_vmt.json"
+    }
+  ]
 }

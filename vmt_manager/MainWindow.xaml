@@ -4,8 +4,8 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:vmt_manager"
-		Width="470"
-		Height="650"
+		Width="520"
+		Height="750"
         mc:Ignorable="d"
         Title="VMT Manager" Loaded="Window_Loaded" Closed="Window_Closed" ResizeMode="NoResize">
 	<DockPanel LastChildFill="True">
@@ -74,7 +74,6 @@
 						</GroupBox>
 						<GroupBox Header="Position Test" Grid.Column="1">
 							<DockPanel Margin="2" LastChildFill="False">
-								<TextBlock Text="VMT_0 Room Position" DockPanel.Dock="Top" Margin="1"/>
 								<TextBox Name="CheckPositionTextBox" IsEnabled="False" IsReadOnly="True" Text="-,-,-" DockPanel.Dock="Top" Margin="1"/>
 								<TextBlock Text="VMT_0 Raw Position" DockPanel.Dock="Top" Margin="1"/>
 								<TextBox Name="CheckPositionRawTextBox" IsEnabled="False" IsReadOnly="True" Text="-,-,-" DockPanel.Dock="Top" Margin="1"/>
@@ -139,6 +138,7 @@
 							<Grid.ColumnDefinitions>
 								<ColumnDefinition/>
 								<ColumnDefinition/>
+								<ColumnDefinition/>
 							</Grid.ColumnDefinitions>
 							<DockPanel Grid.Column="0" Margin="2"  LastChildFill="False">
 								<Grid DockPanel.Dock="Top">
@@ -164,22 +164,68 @@
 							</DockPanel>
 							<DockPanel Grid.Column="1" Margin="2" LastChildFill="False">
 								<DockPanel DockPanel.Dock="Top" Margin="1">
-									<TextBlock Text="Trigger 0" DockPanel.Dock="Left" />
+									<TextBlock Text="Trigger 0&#xA;★★★★" DockPanel.Dock="Left" />
 									<Slider Minimum="0" Maximum="1" Value="0" Name="Slider0" ValueChanged="Slider0_ValueChanged" DockPanel.Dock="Left"/>
 								</DockPanel>
 								<DockPanel DockPanel.Dock="Top" Margin="1">
-									<TextBlock Text="Trigger 1" DockPanel.Dock="Left" />
+									<TextBlock Text="Trigger 1&#xA;★★★★" DockPanel.Dock="Left" />
 									<Slider Minimum="0" Maximum="1" Value="0" Name="Slider1" ValueChanged="Slider1_ValueChanged" DockPanel.Dock="Left"/>
 								</DockPanel>
 								<DockPanel DockPanel.Dock="Top" Margin="1">
-									<TextBlock Text="Joystick X" DockPanel.Dock="Left" />
+									<TextBlock Text="Trigger 2&#xA;★★★★" DockPanel.Dock="Left" />
+									<Slider Minimum="0" Maximum="1" Value="0" Name="Slider2" ValueChanged="Slider2_ValueChanged" DockPanel.Dock="Left"/>
+								</DockPanel>
+								<DockPanel DockPanel.Dock="Top" Margin="1">
+									<TextBlock Text="Trigger 3&#xA;★★★★" DockPanel.Dock="Left" />
+									<Slider Minimum="0" Maximum="1" Value="0" Name="Slider3" ValueChanged="Slider3_ValueChanged" DockPanel.Dock="Left"/>
+								</DockPanel>
+								<DockPanel DockPanel.Dock="Top" Margin="1">
+									<TextBlock Text="Trigger 4&#xA;★★★★" DockPanel.Dock="Left" />
+									<Slider Minimum="0" Maximum="1" Value="0" Name="Slider4" ValueChanged="Slider4_ValueChanged" DockPanel.Dock="Left"/>
+								</DockPanel>
+								<DockPanel DockPanel.Dock="Top" Margin="1">
+									<TextBlock Text="Trigger 5&#xA;★★★★" DockPanel.Dock="Left" />
+									<Slider Minimum="0" Maximum="1" Value="0" Name="Slider5" ValueChanged="Slider5_ValueChanged" DockPanel.Dock="Left"/>
+								</DockPanel>
+								<DockPanel DockPanel.Dock="Top" Margin="1">
+									<TextBlock Text="Trigger 6&#xA;★★★★" DockPanel.Dock="Left" />
+									<Slider Minimum="0" Maximum="1" Value="0" Name="Slider6" ValueChanged="Slider6_ValueChanged" DockPanel.Dock="Left"/>
+								</DockPanel>
+							</DockPanel>
+							<DockPanel Grid.Column="2" Margin="2" LastChildFill="False">
+								<DockPanel DockPanel.Dock="Top" Margin="1">
+									<TextBlock Text="Trigger 7&#xA;★★★★" DockPanel.Dock="Left" />
+									<Slider Minimum="0" Maximum="1" Value="0" Name="Slider7" ValueChanged="Slider7_ValueChanged" DockPanel.Dock="Left"/>
+								</DockPanel>
+								<DockPanel DockPanel.Dock="Top" Margin="1">
+									<TextBlock Text="Trigger 8&#xA;★★★★" DockPanel.Dock="Left" />
+									<Slider Minimum="0" Maximum="1" Value="0" Name="Slider8" ValueChanged="Slider8_ValueChanged" DockPanel.Dock="Left"/>
+								</DockPanel>
+								<DockPanel DockPanel.Dock="Top" Margin="1">
+									<TextBlock Text="Joystick1 X" DockPanel.Dock="Left" />
 									<Slider Minimum="-1" Maximum="1" Value="0" Name="SliderX" ValueChanged="SliderXY_ValueChanged" DockPanel.Dock="Left"/>
 								</DockPanel>
 								<DockPanel DockPanel.Dock="Top" Margin="1">
-									<TextBlock Text="Joystick Y" DockPanel.Dock="Left" />
+									<TextBlock Text="Joystick1 Y" DockPanel.Dock="Left" />
 									<Slider Minimum="-1" Maximum="1" Value="0" Name="SliderY" ValueChanged="SliderXY_ValueChanged" DockPanel.Dock="Left"/>
 								</DockPanel>
-								<Button Content="Input Reset"  Margin="1" Click="InputResetButton" DockPanel.Dock="Top"/>
+								<DockPanel DockPanel.Dock="Top" Margin="1">
+									<TextBlock Text="Joystick2 X" DockPanel.Dock="Left" />
+									<Slider Minimum="-1" Maximum="1" Value="0" Name="SliderU" ValueChanged="SliderUV_ValueChanged" DockPanel.Dock="Left"/>
+								</DockPanel>
+								<DockPanel DockPanel.Dock="Top" Margin="1">
+									<TextBlock Text="Joystick2 Y" DockPanel.Dock="Left" />
+									<Slider Minimum="-1" Maximum="1" Value="0" Name="SliderV" ValueChanged="SliderUV_ValueChanged" DockPanel.Dock="Left"/>
+								</DockPanel>
+								<DockPanel DockPanel.Dock="Top" Margin="1">
+									<TextBlock Text="Joystick3 X" DockPanel.Dock="Left" />
+									<Slider Minimum="-1" Maximum="1" Value="0" Name="SliderA" ValueChanged="SliderAB_ValueChanged" DockPanel.Dock="Left"/>
+								</DockPanel>
+								<DockPanel DockPanel.Dock="Top" Margin="1">
+									<TextBlock Text="Joystick3 Y" DockPanel.Dock="Left" />
+									<Slider Minimum="-1" Maximum="1" Value="0" Name="SliderB" ValueChanged="SliderAB_ValueChanged" DockPanel.Dock="Left"/>
+								</DockPanel>
+								<Button Content="Input Reset"  Margin="1,8,1,1" Height="36" Click="InputResetButton" DockPanel.Dock="Top"/>
 							</DockPanel>
 						</Grid>
 					</GroupBox>
@@ -225,7 +271,7 @@
 						<DockPanel Margin="1">
 							<TextBlock VerticalAlignment="Center" Text="Debug:" DockPanel.Dock="Left" Margin="0,0,5,0" />
 							<Button Content="Send"  Margin="5,0,0,0" Padding="5,0,5,0" Click="DebugCommandButton" DockPanel.Dock="Right"/>
-							<TextBox Name="InputVMTDebugTextBox" Text="" />
+							<TextBox Name="InputVMTDebugTextBox" PreviewKeyDown="InputVMTDebugTextBox_PreviewKeyDown" Text="" />
 						</DockPanel>
 					</GroupBox>
 

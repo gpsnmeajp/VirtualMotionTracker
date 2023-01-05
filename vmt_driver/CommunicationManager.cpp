@@ -90,6 +90,7 @@ namespace VMTDriver {
 		const size_t bufsize = 8192;
 		char buf[bufsize]{};
 		osc::OutboundPacketStream packet(buf, bufsize);
+		LogIfDiag("/VMT/Out/Log : %d : %s", stat, msg.c_str());
 		packet << osc::BeginMessage("/VMT/Out/Log")
 			<< stat
 			<< msg.c_str()
@@ -102,6 +103,7 @@ namespace VMTDriver {
 		const size_t bufsize = 8192;
 		char buf[bufsize]{};
 		osc::OutboundPacketStream packet(buf, bufsize);
+		LogIfDiag("/VMT/Out/Alive : %s : %s", Version.c_str(), GetServer()->GetInstallPath().c_str());
 		packet << osc::BeginMessage("/VMT/Out/Alive")
 			<< Version.c_str()
 			<< GetServer()->GetInstallPath().c_str()
@@ -115,6 +117,7 @@ namespace VMTDriver {
 		const size_t bufsize = 8192;
 		char buf[bufsize]{};
 		osc::OutboundPacketStream packet(buf, bufsize);
+		LogIfDiag("/VMT/Out/Haptic : %d : %f %f %f", index, frequency, amplitude, duration);
 		packet << osc::BeginMessage("/VMT/Out/Haptic")
 			<< index
 			<< frequency
@@ -129,6 +132,7 @@ namespace VMTDriver {
 		const size_t bufsize = 8192;
 		char buf[bufsize]{};
 		osc::OutboundPacketStream packet(buf, bufsize);
+		LogIfDiag("/VMT/Out/Unavailable : %d : %s", code, reason.c_str());
 		packet << osc::BeginMessage("/VMT/Out/Unavailable")
 			<< code
 			<< reason.c_str()
@@ -174,62 +178,73 @@ namespace VMTDriver {
 		try {
 			string adr = m.AddressPattern();
 			osc::ReceivedMessageArgumentStream args = m.ArgumentStream();
-
+			
 			//姿勢情報の受信
 			if (adr == "/VMT/Room/Unity")
 			{
 				args >> idx >> enable >> timeoffset >> x >> y >> z >> qx >> qy >> qz >> qw >> osc::EndMessage;
+				LogIfDiag("%s : %d : %d : %f : %f %f %f : %f %f %f %f", adr.c_str(), idx, enable, timeoffset, x, y, z, qx, qy, qz, qw);
 				SetPose(true, idx, enable, x, y, -z, qx, qy, -qz, -qw, timeoffset);
 			}
 			else if (adr == "/VMT/Room/Driver")
 			{
 				args >> idx >> enable >> timeoffset >> x >> y >> z >> qx >> qy >> qz >> qw >> osc::EndMessage;
+				LogIfDiag("%s : %d : %d : %f : %f %f %f : %f %f %f %f", adr.c_str(), idx, enable, timeoffset, x, y, z, qx, qy, qz, qw);
 				SetPose(true, idx, enable, x, y, z, qx, qy, qz, qw, timeoffset);
 			}
 			else if (adr == "/VMT/Raw/Unity")
 			{
 				args >> idx >> enable >> timeoffset >> x >> y >> z >> qx >> qy >> qz >> qw >> osc::EndMessage;
+				LogIfDiag("%s : %d : %d : %f : %f %f %f : %f %f %f %f", adr.c_str(), idx, enable, timeoffset, x, y, z, qx, qy, qz, qw);
 				SetPose(false, idx, enable, x, y, -z, qx, qy, -qz, -qw, timeoffset);
 			}
 			else if (adr == "/VMT/Raw/Driver")
 			{
 				args >> idx >> enable >> timeoffset >> x >> y >> z >> qx >> qy >> qz >> qw >> osc::EndMessage;
+				LogIfDiag("%s : %d : %d : %f : %f %f %f : %f %f %f %f", adr.c_str(), idx, enable, timeoffset, x, y, z, qx, qy, qz, qw);
 				SetPose(false, idx, enable, x, y, z, qx, qy, qz, qw, timeoffset);
 			}
 			else if (adr == "/VMT/Joint/Unity")
 			{
 				args >> idx >> enable >> timeoffset >> x >> y >> z >> qx >> qy >> qz >> qw >> root_sn >> osc::EndMessage;
+				LogIfDiag("%s : %d : %d : %f : %f %f %f : %f %f %f %f : %s", adr.c_str(), idx, enable, timeoffset, x, y, z, qx, qy, qz, qw, root_sn);
 				SetPose(false, idx, enable, x, y, -z, qx, qy, -qz, -qw, timeoffset, root_sn, ReferMode_t::Joint);
 			}
 			else if (adr == "/VMT/Joint/Driver")
 			{
 				args >> idx >> enable >> timeoffset >> x >> y >> z >> qx >> qy >> qz >> qw >> root_sn >> osc::EndMessage;
+				LogIfDiag("%s : %d : %d : %f : %f %f %f : %f %f %f %f : %s", adr.c_str(), idx, enable, timeoffset, x, y, z, qx, qy, qz, qw, root_sn);
 				SetPose(false, idx, enable, x, y, z, qx, qy, qz, qw, timeoffset, root_sn, ReferMode_t::Joint);
 			}
 			else if (adr == "/VMT/Follow/Unity")
 			{
 				args >> idx >> enable >> timeoffset >> x >> y >> z >> qx >> qy >> qz >> qw >> root_sn >> osc::EndMessage;
+				LogIfDiag("%s : %d : %d : %f : %f %f %f : %f %f %f %f : %s", adr.c_str(), idx, enable, timeoffset, x, y, z, qx, qy, qz, qw, root_sn);
 				SetPose(false, idx, enable, x, y, -z, qx, qy, -qz, -qw, timeoffset, root_sn, ReferMode_t::Follow);
 			}
 			else if (adr == "/VMT/Follow/Driver")
 			{
 				args >> idx >> enable >> timeoffset >> x >> y >> z >> qx >> qy >> qz >> qw >> root_sn >> osc::EndMessage;
+				LogIfDiag("%s : %d : %d : %f : %f %f %f : %f %f %f %f : %s", adr.c_str(), idx, enable, timeoffset, x, y, z, qx, qy, qz, qw, root_sn);
 				SetPose(false, idx, enable, x, y, z, qx, qy, qz, qw, timeoffset, root_sn, ReferMode_t::Follow);
 			}
 			else if (adr == "/VMT/Skeleton/Unity")
 			{
 				args >> idx >> i >> x >> y >> z >> qx >> qy >> qz >> qw >> osc::EndMessage;
+				LogIfDiag("%s : %d : %d : %f %f %f : %f %f %f %f", adr.c_str(), idx, i, x, y, z, qx, qy, qz, qw);
 				WriteSkeletonBone(idx, i, x, y, -z, qx, qy, -qz, -qw);
 			}
 			else if (adr == "/VMT/Skeleton/Driver")
 			{
 				args >> idx >> i >> x >> y >> z >> qx >> qy >> qz >> qw >> osc::EndMessage;
+				LogIfDiag("%s : %d : %d : %f %f %f : %f %f %f %f", adr.c_str(), idx, i, x, y, z, qx, qy, qz, qw);
 				WriteSkeletonBone(idx, i, x, y, z, qx, qy, qz, qw);
 			}
 			else if (adr == "/VMT/Skeleton/Scalar")
 			{
 				//デバイスインデックス、ボーンインデックス、モード(ブレンド先)、軸連動有効可否
 				args >> idx >> i >> x >> mode >> enable >> osc::EndMessage;
+				LogIfDiag("%s : %d : %d : %f : %d : %d", adr.c_str(), idx, i, x, mode, enable);
 				if (GetServer()->IsVMTDeviceIndex(idx))
 				{
 					GetServer()->GetDevice(idx).WriteSkeletonInputBufferStaticLerpFinger(i, x, mode);
@@ -243,6 +258,7 @@ namespace VMTDriver {
 			else if (adr == "/VMT/Skeleton/Apply")
 			{
 				args >> idx >> timeoffset >> osc::EndMessage;
+				LogIfDiag("%s : %d : %f", adr.c_str(), idx, timeoffset);
 				if (GetServer()->IsVMTDeviceIndex(idx))
 				{
 					GetServer()->GetDevice(idx).UpdateSkeletonInput(timeoffset);
@@ -252,6 +268,7 @@ namespace VMTDriver {
 			else if (adr == "/VMT/Input/Button")
 			{
 				args >> idx >> ButtonIndex >> timeoffset >> ButtonValue >> osc::EndMessage;
+				LogIfDiag("%s : %d : %d : %f : %d", adr.c_str(), idx, ButtonIndex, timeoffset, ButtonValue);
 				if (GetServer()->IsVMTDeviceIndex(idx))
 				{
 					GetServer()->GetDevice(idx).UpdateButtonInput(ButtonIndex, ButtonValue != 0, timeoffset);
@@ -260,6 +277,7 @@ namespace VMTDriver {
 			else if (adr == "/VMT/Input/Trigger")
 			{
 				args >> idx >> ButtonIndex >> timeoffset >> TriggerValue >> osc::EndMessage;
+				LogIfDiag("%s : %d : %d : %f : %f", adr.c_str(), idx, ButtonIndex, timeoffset, TriggerValue);
 				if (GetServer()->IsVMTDeviceIndex(idx))
 				{
 					GetServer()->GetDevice(idx).UpdateTriggerInput(ButtonIndex, TriggerValue, timeoffset);
@@ -268,6 +286,7 @@ namespace VMTDriver {
 			else if (adr == "/VMT/Input/Joystick")
 			{
 				args >> idx >> ButtonIndex >> timeoffset >> x >> y >> osc::EndMessage;
+				LogIfDiag("%s : %d : %d : %f : %f %f", adr.c_str(), idx, ButtonIndex, timeoffset, x, y);
 				if (GetServer()->IsVMTDeviceIndex(idx))
 				{
 					GetServer()->GetDevice(idx).UpdateJoystickInput(ButtonIndex, x, y, timeoffset);
@@ -276,11 +295,13 @@ namespace VMTDriver {
 			//すべてのデバイスのリセット
 			else if (adr == "/VMT/Reset")
 			{
+				LogIfDiag("%s", adr.c_str());
 				GetServer()->DeviceResetAll();
 			}
 			//設定の読み込み
 			else if (adr == "/VMT/LoadSetting")
 			{
+				LogIfDiag("%s", adr.c_str());
 				Config::GetInstance()->LoadSetting();
 				SendLog(0, "Setting Loaded");
 			}
@@ -288,12 +309,14 @@ namespace VMTDriver {
 			else if (adr == "/VMT/SetRoomMatrix")
 			{
 				args >> m1 >> m2 >> m3 >> m4 >> m5 >> m6 >> m7 >> m8 >> m9 >> m10 >> m11 >> m12 >> osc::EndMessage;
+				LogIfDiag("%s : %f %f %f %f %f %f %f %f %f %f %f %f", adr.c_str(), m1, m2, m3, m4, m5, m6, m7, m8, m9, m10, m11, m12);
 				Config::GetInstance()->SetRoomMatrix(true, m1, m2, m3, m4, m5, m6, m7, m8, m9, m10, m11, m12);
 				SendLog(0, "Set Room Matrix Done.");
 			}
 			else if (adr == "/VMT/SetRoomMatrix/Temporary")
 			{
 				args >> m1 >> m2 >> m3 >> m4 >> m5 >> m6 >> m7 >> m8 >> m9 >> m10 >> m11 >> m12 >> osc::EndMessage;
+				LogIfDiag("%s : %f %f %f %f %f %f %f %f %f %f %f %f", adr.c_str(), m1, m2, m3, m4, m5, m6, m7, m8, m9, m10, m11, m12);
 				Config::GetInstance()->SetRoomMatrix(false, m1, m2, m3, m4, m5, m6, m7, m8, m9, m10, m11, m12);
 				SendLog(0, "Set Room Matrix Done.(Temporary)");
 			}
@@ -301,12 +324,14 @@ namespace VMTDriver {
 			else if (adr == "/VMT/SetAutoPoseUpdate")
 			{
 				args >> enable >> osc::EndMessage;
+				LogIfDiag("%s : %d", adr.c_str(), enable);
 				TrackedDeviceServerDriver::SetAutoUpdate(enable != 0);
 			}
 			//デバッグコマンド
 			else if (adr == "/VMT/Debug")
 			{
 				args >> idx >> command >> osc::EndMessage;
+				LogIfDiag("%s : %d : %s", adr.c_str(), idx, command);
 				std::string report(command);
 				report += std::string(" -> ");
 
