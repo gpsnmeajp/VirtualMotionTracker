@@ -800,6 +800,38 @@ namespace vmt_manager
         {
             ButtonSend(7, false);
         }
+        private void Button8_MouseDown(object sender, MouseButtonEventArgs e)
+        {
+            ButtonSend(8, true);
+        }
+        private void Button8_MouseUp(object sender, MouseButtonEventArgs e)
+        {
+            ButtonSend(8, false);
+        }
+        private void Button9_MouseDown(object sender, MouseButtonEventArgs e)
+        {
+            ButtonSend(9, true);
+        }
+        private void Button9_MouseUp(object sender, MouseButtonEventArgs e)
+        {
+            ButtonSend(9, false);
+        }
+        private void Button10_MouseDown(object sender, MouseButtonEventArgs e)
+        {
+            ButtonSend(10, true);
+        }
+        private void Button10_MouseUp(object sender, MouseButtonEventArgs e)
+        {
+            ButtonSend(10, false);
+        }
+        private void Button11_MouseDown(object sender, MouseButtonEventArgs e)
+        {
+            ButtonSend(11, true);
+        }
+        private void Button11_MouseUp(object sender, MouseButtonEventArgs e)
+        {
+            ButtonSend(11, false);
+        }
 
         private void Slider0_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {

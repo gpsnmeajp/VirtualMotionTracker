@@ -81,6 +81,30 @@
         "binding_image_point" : [ 0, 0 ],
         "order" : 8
     },
+    "/input/Button8" : { 
+        "type" : "button",
+        "click" : true,
+        "binding_image_point" : [ 0, 0 ],
+        "order" : 9
+    },
+    "/input/Button9" : { 
+        "type" : "button",
+        "click" : true,
+        "binding_image_point" : [ 0, 0 ],
+        "order" : 10
+    },
+    "/input/Button10" : { 
+        "type" : "button",
+        "click" : true,
+        "binding_image_point" : [ 0, 0 ],
+        "order" : 11
+    },
+    "/input/Button11" : { 
+        "type" : "button",
+        "click" : true,
+        "binding_image_point" : [ 0, 0 ],
+        "order" : 12
+    },
     "/input/Joystick0" : { 
         "type" : "joystick",
         "binding_image_point" : [ 0, 0 ],

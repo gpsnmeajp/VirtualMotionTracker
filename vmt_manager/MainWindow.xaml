@@ -156,6 +156,8 @@
 													<RowDefinition/>
 													<RowDefinition/>
 													<RowDefinition/>
+													<RowDefinition/>
+													<RowDefinition/>
 												</Grid.RowDefinitions>
 												<Button Content="Button 0&#xA;★★★★" PreviewMouseDown="Button0_MouseDown" PreviewMouseUp="Button0_MouseUp"  Margin="1" Grid.Column="0" Grid.Row="0" />
 												<Button Content="Button 1&#xA;★★★★" PreviewMouseDown="Button1_MouseDown" PreviewMouseUp="Button1_MouseUp"  Margin="1" Grid.Column="1" Grid.Row="0" />
@@ -165,6 +167,10 @@
 												<Button Content="Button 5&#xA;★★★★" PreviewMouseDown="Button5_MouseDown" PreviewMouseUp="Button5_MouseUp"  Margin="1" Grid.Column="1" Grid.Row="2" />
 												<Button Content="Button 6&#xA;★★★★" PreviewMouseDown="Button6_MouseDown" PreviewMouseUp="Button6_MouseUp"  Margin="1" Grid.Column="0" Grid.Row="3" />
 												<Button Content="Button 7&#xA;★★★★" PreviewMouseDown="Button7_MouseDown" PreviewMouseUp="Button7_MouseUp"  Margin="1" Grid.Column="1" Grid.Row="3" />
+												<Button Content="Button 8&#xA;★★★★" PreviewMouseDown="Button8_MouseDown" PreviewMouseUp="Button8_MouseUp"  Margin="1" Grid.Column="0" Grid.Row="4" />
+												<Button Content="Button 9&#xA;★★★★" PreviewMouseDown="Button9_MouseDown" PreviewMouseUp="Button9_MouseUp"  Margin="1" Grid.Column="1" Grid.Row="4" />
+												<Button Content="Button 10&#xA;★★★★" PreviewMouseDown="Button10_MouseDown" PreviewMouseUp="Button10_MouseUp"  Margin="1" Grid.Column="0" Grid.Row="5" />
+												<Button Content="Button 11&#xA;★★★★" PreviewMouseDown="Button11_MouseDown" PreviewMouseUp="Button11_MouseUp"  Margin="1" Grid.Column="1" Grid.Row="5" />
 											</Grid>
 										</DockPanel>
 										<DockPanel Grid.Column="1" Margin="2" LastChildFill="False">
@@ -376,6 +382,10 @@
 										</Grid>
 									</DockPanel>
 								</GroupBox>
+							</DockPanel>
+						</TabItem>
+						<TabItem Header="Other">
+							<DockPanel>
 								<GroupBox Header="Haptic monitor" DockPanel.Dock="Top">
 									<DockPanel Margin="1">
 										<TextBlock VerticalAlignment="Center" Text="Haptic:" DockPanel.Dock="Left" Margin="0,0,5,0" />
