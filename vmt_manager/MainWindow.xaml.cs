@@ -832,6 +832,54 @@ namespace vmt_manager
         {
             ButtonSend(11, false);
         }
+        private void Button12_MouseDown(object sender, MouseButtonEventArgs e)
+        {
+            ButtonSend(12, true);
+        }
+        private void Button12_MouseUp(object sender, MouseButtonEventArgs e)
+        {
+            ButtonSend(12, false);
+        }
+        private void Button13_MouseDown(object sender, MouseButtonEventArgs e)
+        {
+            ButtonSend(13, true);
+        }
+        private void Button13_MouseUp(object sender, MouseButtonEventArgs e)
+        {
+            ButtonSend(13, false);
+        }
+        private void Button14_MouseDown(object sender, MouseButtonEventArgs e)
+        {
+            ButtonSend(14, true);
+        }
+        private void Button14_MouseUp(object sender, MouseButtonEventArgs e)
+        {
+            ButtonSend(14, false);
+        }
+        private void Button15_MouseDown(object sender, MouseButtonEventArgs e)
+        {
+            ButtonSend(15, true);
+        }
+        private void Button15_MouseUp(object sender, MouseButtonEventArgs e)
+        {
+            ButtonSend(15, false);
+        }
+        private void Button16_MouseDown(object sender, MouseButtonEventArgs e)
+        {
+            ButtonSend(16, true);
+        }
+        private void Button16_MouseUp(object sender, MouseButtonEventArgs e)
+        {
+            ButtonSend(16, false);
+        }
+        private void Button17_MouseDown(object sender, MouseButtonEventArgs e)
+        {
+            ButtonSend(17, true);
+        }
+        private void Button17_MouseUp(object sender, MouseButtonEventArgs e)
+        {
+            ButtonSend(17, false);
+        }
 
         private void Slider0_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
@@ -980,6 +1028,18 @@ namespace vmt_manager
                     index.i, joystickIndex, timeoffset, (float)SliderA.Value, (float)SliderB.Value));
             }
         }
+        private void SliderCD_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
+        {
+            var index = GetInputIndex();
+
+            int joystickIndex = 3;
+            float timeoffset = 0;
+            if (index.ok && SliderC != null && SliderD != null)
+            {
+                osc.Send(new OscMessage("/VMT/Input/Joystick",
+                    index.i, joystickIndex, timeoffset, (float)SliderC.Value, (float)SliderD.Value));
+            }
+        }
         private void InputResetButton(object sender, RoutedEventArgs e)
         {
             Slider0.Value = 0f;
@@ -997,6 +1057,8 @@ namespace vmt_manager
             SliderV.Value = 0f;
             SliderA.Value = 0f;
             SliderB.Value = 0f;
+            SliderC.Value = 0f;
+            SliderD.Value = 0f;
         }
         private void HapticTestButton(object sender, RoutedEventArgs e)
         {

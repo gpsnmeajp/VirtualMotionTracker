@@ -29,9 +29,9 @@ SOFTWARE.
 namespace VMTDriver {
     const HmdQuaternion_t HmdQuaternion_Identity{ 1,0,0,0 };
     const int skeletonBoneCount{ 31 };
-    const int buttonCount{ 12 };
+    const int buttonCount{ 18 };
     const int triggerCount{ 9 };
-    const int joystickCount{ 3 };
+    const int joystickCount{ 4 };
 
     //生姿勢
     struct RawPose {

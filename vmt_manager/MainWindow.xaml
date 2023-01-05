@@ -79,14 +79,26 @@
 								<TextBox Name="CheckPositionRawTextBox" IsEnabled="False" IsReadOnly="True" Text="-,-,-" DockPanel.Dock="Top" Margin="1"/>
 								<TextBlock Text="VMT_0 Speed" DockPanel.Dock="Top" Margin="1"/>
 								<TextBox Name="CheckPositionRawSpeedTextBox" IsEnabled="False" IsReadOnly="True" Text="-,-,-" DockPanel.Dock="Top" Margin="1"/>
-								<Button Content="Check VMT__0 Position &#xA;(Try set RoomPos=[1,1,1] )" DockPanel.Dock="Top" Click="CheckPositionButton" Margin="1"/>
-								<Button Content="Set Hand Position (Room)&#xA;(VMT__0, VMT__1)" DockPanel.Dock="Top" Click="CheckTemplatePosition1Button" Margin="1"/>
+								<Button DockPanel.Dock="Top" Click="CheckPositionButton" Margin="1">
+									<TextBlock Text="Check VMT__0 Position &#xA;(Try set RoomPos=[1,1,1] )" TextAlignment="Center"/>
+								</Button>
+								<Button DockPanel.Dock="Top" Click="CheckTemplatePosition1Button" Margin="1">
+									<TextBlock Text="Set Hand Position (Room)&#xA;(VMT__0, VMT__1)" TextAlignment="Center"/>
+								</Button>
 								<TextBlock Text="VMT_0 Joint Serial No" DockPanel.Dock="Top" Margin="1"/>
 								<TextBox Name="JointSerialNoTextBox" Text="HMD" DockPanel.Dock="Top" Margin="1"/>
-								<Button Content="Check VMT__0 Position &#xA;(Try set JointPos=[0.1,0.0,-0.5] )" DockPanel.Dock="Top" Click="CheckJointPositionButton" Margin="1"/>
-								<Button Content="Check VMT__0 Position &#xA;(Try set FollowPos=[-0.1,0.0,-0.5] )" DockPanel.Dock="Top" Click="CheckJointPosition2Button" Margin="1"/>
-								<Button Content="Set Hand Position(Joint) &#xA;(VMT__0, VMT__1)" DockPanel.Dock="Top" Click="CheckTemplatePosition1JointButton" Margin="1"/>
-								<Button Content="Set Hand Position(Follow) &#xA;(VMT__0, VMT__1)" DockPanel.Dock="Top" Click="CheckTemplatePosition1FollowButton" Margin="1"/>
+								<Button DockPanel.Dock="Top" Click="CheckJointPositionButton" Margin="1">
+									<TextBlock Text="Check VMT__0 Position &#xA;(Try set JointPos=[0.1,0.0,-0.5] )" TextAlignment="Center"/>
+								</Button>
+								<Button DockPanel.Dock="Top" Click="CheckJointPosition2Button" Margin="1">
+									<TextBlock Text="Check VMT__0 Position &#xA;(Try set FollowPos=[-0.1,0.0,-0.5] )" TextAlignment="Center"/>
+								</Button>
+								<Button DockPanel.Dock="Top" Click="CheckTemplatePosition1JointButton" Margin="1">
+									<TextBlock Text="Set Hand Position(Joint) &#xA;(VMT__0, VMT__1)" TextAlignment="Center"/>
+								</Button>
+								<Button DockPanel.Dock="Top" Click="CheckTemplatePosition1FollowButton" Margin="1">
+									<TextBlock Text="Set Hand Position(Follow) &#xA;(VMT__0, VMT__1)" TextAlignment="Center"/>
+								</Button>
 								<TextBlock Text="Position Coordinate" DockPanel.Dock="Top" Margin="1"/>
 								<ComboBox DockPanel.Dock="Top" Name="CoordinateCombo" SelectedIndex="0">
 									<ComboBoxItem>Driver Coordinate</ComboBoxItem>
@@ -158,85 +170,112 @@
 													<RowDefinition/>
 													<RowDefinition/>
 													<RowDefinition/>
+													<RowDefinition/>
+													<RowDefinition/>
+													<RowDefinition/>
 												</Grid.RowDefinitions>
-												<Button Content="Button 0&#xA;★★★★" PreviewMouseDown="Button0_MouseDown" PreviewMouseUp="Button0_MouseUp"  Margin="1" Grid.Column="0" Grid.Row="0" />
-												<Button Content="Button 1&#xA;★★★★" PreviewMouseDown="Button1_MouseDown" PreviewMouseUp="Button1_MouseUp"  Margin="1" Grid.Column="1" Grid.Row="0" />
-												<Button Content="Button 2&#xA;★★★★" PreviewMouseDown="Button2_MouseDown" PreviewMouseUp="Button2_MouseUp"  Margin="1" Grid.Column="0" Grid.Row="1" />
-												<Button Content="Button 3&#xA;★★★★" PreviewMouseDown="Button3_MouseDown" PreviewMouseUp="Button3_MouseUp"  Margin="1" Grid.Column="1" Grid.Row="1" />
-												<Button Content="Button 4&#xA;★★★★" PreviewMouseDown="Button4_MouseDown" PreviewMouseUp="Button4_MouseUp"  Margin="1" Grid.Column="0" Grid.Row="2" />
-												<Button Content="Button 5&#xA;★★★★" PreviewMouseDown="Button5_MouseDown" PreviewMouseUp="Button5_MouseUp"  Margin="1" Grid.Column="1" Grid.Row="2" />
-												<Button Content="Button 6&#xA;★★★★" PreviewMouseDown="Button6_MouseDown" PreviewMouseUp="Button6_MouseUp"  Margin="1" Grid.Column="0" Grid.Row="3" />
-												<Button Content="Button 7&#xA;★★★★" PreviewMouseDown="Button7_MouseDown" PreviewMouseUp="Button7_MouseUp"  Margin="1" Grid.Column="1" Grid.Row="3" />
-												<Button Content="Button 8&#xA;★★★★" PreviewMouseDown="Button8_MouseDown" PreviewMouseUp="Button8_MouseUp"  Margin="1" Grid.Column="0" Grid.Row="4" />
-												<Button Content="Button 9&#xA;★★★★" PreviewMouseDown="Button9_MouseDown" PreviewMouseUp="Button9_MouseUp"  Margin="1" Grid.Column="1" Grid.Row="4" />
-												<Button Content="Button 10&#xA;★★★★" PreviewMouseDown="Button10_MouseDown" PreviewMouseUp="Button10_MouseUp"  Margin="1" Grid.Column="0" Grid.Row="5" />
-												<Button Content="Button 11&#xA;★★★★" PreviewMouseDown="Button11_MouseDown" PreviewMouseUp="Button11_MouseUp"  Margin="1" Grid.Column="1" Grid.Row="5" />
+												<Button PreviewMouseDown="Button0_MouseDown" PreviewMouseUp="Button0_MouseUp"  Margin="1" Grid.Column="0" Grid.Row="0" >
+													<TextBlock Text="Button 0&#xA;System" TextAlignment="Center"/>
+												</Button>
+												<Button PreviewMouseDown="Button1_MouseDown" PreviewMouseUp="Button1_MouseUp"  Margin="1" Grid.Column="1" Grid.Row="0">
+													<TextBlock Text="Button 1&#xA;A" TextAlignment="Center"/>
+												</Button>
+												<Button PreviewMouseDown="Button2_MouseDown" PreviewMouseUp="Button2_MouseUp"  Margin="1" Grid.Column="0" Grid.Row="1" >
+													<TextBlock Text="Button 2&#xA;Trigger" TextAlignment="Center"/>
+												</Button>
+												<Button PreviewMouseDown="Button3_MouseDown" PreviewMouseUp="Button3_MouseUp"  Margin="1" Grid.Column="1" Grid.Row="1" >
+													<TextBlock Text="Button 3&#xA;B" TextAlignment="Center"/>
+												</Button>
+												<Button PreviewMouseDown="Button4_MouseDown" PreviewMouseUp="Button4_MouseUp"  Margin="1" Grid.Column="0" Grid.Row="2" >
+													<TextBlock Text="Button 4&#xA;Trackpad" TextAlignment="Center"/>
+												</Button>
+												<Button Content="Button 5&#xA;" PreviewMouseDown="Button5_MouseDown" PreviewMouseUp="Button5_MouseUp"  Margin="1" Grid.Column="1" Grid.Row="2" />
+												<Button Content="Button 6" PreviewMouseDown="Button6_MouseDown" PreviewMouseUp="Button6_MouseUp"  Margin="1" Grid.Column="0" Grid.Row="3" />
+												<Button Content="Button 7" PreviewMouseDown="Button7_MouseDown" PreviewMouseUp="Button7_MouseUp"  Margin="1" Grid.Column="1" Grid.Row="3" />
+												<Button Content="Button 8" PreviewMouseDown="Button8_MouseDown" PreviewMouseUp="Button8_MouseUp"  Margin="1" Grid.Column="0" Grid.Row="4" />
+												<Button Content="Button 9" PreviewMouseDown="Button9_MouseDown" PreviewMouseUp="Button9_MouseUp"  Margin="1" Grid.Column="1" Grid.Row="4" />
+												<Button Content="Button 10" PreviewMouseDown="Button10_MouseDown" PreviewMouseUp="Button10_MouseUp"  Margin="1" Grid.Column="0" Grid.Row="5" />
+												<Button Content="Button 11" PreviewMouseDown="Button11_MouseDown" PreviewMouseUp="Button11_MouseUp"  Margin="1" Grid.Column="1" Grid.Row="5" />
+												<Button Content="Button 12" PreviewMouseDown="Button12_MouseDown" PreviewMouseUp="Button12_MouseUp"  Margin="1" Grid.Column="0" Grid.Row="6" />
+												<Button Content="Button 13" PreviewMouseDown="Button13_MouseDown" PreviewMouseUp="Button13_MouseUp"  Margin="1" Grid.Column="1" Grid.Row="6" />
+												<Button Content="Button 14" PreviewMouseDown="Button14_MouseDown" PreviewMouseUp="Button14_MouseUp"  Margin="1" Grid.Column="0" Grid.Row="7" />
+												<Button Content="Button 15" PreviewMouseDown="Button15_MouseDown" PreviewMouseUp="Button15_MouseUp"  Margin="1" Grid.Column="1" Grid.Row="7" />
+												<Button Content="Button 16" PreviewMouseDown="Button16_MouseDown" PreviewMouseUp="Button16_MouseUp"  Margin="1" Grid.Column="0" Grid.Row="8" />
+												<Button Content="Button 17" PreviewMouseDown="Button17_MouseDown" PreviewMouseUp="Button17_MouseUp"  Margin="1" Grid.Column="1" Grid.Row="8" />
 											</Grid>
 										</DockPanel>
 										<DockPanel Grid.Column="1" Margin="2" LastChildFill="False">
 											<DockPanel DockPanel.Dock="Top" Margin="1">
-												<TextBlock Text="Trigger 0&#xA;★★★★" DockPanel.Dock="Left" />
+												<TextBlock Text="Trigger 0&#xA;Trigger" DockPanel.Dock="Left" Width="50" />
 												<Slider Minimum="0" Maximum="1" Value="0" Name="Slider0" ValueChanged="Slider0_ValueChanged" DockPanel.Dock="Left"/>
 											</DockPanel>
 											<DockPanel DockPanel.Dock="Top" Margin="1">
-												<TextBlock Text="Trigger 1&#xA;★★★★" DockPanel.Dock="Left" />
+												<TextBlock Text="Trigger 1&#xA;Grip" DockPanel.Dock="Left" Width="50" />
 												<Slider Minimum="0" Maximum="1" Value="0" Name="Slider1" ValueChanged="Slider1_ValueChanged" DockPanel.Dock="Left"/>
 											</DockPanel>
 											<DockPanel DockPanel.Dock="Top" Margin="1">
-												<TextBlock Text="Trigger 2&#xA;★★★★" DockPanel.Dock="Left" />
+												<TextBlock Text="Trigger 2&#xA;(Thumb)" DockPanel.Dock="Left" Width="50" />
 												<Slider Minimum="0" Maximum="1" Value="0" Name="Slider2" ValueChanged="Slider2_ValueChanged" DockPanel.Dock="Left"/>
 											</DockPanel>
 											<DockPanel DockPanel.Dock="Top" Margin="1">
-												<TextBlock Text="Trigger 3&#xA;★★★★" DockPanel.Dock="Left" />
+												<TextBlock Text="Trigger 3&#xA;Index" DockPanel.Dock="Left" Width="50" />
 												<Slider Minimum="0" Maximum="1" Value="0" Name="Slider3" ValueChanged="Slider3_ValueChanged" DockPanel.Dock="Left"/>
 											</DockPanel>
 											<DockPanel DockPanel.Dock="Top" Margin="1">
-												<TextBlock Text="Trigger 4&#xA;★★★★" DockPanel.Dock="Left" />
+												<TextBlock Text="Trigger 4&#xA;Middle" DockPanel.Dock="Left" Width="50" />
 												<Slider Minimum="0" Maximum="1" Value="0" Name="Slider4" ValueChanged="Slider4_ValueChanged" DockPanel.Dock="Left"/>
 											</DockPanel>
 											<DockPanel DockPanel.Dock="Top" Margin="1">
-												<TextBlock Text="Trigger 5&#xA;★★★★" DockPanel.Dock="Left" />
+												<TextBlock Text="Trigger 5&#xA;Ring" DockPanel.Dock="Left" Width="50" />
 												<Slider Minimum="0" Maximum="1" Value="0" Name="Slider5" ValueChanged="Slider5_ValueChanged" DockPanel.Dock="Left"/>
 											</DockPanel>
 											<DockPanel DockPanel.Dock="Top" Margin="1">
-												<TextBlock Text="Trigger 6&#xA;★★★★" DockPanel.Dock="Left" />
+												<TextBlock Text="Trigger 6&#xA;Little" DockPanel.Dock="Left" Width="50" />
 												<Slider Minimum="0" Maximum="1" Value="0" Name="Slider6" ValueChanged="Slider6_ValueChanged" DockPanel.Dock="Left"/>
 											</DockPanel>
 										</DockPanel>
 										<DockPanel Grid.Column="2" Margin="2" LastChildFill="False">
 											<DockPanel DockPanel.Dock="Top" Margin="1">
-												<TextBlock Text="Trigger 7&#xA;★★★★" DockPanel.Dock="Left" />
+												<TextBlock Text="Trigger 7&#xA;(Root)" DockPanel.Dock="Left" Width="50" />
 												<Slider Minimum="0" Maximum="1" Value="0" Name="Slider7" ValueChanged="Slider7_ValueChanged" DockPanel.Dock="Left"/>
 											</DockPanel>
 											<DockPanel DockPanel.Dock="Top" Margin="1">
-												<TextBlock Text="Trigger 8&#xA;★★★★" DockPanel.Dock="Left" />
+												<TextBlock Text="Trigger 8" DockPanel.Dock="Left" Width="50" />
 												<Slider Minimum="0" Maximum="1" Value="0" Name="Slider8" ValueChanged="Slider8_ValueChanged" DockPanel.Dock="Left"/>
 											</DockPanel>
 											<DockPanel DockPanel.Dock="Top" Margin="1">
-												<TextBlock Text="Joystick1 X" DockPanel.Dock="Left" />
+												<TextBlock Text="Joystick0 X" DockPanel.Dock="Left" />
 												<Slider Minimum="-1" Maximum="1" Value="0" Name="SliderX" ValueChanged="SliderXY_ValueChanged" DockPanel.Dock="Left"/>
 											</DockPanel>
 											<DockPanel DockPanel.Dock="Top" Margin="1">
-												<TextBlock Text="Joystick1 Y" DockPanel.Dock="Left" />
+												<TextBlock Text="Joystick0 Y" DockPanel.Dock="Left" />
 												<Slider Minimum="-1" Maximum="1" Value="0" Name="SliderY" ValueChanged="SliderXY_ValueChanged" DockPanel.Dock="Left"/>
 											</DockPanel>
 											<DockPanel DockPanel.Dock="Top" Margin="1">
-												<TextBlock Text="Joystick2 X" DockPanel.Dock="Left" />
+												<TextBlock Text="Joystick1 X" DockPanel.Dock="Left" />
 												<Slider Minimum="-1" Maximum="1" Value="0" Name="SliderU" ValueChanged="SliderUV_ValueChanged" DockPanel.Dock="Left"/>
 											</DockPanel>
 											<DockPanel DockPanel.Dock="Top" Margin="1">
-												<TextBlock Text="Joystick2 Y" DockPanel.Dock="Left" />
+												<TextBlock Text="Joystick1 Y" DockPanel.Dock="Left" />
 												<Slider Minimum="-1" Maximum="1" Value="0" Name="SliderV" ValueChanged="SliderUV_ValueChanged" DockPanel.Dock="Left"/>
 											</DockPanel>
 											<DockPanel DockPanel.Dock="Top" Margin="1">
-												<TextBlock Text="Joystick3 X" DockPanel.Dock="Left" />
+												<TextBlock Text="Joystick2 X" DockPanel.Dock="Left" />
 												<Slider Minimum="-1" Maximum="1" Value="0" Name="SliderA" ValueChanged="SliderAB_ValueChanged" DockPanel.Dock="Left"/>
 											</DockPanel>
 											<DockPanel DockPanel.Dock="Top" Margin="1">
-												<TextBlock Text="Joystick3 Y" DockPanel.Dock="Left" />
+												<TextBlock Text="Joystick2 Y" DockPanel.Dock="Left" />
 												<Slider Minimum="-1" Maximum="1" Value="0" Name="SliderB" ValueChanged="SliderAB_ValueChanged" DockPanel.Dock="Left"/>
 											</DockPanel>
-											<Button Content="Input Reset"  Margin="1,8,1,1" Height="36" Click="InputResetButton" DockPanel.Dock="Top"/>
+											<DockPanel DockPanel.Dock="Top" Margin="1">
+												<TextBlock Text="Joystick3 X" DockPanel.Dock="Left" />
+												<Slider Minimum="-1" Maximum="1" Value="0" Name="SliderC" ValueChanged="SliderCD_ValueChanged" DockPanel.Dock="Left"/>
+											</DockPanel>
+											<DockPanel DockPanel.Dock="Top" Margin="1">
+												<TextBlock Text="Joystick3 Y" DockPanel.Dock="Left" />
+												<Slider Minimum="-1" Maximum="1" Value="0" Name="SliderD" ValueChanged="SliderCD_ValueChanged" DockPanel.Dock="Left"/>
+											</DockPanel>
+											<Button Content="Input Reset"  Margin="1,8,1,1" Height="22" Click="InputResetButton" DockPanel.Dock="Top"/>
 										</DockPanel>
 									</Grid>
 								</GroupBox>
@@ -244,7 +283,7 @@
 								<GroupBox Header="Finger control (scalar value)" DockPanel.Dock="Top">
 									<DockPanel>
 										<DockPanel DockPanel.Dock="Top" Margin="1">
-											<TextBlock Text="RootAndWrist" DockPanel.Dock="Left" Width="80" />
+											<TextBlock Text="Root Wrist" DockPanel.Dock="Left" Width="80" />
 											<Slider Minimum="0" Maximum="1" Value="0" Name="RootAndWristSlider" ValueChanged="RootAndWristSlider_ValueChanged" DockPanel.Dock="Left"/>
 										</DockPanel>
 										<DockPanel DockPanel.Dock="Top" Margin="1">
@@ -264,7 +303,7 @@
 											<Slider Minimum="0" Maximum="1" Value="0" Name="RingSlider" ValueChanged="RingSlider_ValueChanged" DockPanel.Dock="Left"/>
 										</DockPanel>
 										<DockPanel DockPanel.Dock="Top" Margin="1">
-											<TextBlock Text="PinkyLittle" DockPanel.Dock="Left" Width="80" />
+											<TextBlock Text="Pinky Little" DockPanel.Dock="Left" Width="80" />
 											<Slider Minimum="0" Maximum="1" Value="0" Name="PinkyLittleSlider" ValueChanged="PinkyLittleSlider_ValueChanged" DockPanel.Dock="Left"/>
 										</DockPanel>
 										<CheckBox Content="Axis linking enable" Name="AxisLinkingEnableCheckBox"/>
