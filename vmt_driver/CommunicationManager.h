@@ -30,6 +30,7 @@ namespace VMTDriver {
 
 	class OSCReceiver : public osc::OscPacketListener {
 	private:
+		Eigen::Quaterniond UnityEulerToQuaternion(double x, double y, double z);
 		void SetPose(bool roomToDriver, int idx, int enable,
 		             double x, double y, double z,
 		             double qx, double qy, double qz, double qw,

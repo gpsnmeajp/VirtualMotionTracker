@@ -31,6 +31,15 @@ SOFTWARE.
 namespace VMTDriver {
 	//別スレッドからのコール
 
+	//Unityオイラー回転→クォータニオン
+	Eigen::Quaterniond OSCReceiver::UnityEulerToQuaternion(double x, double y, double z)
+	{
+		return
+			Eigen::AngleAxisd(y / 180.0 * M_PI, Eigen::Vector3d::UnitY())
+			* Eigen::AngleAxisd(x / 180.0 * M_PI, Eigen::Vector3d::UnitX())
+			* Eigen::AngleAxisd(z / 180.0 * M_PI, Eigen::Vector3d::UnitZ());
+	}
+
 	//姿勢を各仮想デバイスに設定する
 	void OSCReceiver::SetPose(bool roomToDriver, int deviceIndex, int enable,
 	                          double x, double y, double z,
@@ -153,6 +162,9 @@ namespace VMTDriver {
 		float qy{};
 		float qz{};
 		float qw{};
+		float rx{};
+		float ry{};
+		float rz{};
 		int ButtonIndex{};
 		int ButtonValue{};
 		float TriggerValue{};
@@ -186,6 +198,15 @@ namespace VMTDriver {
 				LogIfDiag("%s : %d : %d : %f : %f %f %f : %f %f %f %f", adr.c_str(), idx, enable, timeoffset, x, y, z, qx, qy, qz, qw);
 				SetPose(true, idx, enable, x, y, -z, qx, qy, -qz, -qw, timeoffset);
 			}
+			else if (adr == "/VMT/Room/UEuler")
+			{
+				args >> idx >> enable >> timeoffset >> x >> y >> z >> rx >> ry >> rz >> osc::EndMessage;
+				LogIfDiag("%s : %d : %d : %f : %f %f %f : %f %f %f", adr.c_str(), idx, enable, timeoffset, x, y, z, rx, ry, rz);
+
+				Eigen::Quaterniond q = UnityEulerToQuaternion(rx, ry, rz);
+				LogIfDiag("%lf %lf %lf %lf", q.x(), q.y(), q.z(), q.w());
+				SetPose(true, idx, enable, x, y, -z, q.x(), q.y(), -q.z(), -q.w(), timeoffset);
+			}
 			else if (adr == "/VMT/Room/Driver")
 			{
 				args >> idx >> enable >> timeoffset >> x >> y >> z >> qx >> qy >> qz >> qw >> osc::EndMessage;
@@ -197,6 +218,15 @@ namespace VMTDriver {
 				args >> idx >> enable >> timeoffset >> x >> y >> z >> qx >> qy >> qz >> qw >> osc::EndMessage;
 				LogIfDiag("%s : %d : %d : %f : %f %f %f : %f %f %f %f", adr.c_str(), idx, enable, timeoffset, x, y, z, qx, qy, qz, qw);
 				SetPose(false, idx, enable, x, y, -z, qx, qy, -qz, -qw, timeoffset);
+			}
+			else if (adr == "/VMT/Raw/UEuler")
+			{
+				args >> idx >> enable >> timeoffset >> x >> y >> z >> rx >> ry >> rz  >> osc::EndMessage;
+				LogIfDiag("%s : %d : %d : %f : %f %f %f : %f %f %f", adr.c_str(), idx, enable, timeoffset, x, y, z, rx, ry, rz);
+
+				Eigen::Quaterniond q = UnityEulerToQuaternion(rx, ry, rz);
+				LogIfDiag("%lf %lf %lf %lf", q.x(), q.y(), q.z(), q.w());
+				SetPose(false, idx, enable, x, y, -z, q.x(), q.y(), -q.z(), -q.w(), timeoffset);
 			}
 			else if (adr == "/VMT/Raw/Driver")
 			{
@@ -210,6 +240,15 @@ namespace VMTDriver {
 				LogIfDiag("%s : %d : %d : %f : %f %f %f : %f %f %f %f : %s", adr.c_str(), idx, enable, timeoffset, x, y, z, qx, qy, qz, qw, root_sn);
 				SetPose(false, idx, enable, x, y, -z, qx, qy, -qz, -qw, timeoffset, root_sn, ReferMode_t::Joint);
 			}
+			else if (adr == "/VMT/Joint/UEuler")
+			{
+				args >> idx >> enable >> timeoffset >> x >> y >> z >> rx >> ry >> rz >> root_sn >> osc::EndMessage;
+				LogIfDiag("%s : %d : %d : %f : %f %f %f : %f %f %f : %s", adr.c_str(), idx, enable, timeoffset, x, y, z, rx, ry, rz, root_sn);
+
+				Eigen::Quaterniond q = UnityEtoQ(rx, ry, rz);
+				LogIfDiag("%lf %lf %lf %lf", q.x(), q.y(), q.z(), q.w());
+				SetPose(false, idx, enable, x, y, -z, q.x(), q.y(), -q.z(), -q.w(), timeoffset, root_sn, ReferMode_t::Joint);
+			}
 			else if (adr == "/VMT/Joint/Driver")
 			{
 				args >> idx >> enable >> timeoffset >> x >> y >> z >> qx >> qy >> qz >> qw >> root_sn >> osc::EndMessage;
@@ -222,6 +261,15 @@ namespace VMTDriver {
 				LogIfDiag("%s : %d : %d : %f : %f %f %f : %f %f %f %f : %s", adr.c_str(), idx, enable, timeoffset, x, y, z, qx, qy, qz, qw, root_sn);
 				SetPose(false, idx, enable, x, y, -z, qx, qy, -qz, -qw, timeoffset, root_sn, ReferMode_t::Follow);
 			}
+			else if (adr == "/VMT/Follow/UEuler")
+			{
+				args >> idx >> enable >> timeoffset >> x >> y >> z >> rx >> ry >> rz >> root_sn >> osc::EndMessage;
+				LogIfDiag("%s : %d : %d : %f : %f %f %f : %f %f %f : %s", adr.c_str(), idx, enable, timeoffset, x, y, z, rx, ry, rz, root_sn);
+
+				Eigen::Quaterniond q = UnityEulerToQuaternion(rx, ry, rz);
+				LogIfDiag("%lf %lf %lf %lf", q.x(), q.y(), q.z(), q.w());
+				SetPose(false, idx, enable, x, y, -z, q.x(), q.y(), -q.z(), -q.w(), timeoffset, root_sn, ReferMode_t::Follow);
+			}
 			else if (adr == "/VMT/Follow/Driver")
 			{
 				args >> idx >> enable >> timeoffset >> x >> y >> z >> qx >> qy >> qz >> qw >> root_sn >> osc::EndMessage;
@@ -233,6 +281,15 @@ namespace VMTDriver {
 				args >> idx >> i >> x >> y >> z >> qx >> qy >> qz >> qw >> osc::EndMessage;
 				LogIfDiag("%s : %d : %d : %f %f %f : %f %f %f %f", adr.c_str(), idx, i, x, y, z, qx, qy, qz, qw);
 				WriteSkeletonBone(idx, i, x, y, -z, qx, qy, -qz, -qw);
+			}
+			else if (adr == "/VMT/Skeleton/UEuler")
+			{
+				args >> idx >> i >> x >> y >> z >> rx >> ry >> rz >> osc::EndMessage;
+				LogIfDiag("%s : %d : %d : %f %f %f : %f %f %f", adr.c_str(), idx, i, x, y, z, rx, ry, rz);
+
+				Eigen::Quaterniond q = UnityEulerToQuaternion(rx, ry, rz);
+				LogIfDiag("%lf %lf %lf %lf", q.x(), q.y(), q.z(), q.w());
+				WriteSkeletonBone(idx, i, x, y, -z, q.x(), q.y(), -q.z(), -q.w());
 			}
 			else if (adr == "/VMT/Skeleton/Driver")
 			{

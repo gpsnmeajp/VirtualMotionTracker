@@ -24,7 +24,9 @@ SOFTWARE.
 #pragma once
 #pragma warning(disable: 26812 )
 
+#define _USE_MATH_DEFINES
 #include "framework.h"
+#include <cmath>
 #include <sstream>
 #include <fstream>
 #include <istream>
