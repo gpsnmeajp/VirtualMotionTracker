@@ -132,6 +132,10 @@ namespace VMTDriver {
 		{
 			j["SkeletonInput"] = true;
 		}
+		if (!j.contains("CompatibleMode"))
+		{
+			j["CompatibleMode"] = true;
+		}
 		return j;
 	}
 
@@ -182,6 +186,10 @@ namespace VMTDriver {
 			if (j.contains("SkeletonInput"))
 			{
 				m_SkeletonInput = j["SkeletonInput"];
+			}
+			if (j.contains("CompatibleMode"))
+			{
+				m_CompatibleMode = j["CompatibleMode"];
 			}
 			SaveJson(j);
 		}
@@ -273,5 +281,11 @@ namespace VMTDriver {
 	bool Config::GetSkeletonInput()
 	{
 		return m_SkeletonInput;
+	}
+
+	//Knuckles互換モードが有効かを取得する
+	bool Config::GetCompatibleMode()
+	{
+		return m_CompatibleMode;
 	}
 }

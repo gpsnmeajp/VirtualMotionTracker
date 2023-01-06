@@ -1030,7 +1030,13 @@ namespace VMTDriver {
         std::string RegisteredDeviceType_String = std::string("vmt/");
         RegisteredDeviceType_String += m_serial.c_str();
         LogIfETrackedPropertyError(VRProperties()->SetStringProperty(m_propertyContainer, Prop_RegisteredDeviceType_String, RegisteredDeviceType_String.c_str()));
-        LogIfETrackedPropertyError(VRProperties()->SetStringProperty(m_propertyContainer, Prop_InputProfilePath_String, "{vmt}/input/vmt_profile.json")); //vmt_profile.jsonに影響する
+
+        if (Config::GetInstance()->GetCompatibleMode()) {
+            LogIfETrackedPropertyError(VRProperties()->SetStringProperty(m_propertyContainer, Prop_InputProfilePath_String, "{vmt}/input/vmt_compatible_profile.json")); //Knuckles互換モード
+        }
+        else {
+            LogIfETrackedPropertyError(VRProperties()->SetStringProperty(m_propertyContainer, Prop_InputProfilePath_String, "{vmt}/input/vmt_profile.json")); //VMTモード
+        }
         LogIfETrackedPropertyError(VRProperties()->SetBoolProperty(m_propertyContainer, Prop_NeverTracked_Bool, false));
 
 
@@ -1110,6 +1116,42 @@ namespace VMTDriver {
         }
 
         LogIfEVRInputError(VRDriverInput()->CreateHapticComponent(m_propertyContainer, "/output/haptic", &HapticComponent));
+
+        //互換用のコンポーネントミラーリングを登録
+        if (Config::GetInstance()->GetCompatibleMode()) {
+            LogIfEVRInputError(VRDriverInput()->CreateBooleanComponent(m_propertyContainer, (std::string("/input/system/click")).c_str(), &ButtonComponent[0]));
+            LogIfEVRInputError(VRDriverInput()->CreateBooleanComponent(m_propertyContainer, (std::string("/input/system/touch")).c_str(), &ButtonTouchComponent[0]));
+
+            LogIfEVRInputError(VRDriverInput()->CreateBooleanComponent(m_propertyContainer, (std::string("/input/a/click")).c_str(), &ButtonComponent[1]));
+            LogIfEVRInputError(VRDriverInput()->CreateBooleanComponent(m_propertyContainer, (std::string("/input/a/touch")).c_str(), &ButtonTouchComponent[1]));
+
+            LogIfEVRInputError(VRDriverInput()->CreateBooleanComponent(m_propertyContainer, (std::string("/input/b/click")).c_str(), &ButtonComponent[3]));
+            LogIfEVRInputError(VRDriverInput()->CreateBooleanComponent(m_propertyContainer, (std::string("/input/b/touch")).c_str(), &ButtonTouchComponent[3]));
+
+            LogIfEVRInputError(VRDriverInput()->CreateScalarComponent(m_propertyContainer, (std::string("/input/trackpad/x")).c_str(), &JoystickXComponent[0], EVRScalarType::VRScalarType_Absolute, EVRScalarUnits::VRScalarUnits_NormalizedTwoSided));
+            LogIfEVRInputError(VRDriverInput()->CreateScalarComponent(m_propertyContainer, (std::string("/input/trackpad/y")).c_str(), &JoystickYComponent[0], EVRScalarType::VRScalarType_Absolute, EVRScalarUnits::VRScalarUnits_NormalizedTwoSided));
+            LogIfEVRInputError(VRDriverInput()->CreateBooleanComponent(m_propertyContainer, (std::string("/input/trackpad/click")).c_str(), &JoystickClickComponent[0]));
+            LogIfEVRInputError(VRDriverInput()->CreateBooleanComponent(m_propertyContainer, (std::string("/input/trackpad/touch")).c_str(), &JoystickTouchComponent[0]));
+            LogIfEVRInputError(VRDriverInput()->CreateScalarComponent(m_propertyContainer, (std::string("/input/trackpad/force")).c_str(), &TriggerComponent[7], EVRScalarType::VRScalarType_Absolute, EVRScalarUnits::VRScalarUnits_NormalizedTwoSided));
+
+            LogIfEVRInputError(VRDriverInput()->CreateScalarComponent(m_propertyContainer, (std::string("/input/thumbstick/x")).c_str(), &JoystickXComponent[1], EVRScalarType::VRScalarType_Absolute, EVRScalarUnits::VRScalarUnits_NormalizedTwoSided));
+            LogIfEVRInputError(VRDriverInput()->CreateScalarComponent(m_propertyContainer, (std::string("/input/thumbstick/y")).c_str(), &JoystickYComponent[1], EVRScalarType::VRScalarType_Absolute, EVRScalarUnits::VRScalarUnits_NormalizedTwoSided));
+            LogIfEVRInputError(VRDriverInput()->CreateBooleanComponent(m_propertyContainer, (std::string("/input/thumbstick/click")).c_str(), &JoystickClickComponent[1]));
+            LogIfEVRInputError(VRDriverInput()->CreateBooleanComponent(m_propertyContainer, (std::string("/input/thumbstick/touch")).c_str(), &JoystickTouchComponent[1]));
+
+            LogIfEVRInputError(VRDriverInput()->CreateScalarComponent(m_propertyContainer, (std::string("/input/trigger/value")).c_str(), &TriggerComponent[0], EVRScalarType::VRScalarType_Absolute, EVRScalarUnits::VRScalarUnits_NormalizedOneSided));
+            LogIfEVRInputError(VRDriverInput()->CreateBooleanComponent(m_propertyContainer, (std::string("/input/trigger/click")).c_str(), &TriggerClickComponent[0]));
+            LogIfEVRInputError(VRDriverInput()->CreateBooleanComponent(m_propertyContainer, (std::string("/input/trigger/touch")).c_str(), &TriggerTouchComponent[0]));
+
+            LogIfEVRInputError(VRDriverInput()->CreateScalarComponent(m_propertyContainer, (std::string("/input/grip/value")).c_str(), &TriggerComponent[1], EVRScalarType::VRScalarType_Absolute, EVRScalarUnits::VRScalarUnits_NormalizedOneSided));
+            LogIfEVRInputError(VRDriverInput()->CreateBooleanComponent(m_propertyContainer, (std::string("/input/grip/touch")).c_str(), &TriggerTouchComponent[1]));
+            LogIfEVRInputError(VRDriverInput()->CreateScalarComponent(m_propertyContainer, (std::string("/input/grip/force")).c_str(), &TriggerComponent[2], EVRScalarType::VRScalarType_Absolute, EVRScalarUnits::VRScalarUnits_NormalizedTwoSided));
+
+            LogIfEVRInputError(VRDriverInput()->CreateScalarComponent(m_propertyContainer, (std::string("/input/finger/index/value")).c_str(), &TriggerComponent[3], EVRScalarType::VRScalarType_Absolute, EVRScalarUnits::VRScalarUnits_NormalizedOneSided));
+            LogIfEVRInputError(VRDriverInput()->CreateScalarComponent(m_propertyContainer, (std::string("/input/finger/middle/value")).c_str(), &TriggerComponent[4], EVRScalarType::VRScalarType_Absolute, EVRScalarUnits::VRScalarUnits_NormalizedOneSided));
+            LogIfEVRInputError(VRDriverInput()->CreateScalarComponent(m_propertyContainer, (std::string("/input/finger/ring/value")).c_str(), &TriggerComponent[5], EVRScalarType::VRScalarType_Absolute, EVRScalarUnits::VRScalarUnits_NormalizedOneSided));
+            LogIfEVRInputError(VRDriverInput()->CreateScalarComponent(m_propertyContainer, (std::string("/input/finger/pinky/value")).c_str(), &TriggerComponent[6], EVRScalarType::VRScalarType_Absolute, EVRScalarUnits::VRScalarUnits_NormalizedOneSided));
+        }
 
         m_alreadyRegistered = true;
         m_registrationInProgress = false;

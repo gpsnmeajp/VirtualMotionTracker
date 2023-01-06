@@ -42,6 +42,7 @@ namespace VMTDriver {
 		bool m_DefaultAutoPoseUpdateOn{ true };
 		bool m_DefaultControllerDeviceRegistration{ false };
 		bool m_SkeletonInput{ true };
+		bool m_CompatibleMode{ true };
 
 		json LoadJson();
 		void SaveJson(json j);
@@ -66,5 +67,6 @@ namespace VMTDriver {
 		bool GetDefaultAutoPoseUpdateOn();
 		bool GetDefaultControllerDeviceRegistration();
 		bool GetSkeletonInput();
+		bool GetCompatibleMode();
 	};
 }
