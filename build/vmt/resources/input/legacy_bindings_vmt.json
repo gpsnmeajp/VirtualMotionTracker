@@ -99,6 +99,9 @@
             },
             {
                "inputs" : {
+                  "click" : {
+                     "output" : "/actions/legacy/in/left_axis1_press"
+                  },
                   "pull" : {
                      "output" : "/actions/legacy/in/left_axis1_value"
                   },
@@ -234,6 +237,9 @@
             },
             {
                "inputs" : {
+                  "click" : {
+                     "output" : "/actions/legacy/in/right_axis1_press"
+                  },
                   "pull" : {
                      "output" : "/actions/legacy/in/right_axis1_value"
                   },
@@ -393,6 +399,9 @@
             },
             {
                "inputs" : {
+                  "click" : {
+                     "output" : "/actions/legacy_mirrored/in/axis1_press"
+                  },
                   "pull" : {
                      "output" : "/actions/legacy_mirrored/in/axis1_value"
                   },
@@ -528,6 +537,9 @@
             },
             {
                "inputs" : {
+                  "click" : {
+                     "output" : "/actions/legacy_mirrored/in/axis1_press"
+                  },
                   "pull" : {
                      "output" : "/actions/legacy_mirrored/in/axis1_value"
                   },
