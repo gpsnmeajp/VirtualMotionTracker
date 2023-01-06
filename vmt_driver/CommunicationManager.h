@@ -47,6 +47,8 @@ namespace VMTDriver {
 		static void OSCReceiver::SendAlive();
 		static void OSCReceiver::SendHaptic(int index, float frequency, float amplitude, float duration);
 		static void OSCReceiver::SendUnavailable(int code, std::string reason);
+		static void OSCReceiver::SendDevices(string msg);
+		static void OSCReceiver::SendSubscribedDevicePose(string serial, float x, float y, float z, float qx, float qy, float qz, float qw);
 	};
 
 	class CommunicationManager {

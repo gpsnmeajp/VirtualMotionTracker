@@ -132,9 +132,9 @@ namespace VMTDriver {
 		{
 			j["SkeletonInput"] = true;
 		}
-		if (!j.contains("CompatibleMode"))
+		if (!j.contains("DefaultControllerDeviceRegistrationCompatibleMode"))
 		{
-			j["CompatibleMode"] = true;
+			j["DefaultControllerDeviceRegistrationCompatibleMode"] = false;
 		}
 		return j;
 	}
@@ -187,9 +187,9 @@ namespace VMTDriver {
 			{
 				m_SkeletonInput = j["SkeletonInput"];
 			}
-			if (j.contains("CompatibleMode"))
+			if (j.contains("DefaultControllerDeviceRegistrationCompatibleMode"))
 			{
-				m_CompatibleMode = j["CompatibleMode"];
+				m_DefaultControllerDeviceRegistrationCompatibleMode = j["DefaultControllerDeviceRegistrationCompatibleMode"];
 			}
 			SaveJson(j);
 		}
@@ -283,9 +283,9 @@ namespace VMTDriver {
 		return m_SkeletonInput;
 	}
 
-	//Knuckles互換モードが有効かを取得する
-	bool Config::GetCompatibleMode()
+	//起動直後にKnuckles互換コントローラとして登録するかを取得する
+	bool Config::GetDefaultControllerDeviceRegistrationCompatibleMode()
 	{
-		return m_CompatibleMode;
+		return m_DefaultControllerDeviceRegistrationCompatibleMode;
 	}
 }

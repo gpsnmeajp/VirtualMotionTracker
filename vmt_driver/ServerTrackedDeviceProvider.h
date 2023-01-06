@@ -32,7 +32,8 @@ namespace VMTDriver {
     private:
         vector<TrackedDeviceServerDriver> m_devices{};
         IVRDriverContext* m_pDriverContext = nullptr;
-        string m_installPath{ "" };
+        std::string m_installPath{ "" };
+        std::vector<std::string> m_subscribeDevices;
 
     public:
         //内部向け
@@ -40,7 +41,11 @@ namespace VMTDriver {
         TrackedDeviceServerDriver& GetDevice(int index);
         void DeviceResetAll();
         bool IsVMTDeviceIndex(int index);
-        string GetInstallPath();
+        std::string GetInstallPath();
+        std::string GetOpenVRDevicesString();
+        void SubscribeDevice(std::string serial);
+        void UnsubscribeDevice(std::string serial);
+        int SearchDevice(vr::TrackedDevicePose_t* poses, string serial);
 
         //OpenVR向け
         virtual EVRInitError Init(IVRDriverContext* pDriverContext) override;

@@ -54,11 +54,127 @@ namespace VMTDriver {
     }
 
     //インストールパスの取得
-    string ServerTrackedDeviceProvider::GetInstallPath()
+    std::string ServerTrackedDeviceProvider::GetInstallPath()
     {
         return m_installPath;
     }
 
+    //全デバイス情報文字列の取得
+    std::string ServerTrackedDeviceProvider::GetOpenVRDevicesString()
+    {
+        std::string result("");
+
+        IVRProperties* props = VRPropertiesRaw();
+        CVRPropertyHelpers* helper = VRProperties();
+        vr::TrackedDevicePose_t poses[k_unMaxTrackedDeviceCount]{};
+
+        //OpenVRから全トラッキングデバイスの情報を取得する
+        VRServerDriverHost()->GetRawTrackedDevicePoses(0.0f, poses, k_unMaxTrackedDeviceCount);
+
+        //デバイスをOpenVR index順に調べる
+        for (uint32_t i = 0; i < k_unMaxTrackedDeviceCount; i++) {
+            //そのデバイスがつながっていないなら次のデバイスへ
+            if (poses[i].bDeviceIsConnected != true) {
+                continue;
+            }
+
+            //デバイスがつながっているので、シリアルナンバーを取得する
+            PropertyContainerHandle_t h = props->TrackedDeviceToPropertyContainer(i);
+            string SerialNumber = helper->GetStringProperty(h, ETrackedDeviceProperty::Prop_SerialNumber_String);
+
+            //取得できた情報を文字列に格納する
+            result = result + std::to_string(i) + ":" + SerialNumber + "\n";
+        }
+        return result;
+    }
+
+    void ServerTrackedDeviceProvider::SubscribeDevice(std::string serial) {
+
+        //登録済みなら受け付けない
+        for (auto& s : m_subscribeDevices) {
+            if (s == serial) {
+                LogInfo("Already subscribed : %s", serial.c_str());
+                return;
+            }
+        }
+        m_subscribeDevices.push_back(serial);
+
+        //変更後の購読リストを吐き出す
+        if (Log::s_diag) {
+            LogInfo("*** Begin ***");
+            for (auto& s : m_subscribeDevices) {
+                LogInfo("%s", s.c_str());
+            }
+            LogInfo("*** End ***");
+        }
+    }
+
+    void ServerTrackedDeviceProvider::UnsubscribeDevice(std::string serial) {
+        for (auto it = m_subscribeDevices.begin(), e = m_subscribeDevices.end(); it != e; ++it) {
+            if (*it == serial) {
+                m_subscribeDevices.erase(it);
+
+                //変更後の購読リストを吐き出す
+                if (Log::s_diag) {
+                    LogInfo("*** Begin ***");
+                    for (auto& s : m_subscribeDevices) {
+                        LogInfo("%s", s.c_str());
+                    }
+                    LogInfo("*** End ***");
+                }
+                return;
+            }
+        }
+        LogInfo("Not found : %s", serial.c_str());
+    }
+
+    //デバイスをシリアル番号から探す
+    int ServerTrackedDeviceProvider::SearchDevice(vr::TrackedDevicePose_t* poses, string serial)
+    {
+        IVRProperties* props = VRPropertiesRaw();
+        CVRPropertyHelpers* helper = VRProperties();
+
+        //デバイスシリアルが空白
+        if (serial.empty()) {
+            //探索エラーを返す
+            return k_unTrackedDeviceIndexInvalid;
+        }
+
+        //デバイスシリアルがHMDなら
+        if (serial == "HMD") {
+            //HMDが接続OKなら
+            if (poses[k_unTrackedDeviceIndex_Hmd].bDeviceIsConnected) {
+                //HMDのインデックスを返す
+                return k_unTrackedDeviceIndex_Hmd;
+            }
+            else {
+                //(HMDがつながっていないのは普通ありえないが)探索エラーを返す
+                return k_unTrackedDeviceIndexInvalid;
+            }
+        }
+
+        //デバイスをOpenVR index順に調べる
+        for (uint32_t i = 0; i < k_unMaxTrackedDeviceCount; i++) {
+            //そのデバイスがつながっていないなら次のデバイスへ
+            if (poses[i].bDeviceIsConnected != true) {
+                continue;
+            }
+
+            //デバイスがつながっているので、シリアルナンバーを取得する
+            PropertyContainerHandle_t h = props->TrackedDeviceToPropertyContainer(i);
+            string SerialNumber = helper->GetStringProperty(h, ETrackedDeviceProperty::Prop_SerialNumber_String);
+
+            //対象シリアルナンバーと比較し、違うデバイスなら、次のデバイスへ
+            if (serial != SerialNumber) {
+                continue;
+            };
+
+            //目的のデバイスを見つけたので返却
+            return i;
+        }
+        //最後まで探したが、目的のデバイスは見つからなかった
+        return k_unTrackedDeviceIndexInvalid;
+    }
 
 
     //** OpenVR向け関数群 **
@@ -97,10 +213,18 @@ namespace VMTDriver {
             m_devices[i].SetObjectIndex(i);
         }
 
-        //起動時に既定のコントローラとして登録する処理
-        if (Config::GetInstance()->GetDefaultControllerDeviceRegistration()) {
-            m_devices[0].RegisterToVRSystem(2);//VMT_0 = Controller Left
-            m_devices[1].RegisterToVRSystem(3);//VMT_1 = Controller Right
+        //起動時に既定の互換性コントローラとして登録する処理
+        if (Config::GetInstance()->GetDefaultControllerDeviceRegistrationCompatibleMode())
+        {
+            m_devices[0].RegisterToVRSystem(5);//VMT_0 = Compatible(Knuckles) Controller Left
+            m_devices[1].RegisterToVRSystem(6);//VMT_1 = Compatible(Knuckles) Controller Right
+        }
+        else {
+            //起動時に既定のコントローラとして登録する処理
+            if (Config::GetInstance()->GetDefaultControllerDeviceRegistration()) {
+                m_devices[0].RegisterToVRSystem(2);//VMT_0 = Controller Left
+                m_devices[1].RegisterToVRSystem(3);//VMT_1 = Controller Right
+            }
         }
 
         //起動完了
@@ -151,6 +275,37 @@ namespace VMTDriver {
         for (int i = 0; i < size; i++)
         {
             m_devices[i].ProcessEvent(VREvent);
+        }
+
+        //OpenVRから全トラッキングデバイスの情報を取得する
+        vr::TrackedDevicePose_t devicePoses[k_unMaxTrackedDeviceCount]{};
+        VRServerDriverHost()->GetRawTrackedDevicePoses(0.0f, devicePoses, k_unMaxTrackedDeviceCount);
+
+        //購読デバイス処理開始
+        for (auto& s : m_subscribeDevices) {
+            int index = SearchDevice(devicePoses, s);
+            if (index == k_unTrackedDeviceIndexInvalid) { continue; }
+
+            vr::TrackedDevicePose_t& devicePose = devicePoses[index];
+
+            //デバイスのトラッキング状態が正常なら
+            if (devicePose.bPoseIsValid) {
+                //デバイスの変換行列を取得し、Eigenの行列に変換
+                float* m = (float*)(devicePose.mDeviceToAbsoluteTracking.m);
+
+                Eigen::Affine3d rootDeviceToAbsoluteTracking;
+                rootDeviceToAbsoluteTracking.matrix() <<
+                    m[0 * 4 + 0], m[0 * 4 + 1], m[0 * 4 + 2], m[0 * 4 + 3],
+                    m[1 * 4 + 0], m[1 * 4 + 1], m[1 * 4 + 2], m[1 * 4 + 3],
+                    m[2 * 4 + 0], m[2 * 4 + 1], m[2 * 4 + 2], m[2 * 4 + 3],
+                    0.0, 0.0, 0.0, 1.0;
+
+                Eigen::Translation3d pos(rootDeviceToAbsoluteTracking.translation());
+                Eigen::Quaterniond rot = Eigen::Quaterniond(rootDeviceToAbsoluteTracking.rotation());
+
+                //返送する
+                OSCReceiver::SendSubscribedDevicePose(s, (float)pos.x(), (float)pos.y(), (float)pos.z(), (float)rot.x(), (float)rot.y(), (float)rot.z(), (float)rot.w());
+            }
         }
     }
 

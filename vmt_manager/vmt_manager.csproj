@@ -157,6 +157,9 @@
   <ItemGroup>
     <Resource Include="vmt.ico" />
   </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\logs.png" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>del "$(TargetDir)*.xml"

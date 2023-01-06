@@ -149,6 +149,37 @@ namespace VMTDriver {
 		DirectOSC::OSC::GetInstance().GetSocketTx().Send(packet.Data(), packet.Size());
 	}
 
+	//デバイス情報を返送する
+	void OSCReceiver::SendDevices(string msg) {
+		const size_t bufsize = 8192;
+		char buf[bufsize]{};
+		osc::OutboundPacketStream packet(buf, bufsize);
+		LogIfDiag("/VMT/Out/Devices/List :  %s", msg.c_str());
+		packet << osc::BeginMessage("/VMT/Out/Devices/List")
+			<< msg.c_str()
+			<< osc::EndMessage;
+		DirectOSC::OSC::GetInstance().GetSocketTx().Send(packet.Data(), packet.Size());
+	}
+
+	//購読済みデバイス情報を返送する
+	void OSCReceiver::SendSubscribedDevicePose(string serial, float x, float y, float z, float qx, float qy, float qz, float qw) {
+		const size_t bufsize = 8192;
+		char buf[bufsize]{};
+		osc::OutboundPacketStream packet(buf, bufsize);
+		//LogIfDiag("/VMT/Out/SubscribedDevice :  %s", serial.c_str());
+		packet << osc::BeginMessage("/VMT/Out/SubscribedDevice")
+			<< serial.c_str()
+			<< x
+			<< y
+			<< z
+			<< qx
+			<< qy
+			<< qz
+			<< qw
+			<< osc::EndMessage;
+		DirectOSC::OSC::GetInstance().GetSocketTx().Send(packet.Data(), packet.Size());
+	}
+
 	//受信処理
 	void OSCReceiver::ProcessMessage(const osc::ReceivedMessage& m, const IpEndpointName& remoteEndpoint)
 	{
@@ -428,6 +459,27 @@ namespace VMTDriver {
 				args >> enable >> osc::EndMessage;
 				LogIfDiag("%s : %d", adr.c_str(), enable);
 				TrackedDeviceServerDriver::SetAutoUpdate(enable != 0);
+			}
+			//デバイス一覧の取得
+			else if (adr == "/VMT/Get/Devices/List")
+			{
+				LogIfDiag("%s", adr.c_str());
+				std::string result = GetServer()->GetOpenVRDevicesString();
+				OSCReceiver::SendDevices(result);
+			}
+			//デバイス座標の購読
+			else if (adr == "/VMT/Subscribe/Device")
+			{
+				args >> root_sn >> osc::EndMessage;
+				LogIfDiag("%s", adr.c_str());
+				GetServer()->SubscribeDevice(root_sn);
+			}
+			//デバイス座標の購読解除
+			else if (adr == "/VMT/Unsubscribe/Device")
+			{
+				args >> root_sn >> osc::EndMessage;
+				LogIfDiag("%s", adr.c_str());
+				GetServer()->UnsubscribeDevice(root_sn);
 			}
 			//デバッグコマンド
 			else if (adr == "/VMT/Debug")

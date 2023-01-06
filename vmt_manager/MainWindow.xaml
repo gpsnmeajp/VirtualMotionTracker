@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:vmt_manager"
 		Width="520"
-		Height="750"
+		Height="800"
         mc:Ignorable="d"
         Title="VMT Manager" Loaded="Window_Loaded" Closed="Window_Closed" ResizeMode="NoResize">
 	<DockPanel LastChildFill="True">
@@ -112,21 +112,28 @@
 			<TabItem Header="Control">
 				<DockPanel>
 					<TextBlock TextAlignment="Center" Text="Control Command for all VMT Devices" DockPanel.Dock="Top" Background="#EEEEEE" />
-
-					<Grid>
-						<Grid.ColumnDefinitions>
-							<ColumnDefinition/>
-							<ColumnDefinition/>
-						</Grid.ColumnDefinitions>
-						<DockPanel Grid.Column="0" Margin="2"  LastChildFill="False">
-							<Button Content="Reload Setting" DockPanel.Dock="Top" Click="ReloadJsonButton" Margin="1"/>
-							<Button Content="Device Reset" DockPanel.Dock="Top" Click="ResetButton" Margin="1"/>
-							<Button Content="Show all" DockPanel.Dock="Top" Click="ShowAllButton" Margin="1"/>
-							<Button Content="Enable Auto Pose Udate" DockPanel.Dock="Top" Click="EnableAutoPoseUdateButton" Margin="1"/>
-							<Button Content="Disable Auto Pose Udate" DockPanel.Dock="Top" Click="DisableAutoPoseUdateButton" Margin="1"/>
-							<CheckBox Content="Load Testing" Name="LoadTestCheckBox" DockPanel.Dock="Top" IsChecked="False" Checked="LoadTestCheckBoxEvent" Unchecked="LoadTestCheckBoxEvent" Margin="1"/>
-						</DockPanel>
-					</Grid>
+					<DockPanel Margin="2"  LastChildFill="False" Width="300">
+						<GroupBox Header="Volatile (Non save config)" DockPanel.Dock="Top">
+							<StackPanel>
+								<Button Content="Reload Setting" Click="ReloadJsonButton" Margin="1"/>
+								<Button Content="Device Reset" Click="ResetButton" Margin="1"/>
+								<Button Content="Show all" Click="ShowAllButton" Margin="1"/>
+								<Button Content="[Enable] Auto Pose Udate" Click="EnableAutoPoseUdateButton" Margin="1"/>
+								<Button Content="[Disable] Auto Pose Udate" Click="DisableAutoPoseUdateButton" Margin="1"/>
+								<CheckBox Content="Load Testing" Name="LoadTestCheckBox" IsChecked="False" Checked="LoadTestCheckBoxEvent" Unchecked="LoadTestCheckBoxEvent" Margin="1"/>
+							</StackPanel>
+						</GroupBox>
+						<GroupBox Header="Non-Volatile (Save config)" DockPanel.Dock="Top" Margin="0,10,0,0">
+							<StackPanel>
+								<Button Content="[Enable] Diag log" Margin="1"/>
+								<Button Content="[Disable] Diag log" Margin="1"/>
+								<Button Content="XXXX ON" Margin="1"/>
+								<Button Content="XXXX OFF" Margin="1"/>
+								<Button Content="XXXX ON" Margin="1"/>
+								<Button Content="XXXX OFF" Margin="1"/>
+							</StackPanel>
+						</GroupBox>
+					</DockPanel>
 				</DockPanel>
 			</TabItem>
 			<TabItem Header="Input">
@@ -143,11 +150,23 @@
 						<TabItem Header="Button Axis Finger">
 							<DockPanel>
 								<GroupBox Header="Device registration (Only once each devices in one VR Session.)" DockPanel.Dock="Top">
-									<UniformGrid Columns="4" Rows="1">
-										<Button Content="Tracker" Margin="1" Click="TrackerButton"/>
-										<Button Content="Left Controller" Margin="1" Click="LeftHandButton"/>
-										<Button Content="Right Controller" Margin="1" Click="RightHandButton"/>
-										<Button Content="Tracking Reference" Margin="1" Click="TrackingReferenceButton"/>
+									<UniformGrid Columns="6" Rows="1">
+										<Button Content="[1] Tracker" Margin="1" Click="TrackerButton"/>
+										<Button Margin="1" Click="LeftHandButton">
+											<TextBlock Text="[2] Left&#xa;Controller" TextAlignment="Center"/>
+										</Button>
+										<Button Margin="1" Click="RightHandButton">
+											<TextBlock Text="[3] Right&#xa;Controller" TextAlignment="Center"/>
+										</Button>
+										<Button Margin="1,1,8,1" Click="TrackingReferenceButton">
+											<TextBlock Text="[4] Tracking&#xa;Reference" TextAlignment="Center"/>
+										</Button>
+										<Button Margin="1" Click="LeftHandCompatibleButton">
+											<TextBlock Text="[5] Left&#xa;Compatible" TextAlignment="Center"/>
+										</Button>
+										<Button Margin="1" Click="RightHandCompatibleButton">
+											<TextBlock Text="[6] Right&#xa;Compatible" TextAlignment="Center"/>
+										</Button>
 									</UniformGrid>
 								</GroupBox>
 								<GroupBox Header="Button and Axis" DockPanel.Dock="Top" Height="350">
@@ -168,13 +187,13 @@
 														<Grid.RowDefinitions>
 															<RowDefinition Height="38"/>
 															<RowDefinition Height="38"/>
-															<RowDefinition Height="38"/>
-															<RowDefinition Height="30"/>
-															<RowDefinition Height="30"/>
-															<RowDefinition Height="30"/>
-															<RowDefinition Height="30"/>
-															<RowDefinition Height="30"/>
-															<RowDefinition Height="30"/>
+															<RowDefinition Height="31"/>
+															<RowDefinition Height="31"/>
+															<RowDefinition Height="31"/>
+															<RowDefinition Height="31"/>
+															<RowDefinition Height="31"/>
+															<RowDefinition Height="31"/>
+															<RowDefinition Height="31"/>
 														</Grid.RowDefinitions>
 														<Button PreviewMouseDown="Button0_MouseDown" PreviewMouseUp="Button0_MouseUp"  Margin="1" Grid.Column="0" Grid.Row="0" >
 															<TextBlock Text="Button 0&#xA;System" TextAlignment="Center"/>
@@ -183,15 +202,15 @@
 															<TextBlock Text="Button 1&#xA;A" TextAlignment="Center"/>
 														</Button>
 														<Button PreviewMouseDown="Button2_MouseDown" PreviewMouseUp="Button2_MouseUp"  Margin="1" Grid.Column="0" Grid.Row="1" >
-															<TextBlock Text="Button 2&#xA;Trigger" TextAlignment="Center"/>
+															<TextBlock Text="Button 2&#xA;" TextAlignment="Center"/>
 														</Button>
 														<Button PreviewMouseDown="Button3_MouseDown" PreviewMouseUp="Button3_MouseUp"  Margin="1" Grid.Column="1" Grid.Row="1" >
 															<TextBlock Text="Button 3&#xA;B" TextAlignment="Center"/>
 														</Button>
 														<Button PreviewMouseDown="Button4_MouseDown" PreviewMouseUp="Button4_MouseUp"  Margin="1" Grid.Column="0" Grid.Row="2" >
-															<TextBlock Text="Button 4&#xA;Trackpad" TextAlignment="Center"/>
+															<TextBlock Text="Button 4" TextAlignment="Center"/>
 														</Button>
-														<Button Content="Button 5&#xA;" PreviewMouseDown="Button5_MouseDown" PreviewMouseUp="Button5_MouseUp"  Margin="1" Grid.Column="1" Grid.Row="2" />
+														<Button Content="Button 5" PreviewMouseDown="Button5_MouseDown" PreviewMouseUp="Button5_MouseUp"  Margin="1" Grid.Column="1" Grid.Row="2" />
 														<Button Content="Button 6" PreviewMouseDown="Button6_MouseDown" PreviewMouseUp="Button6_MouseUp"  Margin="1" Grid.Column="0" Grid.Row="3" />
 														<Button Content="Button 7" PreviewMouseDown="Button7_MouseDown" PreviewMouseUp="Button7_MouseUp"  Margin="1" Grid.Column="1" Grid.Row="3" />
 														<Button Content="Button 8" PreviewMouseDown="Button8_MouseDown" PreviewMouseUp="Button8_MouseUp"  Margin="1" Grid.Column="0" Grid.Row="4" />
@@ -216,7 +235,7 @@
 														<Slider Minimum="0" Maximum="1" Value="0" Name="Slider1" ValueChanged="Slider1_ValueChanged" DockPanel.Dock="Left"/>
 													</DockPanel>
 													<DockPanel DockPanel.Dock="Top" Margin="1">
-														<TextBlock Text="Trigger 2&#xA;(Thumb)" DockPanel.Dock="Left" Width="50" />
+														<TextBlock Text="Trigger 2&#xA;Force" DockPanel.Dock="Left" Width="50" />
 														<Slider Minimum="0" Maximum="1" Value="0" Name="Slider2" ValueChanged="Slider2_ValueChanged" DockPanel.Dock="Left"/>
 													</DockPanel>
 													<DockPanel DockPanel.Dock="Top" Margin="1">
@@ -232,11 +251,11 @@
 														<Slider Minimum="0" Maximum="1" Value="0" Name="Slider5" ValueChanged="Slider5_ValueChanged" DockPanel.Dock="Left"/>
 													</DockPanel>
 													<DockPanel DockPanel.Dock="Top" Margin="1">
-														<TextBlock Text="Trigger 6&#xA;Little" DockPanel.Dock="Left" Width="50" />
+														<TextBlock Text="Trigger 6&#xA;Pinky" DockPanel.Dock="Left" Width="50" />
 														<Slider Minimum="0" Maximum="1" Value="0" Name="Slider6" ValueChanged="Slider6_ValueChanged" DockPanel.Dock="Left"/>
 													</DockPanel>
 													<DockPanel DockPanel.Dock="Top" Margin="1">
-														<TextBlock Text="Trigger 7&#xA;(Root)" DockPanel.Dock="Left" Width="50" />
+														<TextBlock Text="Trigger 7&#xA;Trackpad" DockPanel.Dock="Left" Width="50" />
 														<Slider Minimum="0" Maximum="1" Value="0" Name="Slider7" ValueChanged="Slider7_ValueChanged" DockPanel.Dock="Left"/>
 													</DockPanel>
 													<DockPanel DockPanel.Dock="Top" Margin="1">
@@ -249,18 +268,20 @@
 														<TextBlock Text="Joystick0 X" DockPanel.Dock="Left" />
 														<Slider Minimum="-1" Maximum="1" Value="0" Name="SliderX" ValueChanged="SliderXY_ValueChanged" DockPanel.Dock="Left"/>
 													</DockPanel>
-													<DockPanel DockPanel.Dock="Top" Margin="1,1,1,10">
+													<DockPanel DockPanel.Dock="Top" Margin="1">
 														<TextBlock Text="Joystick0 Y" DockPanel.Dock="Left" />
 														<Slider Minimum="-1" Maximum="1" Value="0" Name="SliderY" ValueChanged="SliderXY_ValueChanged" DockPanel.Dock="Left"/>
 													</DockPanel>
+													<TextBlock Text="Trackpad" DockPanel.Dock="Top" Margin="1,1,1,10" />
 													<DockPanel DockPanel.Dock="Top" Margin="1">
 														<TextBlock Text="Joystick1 X" DockPanel.Dock="Left" />
 														<Slider Minimum="-1" Maximum="1" Value="0" Name="SliderU" ValueChanged="SliderUV_ValueChanged" DockPanel.Dock="Left"/>
 													</DockPanel>
-													<DockPanel DockPanel.Dock="Top" Margin="1,1,1,10">
+													<DockPanel DockPanel.Dock="Top" Margin="1">
 														<TextBlock Text="Joystick1 Y" DockPanel.Dock="Left" />
 														<Slider Minimum="-1" Maximum="1" Value="0" Name="SliderV" ValueChanged="SliderUV_ValueChanged" DockPanel.Dock="Left"/>
 													</DockPanel>
+													<TextBlock Text="Thumb Stick" DockPanel.Dock="Top" Margin="1,1,1,10" />
 													<DockPanel DockPanel.Dock="Top" Margin="1">
 														<TextBlock Text="Joystick2 X" DockPanel.Dock="Left" />
 														<Slider Minimum="-1" Maximum="1" Value="0" Name="SliderA" ValueChanged="SliderAB_ValueChanged" DockPanel.Dock="Left"/>
@@ -277,7 +298,7 @@
 														<TextBlock Text="Joystick3 Y" DockPanel.Dock="Left" />
 														<Slider Minimum="-1" Maximum="1" Value="0" Name="SliderD" ValueChanged="SliderCD_ValueChanged" DockPanel.Dock="Left"/>
 													</DockPanel>
-													<Button Content="Slider Reset"  Margin="1,8,1,1" Height="60" Click="InputResetButton" DockPanel.Dock="Top"/>
+													<Button Content="Slider Reset"  Margin="1,8,1,1" Height="50" Click="InputResetButton" DockPanel.Dock="Top"/>
 												</DockPanel>
 											</Grid>
 										</TabItem>
@@ -433,7 +454,7 @@
 											<TextBlock Text="Pinky Little" DockPanel.Dock="Left" Width="80" />
 											<Slider Minimum="0" Maximum="1" Value="0" Name="PinkyLittleSlider" ValueChanged="PinkyLittleSlider_ValueChanged" DockPanel.Dock="Left"/>
 										</DockPanel>
-										<CheckBox Content="Axis linking enable" Name="AxisLinkingEnableCheckBox"/>
+										<CheckBox Content="(Reserved)" Name="AxisLinkingEnableCheckBox"/>
 									</DockPanel>
 								</GroupBox>
 							</DockPanel>
@@ -572,12 +593,28 @@
 				</DockPanel>
 			</TabItem>
 			<TabItem Header="Device">
-				<DockPanel LastChildFill="True">
+				<DockPanel>
 					<TextBlock TextAlignment="Center" Text="OpenVR Device list" DockPanel.Dock="Top" Background="#EEEEEE" />
-
-					<Button Content="Reload" Margin="1" Click="DeviceReloadButton" DockPanel.Dock="Top"/>
-					<Button Content="Copy to Clipboard" Margin="1" Click="DeviceCopyButton" DockPanel.Dock="Top"/>
-					<ListView Name="DeviceListView" Margin="1" DockPanel.Dock="Top"/>
+					<Grid DockPanel.Dock="Top">
+						<Grid.ColumnDefinitions>
+							<ColumnDefinition/>
+							<ColumnDefinition/>
+						</Grid.ColumnDefinitions>
+						<DockPanel LastChildFill="True" Grid.Column="0">
+							<Button Content="Reload" Margin="1" Click="DeviceReloadButton" DockPanel.Dock="Top"/>
+							<Button Content="Copy to Clipboard" Margin="1" Click="DeviceCopyButton" DockPanel.Dock="Top"/>
+							<ListView Name="DeviceListView" Margin="1" DockPanel.Dock="Top"/>
+						</DockPanel>
+						<DockPanel LastChildFill="True" Grid.Column="1">
+							<DockPanel DockPanel.Dock="Top">
+								<TextBlock Text="Serial" Margin="2,0,2,0" DockPanel.Dock="Left" VerticalAlignment="Center"/>
+								<Button Content="Unsubscribe" Margin="1" Click="DeviceUnsubscribeButton" DockPanel.Dock="Right"/>
+								<Button Content="Subscribe" Margin="1" Click="DeviceSubscribeButton" DockPanel.Dock="Right"/>
+								<TextBox Name="SubscribeDeviceSerialTextBox" DockPanel.Dock="Left"/>
+							</DockPanel>
+							<ListView Name="SubscribedDeviceListView" Margin="1" DockPanel.Dock="Top"/>
+						</DockPanel>
+					</Grid>
 				</DockPanel>
 			</TabItem>
 			<TabItem Header="Settings">
@@ -598,6 +635,12 @@
 					<ScrollViewer>
 						<TextBlock Name="ProtocolTextBlock" TextWrapping="Wrap" Text="Loading..."/>
 					</ScrollViewer>
+				</DockPanel>
+			</TabItem>
+			<TabItem Header="Log">
+				<DockPanel LastChildFill="True">
+					<TextBlock TextAlignment="Center" Text="How to view logs" DockPanel.Dock="Top" Background="#EEEEEE" />
+					<Image Source="Resources/logs.png" />
 				</DockPanel>
 			</TabItem>
 		</TabControl>

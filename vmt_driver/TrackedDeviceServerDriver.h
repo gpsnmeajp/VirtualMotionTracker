@@ -119,6 +119,7 @@ namespace VMTDriver {
     private:
         bool m_alreadyRegistered = false;
         bool m_registrationInProgress = false;
+        bool m_CompatibleMode = false;
         string m_serial{ "" };
         TrackedDeviceIndex_t m_deviceIndex{ 0 };
         PropertyContainerHandle_t m_propertyContainer{ 0 };
@@ -184,7 +185,6 @@ namespace VMTDriver {
         std::string VMTDebugCommand(std::string command);
 
         void CalcJoint(DriverPose_t& pose, string serial, ReferMode_t mode, Eigen::Affine3d& RoomToDriverAffin);
-        int SearchDevice(vr::TrackedDevicePose_t* poses, string serial);
         void RejectTracking(DriverPose_t& pose);
         void ProcessEvent(VREvent_t &VREvent);
 

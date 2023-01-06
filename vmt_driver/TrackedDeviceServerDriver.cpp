@@ -283,7 +283,7 @@ namespace VMTDriver {
         VRServerDriverHost()->GetRawTrackedDevicePoses(0.0f, devicePoses, k_unMaxTrackedDeviceCount);
 
         //接続済みのデバイスの中から、シリアル番号でデバイスを検索する
-        int index = SearchDevice(devicePoses, serial);
+        int index = GetServer()->SearchDevice(devicePoses, serial);
 
         //探索エラーが帰ってきたら
         if (index == k_unTrackedDeviceIndexInvalid) {
@@ -341,54 +341,6 @@ namespace VMTDriver {
             RejectTracking(pose);
             return;
         }
-    }
-
-    //デバイスをシリアル番号から探す
-    int TrackedDeviceServerDriver::SearchDevice(vr::TrackedDevicePose_t* poses, string serial)
-    {
-        IVRProperties* props = VRPropertiesRaw();
-        CVRPropertyHelpers* helper = VRProperties();
-
-        //デバイスシリアルが空白
-        if (serial.empty()) {
-            //探索エラーを返す
-            return k_unTrackedDeviceIndexInvalid;
-        }
-
-        //デバイスシリアルがHMDなら
-        if (serial == "HMD") {
-            //HMDが接続OKなら
-            if (poses[k_unTrackedDeviceIndex_Hmd].bDeviceIsConnected) {
-                //HMDのインデックスを返す
-                return k_unTrackedDeviceIndex_Hmd;
-            }
-            else {
-                //(HMDがつながっていないのは普通ありえないが)探索エラーを返す
-                return k_unTrackedDeviceIndexInvalid;
-            }
-        }
-
-        //デバイスをOpenVR index順に調べる
-        for (uint32_t i = 0; i < k_unMaxTrackedDeviceCount; i++) {
-            //そのデバイスがつながっていないなら次のデバイスへ
-            if (poses[i].bDeviceIsConnected != true) {
-                continue;
-            }
-
-            //デバイスがつながっているので、シリアルナンバーを取得する
-            PropertyContainerHandle_t h = props->TrackedDeviceToPropertyContainer(i);
-            string SerialNumber = helper->GetStringProperty(h, ETrackedDeviceProperty::Prop_SerialNumber_String);
-
-            //対象シリアルナンバーと比較し、違うデバイスなら、次のデバイスへ
-            if (serial != SerialNumber) {
-                continue;
-            };
-
-            //目的のデバイスを見つけたので返却
-            return i;
-        }
-        //最後まで探したが、目的のデバイスは見つからなかった
-        return k_unTrackedDeviceIndexInvalid;
     }
 
     //デバイスをトラッキング失敗状態にする
@@ -522,21 +474,37 @@ namespace VMTDriver {
                 LogInfo("RegisterToVRSystem: %s", "ETrackedDeviceClass::TrackedDeviceClass_GenericTracker");
                 m_controllerRole = ControllerRole::None;
                 m_deviceClass = ETrackedDeviceClass::TrackedDeviceClass_GenericTracker;
+                m_CompatibleMode = false;
                 break;
             case 2://Controller Left
                 LogInfo("RegisterToVRSystem: %s", "ETrackedDeviceClass::TrackedDeviceClass_Controller (Left)");
                 m_controllerRole = ControllerRole::Left;
                 m_deviceClass = ETrackedDeviceClass::TrackedDeviceClass_Controller;
+                m_CompatibleMode = false;
                 break;
             case 3://Controller Right
                 LogInfo("RegisterToVRSystem: %s", "ETrackedDeviceClass::TrackedDeviceClass_Controller (Right)");
                 m_controllerRole = ControllerRole::Right;
                 m_deviceClass = ETrackedDeviceClass::TrackedDeviceClass_Controller;
+                m_CompatibleMode = false;
                 break;
             case 4://TrackingReference
                 LogInfo("RegisterToVRSystem: %s", "ETrackedDeviceClass::TrackedDeviceClass_TrackingReference");
                 m_controllerRole = ControllerRole::None;
                 m_deviceClass = ETrackedDeviceClass::TrackedDeviceClass_TrackingReference;
+                m_CompatibleMode = false;
+                break;
+            case 5://Compatible(Knuckles) Controller Left
+                LogInfo("RegisterToVRSystem: %s", "ETrackedDeviceClass::TrackedDeviceClass_Controller (Left)");
+                m_controllerRole = ControllerRole::Left;
+                m_deviceClass = ETrackedDeviceClass::TrackedDeviceClass_Controller;
+                m_CompatibleMode = true;
+                break;
+            case 6://Compatible(Knuckles) Controller Right
+                LogInfo("RegisterToVRSystem: %s", "ETrackedDeviceClass::TrackedDeviceClass_Controller (Right)");
+                m_controllerRole = ControllerRole::Right;
+                m_deviceClass = ETrackedDeviceClass::TrackedDeviceClass_Controller;
+                m_CompatibleMode = true;
                 break;
             default:
                 LogError("RegisterToVRSystem: %s", "Unknown Type");
@@ -1031,7 +999,7 @@ namespace VMTDriver {
         RegisteredDeviceType_String += m_serial.c_str();
         LogIfETrackedPropertyError(VRProperties()->SetStringProperty(m_propertyContainer, Prop_RegisteredDeviceType_String, RegisteredDeviceType_String.c_str()));
 
-        if (Config::GetInstance()->GetCompatibleMode()) {
+        if (m_CompatibleMode) {
             LogIfETrackedPropertyError(VRProperties()->SetStringProperty(m_propertyContainer, Prop_InputProfilePath_String, "{vmt}/input/vmt_compatible_profile.json")); //Knuckles互換モード
         }
         else {
@@ -1118,7 +1086,7 @@ namespace VMTDriver {
         LogIfEVRInputError(VRDriverInput()->CreateHapticComponent(m_propertyContainer, "/output/haptic", &HapticComponent));
 
         //互換用のコンポーネントミラーリングを登録
-        if (Config::GetInstance()->GetCompatibleMode()) {
+        if (m_CompatibleMode) {
             LogIfEVRInputError(VRDriverInput()->CreateBooleanComponent(m_propertyContainer, (std::string("/input/system/click")).c_str(), &ButtonComponent[0]));
             LogIfEVRInputError(VRDriverInput()->CreateBooleanComponent(m_propertyContainer, (std::string("/input/system/touch")).c_str(), &ButtonTouchComponent[0]));
 

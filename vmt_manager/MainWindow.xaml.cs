@@ -31,6 +31,8 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Navigation;
 using System.Windows.Threading;
+using System.Collections;
+using System.Collections.Generic;
 using Valve.VR;
 using EasyLazyLibrary;
 using Rug.Osc;
@@ -54,6 +56,8 @@ namespace vmt_manager
         OSC osc;
 
         bool loadTest = false;
+        Dictionary<string, string> subscribedDevicePoseDictionary = new Dictionary<string, string>();
+        int subscribeReceiveCnt = 0;
 
         public MainWindow()
         {
@@ -292,6 +296,46 @@ namespace vmt_manager
                             StatusBar.Background = new SolidColorBrush(Color.FromRgb(255, 255, 255));
                         }
                     });
+                }
+                else if (message.Address == "/VMT/Out/Devices/List")
+                {
+                    this.Dispatcher.Invoke(() =>
+                    {
+                        //デバイス一覧
+                        string[] list = ((string)message[0]).Split('\n');
+                        for (uint i = 0; i < list.Length; i++)
+                        {
+                            DeviceListView.Items.Add(list[i]);
+                        }
+                    });
+                }
+                else if (message.Address == "/VMT/Out/SubscribedDevice")
+                {
+                    //購読済みデバイス情報
+
+                    //毎フレーム送られるため間引く
+                    subscribeReceiveCnt++;
+                    if(subscribeReceiveCnt > 30) {
+                        subscribeReceiveCnt = 0;
+                        string serial = (string)message[0];
+                        float x = (float)message[1];
+                        float y = (float)message[2];
+                        float z = (float)message[3];
+                        float qx = (float)message[4];
+                        float qy = (float)message[5];
+                        float qz = (float)message[6];
+                        float qw = (float)message[7];
+                        this.Dispatcher.Invoke(() =>
+                        {
+                            string s = x + "," + y + "," + z + "," + qx + "," + qy + "," + qz + "," + qw;
+                            subscribedDevicePoseDictionary[serial] = s;
+
+                            SubscribedDeviceListView.Items.Clear();
+                            foreach (var d in subscribedDevicePoseDictionary) {
+                                SubscribedDeviceListView.Items.Add(d.Key+" : "+d.Value);
+                            }
+                        });
+                    }
                 }
                 else
                 {
@@ -1153,11 +1197,12 @@ namespace vmt_manager
             var index = GetInputIndex();
 
             int fingerIndex = 0;
+            int blendMode = 0;
             float timeoffset = 0;
             if (index.ok && RootAndWristSlider != null)
             {
                 osc.Send(new OscMessage("/VMT/Skeleton/Scalar",
-                    index.i, fingerIndex, (float)RootAndWristSlider.Value, (int)0, (int)(AxisLinkingEnableCheckBox.IsChecked.Value ? 1 : 0)));
+                    index.i, fingerIndex, (float)RootAndWristSlider.Value, (int)blendMode, (int)(AxisLinkingEnableCheckBox.IsChecked.Value ? 1 : 0)));
                 osc.Send(new OscMessage("/VMT/Skeleton/Apply",
                     index.i, timeoffset));
             }
@@ -1167,11 +1212,12 @@ namespace vmt_manager
             var index = GetInputIndex();
 
             int fingerIndex = 1;
+            int blendMode = 0;
             float timeoffset = 0;
             if (index.ok && ThumbSlider != null)
             {
                 osc.Send(new OscMessage("/VMT/Skeleton/Scalar",
-                    index.i, fingerIndex, (float)ThumbSlider.Value, (int)0, (int)(AxisLinkingEnableCheckBox.IsChecked.Value ? 1 : 0)));
+                    index.i, fingerIndex, (float)ThumbSlider.Value, (int)blendMode, (int)(AxisLinkingEnableCheckBox.IsChecked.Value ? 1 : 0)));
                 osc.Send(new OscMessage("/VMT/Skeleton/Apply",
                     index.i, timeoffset));
             }
@@ -1181,11 +1227,12 @@ namespace vmt_manager
             var index = GetInputIndex();
 
             int fingerIndex = 2;
+            int blendMode = 0;
             float timeoffset = 0;
             if (index.ok && IndexSlider != null)
             {
                 osc.Send(new OscMessage("/VMT/Skeleton/Scalar",
-                    index.i, fingerIndex, (float)IndexSlider.Value, (int)0, (int)(AxisLinkingEnableCheckBox.IsChecked.Value ? 1 : 0)));
+                    index.i, fingerIndex, (float)IndexSlider.Value, (int)blendMode, (int)(AxisLinkingEnableCheckBox.IsChecked.Value ? 1 : 0)));
                 osc.Send(new OscMessage("/VMT/Skeleton/Apply",
                     index.i, timeoffset));
             }
@@ -1195,11 +1242,12 @@ namespace vmt_manager
             var index = GetInputIndex();
 
             int fingerIndex = 3;
+            int blendMode = 0;
             float timeoffset = 0;
             if (index.ok && MiddleSlider != null)
             {
                 osc.Send(new OscMessage("/VMT/Skeleton/Scalar",
-                    index.i, fingerIndex, (float)MiddleSlider.Value, (int)0, (int)(AxisLinkingEnableCheckBox.IsChecked.Value ? 1 : 0)));
+                    index.i, fingerIndex, (float)MiddleSlider.Value, (int)blendMode, (int)(AxisLinkingEnableCheckBox.IsChecked.Value ? 1 : 0)));
                 osc.Send(new OscMessage("/VMT/Skeleton/Apply",
                     index.i, timeoffset));
             }
@@ -1209,11 +1257,12 @@ namespace vmt_manager
             var index = GetInputIndex();
 
             int fingerIndex = 4;
+            int blendMode = 0;
             float timeoffset = 0;
             if (index.ok && RingSlider != null)
             {
                 osc.Send(new OscMessage("/VMT/Skeleton/Scalar",
-                    index.i, fingerIndex, (float)RingSlider.Value, (int)0, (int)(AxisLinkingEnableCheckBox.IsChecked.Value ? 1 : 0)));
+                    index.i, fingerIndex, (float)RingSlider.Value, (int)blendMode, (int)(AxisLinkingEnableCheckBox.IsChecked.Value ? 1 : 0)));
                 osc.Send(new OscMessage("/VMT/Skeleton/Apply",
                     index.i, timeoffset));
             }
@@ -1223,11 +1272,12 @@ namespace vmt_manager
             var index = GetInputIndex();
 
             int fingerIndex = 5;
+            int blendMode = 0;
             float timeoffset = 0;
             if (index.ok && PinkyLittleSlider != null)
             {
                 osc.Send(new OscMessage("/VMT/Skeleton/Scalar",
-                    index.i, fingerIndex, (float)PinkyLittleSlider.Value, (int)0, (int)(AxisLinkingEnableCheckBox.IsChecked.Value ? 1 : 0)));
+                    index.i, fingerIndex, (float)PinkyLittleSlider.Value, (int)blendMode, (int)(AxisLinkingEnableCheckBox.IsChecked.Value ? 1 : 0)));
                 osc.Send(new OscMessage("/VMT/Skeleton/Apply",
                     index.i, timeoffset));
             }
@@ -1261,6 +1311,18 @@ namespace vmt_manager
             }
         }
 
+        private void RightHandCompatibleButton(object sender, RoutedEventArgs e)
+        {
+            var index = GetInputIndex();
+            if (index.ok)
+            {
+                osc.Send(new OscMessage("/VMT/Room/Driver",
+                index.i, 6, 0f,
+                0f, 0f, 0f,
+                0f, 0f, 0f, 1f));
+            }
+        }
+
         private void LeftHandButton(object sender, RoutedEventArgs e)
         {
             var index = GetInputIndex();
@@ -1268,6 +1330,18 @@ namespace vmt_manager
             {
                 osc.Send(new OscMessage("/VMT/Room/Driver",
                 index.i, 2, 0f,
+                0f, 0f, 0f,
+                0f, 0f, 0f, 1f));
+            }
+        }
+
+        private void LeftHandCompatibleButton(object sender, RoutedEventArgs e)
+        {
+            var index = GetInputIndex();
+            if (index.ok)
+            {
+                osc.Send(new OscMessage("/VMT/Room/Driver",
+                index.i,5, 0f,
                 0f, 0f, 0f,
                 0f, 0f, 0f, 1f));
             }
@@ -1288,20 +1362,18 @@ namespace vmt_manager
         private void EnableAutoPoseUdateButton(object sender, RoutedEventArgs e)
         {
             osc.Send(new OscMessage("/VMT/SetAutoPoseUpdate", 1));
+            System.Media.SystemSounds.Beep.Play();
         }
         private void DisableAutoPoseUdateButton(object sender, RoutedEventArgs e)
         {
             osc.Send(new OscMessage("/VMT/SetAutoPoseUpdate", 0));
+            System.Media.SystemSounds.Beep.Play();
         }
         private void DeviceReloadButton(object sender, RoutedEventArgs e)
         {
             DeviceListView.Items.Clear();
-
-            for (uint i = 0; i < OpenVR.k_unMaxTrackedDeviceCount; i++)
-            {
-                string s = i.ToString() + " : " + util.GetSerialNumber(i);
-                DeviceListView.Items.Add(s);
-            }
+            osc.Send(new OscMessage("/VMT/Get/Devices/List"));
+            System.Media.SystemSounds.Beep.Play();
         }
         private void DeviceCopyButton(object sender, RoutedEventArgs e)
         {
@@ -1313,6 +1385,19 @@ namespace vmt_manager
                 System.Windows.Clipboard.SetText(s);
             }
         }
+        private void DeviceSubscribeButton(object sender, RoutedEventArgs e)
+        {
+            subscribedDevicePoseDictionary.Clear();
+            osc.Send(new OscMessage("/VMT/Subscribe/Device", SubscribeDeviceSerialTextBox.Text));
+            System.Media.SystemSounds.Beep.Play();
+        }
+        private void DeviceUnsubscribeButton(object sender, RoutedEventArgs e)
+        {
+            subscribedDevicePoseDictionary.Clear();
+            osc.Send(new OscMessage("/VMT/Unsubscribe/Device", SubscribeDeviceSerialTextBox.Text));
+            System.Media.SystemSounds.Beep.Play();
+        }
+
         private void JsonLoadButton(object sender, RoutedEventArgs e)
         {
             string jsonPath_rel = System.IO.Path.GetDirectoryName(Assembly.GetEntryAssembly().Location) + @"\..\vmt\setting.json";
