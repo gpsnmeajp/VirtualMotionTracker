@@ -331,6 +331,15 @@ namespace VMTDriver {
 					GetServer()->GetDevice(idx).UpdateButtonInput(ButtonIndex, ButtonValue != 0, timeoffset);
 				}
 			}
+			else if (adr == "/VMT/Input/Button/Touch")
+			{
+				args >> idx >> ButtonIndex >> timeoffset >> ButtonValue >> osc::EndMessage;
+				LogIfDiag("%s : %d : %d : %f : %d", adr.c_str(), idx, ButtonIndex, timeoffset, ButtonValue);
+				if (GetServer()->IsVMTDeviceIndex(idx))
+				{
+					GetServer()->GetDevice(idx).UpdateButtonTouchInput(ButtonIndex, ButtonValue != 0, timeoffset);
+				}
+			}
 			else if (adr == "/VMT/Input/Trigger")
 			{
 				args >> idx >> ButtonIndex >> timeoffset >> TriggerValue >> osc::EndMessage;
@@ -340,6 +349,24 @@ namespace VMTDriver {
 					GetServer()->GetDevice(idx).UpdateTriggerInput(ButtonIndex, TriggerValue, timeoffset);
 				}
 			}
+			else if (adr == "/VMT/Input/Trigger/Touch")
+			{
+				args >> idx >> ButtonIndex >> timeoffset >> ButtonValue >> osc::EndMessage;
+				LogIfDiag("%s : %d : %d : %f : %d", adr.c_str(), idx, ButtonIndex, timeoffset, ButtonValue);
+				if (GetServer()->IsVMTDeviceIndex(idx))
+				{
+					GetServer()->GetDevice(idx).UpdateTriggerTouchInput(ButtonIndex, ButtonValue != 0, timeoffset);
+				}
+			}
+			else if (adr == "/VMT/Input/Trigger/Click")
+			{
+				args >> idx >> ButtonIndex >> timeoffset >> ButtonValue >> osc::EndMessage;
+				LogIfDiag("%s : %d : %d : %f : %d", adr.c_str(), idx, ButtonIndex, timeoffset, ButtonValue);
+				if (GetServer()->IsVMTDeviceIndex(idx))
+				{
+					GetServer()->GetDevice(idx).UpdateTriggerClickInput(ButtonIndex, ButtonValue != 0, timeoffset);
+				}
+			}
 			else if (adr == "/VMT/Input/Joystick")
 			{
 				args >> idx >> ButtonIndex >> timeoffset >> x >> y >> osc::EndMessage;
@@ -347,6 +374,24 @@ namespace VMTDriver {
 				if (GetServer()->IsVMTDeviceIndex(idx))
 				{
 					GetServer()->GetDevice(idx).UpdateJoystickInput(ButtonIndex, x, y, timeoffset);
+				}
+			}
+			else if (adr == "/VMT/Input/Joystick/Touch")
+			{
+				args >> idx >> ButtonIndex >> timeoffset >> ButtonValue >> osc::EndMessage;
+				LogIfDiag("%s : %d : %d : %f : %d", adr.c_str(), idx, ButtonIndex, timeoffset, ButtonValue);
+				if (GetServer()->IsVMTDeviceIndex(idx))
+				{
+					GetServer()->GetDevice(idx).UpdateJoystickTouchInput(ButtonIndex, ButtonValue != 0, timeoffset);
+				}
+			}
+			else if (adr == "/VMT/Input/Joystick/Click")
+			{
+				args >> idx >> ButtonIndex >> timeoffset >> ButtonValue >> osc::EndMessage;
+				LogIfDiag("%s : %d : %d : %f : %d", adr.c_str(), idx, ButtonIndex, timeoffset, ButtonValue);
+				if (GetServer()->IsVMTDeviceIndex(idx))
+				{
+					GetServer()->GetDevice(idx).UpdateJoystickClickInput(ButtonIndex, ButtonValue != 0, timeoffset);
 				}
 			}
 			//すべてのデバイスのリセット

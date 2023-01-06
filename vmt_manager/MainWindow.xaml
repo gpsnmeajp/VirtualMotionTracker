@@ -150,134 +150,261 @@
 										<Button Content="Tracking Reference" Margin="1" Click="TrackingReferenceButton"/>
 									</UniformGrid>
 								</GroupBox>
-								<GroupBox Header="Button and Axis" DockPanel.Dock="Top">
-									<Grid>
-										<Grid.ColumnDefinitions>
-											<ColumnDefinition/>
-											<ColumnDefinition/>
-											<ColumnDefinition/>
-										</Grid.ColumnDefinitions>
-										<DockPanel Grid.Column="0" Margin="2"  LastChildFill="False">
-											<Grid DockPanel.Dock="Top">
+								<GroupBox Header="Button and Axis" DockPanel.Dock="Top" Height="350">
+									<TabControl>
+										<TabItem Header="Normal">
+											<Grid>
 												<Grid.ColumnDefinitions>
+													<ColumnDefinition/>
+													<ColumnDefinition/>
+													<ColumnDefinition/>
+												</Grid.ColumnDefinitions>
+												<DockPanel Grid.Column="0" Margin="2" LastChildFill="False">
+													<Grid DockPanel.Dock="Top">
+														<Grid.ColumnDefinitions>
+															<ColumnDefinition/>
+															<ColumnDefinition/>
+														</Grid.ColumnDefinitions>
+														<Grid.RowDefinitions>
+															<RowDefinition Height="38"/>
+															<RowDefinition Height="38"/>
+															<RowDefinition Height="38"/>
+															<RowDefinition Height="30"/>
+															<RowDefinition Height="30"/>
+															<RowDefinition Height="30"/>
+															<RowDefinition Height="30"/>
+															<RowDefinition Height="30"/>
+															<RowDefinition Height="30"/>
+														</Grid.RowDefinitions>
+														<Button PreviewMouseDown="Button0_MouseDown" PreviewMouseUp="Button0_MouseUp"  Margin="1" Grid.Column="0" Grid.Row="0" >
+															<TextBlock Text="Button 0&#xA;System" TextAlignment="Center"/>
+														</Button>
+														<Button PreviewMouseDown="Button1_MouseDown" PreviewMouseUp="Button1_MouseUp"  Margin="1" Grid.Column="1" Grid.Row="0">
+															<TextBlock Text="Button 1&#xA;A" TextAlignment="Center"/>
+														</Button>
+														<Button PreviewMouseDown="Button2_MouseDown" PreviewMouseUp="Button2_MouseUp"  Margin="1" Grid.Column="0" Grid.Row="1" >
+															<TextBlock Text="Button 2&#xA;Trigger" TextAlignment="Center"/>
+														</Button>
+														<Button PreviewMouseDown="Button3_MouseDown" PreviewMouseUp="Button3_MouseUp"  Margin="1" Grid.Column="1" Grid.Row="1" >
+															<TextBlock Text="Button 3&#xA;B" TextAlignment="Center"/>
+														</Button>
+														<Button PreviewMouseDown="Button4_MouseDown" PreviewMouseUp="Button4_MouseUp"  Margin="1" Grid.Column="0" Grid.Row="2" >
+															<TextBlock Text="Button 4&#xA;Trackpad" TextAlignment="Center"/>
+														</Button>
+														<Button Content="Button 5&#xA;" PreviewMouseDown="Button5_MouseDown" PreviewMouseUp="Button5_MouseUp"  Margin="1" Grid.Column="1" Grid.Row="2" />
+														<Button Content="Button 6" PreviewMouseDown="Button6_MouseDown" PreviewMouseUp="Button6_MouseUp"  Margin="1" Grid.Column="0" Grid.Row="3" />
+														<Button Content="Button 7" PreviewMouseDown="Button7_MouseDown" PreviewMouseUp="Button7_MouseUp"  Margin="1" Grid.Column="1" Grid.Row="3" />
+														<Button Content="Button 8" PreviewMouseDown="Button8_MouseDown" PreviewMouseUp="Button8_MouseUp"  Margin="1" Grid.Column="0" Grid.Row="4" />
+														<Button Content="Button 9" PreviewMouseDown="Button9_MouseDown" PreviewMouseUp="Button9_MouseUp"  Margin="1" Grid.Column="1" Grid.Row="4" />
+														<Button Content="Button 10" PreviewMouseDown="Button10_MouseDown" PreviewMouseUp="Button10_MouseUp"  Margin="1" Grid.Column="0" Grid.Row="5" />
+														<Button Content="Button 11" PreviewMouseDown="Button11_MouseDown" PreviewMouseUp="Button11_MouseUp"  Margin="1" Grid.Column="1" Grid.Row="5" />
+														<Button Content="Button 12" PreviewMouseDown="Button12_MouseDown" PreviewMouseUp="Button12_MouseUp"  Margin="1" Grid.Column="0" Grid.Row="6" />
+														<Button Content="Button 13" PreviewMouseDown="Button13_MouseDown" PreviewMouseUp="Button13_MouseUp"  Margin="1" Grid.Column="1" Grid.Row="6" />
+														<Button Content="Button 14" PreviewMouseDown="Button14_MouseDown" PreviewMouseUp="Button14_MouseUp"  Margin="1" Grid.Column="0" Grid.Row="7" />
+														<Button Content="Button 15" PreviewMouseDown="Button15_MouseDown" PreviewMouseUp="Button15_MouseUp"  Margin="1" Grid.Column="1" Grid.Row="7" />
+														<Button Content="Button 16" PreviewMouseDown="Button16_MouseDown" PreviewMouseUp="Button16_MouseUp"  Margin="1" Grid.Column="0" Grid.Row="8" />
+														<Button Content="Button 17" PreviewMouseDown="Button17_MouseDown" PreviewMouseUp="Button17_MouseUp"  Margin="1" Grid.Column="1" Grid.Row="8" />
+													</Grid>
+												</DockPanel>
+												<DockPanel Grid.Column="1" Margin="2" LastChildFill="False">
+													<DockPanel DockPanel.Dock="Top" Margin="1">
+														<TextBlock Text="Trigger 0&#xA;Trigger" DockPanel.Dock="Left" Width="50" />
+														<Slider Minimum="0" Maximum="1" Value="0" Name="Slider0" ValueChanged="Slider0_ValueChanged" DockPanel.Dock="Left"/>
+													</DockPanel>
+													<DockPanel DockPanel.Dock="Top" Margin="1">
+														<TextBlock Text="Trigger 1&#xA;Grip" DockPanel.Dock="Left" Width="50" />
+														<Slider Minimum="0" Maximum="1" Value="0" Name="Slider1" ValueChanged="Slider1_ValueChanged" DockPanel.Dock="Left"/>
+													</DockPanel>
+													<DockPanel DockPanel.Dock="Top" Margin="1">
+														<TextBlock Text="Trigger 2&#xA;(Thumb)" DockPanel.Dock="Left" Width="50" />
+														<Slider Minimum="0" Maximum="1" Value="0" Name="Slider2" ValueChanged="Slider2_ValueChanged" DockPanel.Dock="Left"/>
+													</DockPanel>
+													<DockPanel DockPanel.Dock="Top" Margin="1">
+														<TextBlock Text="Trigger 3&#xA;Index" DockPanel.Dock="Left" Width="50" />
+														<Slider Minimum="0" Maximum="1" Value="0" Name="Slider3" ValueChanged="Slider3_ValueChanged" DockPanel.Dock="Left"/>
+													</DockPanel>
+													<DockPanel DockPanel.Dock="Top" Margin="1">
+														<TextBlock Text="Trigger 4&#xA;Middle" DockPanel.Dock="Left" Width="50" />
+														<Slider Minimum="0" Maximum="1" Value="0" Name="Slider4" ValueChanged="Slider4_ValueChanged" DockPanel.Dock="Left"/>
+													</DockPanel>
+													<DockPanel DockPanel.Dock="Top" Margin="1">
+														<TextBlock Text="Trigger 5&#xA;Ring" DockPanel.Dock="Left" Width="50" />
+														<Slider Minimum="0" Maximum="1" Value="0" Name="Slider5" ValueChanged="Slider5_ValueChanged" DockPanel.Dock="Left"/>
+													</DockPanel>
+													<DockPanel DockPanel.Dock="Top" Margin="1">
+														<TextBlock Text="Trigger 6&#xA;Little" DockPanel.Dock="Left" Width="50" />
+														<Slider Minimum="0" Maximum="1" Value="0" Name="Slider6" ValueChanged="Slider6_ValueChanged" DockPanel.Dock="Left"/>
+													</DockPanel>
+													<DockPanel DockPanel.Dock="Top" Margin="1">
+														<TextBlock Text="Trigger 7&#xA;(Root)" DockPanel.Dock="Left" Width="50" />
+														<Slider Minimum="0" Maximum="1" Value="0" Name="Slider7" ValueChanged="Slider7_ValueChanged" DockPanel.Dock="Left"/>
+													</DockPanel>
+													<DockPanel DockPanel.Dock="Top" Margin="1">
+														<TextBlock Text="Trigger 8" DockPanel.Dock="Left" Width="50" />
+														<Slider Minimum="0" Maximum="1" Value="0" Name="Slider8" ValueChanged="Slider8_ValueChanged" DockPanel.Dock="Left"/>
+													</DockPanel>
+												</DockPanel>
+												<DockPanel Grid.Column="2" Margin="2" LastChildFill="False">
+													<DockPanel DockPanel.Dock="Top" Margin="1">
+														<TextBlock Text="Joystick0 X" DockPanel.Dock="Left" />
+														<Slider Minimum="-1" Maximum="1" Value="0" Name="SliderX" ValueChanged="SliderXY_ValueChanged" DockPanel.Dock="Left"/>
+													</DockPanel>
+													<DockPanel DockPanel.Dock="Top" Margin="1,1,1,10">
+														<TextBlock Text="Joystick0 Y" DockPanel.Dock="Left" />
+														<Slider Minimum="-1" Maximum="1" Value="0" Name="SliderY" ValueChanged="SliderXY_ValueChanged" DockPanel.Dock="Left"/>
+													</DockPanel>
+													<DockPanel DockPanel.Dock="Top" Margin="1">
+														<TextBlock Text="Joystick1 X" DockPanel.Dock="Left" />
+														<Slider Minimum="-1" Maximum="1" Value="0" Name="SliderU" ValueChanged="SliderUV_ValueChanged" DockPanel.Dock="Left"/>
+													</DockPanel>
+													<DockPanel DockPanel.Dock="Top" Margin="1,1,1,10">
+														<TextBlock Text="Joystick1 Y" DockPanel.Dock="Left" />
+														<Slider Minimum="-1" Maximum="1" Value="0" Name="SliderV" ValueChanged="SliderUV_ValueChanged" DockPanel.Dock="Left"/>
+													</DockPanel>
+													<DockPanel DockPanel.Dock="Top" Margin="1">
+														<TextBlock Text="Joystick2 X" DockPanel.Dock="Left" />
+														<Slider Minimum="-1" Maximum="1" Value="0" Name="SliderA" ValueChanged="SliderAB_ValueChanged" DockPanel.Dock="Left"/>
+													</DockPanel>
+													<DockPanel DockPanel.Dock="Top" Margin="1,1,1,10">
+														<TextBlock Text="Joystick2 Y" DockPanel.Dock="Left" />
+														<Slider Minimum="-1" Maximum="1" Value="0" Name="SliderB" ValueChanged="SliderAB_ValueChanged" DockPanel.Dock="Left"/>
+													</DockPanel>
+													<DockPanel DockPanel.Dock="Top" Margin="1">
+														<TextBlock Text="Joystick3 X" DockPanel.Dock="Left" />
+														<Slider Minimum="-1" Maximum="1" Value="0" Name="SliderC" ValueChanged="SliderCD_ValueChanged" DockPanel.Dock="Left"/>
+													</DockPanel>
+													<DockPanel DockPanel.Dock="Top" Margin="1,1,1,10">
+														<TextBlock Text="Joystick3 Y" DockPanel.Dock="Left" />
+														<Slider Minimum="-1" Maximum="1" Value="0" Name="SliderD" ValueChanged="SliderCD_ValueChanged" DockPanel.Dock="Left"/>
+													</DockPanel>
+													<Button Content="Slider Reset"  Margin="1,8,1,1" Height="60" Click="InputResetButton" DockPanel.Dock="Top"/>
+												</DockPanel>
+											</Grid>
+										</TabItem>
+										<TabItem Header="Touch">
+											<Grid>
+												<Grid.ColumnDefinitions>
+													<ColumnDefinition/>
 													<ColumnDefinition/>
 													<ColumnDefinition/>
 												</Grid.ColumnDefinitions>
 												<Grid.RowDefinitions>
 													<RowDefinition/>
-													<RowDefinition/>
-													<RowDefinition/>
-													<RowDefinition/>
-													<RowDefinition/>
-													<RowDefinition/>
-													<RowDefinition/>
-													<RowDefinition/>
-													<RowDefinition/>
 												</Grid.RowDefinitions>
-												<Button PreviewMouseDown="Button0_MouseDown" PreviewMouseUp="Button0_MouseUp"  Margin="1" Grid.Column="0" Grid.Row="0" >
-													<TextBlock Text="Button 0&#xA;System" TextAlignment="Center"/>
-												</Button>
-												<Button PreviewMouseDown="Button1_MouseDown" PreviewMouseUp="Button1_MouseUp"  Margin="1" Grid.Column="1" Grid.Row="0">
-													<TextBlock Text="Button 1&#xA;A" TextAlignment="Center"/>
-												</Button>
-												<Button PreviewMouseDown="Button2_MouseDown" PreviewMouseUp="Button2_MouseUp"  Margin="1" Grid.Column="0" Grid.Row="1" >
-													<TextBlock Text="Button 2&#xA;Trigger" TextAlignment="Center"/>
-												</Button>
-												<Button PreviewMouseDown="Button3_MouseDown" PreviewMouseUp="Button3_MouseUp"  Margin="1" Grid.Column="1" Grid.Row="1" >
-													<TextBlock Text="Button 3&#xA;B" TextAlignment="Center"/>
-												</Button>
-												<Button PreviewMouseDown="Button4_MouseDown" PreviewMouseUp="Button4_MouseUp"  Margin="1" Grid.Column="0" Grid.Row="2" >
-													<TextBlock Text="Button 4&#xA;Trackpad" TextAlignment="Center"/>
-												</Button>
-												<Button Content="Button 5&#xA;" PreviewMouseDown="Button5_MouseDown" PreviewMouseUp="Button5_MouseUp"  Margin="1" Grid.Column="1" Grid.Row="2" />
-												<Button Content="Button 6" PreviewMouseDown="Button6_MouseDown" PreviewMouseUp="Button6_MouseUp"  Margin="1" Grid.Column="0" Grid.Row="3" />
-												<Button Content="Button 7" PreviewMouseDown="Button7_MouseDown" PreviewMouseUp="Button7_MouseUp"  Margin="1" Grid.Column="1" Grid.Row="3" />
-												<Button Content="Button 8" PreviewMouseDown="Button8_MouseDown" PreviewMouseUp="Button8_MouseUp"  Margin="1" Grid.Column="0" Grid.Row="4" />
-												<Button Content="Button 9" PreviewMouseDown="Button9_MouseDown" PreviewMouseUp="Button9_MouseUp"  Margin="1" Grid.Column="1" Grid.Row="4" />
-												<Button Content="Button 10" PreviewMouseDown="Button10_MouseDown" PreviewMouseUp="Button10_MouseUp"  Margin="1" Grid.Column="0" Grid.Row="5" />
-												<Button Content="Button 11" PreviewMouseDown="Button11_MouseDown" PreviewMouseUp="Button11_MouseUp"  Margin="1" Grid.Column="1" Grid.Row="5" />
-												<Button Content="Button 12" PreviewMouseDown="Button12_MouseDown" PreviewMouseUp="Button12_MouseUp"  Margin="1" Grid.Column="0" Grid.Row="6" />
-												<Button Content="Button 13" PreviewMouseDown="Button13_MouseDown" PreviewMouseUp="Button13_MouseUp"  Margin="1" Grid.Column="1" Grid.Row="6" />
-												<Button Content="Button 14" PreviewMouseDown="Button14_MouseDown" PreviewMouseUp="Button14_MouseUp"  Margin="1" Grid.Column="0" Grid.Row="7" />
-												<Button Content="Button 15" PreviewMouseDown="Button15_MouseDown" PreviewMouseUp="Button15_MouseUp"  Margin="1" Grid.Column="1" Grid.Row="7" />
-												<Button Content="Button 16" PreviewMouseDown="Button16_MouseDown" PreviewMouseUp="Button16_MouseUp"  Margin="1" Grid.Column="0" Grid.Row="8" />
-												<Button Content="Button 17" PreviewMouseDown="Button17_MouseDown" PreviewMouseUp="Button17_MouseUp"  Margin="1" Grid.Column="1" Grid.Row="8" />
+												<StackPanel Grid.Column="0" Background="#FFEEEE">
+													<Grid>
+														<Grid.ColumnDefinitions>
+															<ColumnDefinition/>
+															<ColumnDefinition/>
+														</Grid.ColumnDefinitions>
+														<Grid.RowDefinitions>
+															<RowDefinition/>
+															<RowDefinition/>
+															<RowDefinition/>
+															<RowDefinition/>
+															<RowDefinition/>
+															<RowDefinition/>
+															<RowDefinition/>
+															<RowDefinition/>
+															<RowDefinition/>
+														</Grid.RowDefinitions>
+
+														<CheckBox Content="Button0&#xA;Touch" Name="Button0TouchCheckBox" Grid.Column="0" Grid.Row="0" VerticalAlignment="Center" Checked="Button0TouchChecked" Unchecked="Button0TouchChecked" />
+														<CheckBox Content="Button1&#xA;Touch" Name="Button1TouchCheckBox" Grid.Column="1" Grid.Row="0" VerticalAlignment="Center" Checked="Button1TouchChecked" Unchecked="Button1TouchChecked" />
+														<CheckBox Content="Button2&#xA;Touch" Name="Button2TouchCheckBox" Grid.Column="0" Grid.Row="1" VerticalAlignment="Center" Checked="Button2TouchChecked" Unchecked="Button2TouchChecked" />
+														<CheckBox Content="Button3&#xA;Touch" Name="Button3TouchCheckBox" Grid.Column="1" Grid.Row="1" VerticalAlignment="Center" Checked="Button3TouchChecked" Unchecked="Button3TouchChecked" />
+														<CheckBox Content="Button4&#xA;Touch" Name="Button4TouchCheckBox" Grid.Column="0" Grid.Row="2" VerticalAlignment="Center" Checked="Button4TouchChecked" Unchecked="Button4TouchChecked" />
+														<CheckBox Content="Button5&#xA;Touch" Name="Button5TouchCheckBox" Grid.Column="1" Grid.Row="2" VerticalAlignment="Center" Checked="Button5TouchChecked" Unchecked="Button5TouchChecked" />
+														<CheckBox Content="Button6&#xA;Touch" Name="Button6TouchCheckBox" Grid.Column="0" Grid.Row="3" VerticalAlignment="Center" Checked="Button6TouchChecked" Unchecked="Button6TouchChecked" />
+														<CheckBox Content="Button7&#xA;Touch" Name="Button7TouchCheckBox" Grid.Column="1" Grid.Row="3" VerticalAlignment="Center" Checked="Button7TouchChecked" Unchecked="Button7TouchChecked" />
+														<CheckBox Content="Button8&#xA;Touch" Name="Button8TouchCheckBox" Grid.Column="0" Grid.Row="4" VerticalAlignment="Center" Checked="Button8TouchChecked" Unchecked="Button8TouchChecked" />
+														<CheckBox Content="Button9&#xA;Touch" Name="Button9TouchCheckBox" Grid.Column="1" Grid.Row="4" VerticalAlignment="Center" Checked="Button9TouchChecked" Unchecked="Button9TouchChecked" />
+														<CheckBox Content="Button10&#xA;Touch" Name="Button10TouchCheckBox" Grid.Column="0" Grid.Row="5" VerticalAlignment="Center" Checked="Button10TouchChecked" Unchecked="Button10TouchChecked" />
+														<CheckBox Content="Button11&#xA;Touch" Name="Button11TouchCheckBox" Grid.Column="1" Grid.Row="5" VerticalAlignment="Center" Checked="Button11TouchChecked" Unchecked="Button11TouchChecked" />
+														<CheckBox Content="Button12&#xA;Touch" Name="Button12TouchCheckBox" Grid.Column="0" Grid.Row="6" VerticalAlignment="Center" Checked="Button12TouchChecked" Unchecked="Button12TouchChecked" />
+														<CheckBox Content="Button13&#xA;Touch" Name="Button13TouchCheckBox" Grid.Column="1" Grid.Row="6" VerticalAlignment="Center" Checked="Button13TouchChecked" Unchecked="Button13TouchChecked" />
+														<CheckBox Content="Button14&#xA;Touch" Name="Button14TouchCheckBox" Grid.Column="0" Grid.Row="7" VerticalAlignment="Center" Checked="Button14TouchChecked" Unchecked="Button14TouchChecked" />
+														<CheckBox Content="Button15&#xA;Touch" Name="Button15TouchCheckBox" Grid.Column="1" Grid.Row="7" VerticalAlignment="Center" Checked="Button15TouchChecked" Unchecked="Button15TouchChecked" />
+														<CheckBox Content="Button16&#xA;Touch" Name="Button16TouchCheckBox" Grid.Column="0" Grid.Row="8" VerticalAlignment="Center" Checked="Button16TouchChecked" Unchecked="Button16TouchChecked" />
+														<CheckBox Content="Button17&#xA;Touch" Name="Button17TouchCheckBox" Grid.Column="1" Grid.Row="8" VerticalAlignment="Center" Checked="Button17TouchChecked" Unchecked="Button17TouchChecked" />
+													</Grid>
+												</StackPanel>
+
+												<StackPanel Grid.Column="1" Background="#EEFFEE">
+													<Grid>
+														<Grid.ColumnDefinitions>
+															<ColumnDefinition/>
+															<ColumnDefinition/>
+														</Grid.ColumnDefinitions>
+														<Grid.RowDefinitions>
+															<RowDefinition/>
+															<RowDefinition/>
+															<RowDefinition/>
+															<RowDefinition/>
+															<RowDefinition/>
+															<RowDefinition/>
+															<RowDefinition/>
+															<RowDefinition/>
+															<RowDefinition/>
+														</Grid.RowDefinitions>
+
+														<CheckBox Content="Trigger0&#xA;Touch" Name="Trigger0TouchCheckBox" Grid.Column="0" Grid.Row="0" VerticalAlignment="Center" Checked="Trigger0TouchChecked" Unchecked="Trigger0TouchChecked" />
+														<CheckBox Content="Trigger1&#xA;Touch" Name="Trigger1TouchCheckBox" Grid.Column="0" Grid.Row="1" VerticalAlignment="Center" Checked="Trigger1TouchChecked" Unchecked="Trigger1TouchChecked" />
+														<CheckBox Content="Trigger2&#xA;Touch" Name="Trigger2TouchCheckBox" Grid.Column="0" Grid.Row="2" VerticalAlignment="Center" Checked="Trigger2TouchChecked" Unchecked="Trigger2TouchChecked" />
+														<CheckBox Content="Trigger3&#xA;Touch" Name="Trigger3TouchCheckBox" Grid.Column="0" Grid.Row="3" VerticalAlignment="Center" Checked="Trigger3TouchChecked" Unchecked="Trigger3TouchChecked" />
+														<CheckBox Content="Trigger4&#xA;Touch" Name="Trigger4TouchCheckBox" Grid.Column="0" Grid.Row="4" VerticalAlignment="Center" Checked="Trigger4TouchChecked" Unchecked="Trigger4TouchChecked" />
+														<CheckBox Content="Trigger5&#xA;Touch" Name="Trigger5TouchCheckBox" Grid.Column="0" Grid.Row="5" VerticalAlignment="Center" Checked="Trigger5TouchChecked" Unchecked="Trigger5TouchChecked" />
+														<CheckBox Content="Trigger6&#xA;Touch" Name="Trigger6TouchCheckBox" Grid.Column="0" Grid.Row="6" VerticalAlignment="Center" Checked="Trigger6TouchChecked" Unchecked="Trigger6TouchChecked" />
+														<CheckBox Content="Trigger7&#xA;Touch" Name="Trigger7TouchCheckBox" Grid.Column="0" Grid.Row="7" VerticalAlignment="Center" Checked="Trigger7TouchChecked" Unchecked="Trigger7TouchChecked" />
+														<CheckBox Content="Trigger8&#xA;Touch" Name="Trigger8TouchCheckBox" Grid.Column="0" Grid.Row="8" VerticalAlignment="Center" Checked="Trigger8TouchChecked" Unchecked="Trigger8TouchChecked" />
+
+														<CheckBox Content="Trigger0&#xA;Click" Name="Trigger0ClickCheckBox" Grid.Column="1" Grid.Row="0" VerticalAlignment="Center" Checked="Trigger0ClickChecked" Unchecked="Trigger0ClickChecked" />
+														<CheckBox Content="Trigger1&#xA;Click" Name="Trigger1ClickCheckBox" Grid.Column="1" Grid.Row="1" VerticalAlignment="Center" Checked="Trigger1ClickChecked" Unchecked="Trigger1ClickChecked" />
+														<CheckBox Content="Trigger2&#xA;Click" Name="Trigger2ClickCheckBox" Grid.Column="1" Grid.Row="2" VerticalAlignment="Center" Checked="Trigger2ClickChecked" Unchecked="Trigger2ClickChecked" />
+														<CheckBox Content="Trigger3&#xA;Click" Name="Trigger3ClickCheckBox" Grid.Column="1" Grid.Row="3" VerticalAlignment="Center" Checked="Trigger3ClickChecked" Unchecked="Trigger3ClickChecked" />
+														<CheckBox Content="Trigger4&#xA;Click" Name="Trigger4ClickCheckBox" Grid.Column="1" Grid.Row="4" VerticalAlignment="Center" Checked="Trigger4ClickChecked" Unchecked="Trigger4ClickChecked" />
+														<CheckBox Content="Trigger5&#xA;Click" Name="Trigger5ClickCheckBox" Grid.Column="1" Grid.Row="5" VerticalAlignment="Center" Checked="Trigger5ClickChecked" Unchecked="Trigger5ClickChecked" />
+														<CheckBox Content="Trigger6&#xA;Click" Name="Trigger6ClickCheckBox" Grid.Column="1" Grid.Row="6" VerticalAlignment="Center" Checked="Trigger6ClickChecked" Unchecked="Trigger6ClickChecked" />
+														<CheckBox Content="Trigger7&#xA;Click" Name="Trigger7ClickCheckBox" Grid.Column="1" Grid.Row="7" VerticalAlignment="Center" Checked="Trigger7ClickChecked" Unchecked="Trigger7ClickChecked" />
+														<CheckBox Content="Trigger8&#xA;Click" Name="Trigger8ClickCheckBox" Grid.Column="1" Grid.Row="8" VerticalAlignment="Center" Checked="Trigger8ClickChecked" Unchecked="Trigger8ClickChecked" />
+													</Grid>
+												</StackPanel>
+
+												<StackPanel Grid.Column="2" Background="#EEEEFF">
+													<Grid>
+														<Grid.ColumnDefinitions>
+															<ColumnDefinition/>
+															<ColumnDefinition/>
+														</Grid.ColumnDefinitions>
+														<Grid.RowDefinitions>
+															<RowDefinition/>
+															<RowDefinition/>
+															<RowDefinition/>
+															<RowDefinition/>
+															<RowDefinition/>
+															<RowDefinition/>
+															<RowDefinition/>
+															<RowDefinition/>
+															<RowDefinition/>
+														</Grid.RowDefinitions>
+
+														<CheckBox Content="Joystick0&#xA;Touch" Name="Joystick0TouchCheckBox" Grid.Column="0" Grid.Row="0" VerticalAlignment="Center" Checked="Joystick0TouchChecked" Unchecked="Joystick0TouchChecked" />
+														<Border Grid.Column="0" Grid.Row="1" Height="31"/>
+														<CheckBox Content="Joystick1&#xA;Touch" Name="Joystick1TouchCheckBox" Grid.Column="0" Grid.Row="2" VerticalAlignment="Center" Checked="Joystick1TouchChecked" Unchecked="Joystick1TouchChecked" />
+														<Border Grid.Column="0" Grid.Row="3" Height="31"/>
+														<CheckBox Content="Joystick2&#xA;Touch" Name="Joystick2TouchCheckBox" Grid.Column="0" Grid.Row="4" VerticalAlignment="Center" Checked="Joystick2TouchChecked" Unchecked="Joystick2TouchChecked" />
+														<Border Grid.Column="0" Grid.Row="5" Height="31"/>
+														<CheckBox Content="Joystick3&#xA;Touch" Name="Joystick3TouchCheckBox" Grid.Column="0" Grid.Row="6" VerticalAlignment="Center" Checked="Joystick3TouchChecked" Unchecked="Joystick3TouchChecked" />
+
+														<CheckBox Content="Joystick0&#xA;Click" Name="Joystick0ClickCheckBox" Grid.Column="1" Grid.Row="0" VerticalAlignment="Center" Checked="Joystick0ClickChecked" Unchecked="Joystick0ClickChecked" />
+														<CheckBox Content="Joystick1&#xA;Click" Name="Joystick1ClickCheckBox" Grid.Column="1" Grid.Row="2" VerticalAlignment="Center" Checked="Joystick1ClickChecked" Unchecked="Joystick1ClickChecked" />
+														<CheckBox Content="Joystick2&#xA;Click" Name="Joystick2ClickCheckBox" Grid.Column="1" Grid.Row="4" VerticalAlignment="Center" Checked="Joystick2ClickChecked" Unchecked="Joystick2ClickChecked" />
+														<CheckBox Content="Joystick3&#xA;Click" Name="Joystick3ClickCheckBox" Grid.Column="1" Grid.Row="6" VerticalAlignment="Center" Checked="Joystick3ClickChecked" Unchecked="Joystick3ClickChecked" />
+													</Grid>
+												</StackPanel>
 											</Grid>
-										</DockPanel>
-										<DockPanel Grid.Column="1" Margin="2" LastChildFill="False">
-											<DockPanel DockPanel.Dock="Top" Margin="1">
-												<TextBlock Text="Trigger 0&#xA;Trigger" DockPanel.Dock="Left" Width="50" />
-												<Slider Minimum="0" Maximum="1" Value="0" Name="Slider0" ValueChanged="Slider0_ValueChanged" DockPanel.Dock="Left"/>
-											</DockPanel>
-											<DockPanel DockPanel.Dock="Top" Margin="1">
-												<TextBlock Text="Trigger 1&#xA;Grip" DockPanel.Dock="Left" Width="50" />
-												<Slider Minimum="0" Maximum="1" Value="0" Name="Slider1" ValueChanged="Slider1_ValueChanged" DockPanel.Dock="Left"/>
-											</DockPanel>
-											<DockPanel DockPanel.Dock="Top" Margin="1">
-												<TextBlock Text="Trigger 2&#xA;(Thumb)" DockPanel.Dock="Left" Width="50" />
-												<Slider Minimum="0" Maximum="1" Value="0" Name="Slider2" ValueChanged="Slider2_ValueChanged" DockPanel.Dock="Left"/>
-											</DockPanel>
-											<DockPanel DockPanel.Dock="Top" Margin="1">
-												<TextBlock Text="Trigger 3&#xA;Index" DockPanel.Dock="Left" Width="50" />
-												<Slider Minimum="0" Maximum="1" Value="0" Name="Slider3" ValueChanged="Slider3_ValueChanged" DockPanel.Dock="Left"/>
-											</DockPanel>
-											<DockPanel DockPanel.Dock="Top" Margin="1">
-												<TextBlock Text="Trigger 4&#xA;Middle" DockPanel.Dock="Left" Width="50" />
-												<Slider Minimum="0" Maximum="1" Value="0" Name="Slider4" ValueChanged="Slider4_ValueChanged" DockPanel.Dock="Left"/>
-											</DockPanel>
-											<DockPanel DockPanel.Dock="Top" Margin="1">
-												<TextBlock Text="Trigger 5&#xA;Ring" DockPanel.Dock="Left" Width="50" />
-												<Slider Minimum="0" Maximum="1" Value="0" Name="Slider5" ValueChanged="Slider5_ValueChanged" DockPanel.Dock="Left"/>
-											</DockPanel>
-											<DockPanel DockPanel.Dock="Top" Margin="1">
-												<TextBlock Text="Trigger 6&#xA;Little" DockPanel.Dock="Left" Width="50" />
-												<Slider Minimum="0" Maximum="1" Value="0" Name="Slider6" ValueChanged="Slider6_ValueChanged" DockPanel.Dock="Left"/>
-											</DockPanel>
-										</DockPanel>
-										<DockPanel Grid.Column="2" Margin="2" LastChildFill="False">
-											<DockPanel DockPanel.Dock="Top" Margin="1">
-												<TextBlock Text="Trigger 7&#xA;(Root)" DockPanel.Dock="Left" Width="50" />
-												<Slider Minimum="0" Maximum="1" Value="0" Name="Slider7" ValueChanged="Slider7_ValueChanged" DockPanel.Dock="Left"/>
-											</DockPanel>
-											<DockPanel DockPanel.Dock="Top" Margin="1">
-												<TextBlock Text="Trigger 8" DockPanel.Dock="Left" Width="50" />
-												<Slider Minimum="0" Maximum="1" Value="0" Name="Slider8" ValueChanged="Slider8_ValueChanged" DockPanel.Dock="Left"/>
-											</DockPanel>
-											<DockPanel DockPanel.Dock="Top" Margin="1">
-												<TextBlock Text="Joystick0 X" DockPanel.Dock="Left" />
-												<Slider Minimum="-1" Maximum="1" Value="0" Name="SliderX" ValueChanged="SliderXY_ValueChanged" DockPanel.Dock="Left"/>
-											</DockPanel>
-											<DockPanel DockPanel.Dock="Top" Margin="1">
-												<TextBlock Text="Joystick0 Y" DockPanel.Dock="Left" />
-												<Slider Minimum="-1" Maximum="1" Value="0" Name="SliderY" ValueChanged="SliderXY_ValueChanged" DockPanel.Dock="Left"/>
-											</DockPanel>
-											<DockPanel DockPanel.Dock="Top" Margin="1">
-												<TextBlock Text="Joystick1 X" DockPanel.Dock="Left" />
-												<Slider Minimum="-1" Maximum="1" Value="0" Name="SliderU" ValueChanged="SliderUV_ValueChanged" DockPanel.Dock="Left"/>
-											</DockPanel>
-											<DockPanel DockPanel.Dock="Top" Margin="1">
-												<TextBlock Text="Joystick1 Y" DockPanel.Dock="Left" />
-												<Slider Minimum="-1" Maximum="1" Value="0" Name="SliderV" ValueChanged="SliderUV_ValueChanged" DockPanel.Dock="Left"/>
-											</DockPanel>
-											<DockPanel DockPanel.Dock="Top" Margin="1">
-												<TextBlock Text="Joystick2 X" DockPanel.Dock="Left" />
-												<Slider Minimum="-1" Maximum="1" Value="0" Name="SliderA" ValueChanged="SliderAB_ValueChanged" DockPanel.Dock="Left"/>
-											</DockPanel>
-											<DockPanel DockPanel.Dock="Top" Margin="1">
-												<TextBlock Text="Joystick2 Y" DockPanel.Dock="Left" />
-												<Slider Minimum="-1" Maximum="1" Value="0" Name="SliderB" ValueChanged="SliderAB_ValueChanged" DockPanel.Dock="Left"/>
-											</DockPanel>
-											<DockPanel DockPanel.Dock="Top" Margin="1">
-												<TextBlock Text="Joystick3 X" DockPanel.Dock="Left" />
-												<Slider Minimum="-1" Maximum="1" Value="0" Name="SliderC" ValueChanged="SliderCD_ValueChanged" DockPanel.Dock="Left"/>
-											</DockPanel>
-											<DockPanel DockPanel.Dock="Top" Margin="1">
-												<TextBlock Text="Joystick3 Y" DockPanel.Dock="Left" />
-												<Slider Minimum="-1" Maximum="1" Value="0" Name="SliderD" ValueChanged="SliderCD_ValueChanged" DockPanel.Dock="Left"/>
-											</DockPanel>
-											<Button Content="Input Reset"  Margin="1,8,1,1" Height="22" Click="InputResetButton" DockPanel.Dock="Top"/>
-										</DockPanel>
-									</Grid>
+										</TabItem>
+									</TabControl>
 								</GroupBox>
 
 								<GroupBox Header="Finger control (scalar value)" DockPanel.Dock="Top">

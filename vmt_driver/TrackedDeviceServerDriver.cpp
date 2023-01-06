@@ -562,6 +562,19 @@ namespace VMTDriver {
         }
     }
 
+    //仮想デバイスからOpenVRへデバイスのボタンTouch状態の更新を通知する
+    void TrackedDeviceServerDriver::UpdateButtonTouchInput(uint32_t index, bool value, double timeoffset)
+    {
+        if (!m_alreadyRegistered) { return; }
+        if (0 <= index && index < buttonCount)
+        {
+            LogIfEVRInputError(VRDriverInput()->UpdateBooleanComponent(ButtonTouchComponent[index], value, timeoffset));
+        }
+        else {
+            LogError("Index out of range: %u", index);
+        }
+    }
+
     //仮想デバイスからOpenVRへデバイスのトリガー(1軸)状態の更新を通知する
     void TrackedDeviceServerDriver::UpdateTriggerInput(uint32_t index, float value, double timeoffset)
     {
@@ -585,6 +598,33 @@ namespace VMTDriver {
         }
     }
 
+    //仮想デバイスからOpenVRへデバイスのトリガー(1軸)タッチ状態の更新を通知する
+    void TrackedDeviceServerDriver::UpdateTriggerTouchInput(uint32_t index, bool value, double timeoffset)
+    {
+        if (!m_alreadyRegistered) { return; }
+        if (0 <= index && index < triggerCount)
+        {
+            LogIfEVRInputError(VRDriverInput()->UpdateBooleanComponent(TriggerTouchComponent[index], value, timeoffset));
+        }
+        else {
+            LogError("Index out of range: %u", index);
+        }
+    }
+
+    //仮想デバイスからOpenVRへデバイスのトリガー(1軸)クリック状態の更新を通知する
+    void TrackedDeviceServerDriver::UpdateTriggerClickInput(uint32_t index, bool value, double timeoffset)
+    {
+        if (!m_alreadyRegistered) { return; }
+        if (0 <= index && index < triggerCount)
+        {
+            LogIfEVRInputError(VRDriverInput()->UpdateBooleanComponent(TriggerClickComponent[index], value, timeoffset));
+        }
+        else {
+            LogError("Index out of range: %u", index);
+        }
+    }
+
+
     //仮想デバイスからOpenVRへデバイスのジョイスティック(2軸)状態の更新を通知する
     void TrackedDeviceServerDriver::UpdateJoystickInput(uint32_t index, float x, float y, double timeoffset)
     {
@@ -598,6 +638,33 @@ namespace VMTDriver {
             LogError("Index out of range: %u", index);
         }
     }
+
+    //仮想デバイスからOpenVRへデバイスのジョイスティック(2軸)タッチ状態の更新を通知する
+    void TrackedDeviceServerDriver::UpdateJoystickTouchInput(uint32_t index, bool value, double timeoffset)
+    {
+        if (!m_alreadyRegistered) { return; }
+        if (0 <= index && index < joystickCount)
+        {
+            LogIfEVRInputError(VRDriverInput()->UpdateBooleanComponent(JoystickTouchComponent[index], value, timeoffset));
+        }
+        else {
+            LogError("Index out of range: %u", index);
+        }
+    }
+
+    //仮想デバイスからOpenVRへデバイスのジョイスティック(2軸)クリック状態の更新を通知する
+    void TrackedDeviceServerDriver::UpdateJoystickClickInput(uint32_t index, bool value, double timeoffset)
+    {
+        if (!m_alreadyRegistered) { return; }
+        if (0 <= index && index < joystickCount)
+        {
+            LogIfEVRInputError(VRDriverInput()->UpdateBooleanComponent(JoystickClickComponent[index], value, timeoffset));
+        }
+        else {
+            LogError("Index out of range: %u", index);
+        }
+    }
+
 
     //仮想デバイスからデバイスバッファへ個別の骨格状態を書き込む
     void TrackedDeviceServerDriver::WriteSkeletonInputBuffer(uint32_t index, VRBoneTransform_t bone)
@@ -830,12 +897,17 @@ namespace VMTDriver {
         //全状態を初期化する
         for (int i = 0; i < buttonCount; i++) {
             UpdateButtonInput(i, false, 0);
+            UpdateButtonTouchInput(i, false, 0);
         }
         for (int i = 0; i < triggerCount; i++) {
             UpdateTriggerInput(i, 0, 0);
+            UpdateTriggerTouchInput(i, false, 0);
+            UpdateTriggerClickInput(i, false, 0);
         }
         for (int i = 0; i < joystickCount; i++) {
             UpdateJoystickInput(i, 0, 0, 0);
+            UpdateJoystickTouchInput(i, false, 0);
+            UpdateJoystickClickInput(i, false, 0);
         }
 
         //骨格初期値を設定(コントローラのみ)
@@ -1023,13 +1095,18 @@ namespace VMTDriver {
         //OpenVR デバイス入力情報の定義
         for (int i = 0; i < buttonCount; i++) {
             LogIfEVRInputError(VRDriverInput()->CreateBooleanComponent(m_propertyContainer, (std::string("/input/Button") + std::to_string(i) + std::string("/click")).c_str(), &ButtonComponent[i]));
+            LogIfEVRInputError(VRDriverInput()->CreateBooleanComponent(m_propertyContainer, (std::string("/input/Button") + std::to_string(i) + std::string("/touch")).c_str(), &ButtonTouchComponent[i]));
         }
         for (int i = 0; i < triggerCount; i++) {
             LogIfEVRInputError(VRDriverInput()->CreateScalarComponent(m_propertyContainer, (std::string("/input/Trigger") + std::to_string(i) + std::string("/value")).c_str(), &TriggerComponent[i], EVRScalarType::VRScalarType_Absolute, EVRScalarUnits::VRScalarUnits_NormalizedOneSided));
+            LogIfEVRInputError(VRDriverInput()->CreateBooleanComponent(m_propertyContainer, (std::string("/input/Trigger") + std::to_string(i) + std::string("/click")).c_str(), &TriggerClickComponent[i]));
+            LogIfEVRInputError(VRDriverInput()->CreateBooleanComponent(m_propertyContainer, (std::string("/input/Trigger") + std::to_string(i) + std::string("/touch")).c_str(), &TriggerTouchComponent[i]));
         }
         for (int i = 0; i < joystickCount; i++) {
             LogIfEVRInputError(VRDriverInput()->CreateScalarComponent(m_propertyContainer, (std::string("/input/Joystick") + std::to_string(i) + std::string("/x")).c_str(), &JoystickXComponent[i], EVRScalarType::VRScalarType_Absolute, EVRScalarUnits::VRScalarUnits_NormalizedTwoSided));
             LogIfEVRInputError(VRDriverInput()->CreateScalarComponent(m_propertyContainer, (std::string("/input/Joystick") + std::to_string(i) + std::string("/y")).c_str(), &JoystickYComponent[i], EVRScalarType::VRScalarType_Absolute, EVRScalarUnits::VRScalarUnits_NormalizedTwoSided));
+            LogIfEVRInputError(VRDriverInput()->CreateBooleanComponent(m_propertyContainer, (std::string("/input/Joystick") + std::to_string(i) + std::string("/click")).c_str(), &JoystickClickComponent[i]));
+            LogIfEVRInputError(VRDriverInput()->CreateBooleanComponent(m_propertyContainer, (std::string("/input/Joystick") + std::to_string(i) + std::string("/touch")).c_str(), &JoystickTouchComponent[i]));
         }
 
         LogIfEVRInputError(VRDriverInput()->CreateHapticComponent(m_propertyContainer, "/output/haptic", &HapticComponent));

@@ -13,11 +13,11 @@
          ],
          "poses" : [
             {
-               "output" : "/actions/legacy/in/Left_Pose",
+               "output" : "/actions/legacy/in/left_pose",
                "path" : "/user/hand/left/pose/raw"
             },
             {
-               "output" : "/actions/legacy/in/Right_Pose",
+               "output" : "/actions/legacy/in/right_pose",
                "path" : "/user/hand/right/pose/raw"
             }
          ],
@@ -25,205 +25,571 @@
             {
                "inputs" : {
                   "click" : {
-                     "output" : "/actions/legacy/in/left_a_press"
+                     "output" : "/actions/legacy/in/left_system_press"
+                  },
+                  "touch" : {
+                     "output" : "/actions/legacy/in/left_system_touch"
                   }
                },
                "mode" : "button",
-               "path" : "/user/hand/left/input/Button0"
+               "path" : "/user/hand/left/input/button0"
             },
             {
                "inputs" : {
                   "click" : {
                      "output" : "/actions/legacy/in/left_grip_press"
+                  },
+                  "touch" : {
+                     "output" : "/actions/legacy/in/left_grip_touch"
                   }
                },
                "mode" : "button",
-               "path" : "/user/hand/left/input/Button1"
-            },
-            {
-               "inputs" : {
-                  "click" : {
-                     "output" : "/actions/legacy/in/left_applicationmenu_press"
-                  }
-               },
-               "mode" : "button",
-               "path" : "/user/hand/left/input/Button2"
-            },
-            {
-               "inputs" : {
-                  "click" : {
-                     "output" : "/actions/legacy/in/left_system_press"
-                  }
-               },
-               "mode" : "button",
-               "path" : "/user/hand/left/input/Button3"
-            },
-            {
-               "inputs" : {
-                  "click" : {
-                     "output" : "/actions/legacy/in/left_axis0_press"
-                  }
-               },
-               "mode" : "button",
-               "path" : "/user/hand/left/input/Button4"
+               "path" : "/user/hand/left/input/button1"
             },
             {
                "inputs" : {
                   "click" : {
                      "output" : "/actions/legacy/in/left_axis1_press"
+                  },
+                  "touch" : {
+                     "output" : "/actions/legacy/in/left_axis1_touch"
                   }
                },
                "mode" : "button",
-               "path" : "/user/hand/left/input/Button5"
+               "path" : "/user/hand/left/input/button2"
             },
             {
                "inputs" : {
                   "click" : {
-                     "output" : "/actions/legacy/in/left_axis2_press"
+                     "output" : "/actions/legacy/in/left_applicationmenu_press"
+                  },
+                  "touch" : {
+                     "output" : "/actions/legacy/in/left_applicationmenu_touch"
                   }
                },
                "mode" : "button",
-               "path" : "/user/hand/left/input/Button6"
+               "path" : "/user/hand/left/input/button3"
             },
             {
                "inputs" : {
                   "click" : {
-                     "output" : "/actions/legacy/in/left_axis3_press"
+                     "output" : "/actions/legacy/in/left_axis0_press"
+                  },
+                  "touch" : {
+                     "output" : "/actions/legacy/in/left_axis0_touch"
                   }
                },
                "mode" : "button",
-               "path" : "/user/hand/left/input/Button7"
+               "path" : "/user/hand/left/input/button4"
             },
             {
                "inputs" : {
+                  "click" : {
+                     "output" : "/actions/legacy/in/left_axis0_press"
+                  },
                   "position" : {
                      "output" : "/actions/legacy/in/left_axis0_value"
+                  },
+                  "touch" : {
+                     "output" : "/actions/legacy/in/left_axis0_touch"
                   }
                },
                "mode" : "joystick",
-               "path" : "/user/hand/left/input/Joystick0"
+               "path" : "/user/hand/left/input/joystick0"
             },
             {
                "inputs" : {
                   "pull" : {
                      "output" : "/actions/legacy/in/left_axis1_value"
+                  },
+                  "touch" : {
+                     "output" : "/actions/legacy/in/left_axis1_touch"
                   }
                },
                "mode" : "trigger",
-               "path" : "/user/hand/left/input/Trigger0"
+               "path" : "/user/hand/left/input/trigger0"
             },
             {
                "inputs" : {
                   "pull" : {
-                     "output" : "/actions/legacy/in/left_axis3_value"
+                     "output" : "/actions/legacy/in/left_axis2_value1"
+                  },
+                  "touch" : {
+                     "output" : "/actions/legacy/in/left_axis2_touch"
                   }
                },
                "mode" : "trigger",
-               "path" : "/user/hand/left/input/Trigger1"
+               "path" : "/user/hand/left/input/trigger1"
             },
             {
                "inputs" : {
-                  "click" : {
-                     "output" : "/actions/legacy/in/right_a_press"
+                  "pull" : {
+                     "output" : "/actions/legacy/in/left_axis3_value_e0"
                   }
                },
-               "mode" : "button",
-               "path" : "/user/hand/right/input/Button0"
+               "mode" : "trigger",
+               "path" : "/user/hand/left/input/trigger3"
             },
             {
                "inputs" : {
-                  "click" : {
-                     "output" : "/actions/legacy/in/right_grip_press"
+                  "pull" : {
+                     "output" : "/actions/legacy/in/left_axis3_value_e1"
                   }
                },
-               "mode" : "button",
-               "path" : "/user/hand/right/input/Button1"
+               "mode" : "trigger",
+               "path" : "/user/hand/left/input/trigger4"
             },
             {
                "inputs" : {
-                  "click" : {
-                     "output" : "/actions/legacy/in/right_applicationmenu_press"
+                  "pull" : {
+                     "output" : "/actions/legacy/in/left_axis4_value_e0"
                   }
                },
-               "mode" : "button",
-               "path" : "/user/hand/right/input/Button2"
+               "mode" : "trigger",
+               "path" : "/user/hand/left/input/trigger5"
+            },
+            {
+               "inputs" : {
+                  "pull" : {
+                     "output" : "/actions/legacy/in/left_axis4_value_e1"
+                  }
+               },
+               "mode" : "trigger",
+               "path" : "/user/hand/left/input/trigger6"
             },
             {
                "inputs" : {
                   "click" : {
                      "output" : "/actions/legacy/in/right_system_press"
+                  },
+                  "touch" : {
+                     "output" : "/actions/legacy/in/right_system_touch"
                   }
                },
                "mode" : "button",
-               "path" : "/user/hand/right/input/Button3"
+               "path" : "/user/hand/right/input/button0"
             },
             {
                "inputs" : {
                   "click" : {
-                     "output" : "/actions/legacy/in/right_axis0_press"
+                     "output" : "/actions/legacy/in/right_grip_press"
+                  },
+                  "touch" : {
+                     "output" : "/actions/legacy/in/right_grip_touch"
                   }
                },
                "mode" : "button",
-               "path" : "/user/hand/right/input/Button4"
+               "path" : "/user/hand/right/input/button1"
             },
             {
                "inputs" : {
                   "click" : {
                      "output" : "/actions/legacy/in/right_axis1_press"
+                  },
+                  "touch" : {
+                     "output" : "/actions/legacy/in/right_axis1_touch"
                   }
                },
                "mode" : "button",
-               "path" : "/user/hand/right/input/Button5"
+               "path" : "/user/hand/right/input/button2"
             },
             {
                "inputs" : {
                   "click" : {
-                     "output" : "/actions/legacy/in/right_axis2_press"
+                     "output" : "/actions/legacy/in/right_applicationmenu_press"
+                  },
+                  "touch" : {
+                     "output" : "/actions/legacy/in/right_applicationmenu_touch"
                   }
                },
                "mode" : "button",
-               "path" : "/user/hand/right/input/Button6"
+               "path" : "/user/hand/right/input/button3"
             },
             {
                "inputs" : {
                   "click" : {
-                     "output" : "/actions/legacy/in/right_axis3_press"
+                     "output" : "/actions/legacy/in/right_axis0_press"
+                  },
+                  "touch" : {
+                     "output" : "/actions/legacy/in/right_axis0_touch"
                   }
                },
                "mode" : "button",
-               "path" : "/user/hand/right/input/Button7"
+               "path" : "/user/hand/right/input/button4"
             },
             {
                "inputs" : {
+                  "click" : {
+                     "output" : "/actions/legacy/in/right_axis0_press"
+                  },
                   "position" : {
                      "output" : "/actions/legacy/in/right_axis0_value"
+                  },
+                  "touch" : {
+                     "output" : "/actions/legacy/in/right_axis0_touch"
                   }
                },
                "mode" : "joystick",
-               "path" : "/user/hand/right/input/Joystick0"
+               "path" : "/user/hand/right/input/joystick0"
             },
             {
                "inputs" : {
                   "pull" : {
                      "output" : "/actions/legacy/in/right_axis1_value"
+                  },
+                  "touch" : {
+                     "output" : "/actions/legacy/in/right_axis1_touch"
                   }
                },
                "mode" : "trigger",
-               "path" : "/user/hand/right/input/Trigger0"
+               "path" : "/user/hand/right/input/trigger0"
             },
             {
                "inputs" : {
                   "pull" : {
-                     "output" : "/actions/legacy/in/right_axis3_value"
+                     "output" : "/actions/legacy/in/right_axis2_value1"
+                  },
+                  "touch" : {
+                     "output" : "/actions/legacy/in/right_axis2_touch"
                   }
                },
                "mode" : "trigger",
-               "path" : "/user/hand/right/input/Trigger1"
+               "path" : "/user/hand/right/input/trigger1"
+            },
+            {
+               "inputs" : {
+                  "pull" : {
+                     "output" : "/actions/legacy/in/right_axis3_value_e0"
+                  }
+               },
+               "mode" : "trigger",
+               "path" : "/user/hand/right/input/trigger3"
+            },
+            {
+               "inputs" : {
+                  "pull" : {
+                     "output" : "/actions/legacy/in/right_axis3_value_e1"
+                  }
+               },
+               "mode" : "trigger",
+               "path" : "/user/hand/right/input/trigger4"
+            },
+            {
+               "inputs" : {
+                  "pull" : {
+                     "output" : "/actions/legacy/in/right_axis4_value_e0"
+                  }
+               },
+               "mode" : "trigger",
+               "path" : "/user/hand/right/input/trigger5"
+            },
+            {
+               "inputs" : {
+                  "pull" : {
+                     "output" : "/actions/legacy/in/right_axis4_value_e1"
+                  }
+               },
+               "mode" : "trigger",
+               "path" : "/user/hand/right/input/trigger6"
+            }
+         ]
+      },
+      "/actions/legacy_mirrored" : {
+         "haptics" : [
+            {
+               "output" : "/actions/legacy_mirrored/out/haptic",
+               "path" : "/user/hand/left/output/haptic"
+            },
+            {
+               "output" : "/actions/legacy_mirrored/out/haptic",
+               "path" : "/user/hand/right/output/haptic"
+            }
+         ],
+         "poses" : [
+            {
+               "output" : "/actions/legacy_mirrored/in/pose",
+               "path" : "/user/hand/left/pose/raw"
+            },
+            {
+               "output" : "/actions/legacy_mirrored/in/pose",
+               "path" : "/user/hand/right/pose/raw"
+            }
+         ],
+         "sources" : [
+            {
+               "inputs" : {
+                  "click" : {
+                     "output" : "/actions/legacy_mirrored/in/system_press"
+                  },
+                  "touch" : {
+                     "output" : "/actions/legacy_mirrored/in/system_touch"
+                  }
+               },
+               "mode" : "button",
+               "path" : "/user/hand/left/input/button0"
+            },
+            {
+               "inputs" : {
+                  "click" : {
+                     "output" : "/actions/legacy_mirrored/in/grip_press"
+                  },
+                  "touch" : {
+                     "output" : "/actions/legacy_mirrored/in/grip_touch"
+                  }
+               },
+               "mode" : "button",
+               "path" : "/user/hand/left/input/button1"
+            },
+            {
+               "inputs" : {
+                  "click" : {
+                     "output" : "/actions/legacy_mirrored/in/axis1_press"
+                  },
+                  "touch" : {
+                     "output" : "/actions/legacy_mirrored/in/axis1_touch"
+                  }
+               },
+               "mode" : "button",
+               "path" : "/user/hand/left/input/button2"
+            },
+            {
+               "inputs" : {
+                  "click" : {
+                     "output" : "/actions/legacy_mirrored/in/applicationmenu_press"
+                  },
+                  "touch" : {
+                     "output" : "/actions/legacy_mirrored/in/applicationmenu_touch"
+                  }
+               },
+               "mode" : "button",
+               "path" : "/user/hand/left/input/button3"
+            },
+            {
+               "inputs" : {
+                  "click" : {
+                     "output" : "/actions/legacy_mirrored/in/axis0_press"
+                  },
+                  "touch" : {
+                     "output" : "/actions/legacy_mirrored/in/axis0_touch"
+                  }
+               },
+               "mode" : "button",
+               "path" : "/user/hand/left/input/button4"
+            },
+            {
+               "inputs" : {
+                  "click" : {
+                     "output" : "/actions/legacy_mirrored/in/axis0_press"
+                  },
+                  "position" : {
+                     "output" : "/actions/legacy_mirrored/in/axis0_value"
+                  },
+                  "touch" : {
+                     "output" : "/actions/legacy_mirrored/in/axis0_touch"
+                  }
+               },
+               "mode" : "joystick",
+               "path" : "/user/hand/left/input/joystick0"
+            },
+            {
+               "inputs" : {
+                  "pull" : {
+                     "output" : "/actions/legacy_mirrored/in/axis1_value"
+                  },
+                  "touch" : {
+                     "output" : "/actions/legacy_mirrored/in/axis1_touch"
+                  }
+               },
+               "mode" : "trigger",
+               "path" : "/user/hand/left/input/trigger0"
+            },
+            {
+               "inputs" : {
+                  "pull" : {
+                     "output" : "/actions/legacy_mirrored/in/axis2_value1"
+                  },
+                  "touch" : {
+                     "output" : "/actions/legacy_mirrored/in/axis2_touch"
+                  }
+               },
+               "mode" : "trigger",
+               "path" : "/user/hand/left/input/trigger1"
+            },
+            {
+               "inputs" : {
+                  "pull" : {
+                     "output" : "/actions/legacy_mirrored/in/axis3_value_e0"
+                  }
+               },
+               "mode" : "trigger",
+               "path" : "/user/hand/left/input/trigger3"
+            },
+            {
+               "inputs" : {
+                  "pull" : {
+                     "output" : "/actions/legacy_mirrored/in/axis3_value_e1"
+                  }
+               },
+               "mode" : "trigger",
+               "path" : "/user/hand/left/input/trigger4"
+            },
+            {
+               "inputs" : {
+                  "pull" : {
+                     "output" : "/actions/legacy_mirrored/in/axis4_value_e0"
+                  }
+               },
+               "mode" : "trigger",
+               "path" : "/user/hand/left/input/trigger5"
+            },
+            {
+               "inputs" : {
+                  "pull" : {
+                     "output" : "/actions/legacy_mirrored/in/axis4_value_e1"
+                  }
+               },
+               "mode" : "trigger",
+               "path" : "/user/hand/left/input/trigger6"
+            },
+            {
+               "inputs" : {
+                  "click" : {
+                     "output" : "/actions/legacy_mirrored/in/system_press"
+                  },
+                  "touch" : {
+                     "output" : "/actions/legacy_mirrored/in/system_touch"
+                  }
+               },
+               "mode" : "button",
+               "path" : "/user/hand/right/input/button0"
+            },
+            {
+               "inputs" : {
+                  "click" : {
+                     "output" : "/actions/legacy_mirrored/in/grip_press"
+                  },
+                  "touch" : {
+                     "output" : "/actions/legacy_mirrored/in/grip_touch"
+                  }
+               },
+               "mode" : "button",
+               "path" : "/user/hand/right/input/button1"
+            },
+            {
+               "inputs" : {
+                  "click" : {
+                     "output" : "/actions/legacy_mirrored/in/axis1_press"
+                  },
+                  "touch" : {
+                     "output" : "/actions/legacy_mirrored/in/axis1_touch"
+                  }
+               },
+               "mode" : "button",
+               "path" : "/user/hand/right/input/button2"
+            },
+            {
+               "inputs" : {
+                  "click" : {
+                     "output" : "/actions/legacy_mirrored/in/applicationmenu_press"
+                  },
+                  "touch" : {
+                     "output" : "/actions/legacy_mirrored/in/applicationmenu_touch"
+                  }
+               },
+               "mode" : "button",
+               "path" : "/user/hand/right/input/button3"
+            },
+            {
+               "inputs" : {
+                  "click" : {
+                     "output" : "/actions/legacy_mirrored/in/axis0_press"
+                  },
+                  "touch" : {
+                     "output" : "/actions/legacy_mirrored/in/axis0_touch"
+                  }
+               },
+               "mode" : "button",
+               "path" : "/user/hand/right/input/button4"
+            },
+            {
+               "inputs" : {
+                  "click" : {
+                     "output" : "/actions/legacy_mirrored/in/axis0_press"
+                  },
+                  "position" : {
+                     "output" : "/actions/legacy_mirrored/in/axis0_value"
+                  },
+                  "touch" : {
+                     "output" : "/actions/legacy_mirrored/in/axis0_touch"
+                  }
+               },
+               "mode" : "joystick",
+               "path" : "/user/hand/right/input/joystick0"
+            },
+            {
+               "inputs" : {
+                  "pull" : {
+                     "output" : "/actions/legacy_mirrored/in/axis1_value"
+                  },
+                  "touch" : {
+                     "output" : "/actions/legacy_mirrored/in/axis1_touch"
+                  }
+               },
+               "mode" : "trigger",
+               "path" : "/user/hand/right/input/trigger0"
+            },
+            {
+               "inputs" : {
+                  "pull" : {
+                     "output" : "/actions/legacy_mirrored/in/axis2_value1"
+                  },
+                  "touch" : {
+                     "output" : "/actions/legacy_mirrored/in/axis2_touch"
+                  }
+               },
+               "mode" : "trigger",
+               "path" : "/user/hand/right/input/trigger1"
+            },
+            {
+               "inputs" : {
+                  "pull" : {
+                     "output" : "/actions/legacy_mirrored/in/axis3_value_e0"
+                  }
+               },
+               "mode" : "trigger",
+               "path" : "/user/hand/right/input/trigger3"
+            },
+            {
+               "inputs" : {
+                  "pull" : {
+                     "output" : "/actions/legacy_mirrored/in/axis3_value_e1"
+                  }
+               },
+               "mode" : "trigger",
+               "path" : "/user/hand/right/input/trigger4"
+            },
+            {
+               "inputs" : {
+                  "pull" : {
+                     "output" : "/actions/legacy_mirrored/in/axis4_value_e0"
+                  }
+               },
+               "mode" : "trigger",
+               "path" : "/user/hand/right/input/trigger5"
+            },
+            {
+               "inputs" : {
+                  "pull" : {
+                     "output" : "/actions/legacy_mirrored/in/axis4_value_e1"
+                  }
+               },
+               "mode" : "trigger",
+               "path" : "/user/hand/right/input/trigger6"
             }
          ]
       }
    },
    "controller_type" : "vmt",
-   "description" : "Default legacy binding",
-   "name" : "Default legacy binding"
+   "description" : "default legacy binding",
+   "name" : "default legacy binding"
 }

@@ -736,6 +736,64 @@ namespace vmt_manager
             }
         }
 
+        private void ButtonTouchSend(int buttonIndex, bool press)
+        {
+            var index = GetInputIndex();
+            int value = press ? 1 : 0;
+            float timeoffset = 0;
+            if (index.ok)
+            {
+                osc.Send(new OscMessage("/VMT/Input/Button/Touch",
+                    index.i, buttonIndex, timeoffset, value));
+            }
+        }
+        private void TriggerClickSend(int buttonIndex, bool press)
+        {
+            var index = GetInputIndex();
+            int value = press ? 1 : 0;
+            float timeoffset = 0;
+            if (index.ok)
+            {
+                osc.Send(new OscMessage("/VMT/Input/Trigger/Click",
+                    index.i, buttonIndex, timeoffset, value));
+            }
+        }
+
+        private void TriggerTouchSend(int buttonIndex, bool press)
+        {
+            var index = GetInputIndex();
+            int value = press ? 1 : 0;
+            float timeoffset = 0;
+            if (index.ok)
+            {
+                osc.Send(new OscMessage("/VMT/Input/Trigger/Touch",
+                    index.i, buttonIndex, timeoffset, value));
+            }
+        }
+        private void JoystickClickSend(int buttonIndex, bool press)
+        {
+            var index = GetInputIndex();
+            int value = press ? 1 : 0;
+            float timeoffset = 0;
+            if (index.ok)
+            {
+                osc.Send(new OscMessage("/VMT/Input/Joystick/Click",
+                    index.i, buttonIndex, timeoffset, value));
+            }
+        }
+
+        private void JoystickTouchSend(int buttonIndex, bool press)
+        {
+            var index = GetInputIndex();
+            int value = press ? 1 : 0;
+            float timeoffset = 0;
+            if (index.ok)
+            {
+                osc.Send(new OscMessage("/VMT/Input/Joystick/Touch",
+                    index.i, buttonIndex, timeoffset, value));
+            }
+        }
+
         private void Button0_MouseDown(object sender, MouseButtonEventArgs e)
         {
             ButtonSend(0, true);
@@ -1060,6 +1118,7 @@ namespace vmt_manager
             SliderC.Value = 0f;
             SliderD.Value = 0f;
         }
+
         private void HapticTestButton(object sender, RoutedEventArgs e)
         {
             var index = GetInputIndex();
@@ -1508,5 +1567,189 @@ namespace vmt_manager
                 MessageBox.Show(ex.Message, title, MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
+
+        private void Button0TouchChecked(object sender, RoutedEventArgs e)
+        {
+            ButtonTouchSend(0, Button0TouchCheckBox.IsChecked.Value);
+        }
+        private void Button1TouchChecked(object sender, RoutedEventArgs e)
+        {
+            ButtonTouchSend(1, Button1TouchCheckBox.IsChecked.Value);
+        }
+        private void Button2TouchChecked(object sender, RoutedEventArgs e)
+        {
+            ButtonTouchSend(2, Button2TouchCheckBox.IsChecked.Value);
+        }
+        private void Button3TouchChecked(object sender, RoutedEventArgs e)
+        {
+            ButtonTouchSend(3, Button3TouchCheckBox.IsChecked.Value);
+        }
+        private void Button4TouchChecked(object sender, RoutedEventArgs e)
+        {
+            ButtonTouchSend(4, Button4TouchCheckBox.IsChecked.Value);
+        }
+        private void Button5TouchChecked(object sender, RoutedEventArgs e)
+        {
+            ButtonTouchSend(5, Button5TouchCheckBox.IsChecked.Value);
+        }
+        private void Button6TouchChecked(object sender, RoutedEventArgs e)
+        {
+            ButtonTouchSend(6, Button6TouchCheckBox.IsChecked.Value);
+        }
+        private void Button7TouchChecked(object sender, RoutedEventArgs e)
+        {
+            ButtonTouchSend(7, Button7TouchCheckBox.IsChecked.Value);
+        }
+        private void Button8TouchChecked(object sender, RoutedEventArgs e)
+        {
+            ButtonTouchSend(8, Button8TouchCheckBox.IsChecked.Value);
+        }
+        private void Button9TouchChecked(object sender, RoutedEventArgs e)
+        {
+            ButtonTouchSend(9, Button9TouchCheckBox.IsChecked.Value);
+        }
+        private void Button10TouchChecked(object sender, RoutedEventArgs e)
+        {
+            ButtonTouchSend(10, Button10TouchCheckBox.IsChecked.Value);
+        }
+        private void Button11TouchChecked(object sender, RoutedEventArgs e)
+        {
+            ButtonTouchSend(11, Button11TouchCheckBox.IsChecked.Value);
+        }
+        private void Button12TouchChecked(object sender, RoutedEventArgs e)
+        {
+            ButtonTouchSend(12, Button12TouchCheckBox.IsChecked.Value);
+        }
+        private void Button13TouchChecked(object sender, RoutedEventArgs e)
+        {
+            ButtonTouchSend(13, Button13TouchCheckBox.IsChecked.Value);
+        }
+        private void Button14TouchChecked(object sender, RoutedEventArgs e)
+        {
+            ButtonTouchSend(14, Button14TouchCheckBox.IsChecked.Value);
+        }
+        private void Button15TouchChecked(object sender, RoutedEventArgs e)
+        {
+            ButtonTouchSend(15, Button15TouchCheckBox.IsChecked.Value);
+        }
+        private void Button16TouchChecked(object sender, RoutedEventArgs e)
+        {
+            ButtonTouchSend(16, Button16TouchCheckBox.IsChecked.Value);
+        }
+        private void Button17TouchChecked(object sender, RoutedEventArgs e)
+        {
+            ButtonTouchSend(17, Button17TouchCheckBox.IsChecked.Value);
+        }
+
+        private void Trigger0TouchChecked(object sender, RoutedEventArgs e)
+        {
+            TriggerTouchSend(0, Trigger0TouchCheckBox.IsChecked.Value);
+        }
+        private void Trigger1TouchChecked(object sender, RoutedEventArgs e)
+        {
+            TriggerTouchSend(1, Trigger1TouchCheckBox.IsChecked.Value);
+        }
+        private void Trigger2TouchChecked(object sender, RoutedEventArgs e)
+        {
+            TriggerTouchSend(2, Trigger2TouchCheckBox.IsChecked.Value);
+        }
+        private void Trigger3TouchChecked(object sender, RoutedEventArgs e)
+        {
+            TriggerTouchSend(3, Trigger3TouchCheckBox.IsChecked.Value);
+        }
+        private void Trigger4TouchChecked(object sender, RoutedEventArgs e)
+        {
+            TriggerTouchSend(4, Trigger4TouchCheckBox.IsChecked.Value);
+        }
+        private void Trigger5TouchChecked(object sender, RoutedEventArgs e)
+        {
+            TriggerTouchSend(5, Trigger5TouchCheckBox.IsChecked.Value);
+        }
+        private void Trigger6TouchChecked(object sender, RoutedEventArgs e)
+        {
+            TriggerTouchSend(6, Trigger6TouchCheckBox.IsChecked.Value);
+        }
+        private void Trigger7TouchChecked(object sender, RoutedEventArgs e)
+        {
+            TriggerTouchSend(7, Trigger7TouchCheckBox.IsChecked.Value);
+        }
+        private void Trigger8TouchChecked(object sender, RoutedEventArgs e)
+        {
+            TriggerTouchSend(8, Trigger8TouchCheckBox.IsChecked.Value);
+        }
+
+        private void Trigger0ClickChecked(object sender, RoutedEventArgs e)
+        {
+            TriggerClickSend(0, Trigger0ClickCheckBox.IsChecked.Value);
+        }
+        private void Trigger1ClickChecked(object sender, RoutedEventArgs e)
+        {
+            TriggerClickSend(1, Trigger1ClickCheckBox.IsChecked.Value);
+        }
+        private void Trigger2ClickChecked(object sender, RoutedEventArgs e)
+        {
+            TriggerClickSend(2, Trigger2ClickCheckBox.IsChecked.Value);
+        }
+        private void Trigger3ClickChecked(object sender, RoutedEventArgs e)
+        {
+            TriggerClickSend(3, Trigger3ClickCheckBox.IsChecked.Value);
+        }
+        private void Trigger4ClickChecked(object sender, RoutedEventArgs e)
+        {
+            TriggerClickSend(4, Trigger4ClickCheckBox.IsChecked.Value);
+        }
+        private void Trigger5ClickChecked(object sender, RoutedEventArgs e)
+        {
+            TriggerClickSend(5, Trigger5ClickCheckBox.IsChecked.Value);
+        }
+        private void Trigger6ClickChecked(object sender, RoutedEventArgs e)
+        {
+            TriggerClickSend(6, Trigger6ClickCheckBox.IsChecked.Value);
+        }
+        private void Trigger7ClickChecked(object sender, RoutedEventArgs e)
+        {
+            TriggerClickSend(7, Trigger7ClickCheckBox.IsChecked.Value);
+        }
+        private void Trigger8ClickChecked(object sender, RoutedEventArgs e)
+        {
+            TriggerClickSend(8, Trigger8ClickCheckBox.IsChecked.Value);
+        }
+
+
+        private void Joystick0TouchChecked(object sender, RoutedEventArgs e)
+        {
+            JoystickTouchSend(0, Joystick0TouchCheckBox.IsChecked.Value);
+        }
+        private void Joystick1TouchChecked(object sender, RoutedEventArgs e)
+        {
+            JoystickTouchSend(1, Joystick1TouchCheckBox.IsChecked.Value);
+        }
+        private void Joystick2TouchChecked(object sender, RoutedEventArgs e)
+        {
+            JoystickTouchSend(2, Joystick2TouchCheckBox.IsChecked.Value);
+        }
+        private void Joystick3TouchChecked(object sender, RoutedEventArgs e)
+        {
+            JoystickTouchSend(3, Joystick3TouchCheckBox.IsChecked.Value);
+        }
+
+
+        private void Joystick0ClickChecked(object sender, RoutedEventArgs e)
+        {
+            JoystickClickSend(0, Joystick0ClickCheckBox.IsChecked.Value);
+        }
+        private void Joystick1ClickChecked(object sender, RoutedEventArgs e)
+        {
+            JoystickClickSend(1, Joystick1ClickCheckBox.IsChecked.Value);
+        }
+        private void Joystick2ClickChecked(object sender, RoutedEventArgs e)
+        {
+            JoystickClickSend(2, Joystick2ClickCheckBox.IsChecked.Value);
+        }
+        private void Joystick3ClickChecked(object sender, RoutedEventArgs e)
+        {
+            JoystickClickSend(3, Joystick3ClickCheckBox.IsChecked.Value);
+        }
+
     }
 }

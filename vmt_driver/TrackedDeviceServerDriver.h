@@ -131,9 +131,17 @@ namespace VMTDriver {
         VRBoneTransform_t m_boneTransform[skeletonBoneCount]{ 0 };
 
         VRInputComponentHandle_t ButtonComponent[buttonCount]{ 0 };
+        VRInputComponentHandle_t ButtonTouchComponent[buttonCount]{ 0 };
+
         VRInputComponentHandle_t TriggerComponent[triggerCount]{ 0 };
+        VRInputComponentHandle_t TriggerTouchComponent[triggerCount]{ 0 };
+        VRInputComponentHandle_t TriggerClickComponent[triggerCount]{ 0 };
+
         VRInputComponentHandle_t JoystickXComponent[joystickCount]{ 0 };
         VRInputComponentHandle_t JoystickYComponent[joystickCount]{ 0 };
+        VRInputComponentHandle_t JoystickTouchComponent[joystickCount]{ 0 };
+        VRInputComponentHandle_t JoystickClickComponent[joystickCount]{ 0 };
+
         VRInputComponentHandle_t HapticComponent{ 0 };
         VRInputComponentHandle_t SkeletonComponent{ 0 };
 
@@ -154,9 +162,17 @@ namespace VMTDriver {
         DriverPose_t RawPoseToPose();
         void RegisterToVRSystem(int type);
         void UpdatePoseToVRSystem();
+
         void UpdateButtonInput(uint32_t index, bool value, double timeoffset);
+        void UpdateButtonTouchInput(uint32_t index, bool value, double timeoffset);
+
         void UpdateTriggerInput(uint32_t index, float value, double timeoffset);
+        void UpdateTriggerTouchInput(uint32_t index, bool value, double timeoffset);
+        void UpdateTriggerClickInput(uint32_t index, bool value, double timeoffset);
+
         void UpdateJoystickInput(uint32_t index, float x, float y, double timeoffset);
+        void UpdateJoystickTouchInput(uint32_t index, bool value, double timeoffset);
+        void UpdateJoystickClickInput(uint32_t index, bool value, double timeoffset);
 
         void WriteSkeletonInputBuffer(uint32_t index, VRBoneTransform_t bone);
         void WriteSkeletonInputBufferStaticLerpFinger(uint32_t finger, double t, uint32_t mode);
