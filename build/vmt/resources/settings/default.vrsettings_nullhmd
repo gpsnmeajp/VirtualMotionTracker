@@ -1,8 +1,6 @@
 {
 	"driver_null": {
-		"enable": true,
-		"modelNumber": "Null Driver (VMT default.vrsettings)",
-		"serialNumber": "Null Driver (VMT default.vrsettings)"
+		"enable": true
 	},
 	"trackers": {
 		"/devices/vmt/VMT_0": "TrackerRole_None",
