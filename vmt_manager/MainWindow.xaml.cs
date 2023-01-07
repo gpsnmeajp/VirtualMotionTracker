@@ -1922,6 +1922,9 @@ namespace vmt_manager
 
         private void TrackingOverridesAddButton_Click(object sender, RoutedEventArgs e)
         {
+            if (TrackingOverridesFromTextBox.Text == "") { return; }
+            if (TrackingOverridesToTextBox.Text == "") { return; }
+
             EVRSettingsError eVRSettingsError = EVRSettingsError.None;
             OpenVR.Settings.SetString(OpenVR.k_pch_TrackingOverride_Section, TrackingOverridesFromTextBox.Text, TrackingOverridesToTextBox.Text, ref eVRSettingsError);
             if (eVRSettingsError != EVRSettingsError.None)
