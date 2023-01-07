@@ -1437,6 +1437,18 @@ namespace vmt_manager
             osc.Send(new OscMessage("/VMT/SetAutoPoseUpdate", 0));
             System.Media.SystemSounds.Beep.Play();
         }
+
+        private void EnableDiaglogButton(object sender, RoutedEventArgs e)
+        {
+            osc.Send(new OscMessage("/VMT/SetDiagLog", 1));
+            System.Media.SystemSounds.Beep.Play();
+        }
+        private void DisableDiaglogButton(object sender, RoutedEventArgs e)
+        {
+            osc.Send(new OscMessage("/VMT/SetDiagLog", 0));
+            System.Media.SystemSounds.Beep.Play();
+        }
+
         private void DeviceReloadButton(object sender, RoutedEventArgs e)
         {
             DeviceListView.Items.Clear();

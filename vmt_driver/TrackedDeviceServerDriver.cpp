@@ -887,14 +887,6 @@ namespace VMTDriver {
     std::string TrackedDeviceServerDriver::VMTDebugCommand(std::string command)
     {
         //ここに開発中に使うようなコマンドを並べておく
-        if (command == "DIAG_ON") {
-            Log::s_diag = true;
-            return "OK DIAG_ON";
-        }
-        if (command == "DIAG_OFF") {
-            Log::s_diag = false;
-            return "OK DIAG_OFF";
-        }
         return "Err";
     }
 

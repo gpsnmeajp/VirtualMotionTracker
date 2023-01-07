@@ -212,6 +212,17 @@ namespace VMTDriver {
 		m_RoomMatrixStatus = ok;
 	}
 
+	//汎用設定項目をOSCから設定する
+	void Config::SetConfigFromOSC(std::string name, std::string value) {
+		json j = LoadJson();
+
+		//TODO:
+		//j["RoomMatrix"] = { m1,m2,m3,m4,m5,m6,m7,m8,m9,m10,m11,m12 };
+
+		SaveJson(j);
+		LoadSetting();
+	}
+
 	//ルーム変換行列の取得
 	Eigen::Matrix4d& Config::GetRoomToDriverMatrix()
 	{

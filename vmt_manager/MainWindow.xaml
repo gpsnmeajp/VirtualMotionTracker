@@ -148,6 +148,8 @@
 								<Button Content="Show all" Click="ShowAllButton" Margin="1"/>
 								<Button Content="[Enable] Auto Pose Udate" Click="EnableAutoPoseUdateButton" Margin="1"/>
 								<Button Content="[Disable] Auto Pose Udate" Click="DisableAutoPoseUdateButton" Margin="1"/>
+								<Button Content="[Enable] Diag log" Click="EnableDiaglogButton" Margin="1"/>
+								<Button Content="[Disable] Diag log" Click="DisableDiaglogButton" Margin="1"/>
 								<CheckBox Content="Load Testing" Name="LoadTestCheckBox" IsChecked="False" Checked="LoadTestCheckBoxEvent" Unchecked="LoadTestCheckBoxEvent" Margin="1"/>
 							</StackPanel>
 						</GroupBox>

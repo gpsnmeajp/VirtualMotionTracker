@@ -217,6 +217,8 @@ namespace VMTDriver {
 		float m11{};
 		float m12{};
 		const char* command = nullptr;
+		const char* name = nullptr;
+		const char* value = nullptr;
 
 		try {
 			string adr = m.AddressPattern();
@@ -486,6 +488,20 @@ namespace VMTDriver {
 			{
 				LogIfDiag("%s", adr.c_str());
 				GetServer()->RequestRestart();
+			}
+			//診断用ログの設定
+			else if (adr == "/VMT/SetDiagLog")
+			{
+				args >> enable >> osc::EndMessage;
+				LogIfDiag("%s : %d", adr.c_str(), enable);
+				Log::s_diag = enable != 0;
+			}
+			//汎用設定
+			else if (adr == "/VMT/Config")
+			{
+				args >> name >> value >> osc::EndMessage;
+				LogIfDiag("%s : %s %s", adr.c_str(), name, value);
+				Config::GetInstance()->SetConfigFromOSC(name, value);
 			}
 
 			//デバッグコマンド
