@@ -88,6 +88,7 @@ namespace VMTDriver {
         return result;
     }
 
+    //デバイス購読
     void ServerTrackedDeviceProvider::SubscribeDevice(std::string serial) {
 
         //登録済みなら受け付けない
@@ -109,6 +110,7 @@ namespace VMTDriver {
         }
     }
 
+    //デバイス購読解除
     void ServerTrackedDeviceProvider::UnsubscribeDevice(std::string serial) {
         for (auto it = m_subscribeDevices.begin(), e = m_subscribeDevices.end(); it != e; ++it) {
             if (*it == serial) {
@@ -176,6 +178,10 @@ namespace VMTDriver {
         return k_unTrackedDeviceIndexInvalid;
     }
 
+    //再起動要求
+    void ServerTrackedDeviceProvider::RequestRestart() {
+        VRServerDriverHost()->RequestRestart("*** RESTART REQUIRED ***","","","");
+    }
 
     //** OpenVR向け関数群 **
 
@@ -216,14 +222,14 @@ namespace VMTDriver {
         //起動時に既定の互換性コントローラとして登録する処理
         if (Config::GetInstance()->GetDefaultControllerDeviceRegistrationCompatibleMode())
         {
-            m_devices[0].RegisterToVRSystem(5);//VMT_0 = Compatible(Knuckles) Controller Left
-            m_devices[1].RegisterToVRSystem(6);//VMT_1 = Compatible(Knuckles) Controller Right
+            m_devices[1].RegisterToVRSystem(5);//VMT_1 = Compatible(Knuckles) Controller Left
+            m_devices[2].RegisterToVRSystem(6);//VMT_2 = Compatible(Knuckles) Controller Right
         }
         else {
             //起動時に既定のコントローラとして登録する処理
             if (Config::GetInstance()->GetDefaultControllerDeviceRegistration()) {
-                m_devices[0].RegisterToVRSystem(2);//VMT_0 = Controller Left
-                m_devices[1].RegisterToVRSystem(3);//VMT_1 = Controller Right
+                m_devices[1].RegisterToVRSystem(2);//VMT_1 = Controller Left
+                m_devices[2].RegisterToVRSystem(3);//VMT_2 = Controller Right
             }
         }
 

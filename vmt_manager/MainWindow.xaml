@@ -83,7 +83,7 @@
 									<TextBlock Text="Check VMT__0 Position &#xA;(Try set RoomPos=[1,1,1] )" TextAlignment="Center"/>
 								</Button>
 								<Button DockPanel.Dock="Top" Click="CheckTemplatePosition1Button" Margin="1">
-									<TextBlock Text="Set Hand Position (Room)&#xA;(VMT__0, VMT__1)" TextAlignment="Center"/>
+									<TextBlock Text="Set Hand Position (Room)&#xA;(VMT__1, VMT__2)" TextAlignment="Center"/>
 								</Button>
 								<TextBlock Text="VMT_0 Joint Serial No" DockPanel.Dock="Top" Margin="1"/>
 								<TextBox Name="JointSerialNoTextBox" Text="HMD" DockPanel.Dock="Top" Margin="1"/>
@@ -94,10 +94,10 @@
 									<TextBlock Text="Check VMT__0 Position &#xA;(Try set FollowPos=[-0.1,0.0,-0.5] )" TextAlignment="Center"/>
 								</Button>
 								<Button DockPanel.Dock="Top" Click="CheckTemplatePosition1JointButton" Margin="1">
-									<TextBlock Text="Set Hand Position(Joint) &#xA;(VMT__0, VMT__1)" TextAlignment="Center"/>
+									<TextBlock Text="Set Hand Position(Joint) &#xA;(VMT__1, VMT__2)" TextAlignment="Center"/>
 								</Button>
 								<Button DockPanel.Dock="Top" Click="CheckTemplatePosition1FollowButton" Margin="1">
-									<TextBlock Text="Set Hand Position(Follow) &#xA;(VMT__0, VMT__1)" TextAlignment="Center"/>
+									<TextBlock Text="Set Hand Position(Follow) &#xA;(VMT__1, VMT__2)" TextAlignment="Center"/>
 								</Button>
 								<TextBlock Text="Position Coordinate" DockPanel.Dock="Top" Margin="1"/>
 								<ComboBox DockPanel.Dock="Top" Name="CoordinateCombo" SelectedIndex="0">
@@ -125,12 +125,24 @@
 						</GroupBox>
 						<GroupBox Header="Non-Volatile (Save config)" DockPanel.Dock="Top" Margin="0,10,0,0">
 							<StackPanel>
-								<Button Content="[Enable] Diag log" Margin="1"/>
-								<Button Content="[Disable] Diag log" Margin="1"/>
+								<Button Content="[Enable] Diag log enable on startup" Margin="1"/>
+								<Button Content="[Disable] Diag log enable on startup" Margin="1"/>
 								<Button Content="XXXX ON" Margin="1"/>
 								<Button Content="XXXX OFF" Margin="1"/>
 								<Button Content="XXXX ON" Margin="1"/>
 								<Button Content="XXXX OFF" Margin="1"/>
+							</StackPanel>
+						</GroupBox>
+						<GroupBox Header="Tracking Overrides" DockPanel.Dock="Top" Margin="0,10,0,0">
+							<StackPanel>
+								<TextBlock Text="From (Device path)"/>
+								<TextBox Name="TrackingOverridesFromTextBox" Text="/devices/VMT_0" />
+								<TextBlock Text="To (Device path, Semantic path)"/>
+								<TextBox Name="TrackingOverridesToTextBox"  Text="/user/head" />
+								<Button Name="TrackingOverridesAddButton" Content="Add" Margin="1" Click="TrackingOverridesAddButton_Click"/>
+								<Button Name="TrackingOverridesRemoveAllButton" Content="Remove All" Margin="1" Click="TrackingOverridesRemoveAllButton_Click"/>
+								<TextBlock Text='&#xA;If you want to override pose by VMT, Please set "VMT" to "From", "Target device" to "To".&#xA;&#xA;
+If you want to override button, axis, fingers by VMT, Please set "Target device" to "From", "VMT" to "To".' TextWrapping="Wrap"/>
 							</StackPanel>
 						</GroupBox>
 					</DockPanel>

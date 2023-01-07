@@ -481,6 +481,13 @@ namespace VMTDriver {
 				LogIfDiag("%s", adr.c_str());
 				GetServer()->UnsubscribeDevice(root_sn);
 			}
+			//すべてのデバイスのリセット
+			else if (adr == "/VMT/RequestRestart")
+			{
+				LogIfDiag("%s", adr.c_str());
+				GetServer()->RequestRestart();
+			}
+
 			//デバッグコマンド
 			else if (adr == "/VMT/Debug")
 			{
@@ -537,6 +544,9 @@ namespace VMTDriver {
 		//通信ポートオープン
 		DirectOSC::OSC::GetInstance().Open(&m_rcv, config->GetReceivePort(), config->GetSendPort());
 		m_opened = true;
+
+		//セットアップへプロセス起動中を伝達するMutex
+		::CreateMutexA(nullptr, FALSE, "VMT_Mutex");
 	}
 	//通信のクローズ
 	void CommunicationManager::Close()

@@ -90,7 +90,8 @@ namespace vmt_manager
             TopNotInstalledTextBlock.Visibility = Visibility.Collapsed;
 
             //Top以外を削除する
-            if (!enable) {
+            if (!enable)
+            {
                 int count = MainTabControl.Items.Count;
                 for (int i = 1; i < count; i++)
                 {
@@ -176,7 +177,7 @@ namespace vmt_manager
                 if (eVRSettingsError == EVRSettingsError.None && !requireHmd)
                 {
                     //var result = MessageBox.Show("VMT has disabled in Steam VR setting.\nPlease enable, and restart SteamVR.\n\nVMTはSteamVR上で無効に設定されています。\n有効にし、SteamVRを再起動してください。", title, MessageBoxButton.OK, MessageBoxImage.Error);
-                    TopWarningMessage("Manager detected requireHmd is false on SteamVR. Some functions will not work probably.\nSteamVRにてrequireHmdがfalseに設定されています。いくつかの機能は正常に動かない可能性があります。",true);
+                    TopWarningMessage("Manager detected requireHmd is false on SteamVR. Some functions will not work probably.\nSteamVRにてrequireHmdがfalseに設定されています。いくつかの機能は正常に動かない可能性があります。", true);
                 }
 
                 //デバッグのためにセーフモードを有効化
@@ -292,7 +293,8 @@ namespace vmt_manager
                         {
                             StatusBar.Background = new SolidColorBrush(Color.FromRgb(255, 255, 0));
                         }
-                        else {
+                        else
+                        {
                             StatusBar.Background = new SolidColorBrush(Color.FromRgb(255, 255, 255));
                         }
                     });
@@ -315,7 +317,8 @@ namespace vmt_manager
 
                     //毎フレーム送られるため間引く
                     subscribeReceiveCnt++;
-                    if(subscribeReceiveCnt > 30) {
+                    if (subscribeReceiveCnt > 30)
+                    {
                         subscribeReceiveCnt = 0;
                         string serial = (string)message[0];
                         float x = (float)message[1];
@@ -331,8 +334,9 @@ namespace vmt_manager
                             subscribedDevicePoseDictionary[serial] = s;
 
                             SubscribedDeviceListView.Items.Clear();
-                            foreach (var d in subscribedDevicePoseDictionary) {
-                                SubscribedDeviceListView.Items.Add(d.Key+" : "+d.Value);
+                            foreach (var d in subscribedDevicePoseDictionary)
+                            {
+                                SubscribedDeviceListView.Items.Add(d.Key + " : " + d.Value);
                             }
                         });
                     }
@@ -379,7 +383,7 @@ namespace vmt_manager
                 HmdMatrix34_t m = new HmdMatrix34_t();
                 OpenVR.ChaperoneSetup.GetWorkingStandingZeroPoseToRawTrackingPose(ref m);
 
-                StatusBarDashboardAlertTextBlock.Visibility = OpenVR.Overlay.IsDashboardVisible()?Visibility.Visible:Visibility.Collapsed;
+                StatusBarDashboardAlertTextBlock.Visibility = OpenVR.Overlay.IsDashboardVisible() ? Visibility.Visible : Visibility.Collapsed;
 
                 RoomMatrixTextBox.Text =
                     String.Format("{0:0.00}, {1:0.00}, {2:0.00}, {3:0.00}\n{4:0.00}, {5:0.00}, {6:0.00}, {7:0.00}\n{8:0.00}, {9:0.00}, {10:0.00}, {11:0.00}\n", m.m0, m.m1, m.m2, m.m3, m.m4, m.m5, m.m6, m.m7, m.m8, m.m9, m.m10, m.m11);
@@ -433,7 +437,7 @@ namespace vmt_manager
                 if (t2 != null)
                 {
                     CheckPositionRawTextBox.Text = string.Format("{0:0.00}, {1:0.00}, {2:0.00}", t2.position.X, t2.position.Y, t2.position.Z);
-                    CheckPositionRawSpeedTextBox.Text = string.Format("{0:0.00}, {1:0.00}, {2:0.00}", t2.velocity.X, t2.velocity.Y, t2.velocity.Z);                    
+                    CheckPositionRawSpeedTextBox.Text = string.Format("{0:0.00}, {1:0.00}, {2:0.00}", t2.velocity.X, t2.velocity.Y, t2.velocity.Z);
                 }
 
                 if (aliveCnt > 90)
@@ -450,7 +454,8 @@ namespace vmt_manager
 
                 InputVMTHapticTextBox.Background = new SolidColorBrush(Color.FromRgb(255, 255, 255));
 
-                if (loadTest) {
+                if (loadTest)
+                {
                     ShowAllButton(null, null);
                 }
             }
@@ -467,7 +472,8 @@ namespace vmt_manager
         {
             //クローズ
             Console.WriteLine("Closed");
-            if (osc != null) {
+            if (osc != null)
+            {
                 osc.Dispose();
             }
         }
@@ -642,12 +648,13 @@ namespace vmt_manager
                     return;
                 }
 
-                if (driverPath.Contains(" ")) {
-                    MessageBox.Show("Path contains space. it couldn't install.\nパスにスペースが入っています。インストールできません。\n\n"+driverPath, title, MessageBoxButton.OK, MessageBoxImage.Error);
+                if (driverPath.Contains(" "))
+                {
+                    MessageBox.Show("Path contains space. it couldn't install.\nパスにスペースが入っています。インストールできません。\n\n" + driverPath, title, MessageBoxButton.OK, MessageBoxImage.Error);
                     return;
                 }
 
-                if (!File.Exists(driverPath+ @"\bin\win64\driver_vmt.dll"))
+                if (!File.Exists(driverPath + @"\bin\win64\driver_vmt.dll"))
                 {
                     MessageBox.Show("driver_vmt.dll not found. Do not break apart files. it couldn't install.\ndriver_vmt.dllが見つかりませんでした。ファイル構成をバラバラにしないでください。。インストールできません。\n\n" + driverPath, title, MessageBoxButton.OK, MessageBoxImage.Error);
                     return;
@@ -658,7 +665,8 @@ namespace vmt_manager
                 {
                     enc.GetBytes(driverPath);
                 }
-                catch (EncoderFallbackException) {
+                catch (EncoderFallbackException)
+                {
                     MessageBox.Show("Path contains non-ascii (Japanese, Chinese, emoji, or other). it couldn't install.\nパスに非ASCII文字(日本語、中国語、絵文字、その他)が入っています。インストールできません。\n\n" + driverPath, title, MessageBoxButton.OK, MessageBoxImage.Error);
                     return;
                 }
@@ -728,15 +736,16 @@ namespace vmt_manager
                     var res = MessageBox.Show("Do you want to remove setting.json?(Recommended: Yes)\nSetting.jsonを消去しますか?(推奨: はい)\n\n" + installPath + @"\setting.json", title, MessageBoxButton.YesNo, MessageBoxImage.Question);
                     if (res != MessageBoxResult.Yes)
                     {
-                        MessageBox.Show("OK (ExitCode=" + process.ExitCode + ")\nPlease restart SteamVR.\nSteamVRを再起動してください。", title);
+                        RequestRestart();
                         return;
                     }
                     File.Delete(driverPath + @"\setting.json");
-                    MessageBox.Show("OK and remove setting.json(ExitCode=" + process.ExitCode + ")\nPlease restart SteamVR.\nSteamVRを再起動してください。", title);
+                    RequestRestart();
                     return;
                 }
-                else {
-                    MessageBox.Show("OK (ExitCode=" + process.ExitCode + ")\nPlease restart SteamVR.\nSteamVRを再起動してください。", title);
+                else
+                {
+                    RequestRestart();
                     return;
                 }
             }
@@ -1188,7 +1197,8 @@ namespace vmt_manager
         private void InputVMTDebugTextBox_PreviewKeyDown(object sender, KeyEventArgs e)
         {
             //Enterキーを押したら送信
-            if (e.Key == Key.Enter) {
+            if (e.Key == Key.Enter)
+            {
                 DebugCommandButton(null, null);
             }
         }
@@ -1292,7 +1302,7 @@ namespace vmt_manager
             var index = GetInputIndex();
             if (index.ok)
             {
-                osc.Send(new OscMessage("/VMT/Room/Driver",
+                osc.Send(new OscMessage("/VMT/Room/Unity",
                 index.i, 4, 0f,
                 0f, 0f, 0f,
                 0f, 0f, 0f, 1f));
@@ -1304,10 +1314,10 @@ namespace vmt_manager
             var index = GetInputIndex();
             if (index.ok)
             {
-                osc.Send(new OscMessage("/VMT/Room/Driver",
-                index.i, 3, 0f,
-                0f, 0f, 0f,
-                0f, 0f, 0f, 1f));
+                osc.Send(new OscMessage("/VMT/Room/UEuler",
+                    index.i, 3, 0f,
+                    0.15f, 0f, 0.26f,
+                    -60f, -60f, 0f));
             }
         }
 
@@ -1316,10 +1326,11 @@ namespace vmt_manager
             var index = GetInputIndex();
             if (index.ok)
             {
-                osc.Send(new OscMessage("/VMT/Room/Driver",
-                index.i, 6, 0f,
-                0f, 0f, 0f,
-                0f, 0f, 0f, 1f));
+                osc.Send(new OscMessage("/VMT/Room/UEuler",
+                    index.i, 6, 0f,
+                    0.15f, 0f, 0.26f,
+                    -60f, -60f, 0f));
+
             }
         }
 
@@ -1328,10 +1339,10 @@ namespace vmt_manager
             var index = GetInputIndex();
             if (index.ok)
             {
-                osc.Send(new OscMessage("/VMT/Room/Driver",
-                index.i, 2, 0f,
-                0f, 0f, 0f,
-                0f, 0f, 0f, 1f));
+                osc.Send(new OscMessage("/VMT/Room/UEuler",
+                    index.i, 2, 0f,
+                    -0.15f, 0f, 0.26f,
+                    -60f, 60f, 0f));
             }
         }
 
@@ -1340,10 +1351,10 @@ namespace vmt_manager
             var index = GetInputIndex();
             if (index.ok)
             {
-                osc.Send(new OscMessage("/VMT/Room/Driver",
-                index.i,5, 0f,
-                0f, 0f, 0f,
-                0f, 0f, 0f, 1f));
+                osc.Send(new OscMessage("/VMT/Room/UEuler",
+                    index.i, 5, 0f,
+                    -0.15f, 0f, 0.26f,
+                    -60f, 60f, 0f));
             }
         }
 
@@ -1352,7 +1363,7 @@ namespace vmt_manager
             var index = GetInputIndex();
             if (index.ok)
             {
-                osc.Send(new OscMessage("/VMT/Room/Driver",
+                osc.Send(new OscMessage("/VMT/Room/Unity",
                 index.i, 1, 0f,
                 0f, 0f, 0f,
                 0f, 0f, 0f, 1f));
@@ -1409,7 +1420,8 @@ namespace vmt_manager
                 System.Media.SystemSounds.Beep.Play();
                 //MessageBox.Show("Loaded.", title, MessageBoxButton.OK, MessageBoxImage.Information);
             }
-            catch (Exception ex) {
+            catch (Exception ex)
+            {
                 MessageBox.Show(ex.Message + "\n" + ex.StackTrace, title);
             }
 
@@ -1437,7 +1449,8 @@ namespace vmt_manager
 
         private void InputPositionComboBox_SelectionChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
         {
-            if (InputPositionXTextBox != null) { 
+            if (InputPositionXTextBox != null)
+            {
                 InputPositionXTextBox.IsEnabled = false;
                 InputPositionYTextBox.IsEnabled = false;
                 InputPositionZTextBox.IsEnabled = false;
@@ -1484,7 +1497,8 @@ namespace vmt_manager
                         InputPositionAixisLinkTextBox.IsEnabled = true;
                     }
                 }
-                else {
+                else
+                {
                     if (s.Contains("Unity") || s.Contains("Driver"))
                     {
                         InputPositionXTextBox.IsEnabled = true;
@@ -1617,19 +1631,19 @@ namespace vmt_manager
                         break;
                     case "/VMT/Skeleton/Unity":
                         osc.Send(new OscMessage("/VMT/Skeleton/Unity",
-                            index.i, bone, 
+                            index.i, bone,
                             x, y, z,
                             qx, qy, qz, qw));
                         break;
                     case "/VMT/Skeleton/UEuler":
                         osc.Send(new OscMessage("/VMT/Skeleton/UEuler",
-                            index.i, bone, 
+                            index.i, bone,
                             x, y, z,
                             rx, ry, rz));
                         break;
                     case "/VMT/Skeleton/Driver":
                         osc.Send(new OscMessage("/VMT/Skeleton/Driver",
-                            index.i, bone, 
+                            index.i, bone,
                             x, y, z,
                             qx, qy, qz, qw));
                         break;
@@ -1648,7 +1662,8 @@ namespace vmt_manager
                 }
                 System.Media.SystemSounds.Beep.Play();
             }
-            catch (Exception ex) {
+            catch (Exception ex)
+            {
                 MessageBox.Show(ex.Message, title, MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
@@ -1836,5 +1851,44 @@ namespace vmt_manager
             JoystickClickSend(3, Joystick3ClickCheckBox.IsChecked.Value);
         }
 
+        private void TrackingOverridesAddButton_Click(object sender, RoutedEventArgs e)
+        {
+            EVRSettingsError eVRSettingsError = EVRSettingsError.None;
+            OpenVR.Settings.SetString(OpenVR.k_pch_TrackingOverride_Section, TrackingOverridesFromTextBox.Text, TrackingOverridesToTextBox.Text, ref eVRSettingsError);
+            if (eVRSettingsError != EVRSettingsError.None)
+            {
+                MessageBox.Show("Error", title, MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+            else
+            {
+                RequestRestart();
+            }
+        }
+        private void TrackingOverridesRemoveAllButton_Click(object sender, RoutedEventArgs e)
+        {
+            var yesno = MessageBox.Show("Are you sure? (Remove All)", title, MessageBoxButton.YesNo, MessageBoxImage.Question);
+            if (yesno == MessageBoxResult.Yes)
+            {
+                EVRSettingsError eVRSettingsError = EVRSettingsError.None;
+                OpenVR.Settings.RemoveSection(OpenVR.k_pch_TrackingOverride_Section, ref eVRSettingsError);
+                if (eVRSettingsError != EVRSettingsError.None)
+                {
+                    MessageBox.Show("Error", title, MessageBoxButton.OK, MessageBoxImage.Error);
+                }
+                else
+                {
+                    RequestRestart();
+                }
+            }
+        }
+
+        private void RequestRestart()
+        {
+            var yesno = MessageBox.Show("SteamVR Restart required to apply. Restart now?\n適用にはSteamVRの再起動が必要です。今再起動しますか?", title, MessageBoxButton.YesNo, MessageBoxImage.Information);
+            if (yesno == MessageBoxResult.Yes)
+            {
+                osc.Send(new OscMessage("/VMT/RequestRestart"));
+            }
+        }
     }
 }

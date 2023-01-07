@@ -46,6 +46,7 @@ namespace VMTDriver {
         void SubscribeDevice(std::string serial);
         void UnsubscribeDevice(std::string serial);
         int SearchDevice(vr::TrackedDevicePose_t* poses, string serial);
+        void RequestRestart();
 
         //OpenVR向け
         virtual EVRInitError Init(IVRDriverContext* pDriverContext) override;
