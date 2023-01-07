@@ -160,6 +160,9 @@
   <ItemGroup>
     <Resource Include="Resources\logs.png" />
   </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\disableStandby.png" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>del "$(TargetDir)*.xml"

@@ -164,7 +164,7 @@
 						<GroupBox Header="Tracking Overrides" DockPanel.Dock="Top" Margin="0,10,0,0">
 							<StackPanel>
 								<TextBlock Text="From (Device path)"/>
-								<TextBox Name="TrackingOverridesFromTextBox" Text="/devices/VMT_0" />
+								<TextBox Name="TrackingOverridesFromTextBox" Text="/devices/vmt/VMT_0" />
 								<TextBlock Text="To (Device path, Semantic path)"/>
 								<TextBox Name="TrackingOverridesToTextBox"  Text="/user/head" />
 								<Button Name="TrackingOverridesAddButton" Content="Add" Margin="1" Click="TrackingOverridesAddButton_Click"/>
@@ -669,10 +669,23 @@ If you want to override button, axis, fingers by VMT, Please set "Target device"
 					</DockPanel>
 				</DockPanel>
 			</TabItem>
-			<TabItem Header="Log">
+			<TabItem Header="Tips">
 				<DockPanel LastChildFill="True">
-					<TextBlock TextAlignment="Center" Text="How to view logs" DockPanel.Dock="Top" Background="#EEEEEE" />
-					<Image Source="Resources/logs.png" />
+					<TextBlock TextAlignment="Center" Text="Steam VR Tips" DockPanel.Dock="Top" Background="#EEEEEE" />
+					<TabControl>
+						<TabItem Header="View log">
+							<DockPanel>
+								<TextBlock TextAlignment="Center" Text="How to view logs" DockPanel.Dock="Top" Background="#EEEEEE" />
+								<Image Source="Resources/logs.png" />
+							</DockPanel>
+						</TabItem>
+						<TabItem Header="Disabe standby">
+							<DockPanel>
+								<TextBlock TextAlignment="Center" Text="How to disable HMD Standby" DockPanel.Dock="Top" Background="#EEEEEE" />
+								<Image Source="Resources/disableStandby.png" />
+							</DockPanel>
+						</TabItem>
+					</TabControl>
 				</DockPanel>
 			</TabItem>
 		</TabControl>
