@@ -1143,7 +1143,9 @@ namespace VMTDriver {
     {
         LogMarker();
         //電源オフ要求が来た
-        Reset();
+
+        //勝手にオフにされるので無視するように変更
+        //Reset();
     }
 
     //OpenVRからのデバイス固有機能の取得(ない場合はnullptrを返す)
