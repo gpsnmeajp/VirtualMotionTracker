@@ -28,13 +28,33 @@
 					</DockPanel.Background>
 					<TextBlock Text="" Name="TopErrorTextBlock" Visibility="Collapsed" DockPanel.Dock="Top" Background="Red" Foreground="White" TextWrapping="Wrap" />
 					<TextBlock Text="VMT is not installed. Click install button to start use VMT.&#xA;VMTはインストールされていません。使い始めるにはInstallボタンを押してください。" Name="TopNotInstalledTextBlock" DockPanel.Dock="Top" Background="Green" Foreground="White" TextWrapping="Wrap" />
-					<Grid  DockPanel.Dock="Top" Margin="1" Name="InstallGrid">
+					<Grid  DockPanel.Dock="Top" Margin="1" Name="InstallGrid" Height="50">
 						<Grid.ColumnDefinitions>
 							<ColumnDefinition/>
 							<ColumnDefinition/>
 						</Grid.ColumnDefinitions>
-						<Button Content="Install" Name="InstallButtonName" Click="InstallButton" Grid.Column="0" Margin="1"/>
-						<Button Content="Uninstall" Click="UninstallButton" Grid.Column="1" Margin="1"/>
+						<Button Content="Install" Name="InstallButtonName" Click="InstallButton" Grid.Column="0" Margin="1" BorderThickness="3">
+							<Button.Background>
+								<LinearGradientBrush EndPoint="0,0" StartPoint="0,1">
+									<GradientStop Color="#55FF55" Offset="0"/>
+									<GradientStop Color="#CCFFCC" Offset="1"/>
+								</LinearGradientBrush>
+							</Button.Background>
+							<Button.BorderBrush>
+								<SolidColorBrush Color="#00CC00"/>
+							</Button.BorderBrush>
+						</Button>
+						<Button Content="Uninstall" Click="UninstallButton" Grid.Column="1" Margin="1" BorderThickness="3">
+							<Button.Background>
+								<LinearGradientBrush EndPoint="0,0" StartPoint="0,1">
+									<GradientStop Color="#FF5555" Offset="0"/>
+									<GradientStop Color="#FFCCCC" Offset="1"/>
+								</LinearGradientBrush>
+							</Button.Background>
+							<Button.BorderBrush>
+								<SolidColorBrush Color="#CC0000"/>
+							</Button.BorderBrush>
+						</Button>
 					</Grid>
 					<Grid  DockPanel.Dock="Top" Margin="1">
 						<Grid.ColumnDefinitions>
@@ -647,14 +667,6 @@ If you want to override button, axis, fingers by VMT, Please set "Target device"
 						<Button Content="Save json editor" Margin="1" Click="JsonSaveButton" DockPanel.Dock="Top"/>
 						<TextBox Name="JsonTextBox" Margin="1" DockPanel.Dock="Top" VerticalScrollBarVisibility="Visible"/>
 					</DockPanel>
-				</DockPanel>
-			</TabItem>
-			<TabItem Header="Protocol">
-				<DockPanel LastChildFill="True">
-					<TextBlock TextAlignment="Center" Text="Protocol overview" DockPanel.Dock="Top" Background="#EEEEEE" />
-					<ScrollViewer>
-						<TextBlock Name="ProtocolTextBlock" TextWrapping="Wrap" Text="Loading..."/>
-					</ScrollViewer>
 				</DockPanel>
 			</TabItem>
 			<TabItem Header="Log">

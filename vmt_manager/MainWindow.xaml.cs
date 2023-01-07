@@ -125,7 +125,7 @@ namespace vmt_manager
                 InputPositionBoneTextBox.IsEnabled = false;
                 InputPositionValueTextBox.IsEnabled = false;
 
-                ProtocolTextBlock.Text = File.ReadAllText(System.IO.Path.GetDirectoryName(Assembly.GetEntryAssembly().Location) + @"\..\PROTOCOL.md");
+                //ProtocolTextBlock.Text = File.ReadAllText(System.IO.Path.GetDirectoryName(Assembly.GetEntryAssembly().Location) + @"\..\PROTOCOL.md");
 
                 rnd = new Random();
                 osc = new OSC("127.0.0.1", 39571, 39570, OnBundle, OnMessage);
