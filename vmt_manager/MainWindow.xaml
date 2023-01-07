@@ -154,7 +154,7 @@ If you want to override button, axis, fingers by VMT, Please set "Target device"
 					<GroupBox Header="Operation target (0～57)" DockPanel.Dock="Top">
 						<DockPanel Margin="1">
 							<TextBlock VerticalAlignment="Center" Text="VMT:" DockPanel.Dock="Left" Margin="1" />
-							<TextBox Name="InputVMTNoTextBox" Text="0" DockPanel.Dock="Left" Margin="1" />
+							<TextBox Name="InputVMTNoTextBox" Text="1" DockPanel.Dock="Left" Margin="1" />
 						</DockPanel>
 					</GroupBox>
 

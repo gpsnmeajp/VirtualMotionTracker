@@ -585,23 +585,23 @@ namespace vmt_manager
         private void CheckTemplatePosition1Button(object sender, RoutedEventArgs e)
         {
             osc.Send(new OscMessage("/VMT/Room/UEuler",
-                0, 1, 0f,
+                1, 1, 0f,
                 -0.15f, 0f, 0.26f,
                 -60f, 60f, 0f));
             osc.Send(new OscMessage("/VMT/Room/UEuler",
-                1, 1, 0f,
+                2, 1, 0f,
                 0.15f, 0f, 0.26f,
                 -60f, -60f, 0f));
         }
         private void CheckTemplatePosition1JointButton(object sender, RoutedEventArgs e)
         {
             osc.Send(new OscMessage("/VMT/Joint/UEuler",
-                0, 1, 0f,
+                1, 1, 0f,
                 -0.15f, 0f, 0.26f,
                 -60f, 60f, 0f,
                 JointSerialNoTextBox.Text));
             osc.Send(new OscMessage("/VMT/Joint/UEuler",
-                1, 1, 0f,
+                2, 1, 0f,
                 0.15f, 0f, 0.26f,
                 -60f, -60f, 0f,
                 JointSerialNoTextBox.Text));
@@ -609,12 +609,12 @@ namespace vmt_manager
         private void CheckTemplatePosition1FollowButton(object sender, RoutedEventArgs e)
         {
             osc.Send(new OscMessage("/VMT/Follow/UEuler",
-                0, 1, 0f,
+                1, 1, 0f,
                 -0.15f, 0f, 0.26f,
                 -60f, 60f, 0f,
                 JointSerialNoTextBox.Text));
             osc.Send(new OscMessage("/VMT/Follow/UEuler",
-                1, 1, 0f,
+                2, 1, 0f,
                 0.15f, 0f, 0.26f,
                 -60f, -60f, 0f,
                 JointSerialNoTextBox.Text));
@@ -1314,10 +1314,10 @@ namespace vmt_manager
             var index = GetInputIndex();
             if (index.ok)
             {
-                osc.Send(new OscMessage("/VMT/Room/UEuler",
+                osc.Send(new OscMessage("/VMT/Joint/UEuler",
                     index.i, 3, 0f,
                     0.15f, 0f, 0.26f,
-                    -60f, -60f, 0f));
+                    -60f, -60f, 0f, "HMD"));
             }
         }
 
@@ -1326,10 +1326,10 @@ namespace vmt_manager
             var index = GetInputIndex();
             if (index.ok)
             {
-                osc.Send(new OscMessage("/VMT/Room/UEuler",
+                osc.Send(new OscMessage("/VMT/Joint/UEuler",
                     index.i, 6, 0f,
                     0.15f, 0f, 0.26f,
-                    -60f, -60f, 0f));
+                    -60f, -60f, 0f, "HMD"));
 
             }
         }
@@ -1339,10 +1339,10 @@ namespace vmt_manager
             var index = GetInputIndex();
             if (index.ok)
             {
-                osc.Send(new OscMessage("/VMT/Room/UEuler",
+                osc.Send(new OscMessage("/VMT/Joint/UEuler",
                     index.i, 2, 0f,
                     -0.15f, 0f, 0.26f,
-                    -60f, 60f, 0f));
+                    -60f, 60f, 0f, "HMD"));
             }
         }
 
@@ -1351,10 +1351,10 @@ namespace vmt_manager
             var index = GetInputIndex();
             if (index.ok)
             {
-                osc.Send(new OscMessage("/VMT/Room/UEuler",
+                osc.Send(new OscMessage("/VMT/Joint/UEuler",
                     index.i, 5, 0f,
                     -0.15f, 0f, 0.26f,
-                    -60f, 60f, 0f));
+                    -60f, 60f, 0f, "HMD"));
             }
         }
 
