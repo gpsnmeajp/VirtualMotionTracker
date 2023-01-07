@@ -64,14 +64,14 @@ namespace vmt_manager
             InitializeComponent();
         }
 
-        private void TopErrorMessage(string message)
+        private void TopErrorMessage(string message, bool permitInstall = false)
         {
             TopErrorTextBlock.Visibility = Visibility.Visible;
             TopErrorTextBlock.Text = message;
             TopErrorTextBlock.Background = new SolidColorBrush(Color.FromRgb(255, 0, 0));
             TopErrorTextBlock.Foreground = new SolidColorBrush(Color.FromRgb(255, 255, 255));
             TopNotInstalledTextBlock.Visibility = Visibility.Collapsed;
-            InstallButtonName.IsEnabled = false;
+            InstallButtonName.IsEnabled = permitInstall;
 
             //Top以外を削除する
             int count = MainTabControl.Items.Count;
@@ -134,7 +134,7 @@ namespace vmt_manager
                 if (!util.StartOpenVR())
                 {
                     //var result = MessageBox.Show("Steam VR not ready. Maybe not ready for HMD or Tracking system.\nStream VRが利用できません。HMDやトラッキングシステムが利用できない状態の可能性があります。", title, MessageBoxButton.OK, MessageBoxImage.Error);
-                    TopErrorMessage("Steam VR not ready. Maybe not ready for HMD or Tracking system.\nStream VRが利用できません。HMDやトラッキングシステムが利用できない状態の可能性があります。\n\nPlease enable Null driver on SteamVR If you want to use without HMD. \nHMDなしで利用したい場合は、SteamVRにてNull driverを有効にして再起動してください。");
+                    TopErrorMessage("Steam VR not ready. Maybe not ready for HMD or Tracking system.\nStream VRが利用できません。HMDやトラッキングシステムが利用できない状態の可能性があります。\n\nPlease enable Null driver If you want to use without HMD. \nHMDなしで利用したい場合は、Null driverを有効にして再起動してください。", true);
                     //Close();
                     //タイマー起動してはいけない
                     return;
@@ -680,6 +680,7 @@ namespace vmt_manager
                 process.WaitForExit();
 
                 MessageBox.Show("OK (ExitCode=" + process.ExitCode + ")\nPlease restart SteamVR.\nSteamVRを再起動してください。", title);
+                Close();
             }
             catch (Exception ex)
             {
@@ -731,6 +732,21 @@ namespace vmt_manager
                 process.Start();
                 process.WaitForExit();
 
+                //Null Driverなし設定で上書き
+                string fromPath = System.IO.Path.GetFullPath(System.IO.Path.GetDirectoryName(Assembly.GetEntryAssembly().Location) + @"\..\vmt\resources\settings\default.vrsettings_nohmd");
+                string toPath = System.IO.Path.GetFullPath(System.IO.Path.GetDirectoryName(Assembly.GetEntryAssembly().Location) + @"\..\vmt\resources\settings\default.vrsettings");
+
+                try
+                {
+                    File.WriteAllText(toPath, File.ReadAllText(fromPath, new UTF8Encoding(false)), new UTF8Encoding(false));
+                    RequestRestart();
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show(ex.Message + "\n" + ex.StackTrace, title);
+                }
+
+
                 if (File.Exists(driverPath + @"\setting.json"))
                 {
                     var res = MessageBox.Show("Do you want to remove setting.json?(Recommended: Yes)\nSetting.jsonを消去しますか?(推奨: はい)\n\n" + installPath + @"\setting.json", title, MessageBoxButton.YesNo, MessageBoxImage.Question);
@@ -756,7 +772,48 @@ namespace vmt_manager
                 return;
             }
         }
+        private void EnableNullHMDDriverButton(object sender, RoutedEventArgs e)
+        {
+            string fromPath = System.IO.Path.GetFullPath(System.IO.Path.GetDirectoryName(Assembly.GetEntryAssembly().Location) + @"\..\vmt\resources\settings\default.vrsettings_nullhmd");
+            string toPath = System.IO.Path.GetFullPath(System.IO.Path.GetDirectoryName(Assembly.GetEntryAssembly().Location) + @"\..\vmt\resources\settings\default.vrsettings");
 
+            try
+            {
+                File.WriteAllText(toPath, File.ReadAllText(fromPath, new UTF8Encoding(false)), new UTF8Encoding(false));
+
+                if (DriverVersion.Text == " - ")
+                {
+                    var yesno = MessageBox.Show("Need VMT to apply null driver settings. Do you want to Install VMT?\nNull Driverの設定の反映にはVMTが必要です。インストールしますか?", title, MessageBoxButton.YesNo, MessageBoxImage.Information);
+                    if (yesno == MessageBoxResult.Yes)
+                    {
+                        InstallButton(null, null);
+                    }
+                }
+                else {
+                    RequestRestart();
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message + "\n" + ex.StackTrace, title);
+            }
+
+        }
+        private void DisableNullHMDDriverButton(object sender, RoutedEventArgs e)
+        {
+            string fromPath = System.IO.Path.GetFullPath(System.IO.Path.GetDirectoryName(Assembly.GetEntryAssembly().Location) + @"\..\vmt\resources\settings\default.vrsettings_nohmd");
+            string toPath = System.IO.Path.GetFullPath(System.IO.Path.GetDirectoryName(Assembly.GetEntryAssembly().Location) + @"\..\vmt\resources\settings\default.vrsettings");
+
+            try
+            {
+                File.WriteAllText(toPath, File.ReadAllText(fromPath, new UTF8Encoding(false)), new UTF8Encoding(false));
+                RequestRestart();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message + "\n" + ex.StackTrace, title);
+            }
+        }
         private void ShowAllButton(object sender, RoutedEventArgs e)
         {
             for (int i = 0; i < 58; i++)
@@ -1888,6 +1945,7 @@ namespace vmt_manager
             if (yesno == MessageBoxResult.Yes)
             {
                 osc.Send(new OscMessage("/VMT/RequestRestart"));
+                Close();
             }
         }
     }

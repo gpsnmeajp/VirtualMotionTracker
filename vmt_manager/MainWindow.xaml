@@ -36,6 +36,14 @@
 						<Button Content="Install" Name="InstallButtonName" Click="InstallButton" Grid.Column="0" Margin="1"/>
 						<Button Content="Uninstall" Click="UninstallButton" Grid.Column="1" Margin="1"/>
 					</Grid>
+					<Grid  DockPanel.Dock="Top" Margin="1">
+						<Grid.ColumnDefinitions>
+							<ColumnDefinition/>
+							<ColumnDefinition/>
+						</Grid.ColumnDefinitions>
+						<Button Content="Enable Null Driver (Vitrual HMD)"  Click="EnableNullHMDDriverButton" Grid.Column="0" Margin="1"/>
+						<Button Content="Disable Null Driver (Vitrual HMD)" Click="DisableNullHMDDriverButton" Grid.Column="1" Margin="1"/>
+					</Grid>
 					<Grid DockPanel.Dock="Top" Margin="2">
 						<Grid.ColumnDefinitions>
 							<ColumnDefinition/>
@@ -629,7 +637,7 @@ If you want to override button, axis, fingers by VMT, Please set "Target device"
 					</Grid>
 				</DockPanel>
 			</TabItem>
-			<TabItem Header="Settings">
+			<TabItem Header="VMT Settings">
 				<DockPanel>
 					<TextBlock TextAlignment="Center" Text="Driver Settings (Need reload to apply, Some value requires restart SteamVR.)" DockPanel.Dock="Top" Background="#EEEEEE" />
 					<Button Content="Reload Setting" DockPanel.Dock="Bottom" Click="ReloadJsonButton" Margin="1"/>
