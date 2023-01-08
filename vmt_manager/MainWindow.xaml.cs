@@ -248,6 +248,10 @@ namespace vmt_manager
                         if (message.Count > 1 && message[1] is string)
                         {
                             installPath = (string)message[1];
+                            string mypath = Path.GetFullPath(Path.GetDirectoryName(Assembly.GetEntryAssembly().Location) + @"\..\vmt");
+                            if (installPath != "" && mypath.StartsWith(installPath) == false) {
+                                TopWarningMessage("Different directory VMT detected. You can not use VMT Manager for setting. but you can use this to uninstall VMT driver.\n違うディレクトリにVMTがインストールされています。このVMT Managerでは設定はできません。VMTをアンインストールすることは出来ます。\n" + installPath + "\n" + mypath);
+                            }
                         }
 
                         ControlDock.IsEnabled = true;
@@ -739,7 +743,6 @@ namespace vmt_manager
                 try
                 {
                     File.WriteAllText(toPath, File.ReadAllText(fromPath, new UTF8Encoding(false)), new UTF8Encoding(false));
-                    RequestRestart();
                 }
                 catch (Exception ex)
                 {
