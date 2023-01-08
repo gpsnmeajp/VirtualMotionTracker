@@ -589,23 +589,23 @@ namespace vmt_manager
         private void CheckTemplatePosition1Button(object sender, RoutedEventArgs e)
         {
             osc.Send(new OscMessage("/VMT/Room/UEuler",
-                1, 1, 0f,
+                1, 2, 0f,
                 -0.15f, 0f, 0.26f,
                 -60f, 60f, 0f));
             osc.Send(new OscMessage("/VMT/Room/UEuler",
-                2, 1, 0f,
+                2, 3, 0f,
                 0.15f, 0f, 0.26f,
                 -60f, -60f, 0f));
         }
         private void CheckTemplatePosition1JointButton(object sender, RoutedEventArgs e)
         {
             osc.Send(new OscMessage("/VMT/Joint/UEuler",
-                1, 1, 0f,
+                1, 2, 0f,
                 -0.15f, 0f, 0.26f,
                 -60f, 60f, 0f,
                 JointSerialNoTextBox.Text));
             osc.Send(new OscMessage("/VMT/Joint/UEuler",
-                2, 1, 0f,
+                2, 3, 0f,
                 0.15f, 0f, 0.26f,
                 -60f, -60f, 0f,
                 JointSerialNoTextBox.Text));
@@ -613,12 +613,12 @@ namespace vmt_manager
         private void CheckTemplatePosition1FollowButton(object sender, RoutedEventArgs e)
         {
             osc.Send(new OscMessage("/VMT/Follow/UEuler",
-                1, 1, 0f,
+                1, 2, 0f,
                 -0.15f, 0f, 0.26f,
                 -60f, 60f, 0f,
                 JointSerialNoTextBox.Text));
             osc.Send(new OscMessage("/VMT/Follow/UEuler",
-                2, 1, 0f,
+                2, 3, 0f,
                 0.15f, 0f, 0.26f,
                 -60f, -60f, 0f,
                 JointSerialNoTextBox.Text));
