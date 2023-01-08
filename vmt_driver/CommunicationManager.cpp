@@ -483,7 +483,7 @@ namespace VMTDriver {
 				LogIfDiag("%s", adr.c_str());
 				GetServer()->UnsubscribeDevice(root_sn);
 			}
-			//すべてのデバイスのリセット
+			//再起動要求
 			else if (adr == "/VMT/RequestRestart")
 			{
 				LogIfDiag("%s", adr.c_str());

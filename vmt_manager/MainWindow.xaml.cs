@@ -25,6 +25,7 @@ using System;
 using System.IO;
 using System.Text;
 using System.Reflection;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
@@ -58,6 +59,7 @@ namespace vmt_manager
         bool loadTest = false;
         Dictionary<string, string> subscribedDevicePoseDictionary = new Dictionary<string, string>();
         int subscribeReceiveCnt = 0;
+        bool autosetup = false;
 
         public MainWindow()
         {
@@ -79,6 +81,10 @@ namespace vmt_manager
             {
                 MainTabControl.Items.Remove(MainTabControl.Items[1]);
             }
+
+            if (autosetup) {
+                MessageBox.Show(message, title, MessageBoxButton.OK, MessageBoxImage.Error);
+            }
         }
         private void TopWarningMessage(string message, bool enable = false)
         {
@@ -98,6 +104,16 @@ namespace vmt_manager
                     MainTabControl.Items.Remove(MainTabControl.Items[1]);
                 }
             }
+
+            if (autosetup)
+            {
+                MessageBox.Show(message, title, MessageBoxButton.OK, MessageBoxImage.Warning);
+            }
+        }
+
+        private void Close(Exception ex) {
+            Console.WriteLine(ex.ToString());
+            Close();
         }
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
@@ -183,27 +199,35 @@ namespace vmt_manager
                 //デバッグのためにセーフモードを有効化
                 //OpenVR.Settings.SetBool(OpenVR.k_pch_SteamVR_Section, OpenVR.k_pch_SteamVR_EnableSafeMode, true,ref eVRSettingsError);
 
+                //コマンドライン引数処理
                 string[] args = System.Environment.GetCommandLineArgs();
                 if (args.Length > 1)
                 {
-                    if (args[1] == "install")
+                    this.Dispatcher.Invoke(async () =>
                     {
-                        InstallButton(null, null);
-                        Close();
-                        return;
-                    }
-                    if (args[1] == "uninstall")
-                    {
-                        UninstallButton(null, null);
-                        Close();
-                        return;
-                    }
+                        if (args[1] == "install")
+                        {
+                            this.Hide();
+                            autosetup = true;
+                            await Install();
+                            Close();
+                            return;
+                        }
+                        if (args[1] == "uninstall")
+                        {
+                            this.Hide();
+                            autosetup = true;
+                            await Uninstall();
+                            Close();
+                            return;
+                        }
+                    });
                 }
             }
             catch (Exception ex)
             {
                 MessageBox.Show(ex.Message + "\n" + ex.StackTrace, title);
-                Close();
+                Close(ex);
                 return;
             }
         }
@@ -357,7 +381,7 @@ namespace vmt_manager
                 MessageBox.Show(ex.Message + "\n" + ex.StackTrace, title);
                 this.Dispatcher.Invoke(() =>
                 {
-                    Close();
+                    Close(ex);
                 });
                 return;
             }
@@ -467,7 +491,7 @@ namespace vmt_manager
             {
                 dispatcherTimer.Stop(); //タイマー停止
                 MessageBox.Show(ex.Message + "\n" + ex.StackTrace, title);
-                Close();
+                Close(ex);
                 return;
             }
         }
@@ -624,17 +648,38 @@ namespace vmt_manager
                 JointSerialNoTextBox.Text));
         }
 
-        private void InstallButton(object sender, RoutedEventArgs e)
+        private async void InstallButton(object sender, RoutedEventArgs e)
         {
-            if (DriverVersion.Text != " - ")
-            {
-                //MessageBox.Show("Please uninstall VMT before install.\nインストールを続ける前に、VMTをアンインストールしてください", title, MessageBoxButton.OK, MessageBoxImage.Error);
-                TopWarningMessage("Please uninstall VMT before install.\nインストールを続ける前に、VMTをアンインストールしてください", true);
-                return;
-            }
-
+            await Install();
+        }
+        private async Task Install()
+        {
             try
             {
+                if (installPath == "")
+                {
+                    //インストールパスが受信できていない場合少し待つ
+                    TopErrorTextBlock.Visibility = Visibility.Visible;
+                    TopErrorTextBlock.Text = "Please wait";
+                    TopErrorTextBlock.Background = new SolidColorBrush(Color.FromRgb(255, 255, 0));
+                    TopErrorTextBlock.Foreground = new SolidColorBrush(Color.FromRgb(0, 0, 0));
+                    TopNotInstalledTextBlock.Visibility = Visibility.Collapsed;
+                    for (int i = 0; i < 10; i++)
+                    {
+                        await Task.Delay(500);
+                        TopErrorTextBlock.Text = TopErrorTextBlock.Text + ".";
+                        if(DriverVersion.Text != " - ") { break; }
+                    }
+                    TopErrorTextBlock.Visibility = Visibility.Collapsed;
+                }
+
+                if (DriverVersion.Text != " - ")
+                {
+                    //MessageBox.Show("Please uninstall VMT before install.\nインストールを続ける前に、VMTをアンインストールしてください", title, MessageBoxButton.OK, MessageBoxImage.Error);
+                    TopWarningMessage("Please uninstall VMT before install.\nインストールを続ける前に、VMTをアンインストールしてください", true);
+                    return;
+                }
+
                 string driverPath_rel = System.IO.Path.GetDirectoryName(Assembly.GetEntryAssembly().Location) + @"\..\vmt";
                 string driverPath = System.IO.Path.GetFullPath(driverPath_rel);
                 Console.WriteLine(OpenVR.RuntimePath() + @"\bin\win64");
@@ -689,45 +734,58 @@ namespace vmt_manager
             catch (Exception ex)
             {
                 MessageBox.Show(ex.Message + "\n" + ex.StackTrace, title);
-                Close();
+                Close(ex);
                 return;
             }
         }
+        private async void UninstallButton(object sender, RoutedEventArgs e) {
+            await Uninstall();
+        }
 
-        private async void UninstallButton(object sender, RoutedEventArgs e)
+        private async Task Uninstall()
         {
-            string driverPath_rel = System.IO.Path.GetDirectoryName(Assembly.GetEntryAssembly().Location) + @"\..\vmt";
-            string driverPath = System.IO.Path.GetFullPath(driverPath_rel);
-
-            if (installPath == "")
-            {
-                //インストールパスが受信できていない場合少し待つ
-                await Task.Delay(2000);
-            }
-
-            if (installPath != "")
-            {
-                //場所がわかっている
-                var res = MessageBox.Show("Uninstall VMT Driver?\nVMTドライバをアンインストールしますか?\n\n" + installPath, title, MessageBoxButton.OKCancel, MessageBoxImage.Question);
-                if (res != MessageBoxResult.OK)
-                {
-                    return;
-                }
-                //現在のフォルダパスの代わりに、受信したパスでアンインストールを試す
-                driverPath = installPath;
-            }
-            else
-            {
-                //場所不明だがとりあえず現在の場所としてアンインストールしようとするか確認する
-                var res = MessageBox.Show("Manager couldn't communication to VMT Driver.\nOther VMT Driver version maybe installed.\nIn many cases, this driver located on different path.\nmanager can not uninstallation these.\nIf you want to remove currently installed VMT driver, press cancel and please use manager of drivers itself.\n\nIf you want to try uninstallation anyway, press OK. (it will fail in many cases.)\n\nVMTドライバと通信できませんでした。\n違うバージョンのVMTドライバが入っている可能性があります。\n多くの場合これは別のパスにあります。\n本Managerではアンインストールできません。\nアンインストールしたい場合は、キャンセルを押し、そのVMTドライバに付属のManagerを使用してください\n\nOKを押すと、とにかくアンインストールを試します。(多くの場合失敗します。)", title, MessageBoxButton.OKCancel, MessageBoxImage.Error);
-                if (res != MessageBoxResult.OK)
-                {
-                    return;
-                }
-            }
-
             try
             {
+                string driverPath_rel = System.IO.Path.GetDirectoryName(Assembly.GetEntryAssembly().Location) + @"\..\vmt";
+                string driverPath = System.IO.Path.GetFullPath(driverPath_rel);
+
+                if (installPath == "")
+                {
+                    //インストールパスが受信できていない場合少し待つ
+                    TopErrorTextBlock.Visibility = Visibility.Visible;
+                    TopErrorTextBlock.Text = "Please wait";
+                    TopErrorTextBlock.Background = new SolidColorBrush(Color.FromRgb(255, 255, 0));
+                    TopErrorTextBlock.Foreground = new SolidColorBrush(Color.FromRgb(0, 0, 0));
+                    TopNotInstalledTextBlock.Visibility = Visibility.Collapsed;
+                    for (int i = 0; i < 10; i++) {
+                        await Task.Delay(500);
+                        TopErrorTextBlock.Text = TopErrorTextBlock.Text + ".";
+                        if (DriverVersion.Text != " - ") { break; }
+                    }
+                    TopErrorTextBlock.Visibility = Visibility.Collapsed;
+                }
+
+                if (installPath != "")
+                {
+                    //場所がわかっている
+                    var res = MessageBox.Show("Uninstall VMT Driver?\nVMTドライバをアンインストールしますか?\n\n" + installPath, title, MessageBoxButton.OKCancel, MessageBoxImage.Question);
+                    if (res != MessageBoxResult.OK)
+                    {
+                        return;
+                    }
+                    //現在のフォルダパスの代わりに、受信したパスでアンインストールを試す
+                    driverPath = installPath;
+                }
+                else
+                {
+                    //場所不明だがとりあえず現在の場所としてアンインストールしようとするか確認する
+                    var res = MessageBox.Show("Manager couldn't communication to VMT Driver.\nMaybe VMT is not installed\n Or other VMT Driver version maybe installed.\nIn many cases, this driver located on different path.\nmanager can not uninstallation these.\nIf you want to remove currently installed VMT driver, press cancel and please use manager of drivers itself.\n\nIf you want to try uninstallation anyway, press OK. (it will fail in many cases.)\n\nVMTドライバと通信できませんでした。\nVMTがまだインストールされていない\nもしくは違うバージョンのVMTドライバが入っている可能性があります。\n多くの場合これは別のパスにあります。\n本Managerではアンインストールできません。\nアンインストールしたい場合は、キャンセルを押し、そのVMTドライバに付属のManagerを使用してください\n\nOKを押すと、とにかくアンインストールを試します。(多くの場合失敗します。)", title, MessageBoxButton.OKCancel, MessageBoxImage.Error);
+                    if (res != MessageBoxResult.OK)
+                    {
+                        return;
+                    }
+                }
+
                 System.Diagnostics.Process process = new System.Diagnostics.Process();
                 process.StartInfo.WorkingDirectory = OpenVR.RuntimePath() + @"\bin\win64";
                 process.StartInfo.FileName = OpenVR.RuntimePath() + @"\bin\win64\vrpathreg.exe";
@@ -773,7 +831,7 @@ namespace vmt_manager
             catch (Exception ex)
             {
                 MessageBox.Show(ex.Message + "\n" + ex.StackTrace, title);
-                Close();
+                Close(ex);
                 return;
             }
         }
