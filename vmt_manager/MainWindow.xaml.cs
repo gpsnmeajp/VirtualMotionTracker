@@ -828,6 +828,18 @@ namespace vmt_manager
             }
         }
 
+        private void TargetHMDButton(object sender, RoutedEventArgs e)
+        {
+            InputVMTNoTextBox.Text = "0";
+        }
+        private void TargetLeftButton(object sender, RoutedEventArgs e)
+        {
+            InputVMTNoTextBox.Text = "1";
+        }
+        private void TargetRightButton(object sender, RoutedEventArgs e)
+        {
+            InputVMTNoTextBox.Text = "2";
+        }
         private (bool ok, int i) GetInputIndex()
         {
             int index = 0;
