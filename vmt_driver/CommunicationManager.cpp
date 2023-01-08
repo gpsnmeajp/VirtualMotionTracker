@@ -552,17 +552,9 @@ namespace VMTDriver {
 		}
 		LogMarker();
 
-		Config* config = Config::GetInstance();
-		//起動時設定読み込み
-		config->LoadSetting();
-		TrackedDeviceServerDriver::SetAutoUpdate(config->GetDefaultAutoPoseUpdateOn());
-
 		//通信ポートオープン
-		DirectOSC::OSC::GetInstance().Open(&m_rcv, config->GetReceivePort(), config->GetSendPort());
+		DirectOSC::OSC::GetInstance().Open(&m_rcv, Config::GetInstance()->GetReceivePort(), Config::GetInstance()->GetSendPort());
 		m_opened = true;
-
-		//セットアップへプロセス起動中を伝達するMutex
-		::CreateMutexA(nullptr, FALSE, "VMT_Mutex");
 	}
 	//通信のクローズ
 	void CommunicationManager::Close()

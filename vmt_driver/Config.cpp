@@ -120,21 +120,26 @@ namespace VMTDriver {
 		{
 			j["RejectWhenCannotTracking"] = true;
 		}
-		if (!j.contains("DefaultAutoPoseUpdateOn"))
-		{
-			j["DefaultAutoPoseUpdateOn"] = true;
-		}
-		if (!j.contains("DefaultControllerDeviceRegistration"))
-		{
-			j["DefaultControllerDeviceRegistration"] = false;
-		}
+
 		if (!j.contains("SkeletonInput"))
 		{
 			j["SkeletonInput"] = true;
 		}
-		if (!j.contains("DefaultControllerDeviceRegistrationCompatibleMode"))
+		if (!j.contains("AutoPoseUpdateOnStartup"))
 		{
-			j["DefaultControllerDeviceRegistrationCompatibleMode"] = false;
+			j["AutoPoseUpdateOnStartup"] = true;
+		}
+		if (!j.contains("AddControllerOnStartup"))
+		{
+			j["AddControllerOnStartup"] = false;
+		}
+		if (!j.contains("AddCompatibleControllerOnStartup"))
+		{
+			j["AddCompatibleControllerOnStartup"] = false;
+		}
+		if (!j.contains("DiagLogOnStartup"))
+		{
+			j["DiagLogOnStartup"] = false;
 		}
 		return j;
 	}
@@ -175,21 +180,26 @@ namespace VMTDriver {
 			{
 				m_RejectWhenCannotTracking = j["RejectWhenCannotTracking"];
 			}
-			if (j.contains("DefaultAutoPoseUpdateOn"))
-			{
-				m_DefaultAutoPoseUpdateOn = j["DefaultAutoPoseUpdateOn"];
-			}
-			if (j.contains("DefaultControllerDeviceRegistration"))
-			{
-				m_DefaultControllerDeviceRegistration = j["DefaultControllerDeviceRegistration"];
-			}
+
 			if (j.contains("SkeletonInput"))
 			{
 				m_SkeletonInput = j["SkeletonInput"];
 			}
-			if (j.contains("DefaultControllerDeviceRegistrationCompatibleMode"))
+			if (j.contains("AutoPoseUpdateOnStartup"))
 			{
-				m_DefaultControllerDeviceRegistrationCompatibleMode = j["DefaultControllerDeviceRegistrationCompatibleMode"];
+				m_AutoPoseUpdateOnStartup = j["AutoPoseUpdateOnStartup"];
+			}
+			if (j.contains("AddControllerOnStartup"))
+			{
+				m_AddControllerOnStartup = j["AddControllerOnStartup"];
+			}
+			if (j.contains("AddCompatibleControllerOnStartup"))
+			{
+				m_AddCompatibleControllerOnStartup = j["AddCompatibleControllerOnStartup"];
+			}
+			if (j.contains("DiagLogOnStartup"))
+			{
+				m_DiagLogOnStartup = j["DiagLogOnStartup"];
 			}
 			SaveJson(j);
 		}
@@ -214,13 +224,43 @@ namespace VMTDriver {
 
 	//汎用設定項目をOSCから設定する
 	void Config::SetConfigFromOSC(std::string name, std::string value) {
+		if (name == "RoomMatrix") { 			
+			LogError("Deny");
+			return;
+		}
+		if (name == "ReceivePort") { 
+			LogError("Deny");
+			return;
+		}
+		if (name == "SendPort") { 
+			LogError("Deny");
+			return;
+		}
+
 		json j = LoadJson();
 
-		//TODO:
-		//j["RoomMatrix"] = { m1,m2,m3,m4,m5,m6,m7,m8,m9,m10,m11,m12 };
+		if (j.contains(name)) {
+			if (j.at(name).is_boolean()) {
+				std::transform(value.begin(), value.end(), value.begin(), tolower);
+				j.at(name) = value == "true" ? true : false;
+			}else if (j.at(name).is_number_integer()) {
+				j.at(name) = std::stoi(value);
+			}else if (j.at(name).is_string()) {
+				j.at(name) = value;
+			}
+			else {
+				LogError("Type Error");
+				return;
+			}
 
-		SaveJson(j);
-		LoadSetting();
+
+			SaveJson(j);
+			LoadSetting();
+		}
+		else {
+			LogError("Not found");
+			return;
+		}
 	}
 
 	//ルーム変換行列の取得
@@ -276,27 +316,33 @@ namespace VMTDriver {
 		return m_RejectWhenCannotTracking;
 	}
 
-	//自動更新をデフォルトでオンにするかを取得する
-	bool Config::GetDefaultAutoPoseUpdateOn()
-	{
-		return m_DefaultAutoPoseUpdateOn;
-	}
-
-	//起動直後にコントローラとして登録するかを取得する
-	bool Config::GetDefaultControllerDeviceRegistration()
-	{
-		return m_DefaultControllerDeviceRegistration;
-	}
-
 	//骨格入力が有効かを取得する
 	bool Config::GetSkeletonInput()
 	{
 		return m_SkeletonInput;
 	}
 
-	//起動直後にKnuckles互換コントローラとして登録するかを取得する
-	bool Config::GetDefaultControllerDeviceRegistrationCompatibleMode()
+	//自動更新をデフォルトでオンにするかを取得する
+	bool Config::GetAutoPoseUpdateOnStartup()
 	{
-		return m_DefaultControllerDeviceRegistrationCompatibleMode;
+		return m_AutoPoseUpdateOnStartup;
+	}
+
+	//起動直後にコントローラとして登録するかを取得する
+	bool Config::GetAddControllerOnStartup()
+	{
+		return m_AddControllerOnStartup;
+	}
+
+	//起動直後にKnuckles互換コントローラとして登録するかを取得する
+	bool Config::GetAddCompatibleControllerOnStartup()
+	{
+		return m_AddCompatibleControllerOnStartup;
+	}
+
+	//起動直後から診断ログを有効にするかを取得する
+	bool Config::GetDiagLogOnStartup()
+	{
+		return m_DiagLogOnStartup;
 	}
 }

@@ -44,7 +44,7 @@ namespace vmt_manager
     /// </summary>
     public partial class MainWindow : Window
     {
-        const string Version = "VMT_014";
+        const string Version = "VMT_014_PRE";
         private DispatcherTimer dispatcherTimer;
         Random rnd;
         string title = "";
@@ -1446,6 +1446,77 @@ namespace vmt_manager
         private void DisableDiaglogButton(object sender, RoutedEventArgs e)
         {
             osc.Send(new OscMessage("/VMT/SetDiagLog", 0));
+            System.Media.SystemSounds.Beep.Play();
+        }
+
+        private void EnableOptoutTrackingRoleButton(object sender, RoutedEventArgs e)
+        {
+            osc.Send(new OscMessage("/VMT/Config", "OptoutTrackingRole", "true"));
+            System.Media.SystemSounds.Beep.Play();
+        }
+        private void DisableOptoutTrackingRoleButton(object sender, RoutedEventArgs e)
+        {
+            osc.Send(new OscMessage("/VMT/Config", "OptoutTrackingRole", "false"));
+            System.Media.SystemSounds.Beep.Play();
+        }
+        private void EnableRejectWhenCannotTrackingButton(object sender, RoutedEventArgs e)
+        {
+            osc.Send(new OscMessage("/VMT/Config", "RejectWhenCannotTracking", "true"));
+            System.Media.SystemSounds.Beep.Play();
+        }
+        private void DisableRejectWhenCannotTrackingButton(object sender, RoutedEventArgs e)
+        {
+            osc.Send(new OscMessage("/VMT/Config", "RejectWhenCannotTracking", "false"));
+            System.Media.SystemSounds.Beep.Play();
+        }
+        private void EnableSkeletonInputButton(object sender, RoutedEventArgs e)
+        {
+            osc.Send(new OscMessage("/VMT/Config", "SkeletonInput", "true"));
+            System.Media.SystemSounds.Beep.Play();
+        }
+        private void DisableSkeletonInputButton(object sender, RoutedEventArgs e)
+        {
+            osc.Send(new OscMessage("/VMT/Config", "SkeletonInput", "false"));
+            System.Media.SystemSounds.Beep.Play();
+        }
+        private void EnableAutoPoseUpdateOnStartupButton(object sender, RoutedEventArgs e)
+        {
+            osc.Send(new OscMessage("/VMT/Config", "AutoPoseUpdateOnStartup", "true"));
+            System.Media.SystemSounds.Beep.Play();
+        }
+        private void DisableAutoPoseUpdateOnStartupButton(object sender, RoutedEventArgs e)
+        {
+            osc.Send(new OscMessage("/VMT/Config", "AutoPoseUpdateOnStartup", "false"));
+            System.Media.SystemSounds.Beep.Play();
+        }
+        private void EnableAddControllerOnStartupButton(object sender, RoutedEventArgs e)
+        {
+            osc.Send(new OscMessage("/VMT/Config", "AddControllerOnStartup", "true"));
+            System.Media.SystemSounds.Beep.Play();
+        }
+        private void DisableAddControllerOnStartupButton(object sender, RoutedEventArgs e)
+        {
+            osc.Send(new OscMessage("/VMT/Config", "AddControllerOnStartup", "false"));
+            System.Media.SystemSounds.Beep.Play();
+        }
+        private void EnableAddCompatibleControllerOnStartupButton(object sender, RoutedEventArgs e)
+        {
+            osc.Send(new OscMessage("/VMT/Config", "AddCompatibleControllerOnStartup", "true"));
+            System.Media.SystemSounds.Beep.Play();
+        }
+        private void DisableAddCompatibleControllerOnStartupButton(object sender, RoutedEventArgs e)
+        {
+            osc.Send(new OscMessage("/VMT/Config", "AddCompatibleControllerOnStartup", "false"));
+            System.Media.SystemSounds.Beep.Play();
+        }
+        private void EnableDiagLogOnStartupButton(object sender, RoutedEventArgs e)
+        {
+            osc.Send(new OscMessage("/VMT/Config", "DiagLogOnStartup", "true"));
+            System.Media.SystemSounds.Beep.Play();
+        }
+        private void DisableDiagLogOnStartupButton(object sender, RoutedEventArgs e)
+        {
+            osc.Send(new OscMessage("/VMT/Config", "DiagLogOnStartup", "false"));
             System.Media.SystemSounds.Beep.Play();
         }
 

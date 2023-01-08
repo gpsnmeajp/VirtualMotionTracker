@@ -39,10 +39,11 @@ namespace VMTDriver {
 		int m_sendPort{ 39571 };
 		bool m_optoutTrackingRole{ true };
 		bool m_RejectWhenCannotTracking{ true };
-		bool m_DefaultAutoPoseUpdateOn{ true };
-		bool m_DefaultControllerDeviceRegistration{ false };
 		bool m_SkeletonInput{ true };
-		bool m_DefaultControllerDeviceRegistrationCompatibleMode{ false };
+		bool m_AutoPoseUpdateOnStartup{ true };
+		bool m_AddControllerOnStartup{ false };
+		bool m_AddCompatibleControllerOnStartup{ false };
+		bool m_DiagLogOnStartup{ false };
 
 		json LoadJson();
 		void SaveJson(json j);
@@ -66,9 +67,10 @@ namespace VMTDriver {
 		int GetSendPort();
 		bool GetOptoutTrackingRole();
 		bool GetRejectWhenCannotTracking();
-		bool GetDefaultAutoPoseUpdateOn();
-		bool GetDefaultControllerDeviceRegistration();
 		bool GetSkeletonInput();
-		bool GetDefaultControllerDeviceRegistrationCompatibleMode();
+		bool GetAutoPoseUpdateOnStartup();
+		bool GetAddControllerOnStartup();
+		bool GetAddCompatibleControllerOnStartup();
+		bool GetDiagLogOnStartup();
 	};
 }

@@ -194,12 +194,24 @@ namespace VMTDriver {
         //デバイスコンテキストを保持
         m_pDriverContext = pDriverContext;
 
+        //セットアップへプロセス起動中を伝達するMutex
+        ::CreateMutexA(nullptr, FALSE, "VMT_Mutex");
+
         //ログをオープン
         Log::Open(VRDriverLog());
 
         //ドライバのインストールパス取得
         m_installPath = VRProperties()->GetStringProperty(m_pDriverContext->GetDriverHandle(), Prop_InstallPath_String);
         LogInfo("Install Path: %s", m_installPath.c_str());
+
+        //起動時設定読み込み(パス取得済みである必要あり)
+        Config::GetInstance()->LoadSetting();
+
+        //起動時診断ログの反映
+        Log::s_diag = Config::GetInstance()->GetDiagLogOnStartup();
+
+        //起動時自動更新の反映
+        TrackedDeviceServerDriver::SetAutoUpdate(Config::GetInstance()->GetAutoPoseUpdateOnStartup());
 
         //通信のオープン
         CommunicationManager::GetInstance()->Open();
@@ -220,14 +232,14 @@ namespace VMTDriver {
         }
 
         //起動時に既定の互換性コントローラとして登録する処理
-        if (Config::GetInstance()->GetDefaultControllerDeviceRegistrationCompatibleMode())
+        if (Config::GetInstance()->GetAddCompatibleControllerOnStartup())
         {
             m_devices[1].RegisterToVRSystem(5);//VMT_1 = Compatible(Knuckles) Controller Left
             m_devices[2].RegisterToVRSystem(6);//VMT_2 = Compatible(Knuckles) Controller Right
         }
         else {
             //起動時に既定のコントローラとして登録する処理
-            if (Config::GetInstance()->GetDefaultControllerDeviceRegistration()) {
+            if (Config::GetInstance()->GetAddControllerOnStartup()) {
                 m_devices[1].RegisterToVRSystem(2);//VMT_1 = Controller Left
                 m_devices[2].RegisterToVRSystem(3);//VMT_2 = Controller Right
             }

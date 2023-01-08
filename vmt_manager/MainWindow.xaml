@@ -96,7 +96,17 @@
 								<TextBlock Text="RoomMatrix" DockPanel.Dock="Top" Margin="1"/>
 								<TextBox Name="RoomMatrixTextBox" IsEnabled="False" IsReadOnly="True" Text="" DockPanel.Dock="Top" Height="69" Margin="1"/>
 								<CheckBox Content="Temporary" DockPanel.Dock="Top" Name="SetRoomMatrixTemporaryCheckBox"></CheckBox>
-								<Button Content="Set RoomMatrix" Height="80" DockPanel.Dock="Top" Name="SetRoomMatrixButtonName" Click="SetRoomMatrixButton" Margin="1"/>
+								<Button Content="Set RoomMatrix" Height="80" DockPanel.Dock="Top" Name="SetRoomMatrixButtonName" Click="SetRoomMatrixButton" Margin="1" BorderThickness="3">
+									<Button.Background>
+										<LinearGradientBrush EndPoint="0,0" StartPoint="0,1">
+											<GradientStop Color="#55FF55" Offset="0"/>
+											<GradientStop Color="#CCFFCC" Offset="1"/>
+										</LinearGradientBrush>
+									</Button.Background>
+									<Button.BorderBrush>
+										<SolidColorBrush Color="#00CC00"/>
+									</Button.BorderBrush>
+								</Button>
 								<Button Content="Reset RoomMatrix" DockPanel.Dock="Top" Click="ResetRoomMatrixButton" Margin="1"/>
 							</DockPanel>
 						</GroupBox>
@@ -140,28 +150,77 @@
 			<TabItem Header="Control">
 				<DockPanel>
 					<TextBlock TextAlignment="Center" Text="Control Command for all VMT Devices" DockPanel.Dock="Top" Background="#EEEEEE" />
-					<DockPanel Margin="2"  LastChildFill="False" Width="300">
+					<DockPanel Margin="2"  LastChildFill="False" Width="350">
 						<GroupBox Header="Volatile (Non save config)" DockPanel.Dock="Top">
 							<StackPanel>
 								<Button Content="Reload Setting" Click="ReloadJsonButton" Margin="1"/>
 								<Button Content="Device Reset" Click="ResetButton" Margin="1"/>
 								<Button Content="Show all" Click="ShowAllButton" Margin="1"/>
-								<Button Content="[Enable] Auto Pose Udate" Click="EnableAutoPoseUdateButton" Margin="1"/>
-								<Button Content="[Disable] Auto Pose Udate" Click="DisableAutoPoseUdateButton" Margin="1"/>
-								<Button Content="[Enable] Diag log" Click="EnableDiaglogButton" Margin="1"/>
-								<Button Content="[Disable] Diag log" Click="DisableDiaglogButton" Margin="1"/>
+								<Grid>
+									<Grid.ColumnDefinitions>
+										<ColumnDefinition/>
+										<ColumnDefinition Width="50" />
+										<ColumnDefinition Width="50"/>
+									</Grid.ColumnDefinitions>
+									<Grid.RowDefinitions>
+										<RowDefinition/>
+										<RowDefinition/>
+									</Grid.RowDefinitions>
+									<TextBlock Text="Auto Pose Udate" Grid.Row="0" Grid.Column="0"/>
+									<Button Content="ON" Click="EnableAutoPoseUdateButton"  Grid.Row="0" Grid.Column="1" Margin="1"/>
+									<Button Content="OFF" Click="DisableAutoPoseUdateButton"  Grid.Row="0" Grid.Column="2" Margin="1"/>
+
+									<TextBlock Text="Diag log" Grid.Row="1" Grid.Column="0"/>
+									<Button Content="ON" Click="EnableDiaglogButton"  Grid.Row="1" Grid.Column="1" Margin="1"/>
+									<Button Content="OFF" Click="DisableDiaglogButton"  Grid.Row="1" Grid.Column="2" Margin="1"/>
+								</Grid>
 								<CheckBox Content="Load Testing" Name="LoadTestCheckBox" IsChecked="False" Checked="LoadTestCheckBoxEvent" Unchecked="LoadTestCheckBoxEvent" Margin="1"/>
 							</StackPanel>
 						</GroupBox>
 						<GroupBox Header="Non-Volatile (Save config)" DockPanel.Dock="Top" Margin="0,10,0,0">
-							<StackPanel>
-								<Button Content="[Enable] Diag log enable on startup" Margin="1"/>
-								<Button Content="[Disable] Diag log enable on startup" Margin="1"/>
-								<Button Content="XXXX ON" Margin="1"/>
-								<Button Content="XXXX OFF" Margin="1"/>
-								<Button Content="XXXX ON" Margin="1"/>
-								<Button Content="XXXX OFF" Margin="1"/>
-							</StackPanel>
+							<Grid>
+								<Grid.ColumnDefinitions>
+									<ColumnDefinition/>
+									<ColumnDefinition Width="50" />
+									<ColumnDefinition Width="50"/>
+								</Grid.ColumnDefinitions>
+								<Grid.RowDefinitions>
+									<RowDefinition/>
+									<RowDefinition/>
+									<RowDefinition/>
+									<RowDefinition/>
+									<RowDefinition/>
+									<RowDefinition/>
+									<RowDefinition/>
+								</Grid.RowDefinitions>
+								<TextBlock Text="Optout Tracking Role" Grid.Row="0" Grid.Column="0"/>
+								<Button Content="ON" Click="EnableOptoutTrackingRoleButton" Grid.Row="0" Grid.Column="1" Margin="1"/>
+								<Button Content="OFF" Click="DisableOptoutTrackingRoleButton"  Grid.Row="0" Grid.Column="2" Margin="1"/>
+
+								<TextBlock Text="Reject When Cannot Tracking" Grid.Row="1" Grid.Column="0"/>
+								<Button Content="ON" Click="EnableRejectWhenCannotTrackingButton"  Grid.Row="1" Grid.Column="1" Margin="1"/>
+								<Button Content="OFF" Click="DisableRejectWhenCannotTrackingButton"  Grid.Row="1" Grid.Column="2" Margin="1"/>
+
+								<TextBlock Text="Skeleton Input" Grid.Row="2" Grid.Column="0"/>
+								<Button Content="ON" Click="EnableSkeletonInputButton"  Grid.Row="2" Grid.Column="1" Margin="1"/>
+								<Button Content="OFF" Click="DisableSkeletonInputButton"  Grid.Row="2" Grid.Column="2" Margin="1"/>
+
+								<TextBlock Text="Auto Pose Update On Startup" Grid.Row="3" Grid.Column="0"/>
+								<Button Content="ON" Click="EnableAutoPoseUpdateOnStartupButton"  Grid.Row="3" Grid.Column="1" Margin="1"/>
+								<Button Content="OFF" Click="DisableAutoPoseUpdateOnStartupButton"  Grid.Row="3" Grid.Column="2" Margin="1"/>
+
+								<TextBlock Text="Add Controller On Startup" Grid.Row="4" Grid.Column="0"/>
+								<Button Content="ON" Click="EnableAddControllerOnStartupButton"  Grid.Row="4" Grid.Column="1" Margin="1"/>
+								<Button Content="OFF" Click="DisableAddControllerOnStartupButton"  Grid.Row="4" Grid.Column="2" Margin="1"/>
+
+								<TextBlock Text="Add Compatible Controller On Startup" Grid.Row="5" Grid.Column="0"/>
+								<Button Content="ON" Click="EnableAddCompatibleControllerOnStartupButton" Grid.Row="5" Grid.Column="1" Margin="1"/>
+								<Button Content="OFF" Click="DisableAddCompatibleControllerOnStartupButton"  Grid.Row="5" Grid.Column="2" Margin="1"/>
+
+								<TextBlock Text="Diag Log On Startup" Grid.Row="6" Grid.Column="0"/>
+								<Button Content="ON" Click="EnableDiagLogOnStartupButton" Grid.Row="6" Grid.Column="1" Margin="1"/>
+								<Button Content="OFF" Click="DisableDiagLogOnStartupButton"  Grid.Row="6" Grid.Column="2" Margin="1"/>
+							</Grid>
 						</GroupBox>
 						<GroupBox Header="Tracking Overrides" DockPanel.Dock="Top" Margin="0,10,0,0">
 							<StackPanel>
@@ -659,7 +718,7 @@ If you want to override button, axis, fingers by VMT, Please set "Target device"
 					</Grid>
 				</DockPanel>
 			</TabItem>
-			<TabItem Header="VMT Settings">
+			<TabItem Header="Settings">
 				<DockPanel>
 					<TextBlock TextAlignment="Center" Text="Driver Settings (Need reload to apply, Some value requires restart SteamVR.)" DockPanel.Dock="Top" Background="#EEEEEE" />
 					<Button Content="Reload Setting" DockPanel.Dock="Bottom" Click="ReloadJsonButton" Margin="1"/>
