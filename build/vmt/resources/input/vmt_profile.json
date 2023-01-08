@@ -283,6 +283,10 @@
     {
       "app_key": "openvr.component.vrcompositor",
       "binding_url": "vrcompositor_binding_vmt.json"
+    },
+    {
+      "app_key": "system.generated.virtualmotioncapture.exe",
+      "binding_url": "virtualmotioncapture_binding_vmt.json"
     }
   ]
 }
