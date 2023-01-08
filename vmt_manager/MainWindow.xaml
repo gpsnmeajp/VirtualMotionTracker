@@ -76,7 +76,7 @@
 						<TextBlock HorizontalAlignment="Left" Text="Driver: "  Grid.Column="2" Foreground="LightGray" />
 						<TextBlock Name="DriverVersion"  Grid.Column="3" Foreground="LightGray" />
 					</Grid>
-					<TextBlock DockPanel.Dock="Bottom" TextAlignment="Center" Margin="1" ><Hyperlink Foreground="IndianRed" NavigateUri="https://github.com/gpsnmeajp/VirtualMotionTracker/report/" RequestNavigate="Hyperlink_RequestNavigate">Send bug report.  不具合レポートを送る</Hyperlink></TextBlock>
+					<TextBlock DockPanel.Dock="Bottom" TextAlignment="Center" Margin="1" ><Hyperlink Foreground="IndianRed" NavigateUri="https://gpsnmeajp.github.io/VirtualMotionTrackerDocument/report/" RequestNavigate="Hyperlink_RequestNavigate">Send bug report.  不具合レポートを送る</Hyperlink></TextBlock>
 					<TextBlock DockPanel.Dock="Bottom" TextAlignment="Center" Margin="1"><Hyperlink Foreground="LightSkyBlue" NavigateUri="https://github.com/gpsnmeajp/VirtualMotionTracker" RequestNavigate="Hyperlink_RequestNavigate">https://github.com/gpsnmeajp/VirtualMotionTracker</Hyperlink></TextBlock>
 					<TextBlock DockPanel.Dock="Bottom" TextAlignment="Center" Margin="1" Foreground="Yellow" FontWeight="Bold" Text="No support provided. サポートは提供していません"></TextBlock>
 					<TextBlock DockPanel.Dock="Bottom" TextAlignment="Center" Margin="1" Foreground="White" Text="An easy-to-use virtual tracker driver for OpenVR. &#xA; With your own device, your own software, and any.&#xA;"></TextBlock>
