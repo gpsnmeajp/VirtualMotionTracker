@@ -263,14 +263,10 @@ namespace VMTDriver {
     {
         m_poweron = true; //有効な姿勢なので電源オン状態にする
 
-        if (s_autoUpdate) {
-            //自動更新が有効なら内部姿勢を保存するのみ。(OpenVR姿勢は自動更新されるため)
-            m_rawPose = rawPose;
-        }
-        else {
+        //自動更新が有効なら内部姿勢を保存するのみ。(OpenVR姿勢はフレームごとに自動更新されるため)
+        m_rawPose = rawPose;
+        if (!s_autoUpdate) {
             //自動更新が無効ならば内部姿勢を保存し、OpenVR姿勢を更新する
-            m_lastRawPose = m_rawPose; //差分を取るために前回値を取っておく
-            m_rawPose = rawPose;
             SetPose(RawPoseToPose());
         }
     }
@@ -1164,8 +1160,6 @@ namespace VMTDriver {
     {
         //自動更新が有効 AND デバイス登録済み AND 電源オン状態の場合
         if (s_autoUpdate && m_alreadyRegistered && m_poweron) {
-            //加速度計算の自動更新を行う
-            m_lastRawPose = m_rawPose;
             m_rawPose.time = std::chrono::system_clock::now();
             //姿勢情報の更新(他デバイス連動時に効果あり)
             SetPose(RawPoseToPose());

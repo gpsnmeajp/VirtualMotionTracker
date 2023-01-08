@@ -760,11 +760,13 @@ namespace vmt_manager
                     }
                     File.Delete(driverPath + @"\setting.json");
                     RequestRestart();
+                    Close();
                     return;
                 }
                 else
                 {
                     RequestRestart();
+                    Close();
                     return;
                 }
             }

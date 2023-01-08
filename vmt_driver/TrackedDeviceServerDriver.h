@@ -127,7 +127,6 @@ namespace VMTDriver {
 
         DriverPose_t m_pose{ 0 };
         RawPose m_rawPose{ 0 };
-        RawPose m_lastRawPose{ 0 };
 
         VRBoneTransform_t m_boneTransform[skeletonBoneCount]{ 0 };
 
