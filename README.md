@@ -8,9 +8,13 @@ You can send pose (position and rotation) with OSC Protocol and use it as a virt
 Creating your own OpenVR tracking device was difficult and required a high degree of technical work. 
 However, from now on, by using VMT, it will be possible to do it in a simple way like attaching to a GameObject in Unity.   
 
+From v0.14, Supports Skeletal Input, and it is now possible to create glove-type controllers.
+
 自作デバイス、自作のソフトウェアで、簡単に使える OpenVR 仮想トラッカードライバです。OSCで姿勢(座標や回転)を受け取り、仮想的なトラッカーとしてSteamVR上で利用することができます。  
 
 これまで、独自のOpenVRトラッキングデバイスを作成するということは難しい作業であり、高度な技術的作業が必要でした。しかし、これからはVMTを用いることで、UnityでGameObjectにアタッチするような簡単な方法で行うことができるようになります。  
+
+v0.14より、Skeletal Inputに対応し、グローブ型コントローラなども作成できるようになりました。
 
 # Licence
 MIT Licence
