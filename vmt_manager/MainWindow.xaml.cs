@@ -45,7 +45,7 @@ namespace vmt_manager
     /// </summary>
     public partial class MainWindow : Window
     {
-        const string Version = "VMT_014b";
+        const string Version = "VMT_014c";
         private DispatcherTimer dispatcherTimer;
         Random rnd;
         string title = "";

@@ -364,14 +364,28 @@ namespace VMTDriver {
         //OpenVR姿勢へ、一旦通常のデータを書き込む
         pose.poseTimeOffset = m_rawPose.timeoffset;
 
-        pose.qWorldFromDriverRotation.x = rot.x();
-        pose.qWorldFromDriverRotation.y = rot.y();
-        pose.qWorldFromDriverRotation.z = rot.z();
-        pose.qWorldFromDriverRotation.w = rot.w();
+        if (m_rawPose.roomToDriver) {
+            //ルーム空間に設定
+            pose.qWorldFromDriverRotation.x = rot.x();
+            pose.qWorldFromDriverRotation.y = rot.y();
+            pose.qWorldFromDriverRotation.z = rot.z();
+            pose.qWorldFromDriverRotation.w = rot.w();
 
-        pose.vecWorldFromDriverTranslation[0] = pos.x();
-        pose.vecWorldFromDriverTranslation[1] = pos.y();
-        pose.vecWorldFromDriverTranslation[2] = pos.z();
+            pose.vecWorldFromDriverTranslation[0] = pos.x();
+            pose.vecWorldFromDriverTranslation[1] = pos.y();
+            pose.vecWorldFromDriverTranslation[2] = pos.z();
+        }
+        else {
+            //ドライバ生空間に設定
+            pose.qWorldFromDriverRotation.x = 0;
+            pose.qWorldFromDriverRotation.y = 0;
+            pose.qWorldFromDriverRotation.z = 0;
+            pose.qWorldFromDriverRotation.w = 1;
+
+            pose.vecWorldFromDriverTranslation[0] = 0;
+            pose.vecWorldFromDriverTranslation[1] = 0;
+            pose.vecWorldFromDriverTranslation[2] = 0;
+        }
 
         pose.qDriverFromHeadRotation = VMTDriver::HmdQuaternion_Identity;
 
