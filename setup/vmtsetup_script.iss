@@ -2,7 +2,7 @@
 ; SEE THE DOCUMENTATION FOR DETAILS ON CREATING INNO SETUP SCRIPT FILES!
 
 #define MyAppName "Virtual Motion Tracker"
-#define MyAppVersion "0.14a"
+#define MyAppVersion "0.14b"
 #define MyAppPublisher "gpsnmeajp"
 #define MyAppURL "https://github.com/gpsnmeajp/VirtualMotionTracker"
 #define MyAppExeName "vmt_manager.exe"
@@ -26,7 +26,7 @@ InfoBeforeFile=D:\myprojects\git\VirtualMotionTracker\build\3rd_licence.txt
 ; Uncomment the following line to run in non administrative install mode (install for current user only.)
 PrivilegesRequired=lowest
 OutputDir=D:\myprojects\git\VirtualMotionTracker\setup
-OutputBaseFilename=VirtualMotionTrackerSetup
+OutputBaseFilename=VirtualMotionTrackerSetup_{#MyAppVersion}
 SetupIconFile=D:\myprojects\git\VirtualMotionTracker\docs\vmt.ico
 Compression=lzma
 SolidCompression=yes
