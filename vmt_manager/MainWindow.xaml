@@ -121,7 +121,10 @@
 								<TextBlock Text="VMT_0 Speed" DockPanel.Dock="Top" Margin="1"/>
 								<TextBox Name="CheckPositionRawSpeedTextBox" IsEnabled="False" IsReadOnly="True" Text="-,-,-" DockPanel.Dock="Top" Margin="1"/>
 								<Button DockPanel.Dock="Top" Click="CheckPositionButton" Margin="1">
-									<TextBlock Text="Check VMT__0 Position &#xA;(Try set RoomPos=[1,1,1] )" TextAlignment="Center"/>
+									<TextBlock Text="Check VMT__0 Position(Room) &#xA;(Try set RoomPos=[1,1,1] )" TextAlignment="Center"/>
+								</Button>
+								<Button DockPanel.Dock="Top" Click="CheckPositionRawButton" Margin="1">
+									<TextBlock Text="Check VMT__0 Position(Raw) &#xA;(Try set RawPos=[1,1,1] )" TextAlignment="Center"/>
 								</Button>
 								<Button DockPanel.Dock="Top" Click="CheckTemplatePosition1Button" Margin="1">
 									<TextBlock Text="Set Hand Position (Room)&#xA;(VMT__1, VMT__2)" TextAlignment="Center"/>

@@ -566,6 +566,23 @@ namespace vmt_manager
                 0f, 0f, 0f, 1f));
             }
         }
+        private void CheckPositionRawButton(object sender, RoutedEventArgs e)
+        {
+            if (CoordinateCombo.SelectedIndex == 1)
+            {
+                osc.Send(new OscMessage("/VMT/Raw/Unity",
+                0, 1, 0f,
+                1f, 1f, 1f,
+                0f, 0f, 0f, 1f));
+            }
+            else
+            {
+                osc.Send(new OscMessage("/VMT/Raw/Driver",
+                0, 1, 0f,
+                1f, 1f, 1f,
+                0f, 0f, 0f, 1f));
+            }
+        }
         private void CheckJointPositionButton(object sender, RoutedEventArgs e)
         {
             if (CoordinateCombo.SelectedIndex == 1)
