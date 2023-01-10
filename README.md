@@ -1,6 +1,8 @@
 # VMT - Virtual Motion Tracker
 ## [Official page and Manual / 公式ページ &  説明書](https://gpsnmeajp.github.io/VirtualMotionTrackerDocument/)
-## [Download / ダウンロード](https://gpsnmeajp.github.io/VirtualMotionTrackerDocument/download/)
+## [API Reference](https://gpsnmeajp.github.io/VirtualMotionTrackerDocument/api/)
+## [Sample Code](https://gpsnmeajp.github.io/VirtualMotionTrackerDocument/sample/)
+## [Download setup binaly / ダウンロード(セットアップファイル)](https://gpsnmeajp.github.io/VirtualMotionTrackerDocument/download/)
 
 An easy-to-use virtual tracker driver for OpenVR. With your own device, your own software, and any.
 You can send pose (position and rotation) with OSC Protocol and use it as a virtual tracker on SteamVR.
@@ -15,6 +17,15 @@ From v0.14, Supports Skeletal Input, and it is now possible to create glove-type
 これまで、独自のOpenVRトラッキングデバイスを作成するということは難しい作業であり、高度な技術的作業が必要でした。しかし、これからはVMTを用いることで、UnityでGameObjectにアタッチするような簡単な方法で行うことができるようになります。  
 
 v0.14より、Skeletal Inputに対応し、グローブ型コントローラなども作成できるようになりました。
+
+# Build
+
++ VS2019 Community
++ VMT Driver (C++) 
++ VMT Manager (C#)
+
+Open solution and build it.
+
 
 # Licence
 MIT Licence
