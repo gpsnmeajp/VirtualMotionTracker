@@ -2,7 +2,7 @@
 ; SEE THE DOCUMENTATION FOR DETAILS ON CREATING INNO SETUP SCRIPT FILES!
 
 #define MyAppName "Virtual Motion Tracker"
-#define MyAppVersion "0.14c"
+#define MyAppVersion "0.14d"
 #define MyAppPublisher "gpsnmeajp"
 #define MyAppURL "https://github.com/gpsnmeajp/VirtualMotionTracker"
 #define MyAppExeName "vmt_manager.exe"

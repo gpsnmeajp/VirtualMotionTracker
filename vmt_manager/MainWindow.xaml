@@ -8,7 +8,7 @@
 		Height="800"
         mc:Ignorable="d"
         Title="VMT Manager" Loaded="Window_Loaded" Closed="Window_Closed" ResizeMode="NoResize">
-	<DockPanel LastChildFill="True">
+	<DockPanel LastChildFill="True" Name="AllDockPanel">
 		<StatusBar DockPanel.Dock="Bottom" Name="StatusBar">
 			<StatusBarItem>
 				<DockPanel Width="520">

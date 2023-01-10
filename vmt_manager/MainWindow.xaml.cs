@@ -95,6 +95,7 @@ namespace vmt_manager
             TopErrorDockPanel.Background = new SolidColorBrush(Color.FromRgb(255, 255, 0));
             TopErrorTextBlock.Foreground = new SolidColorBrush(Color.FromRgb(0, 0, 0));
             TopNotInstalledTextBlock.Visibility = Visibility.Collapsed;
+            TryFixItButton.Visibility = Visibility.Collapsed;
 
             if (autosetup)
             {
@@ -167,7 +168,7 @@ namespace vmt_manager
                 bool safemode = OpenVR.Settings.GetBool("driver_vmt", OpenVR.k_pch_Driver_BlockedBySafemode_Bool, ref eVRSettingsError);
                 if (eVRSettingsError == EVRSettingsError.None && safemode)
                 {
-                    TopErrorMessage("SteamVR runnning on safe mode and VMT has blocked.\nPlease unblock, and restart SteamVR.\n\nSteamVRがセーフモードで動作し、VMTがブロックされています。ブロックを解除し、SteamVRを再起動してください。", true, () => {
+                    TopErrorMessage("SteamVR running on safe mode and VMT has blocked.\nPlease unblock, and restart SteamVR.\n\nSteamVRがセーフモードで動作し、VMTがブロックされています。ブロックを解除し、SteamVRを再起動してください。", true, () => {
                         OpenVR.Settings.SetBool("driver_vmt", OpenVR.k_pch_Driver_BlockedBySafemode_Bool, false, ref eVRSettingsError);
                         RequestRestart();
                     });
@@ -648,6 +649,7 @@ namespace vmt_manager
         }
         private async Task Install()
         {
+            AllDockPanel.IsEnabled = false;
             try
             {
                 if (installPath == "")
@@ -671,6 +673,7 @@ namespace vmt_manager
                 {
                     //MessageBox.Show("Please uninstall VMT before install.\nインストールを続ける前に、VMTをアンインストールしてください", title, MessageBoxButton.OK, MessageBoxImage.Error);
                     TopWarningMessage("Please uninstall VMT before install.\nインストールを続ける前に、VMTをアンインストールしてください", true);
+                    AllDockPanel.IsEnabled = true;
                     return;
                 }
 
@@ -738,6 +741,7 @@ namespace vmt_manager
 
         private async Task Uninstall()
         {
+            AllDockPanel.IsEnabled = false;
             try
             {
                 string driverPath_rel = System.IO.Path.GetDirectoryName(Assembly.GetEntryAssembly().Location) + @"\..\vmt";
@@ -765,6 +769,7 @@ namespace vmt_manager
                     var res = MessageBox.Show("Uninstall VMT Driver?\nVMTドライバをアンインストールしますか?\n\n" + installPath, title, MessageBoxButton.OKCancel, MessageBoxImage.Question);
                     if (res != MessageBoxResult.OK)
                     {
+                        AllDockPanel.IsEnabled = true;
                         return;
                     }
                     //現在のフォルダパスの代わりに、受信したパスでアンインストールを試す
@@ -776,6 +781,7 @@ namespace vmt_manager
                     var res = MessageBox.Show("Manager couldn't communication to VMT Driver.\nMaybe VMT is not installed\n Or other VMT Driver version maybe installed.\nIn many cases, this driver located on different path.\nmanager can not uninstallation these.\nIf you want to remove currently installed VMT driver, press cancel and please use manager of drivers itself.\n\nIf you want to try uninstallation anyway, press OK. (it will fail in many cases.)\n\nVMTドライバと通信できませんでした。\nVMTがまだインストールされていない\nもしくは違うバージョンのVMTドライバが入っている可能性があります。\n多くの場合これは別のパスにあります。\n本Managerではアンインストールできません。\nアンインストールしたい場合は、キャンセルを押し、そのVMTドライバに付属のManagerを使用してください\n\nOKを押すと、とにかくアンインストールを試します。(多くの場合失敗します。)", title, MessageBoxButton.OKCancel, MessageBoxImage.Error);
                     if (res != MessageBoxResult.OK)
                     {
+                        AllDockPanel.IsEnabled = true;
                         return;
                     }
                 }
