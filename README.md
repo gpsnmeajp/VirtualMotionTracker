@@ -1,4 +1,5 @@
 # VMT - Virtual Motion Tracker
+![](docs/vmt_vr.png)
 ## [Official page and Manual / 公式ページ &  説明書](https://gpsnmeajp.github.io/VirtualMotionTrackerDocument/)
 ## [API Reference](https://gpsnmeajp.github.io/VirtualMotionTrackerDocument/api/)
 ## [Sample Code](https://gpsnmeajp.github.io/VirtualMotionTrackerDocument/sample/)
@@ -31,3 +32,5 @@ Open solution and build it.
 MIT Licence
 
 Logo text font: M+ Fonts https://mplus-fonts.osdn.jp/about2.html
+
+![](docs/VMTlogo.png)
