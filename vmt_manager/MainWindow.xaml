@@ -26,7 +26,10 @@
 							<GradientStop Color="#FF111111" Offset="1"/>
 						</LinearGradientBrush>
 					</DockPanel.Background>
-					<TextBlock Text="" Name="TopErrorTextBlock" Visibility="Collapsed" DockPanel.Dock="Top" Background="Red" Foreground="White" TextWrapping="Wrap" />
+					<DockPanel Name="TopErrorDockPanel" Background="Red" DockPanel.Dock="Top" Visibility="Collapsed">
+						<TextBlock Text="" Name="TopErrorTextBlock" DockPanel.Dock="Top" Foreground="White" TextWrapping="Wrap" />
+						<Button Content="Try fix it. / 修正を試みる" Name="TryFixItButton" DockPanel.Dock="Top" Background="Pink" Visibility="Collapsed" Click="FixItButton"/>
+					</DockPanel>
 					<TextBlock Text="VMT is not installed. Click install button to start use VMT.&#xA;VMTはインストールされていません。使い始めるにはInstallボタンを押してください。" Name="TopNotInstalledTextBlock" DockPanel.Dock="Top" Background="Green" Foreground="White" TextWrapping="Wrap" />
 					<Grid  DockPanel.Dock="Top" Margin="1" Name="InstallGrid" Height="50">
 						<Grid.ColumnDefinitions>

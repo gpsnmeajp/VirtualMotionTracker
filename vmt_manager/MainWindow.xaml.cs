@@ -45,7 +45,7 @@ namespace vmt_manager
     /// </summary>
     public partial class MainWindow : Window
     {
-        const string Version = "VMT_014c";
+        const string Version = "VMT_014d";
         private DispatcherTimer dispatcherTimer;
         Random rnd;
         string title = "";
@@ -61,26 +61,28 @@ namespace vmt_manager
         int subscribeReceiveCnt = 0;
         bool autosetup = false;
 
+        Action FixItAction = null;
+
         public MainWindow()
         {
             InitializeComponent();
         }
 
-        private void TopErrorMessage(string message, bool permitInstall = false)
+        private void FixItButton(object sender, RoutedEventArgs e) {
+            TryFixItButton.Visibility = Visibility.Collapsed;
+            FixItAction?.Invoke();
+        }
+
+        private void TopErrorMessage(string message, bool permitInstall = false, Action Fixit = null)
         {
-            TopErrorTextBlock.Visibility = Visibility.Visible;
+            TopErrorDockPanel.Visibility = Visibility.Visible;
             TopErrorTextBlock.Text = message;
-            TopErrorTextBlock.Background = new SolidColorBrush(Color.FromRgb(255, 0, 0));
+            TopErrorDockPanel.Background = new SolidColorBrush(Color.FromRgb(255, 0, 0));
             TopErrorTextBlock.Foreground = new SolidColorBrush(Color.FromRgb(255, 255, 255));
             TopNotInstalledTextBlock.Visibility = Visibility.Collapsed;
-            InstallButtonName.IsEnabled = permitInstall;
 
-            //Top以外を削除する
-            int count = MainTabControl.Items.Count;
-            for (int i = 1; i < count; i++)
-            {
-                MainTabControl.Items.Remove(MainTabControl.Items[1]);
-            }
+            TryFixItButton.Visibility = Fixit != null?Visibility.Visible:Visibility.Collapsed;
+            FixItAction = Fixit;
 
             if (autosetup) {
                 MessageBox.Show(message, title, MessageBoxButton.OK, MessageBoxImage.Error);
@@ -88,22 +90,11 @@ namespace vmt_manager
         }
         private void TopWarningMessage(string message, bool enable = false)
         {
-            TopErrorTextBlock.Visibility = Visibility.Visible;
+            TopErrorDockPanel.Visibility = Visibility.Visible;
             TopErrorTextBlock.Text = message;
-            TopErrorTextBlock.Background = new SolidColorBrush(Color.FromRgb(255, 255, 0));
+            TopErrorDockPanel.Background = new SolidColorBrush(Color.FromRgb(255, 255, 0));
             TopErrorTextBlock.Foreground = new SolidColorBrush(Color.FromRgb(0, 0, 0));
-            MainTabControl.SelectedIndex = 0;
             TopNotInstalledTextBlock.Visibility = Visibility.Collapsed;
-
-            //Top以外を削除する
-            if (!enable)
-            {
-                int count = MainTabControl.Items.Count;
-                for (int i = 1; i < count; i++)
-                {
-                    MainTabControl.Items.Remove(MainTabControl.Items[1]);
-                }
-            }
 
             if (autosetup)
             {
@@ -149,8 +140,9 @@ namespace vmt_manager
                 util = new EasyOpenVRUtil();
                 if (!util.StartOpenVR())
                 {
-                    //var result = MessageBox.Show("Steam VR not ready. Maybe not ready for HMD or Tracking system.\nStream VRが利用できません。HMDやトラッキングシステムが利用できない状態の可能性があります。", title, MessageBoxButton.OK, MessageBoxImage.Error);
-                    TopErrorMessage("Steam VR not ready. Maybe not ready for HMD or Tracking system.\nStream VRが利用できません。HMDやトラッキングシステムが利用できない状態の可能性があります。\n\nPlease enable Null driver If you want to use without HMD. \nHMDなしで利用したい場合は、Null driverを有効にして再起動してください。", true);
+                    TopErrorMessage("Steam VR not ready. Maybe not ready for HMD or Tracking system.\nStream VRが利用できません。HMDやトラッキングシステムが利用できない状態の可能性があります。\n\nPlease enable Null driver If you want to use without HMD. \nHMDなしで利用したい場合は、Null driverを有効にして再起動してください。", true, () => {
+                        EnableNullHMDDriverButton(null, null);
+                    });
                     //Close();
                     //タイマー起動してはいけない
                     return;
@@ -159,6 +151,7 @@ namespace vmt_manager
                 if (Environment.Is64BitOperatingSystem == false)
                 {
                     TopErrorMessage("VMT works 64bit OS only.\n VMTは64bit OSでのみ動作します。");
+                    InstallButtonName.IsEnabled = false;
                     //タイマー起動してはいけない
                     return;
                 }
@@ -174,25 +167,26 @@ namespace vmt_manager
                 bool safemode = OpenVR.Settings.GetBool("driver_vmt", OpenVR.k_pch_Driver_BlockedBySafemode_Bool, ref eVRSettingsError);
                 if (eVRSettingsError == EVRSettingsError.None && safemode)
                 {
-                    //var result = MessageBox.Show("SteamVR runnning on safe mode and VMT has blocked.\nPlease unblock, and restart SteamVR.\n\nSteamVRがセーフモードで動作し、VMTがブロックされています。\nブロックを解除し、SteamVRを再起動してください。", title, MessageBoxButton.OK, MessageBoxImage.Error);
-                    TopErrorMessage("SteamVR runnning on safe mode and VMT has blocked.\nPlease unblock, and restart SteamVR.\n\nSteamVRがセーフモードで動作し、VMTがブロックされています。ブロックを解除し、SteamVRを再起動してください。");
-                    return;
+                    TopErrorMessage("SteamVR runnning on safe mode and VMT has blocked.\nPlease unblock, and restart SteamVR.\n\nSteamVRがセーフモードで動作し、VMTがブロックされています。ブロックを解除し、SteamVRを再起動してください。", true, () => {
+                        OpenVR.Settings.SetBool("driver_vmt", OpenVR.k_pch_Driver_BlockedBySafemode_Bool, false, ref eVRSettingsError);
+                        RequestRestart();
+                    });
                 }
                 //Enableチェック
                 eVRSettingsError = EVRSettingsError.None;
                 bool enable = OpenVR.Settings.GetBool("driver_vmt", OpenVR.k_pch_Driver_Enable_Bool, ref eVRSettingsError);
                 if (eVRSettingsError == EVRSettingsError.None && !enable)
                 {
-                    //var result = MessageBox.Show("VMT has disabled in Steam VR setting.\nPlease enable, and restart SteamVR.\n\nVMTはSteamVR上で無効に設定されています。\n有効にし、SteamVRを再起動してください。", title, MessageBoxButton.OK, MessageBoxImage.Error);
-                    TopErrorMessage("VMT has disabled in Steam VR setting.\nPlease enable, and restart SteamVR.\n\nVMTはSteamVR上で無効に設定されています。有効にし、SteamVRを再起動してください。");
-                    return;
+                    TopErrorMessage("VMT has disabled in Steam VR setting.\nPlease enable, and restart SteamVR.\n\nVMTはSteamVR上で無効に設定されています。有効にし、SteamVRを再起動してください。", true, () => {
+                        OpenVR.Settings.SetBool("driver_vmt", OpenVR.k_pch_Driver_Enable_Bool, true, ref eVRSettingsError);
+                        RequestRestart();
+                    });
                 }
                 //requireHmdチェック
                 eVRSettingsError = EVRSettingsError.None;
                 bool requireHmd = OpenVR.Settings.GetBool("steamvr", OpenVR.k_pch_SteamVR_RequireHmd_String, ref eVRSettingsError);
                 if (eVRSettingsError == EVRSettingsError.None && !requireHmd)
                 {
-                    //var result = MessageBox.Show("VMT has disabled in Steam VR setting.\nPlease enable, and restart SteamVR.\n\nVMTはSteamVR上で無効に設定されています。\n有効にし、SteamVRを再起動してください。", title, MessageBoxButton.OK, MessageBoxImage.Error);
                     TopWarningMessage("Manager detected requireHmd is false on SteamVR. Some functions will not work probably.\nSteamVRにてrequireHmdがfalseに設定されています。いくつかの機能は正常に動かない可能性があります。", true);
                 }
 
@@ -659,9 +653,9 @@ namespace vmt_manager
                 if (installPath == "")
                 {
                     //インストールパスが受信できていない場合少し待つ
-                    TopErrorTextBlock.Visibility = Visibility.Visible;
+                    TopErrorDockPanel.Visibility = Visibility.Visible;
                     TopErrorTextBlock.Text = "Please wait";
-                    TopErrorTextBlock.Background = new SolidColorBrush(Color.FromRgb(255, 255, 0));
+                    TopErrorDockPanel.Background = new SolidColorBrush(Color.FromRgb(255, 255, 0));
                     TopErrorTextBlock.Foreground = new SolidColorBrush(Color.FromRgb(0, 0, 0));
                     TopNotInstalledTextBlock.Visibility = Visibility.Collapsed;
                     for (int i = 0; i < 10; i++)
@@ -670,7 +664,7 @@ namespace vmt_manager
                         TopErrorTextBlock.Text = TopErrorTextBlock.Text + ".";
                         if(DriverVersion.Text != " - ") { break; }
                     }
-                    TopErrorTextBlock.Visibility = Visibility.Collapsed;
+                    TopErrorDockPanel.Visibility = Visibility.Collapsed;
                 }
 
                 if (DriverVersion.Text != " - ")
@@ -752,9 +746,9 @@ namespace vmt_manager
                 if (installPath == "")
                 {
                     //インストールパスが受信できていない場合少し待つ
-                    TopErrorTextBlock.Visibility = Visibility.Visible;
+                    TopErrorDockPanel.Visibility = Visibility.Visible;
                     TopErrorTextBlock.Text = "Please wait";
-                    TopErrorTextBlock.Background = new SolidColorBrush(Color.FromRgb(255, 255, 0));
+                    TopErrorDockPanel.Background = new SolidColorBrush(Color.FromRgb(255, 255, 0));
                     TopErrorTextBlock.Foreground = new SolidColorBrush(Color.FromRgb(0, 0, 0));
                     TopNotInstalledTextBlock.Visibility = Visibility.Collapsed;
                     for (int i = 0; i < 10; i++) {
@@ -762,7 +756,7 @@ namespace vmt_manager
                         TopErrorTextBlock.Text = TopErrorTextBlock.Text + ".";
                         if (DriverVersion.Text != " - ") { break; }
                     }
-                    TopErrorTextBlock.Visibility = Visibility.Collapsed;
+                    TopErrorDockPanel.Visibility = Visibility.Collapsed;
                 }
 
                 if (installPath != "")
