@@ -4,14 +4,14 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:vmt_manager"
-		Width="520"
+		Width="550"
 		Height="800"
         mc:Ignorable="d"
         Title="VMT Manager" Loaded="Window_Loaded" Closed="Window_Closed" ResizeMode="NoResize">
 	<DockPanel LastChildFill="True" Name="AllDockPanel">
 		<StatusBar DockPanel.Dock="Bottom" Name="StatusBar">
 			<StatusBarItem>
-				<DockPanel Width="520">
+				<DockPanel Width="550">
 					<TextBlock Padding="2,0,0,0" Name="StatusBarTextBlock" Text="Virtual Motion Tracker" FontWeight="Bold" DockPanel.Dock="Top" />
 					<TextBlock Padding="2,0,0,0" Name="StatusBarDashboardAlertTextBlock" Text="Steam VR Dashboard is opening. Button, Finger does not working.&#xA;SteamVR ダッシュボードが開いています。ボタン操作・指姿勢は無効です。" Background="Red" Foreground="White" FontWeight="Bold" DockPanel.Dock="Top" />
 				</DockPanel>
@@ -162,6 +162,7 @@
 								<Button Content="Reload Setting" Click="ReloadJsonButton" Margin="1"/>
 								<Button Content="Device Reset" Click="ResetButton" Margin="1"/>
 								<Button Content="Show all" Click="ShowAllButton" Margin="1"/>
+								<Button Content="Request Restart (SteamVR)" Click="RequestRestartButton" Margin="1"/>
 								<Grid>
 									<Grid.ColumnDefinitions>
 										<ColumnDefinition/>
@@ -261,8 +262,13 @@ If you want to override button, axis, fingers by VMT, Please set "Target device"
 							<DockPanel>
 								<GroupBox Header="Device registration (Only once each devices in one VR Session.)" DockPanel.Dock="Top">
 									<StackPanel>
-										<UniformGrid Columns="6" Rows="1">
-											<Button Content="[1] Tracker" Margin="1" Click="TrackerButton"/>
+										<UniformGrid Columns="7" Rows="1">
+											<Button Margin="1" Click="DisableButton">
+												<TextBlock Text="[0]&#xa;Disable" TextAlignment="Center"/>
+											</Button>
+											<Button Margin="1" Click="TrackerButton">
+												<TextBlock Text="[1]&#xa;Tracker" TextAlignment="Center"/>
+											</Button>
 											<Button Margin="1" Click="LeftHandButton">
 												<TextBlock Text="[2] Left&#xa;Controller" TextAlignment="Center"/>
 											</Button>
@@ -279,10 +285,11 @@ If you want to override button, axis, fingers by VMT, Please set "Target device"
 												<TextBlock Text="[6] Right&#xa;Compatible" TextAlignment="Center"/>
 											</Button>
 										</UniformGrid>
-										<UniformGrid Columns="6" Rows="1">
+										<UniformGrid Columns="7" Rows="1">
 												<TextBlock Text="┗"/>
 											<TextBlock Text=""/>
 											<TextBlock Text="VMT"/>
+											<TextBlock Text=""/>
 											<TextBlock Text="┛" TextAlignment="Right"/>
 											<TextBlock Text="┗"/>
 											<DockPanel>
@@ -769,6 +776,38 @@ If you want to override button, axis, fingers by VMT, Please set "Target device"
 							</DockPanel>
 						</TabItem>
 					</TabControl>
+				</DockPanel>
+			</TabItem>
+			<TabItem Header="Manager">
+				<DockPanel LastChildFill="True">
+					<TextBlock TextAlignment="Center" DockPanel.Dock="Top" Background="#EEEEEE" ><Run Text="VMT Manager Settings"/><Run Text=" (Temporary)"/></TextBlock>
+					<DockPanel DockPanel.Dock="Top" LastChildFill="False">
+						<DockPanel LastChildFill="True" DockPanel.Dock="Top">
+							<TextBlock DockPanel.Dock="Left" Margin="2">VMT Manager IP Address:</TextBlock>
+							<TextBox Name="ManagerIPAddressTextBox"  Margin="1" DockPanel.Dock="Right" Text="127.0.0.1"/>
+						</DockPanel>
+						<DockPanel LastChildFill="True" DockPanel.Dock="Top">
+							<TextBlock DockPanel.Dock="Left" Margin="2">VMT Manager Port:</TextBlock>
+							<TextBox Name="ManagerPortTextBox"  Margin="1" DockPanel.Dock="Right" Text="39571"/>
+						</DockPanel>
+						<DockPanel LastChildFill="True" DockPanel.Dock="Top">
+							<TextBlock DockPanel.Dock="Left" Margin="2">VMT Driver IP Address:</TextBlock>
+							<TextBox Name="DriverIPAddressTextBox"  Margin="1" Text="127.0.0.1"/>
+						</DockPanel>
+						<DockPanel LastChildFill="True" DockPanel.Dock="Top">
+							<TextBlock DockPanel.Dock="Left" Margin="2">VMT Driver Port:</TextBlock>
+							<TextBox Name="DriverPortTextBox"  Margin="1"  Text="39570"/>
+						</DockPanel>
+						<Button Click="IPAddressChangeButton" Content="Change" DockPanel.Dock="Top" Margin="1" />
+						<TextBlock FontWeight="Bold" TextWrapping="Wrap">
+							CAUTION: This change is affect to OSC communications ONLY. <LineBreak/>
+							<LineBreak/>
+							Some configuration function has not work well or cause something funny result If you use this to other machine VR System's VMT Driver.<LineBreak/>
+							(Eg, Install, Uninstall, Null driver, RoomMatrix.)<LineBreak/>
+							<LineBreak/>
+							You should only use for communication debugging.
+						</TextBlock>
+					</DockPanel>
 				</DockPanel>
 			</TabItem>
 		</TabControl>

@@ -45,7 +45,7 @@ namespace vmt_manager
     /// </summary>
     public partial class MainWindow : Window
     {
-        const string Version = "VMT_014d";
+        const string Version = "VMT_014e";
         private DispatcherTimer dispatcherTimer;
         Random rnd;
         string title = "";
@@ -137,6 +137,7 @@ namespace vmt_manager
 
                 rnd = new Random();
                 osc = new OSC("127.0.0.1", 39571, 39570, OnBundle, OnMessage);
+                osc.Send(new OscMessage("/VMT/Set/Destination", "127.0.0.1", 39571));
 
                 util = new EasyOpenVRUtil();
                 if (!util.StartOpenVR())
@@ -518,14 +519,14 @@ namespace vmt_manager
 
             if (SetRoomMatrixTemporaryCheckBox.IsChecked.Value)
             {
-                osc.Send(new OscMessage("/VMT/SetRoomMatrix/Temporary",
+                osc.Send(new OscMessage("/VMT/Set/RoomMatrix/Temporary",
                     m.m0, m.m1, m.m2, m.m3,
                     m.m4, m.m5, m.m6, m.m7,
                     m.m8, m.m9, m.m10, m.m11));
             }
             else
             {
-                osc.Send(new OscMessage("/VMT/SetRoomMatrix",
+                osc.Send(new OscMessage("/VMT/Set/RoomMatrix",
                     m.m0, m.m1, m.m2, m.m3,
                     m.m4, m.m5, m.m6, m.m7,
                     m.m8, m.m9, m.m10, m.m11));
@@ -536,14 +537,14 @@ namespace vmt_manager
         {
             if (SetRoomMatrixTemporaryCheckBox.IsChecked.Value)
             {
-                osc.Send(new OscMessage("/VMT/SetRoomMatrix/Temporary",
+                osc.Send(new OscMessage("/VMT/Set/RoomMatrix/Temporary",
                     1f, 0f, 0f, 0f,
                     0f, 1f, 0f, 0f,
                     0f, 0f, 1f, 0f));
             }
             else
             {
-                osc.Send(new OscMessage("/VMT/SetRoomMatrix",
+                osc.Send(new OscMessage("/VMT/Set/RoomMatrix",
                     1f, 0f, 0f, 0f,
                     0f, 1f, 0f, 0f,
                     0f, 0f, 1f, 0f));
@@ -1507,6 +1508,18 @@ namespace vmt_manager
             }
         }
 
+        private void DisableButton(object sender, RoutedEventArgs e)
+        {
+            var index = GetInputIndex();
+            if (index.ok)
+            {
+                osc.Send(new OscMessage("/VMT/Room/Unity",
+                index.i, 0, 0f,
+                0f, 0f, 0f,
+                0f, 0f, 0f, 1f));
+            }
+        }
+
         private void TrackerButton(object sender, RoutedEventArgs e)
         {
             var index = GetInputIndex();
@@ -1521,23 +1534,23 @@ namespace vmt_manager
 
         private void EnableAutoPoseUdateButton(object sender, RoutedEventArgs e)
         {
-            osc.Send(new OscMessage("/VMT/SetAutoPoseUpdate", 1));
+            osc.Send(new OscMessage("/VMT/Set/AutoPoseUpdate", 1));
             System.Media.SystemSounds.Beep.Play();
         }
         private void DisableAutoPoseUdateButton(object sender, RoutedEventArgs e)
         {
-            osc.Send(new OscMessage("/VMT/SetAutoPoseUpdate", 0));
+            osc.Send(new OscMessage("/VMT/Set/AutoPoseUpdate", 0));
             System.Media.SystemSounds.Beep.Play();
         }
 
         private void EnableDiaglogButton(object sender, RoutedEventArgs e)
         {
-            osc.Send(new OscMessage("/VMT/SetDiagLog", 1));
+            osc.Send(new OscMessage("/VMT/Set/DiagLog", 1));
             System.Media.SystemSounds.Beep.Play();
         }
         private void DisableDiaglogButton(object sender, RoutedEventArgs e)
         {
-            osc.Send(new OscMessage("/VMT/SetDiagLog", 0));
+            osc.Send(new OscMessage("/VMT/Set/DiagLog", 0));
             System.Media.SystemSounds.Beep.Play();
         }
 
@@ -2116,6 +2129,27 @@ namespace vmt_manager
                 }
             }
         }
+
+        private void IPAddressChangeButton(object sender, RoutedEventArgs e)
+        {
+            try { 
+                osc.Dispose();
+
+                osc = new OSC(DriverIPAddressTextBox.Text, int.Parse(ManagerPortTextBox.Text), int.Parse(DriverPortTextBox.Text), OnBundle, OnMessage);
+                osc.Send(new OscMessage("/VMT/Set/Destination", ManagerIPAddressTextBox.Text, int.Parse(ManagerPortTextBox.Text)));
+                System.Media.SystemSounds.Beep.Play();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message, title, MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+        }
+
+        private void RequestRestartButton(object sender, RoutedEventArgs e)
+        {
+            RequestRestart();
+        }
+        
 
         private void RequestRestart()
         {

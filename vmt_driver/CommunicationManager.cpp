@@ -441,14 +441,14 @@ namespace VMTDriver {
 				SendLog(0, "Setting Loaded");
 			}
 			//ルーム変換行列の設定
-			else if (adr == "/VMT/SetRoomMatrix")
+			else if (adr == "/VMT/SetRoomMatrix" || adr == "/VMT/Set/RoomMatrix")
 			{
 				args >> m1 >> m2 >> m3 >> m4 >> m5 >> m6 >> m7 >> m8 >> m9 >> m10 >> m11 >> m12 >> osc::EndMessage;
 				LogIfDiag("%s : %f %f %f %f %f %f %f %f %f %f %f %f", adr.c_str(), m1, m2, m3, m4, m5, m6, m7, m8, m9, m10, m11, m12);
 				Config::GetInstance()->SetRoomMatrix(true, m1, m2, m3, m4, m5, m6, m7, m8, m9, m10, m11, m12);
 				SendLog(0, "Set Room Matrix Done.");
 			}
-			else if (adr == "/VMT/SetRoomMatrix/Temporary")
+			else if (adr == "/VMT/SetRoomMatrix/Temporary" || adr == "/VMT/Set/RoomMatrix/Temporary")
 			{
 				args >> m1 >> m2 >> m3 >> m4 >> m5 >> m6 >> m7 >> m8 >> m9 >> m10 >> m11 >> m12 >> osc::EndMessage;
 				LogIfDiag("%s : %f %f %f %f %f %f %f %f %f %f %f %f", adr.c_str(), m1, m2, m3, m4, m5, m6, m7, m8, m9, m10, m11, m12);
@@ -456,7 +456,7 @@ namespace VMTDriver {
 				SendLog(0, "Set Room Matrix Done.(Temporary)");
 			}
 			//自動姿勢更新の設定
-			else if (adr == "/VMT/SetAutoPoseUpdate")
+			else if (adr == "/VMT/SetAutoPoseUpdate" || adr == "/VMT/Set/AutoPoseUpdate")
 			{
 				args >> enable >> osc::EndMessage;
 				LogIfDiag("%s : %d", adr.c_str(), enable);
@@ -490,11 +490,18 @@ namespace VMTDriver {
 				GetServer()->RequestRestart();
 			}
 			//診断用ログの設定
-			else if (adr == "/VMT/SetDiagLog")
+			else if (adr == "/VMT/SetDiagLog" || adr == "/VMT/Set/DiagLog")
 			{
 				args >> enable >> osc::EndMessage;
 				LogIfDiag("%s : %d", adr.c_str(), enable);
 				Log::s_diag = enable != 0;
+			}
+			//送信先の変更
+			else if (adr == "/VMT/Set/Destination")
+			{
+				args >> value >> i >> osc::EndMessage;
+				LogIfDiag("%s : %s %d", adr.c_str(), value, i);
+				DirectOSC::OSC::GetInstance().ReOpen(value, i);
 			}
 			//汎用設定
 			else if (adr == "/VMT/Config")

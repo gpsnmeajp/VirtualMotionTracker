@@ -73,6 +73,12 @@ namespace DirectOSC {
 		m_opened = true;
 	}
 
+	//送信先を切り替える
+	void OSC::ReOpen(std::string address, int portTx)
+	{
+		socketTx = std::make_unique<UdpTransmitSocket>(IpEndpointName(address.c_str(), portTx));
+	}
+
 	//受信スレッドを停止し、処理を終える
 	void OSC::Close()
 	{

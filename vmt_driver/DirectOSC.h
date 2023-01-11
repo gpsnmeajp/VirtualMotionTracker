@@ -56,6 +56,7 @@ namespace DirectOSC {
 		UdpTransmitSocket& GetSocketTx();
 
 		void Open(osc::OscPacketListener* listen, int portRx, int portTx);
+		void ReOpen(std::string address, int portTx);
 		void Close();
 	};
 
