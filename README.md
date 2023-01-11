@@ -1,9 +1,9 @@
 # VMT - Virtual Motion Tracker
 ![](docs/vmt_vr.png)
-## [Official page and Manual / 公式ページ &  説明書](https://gpsnmeajp.github.io/VirtualMotionTrackerDocument/)
-## [API Reference](https://gpsnmeajp.github.io/VirtualMotionTrackerDocument/api/)
-## [Sample Code](https://gpsnmeajp.github.io/VirtualMotionTrackerDocument/sample/)
-## [Download setup binaly / ダウンロード(セットアップファイル)](https://gpsnmeajp.github.io/VirtualMotionTrackerDocument/download/)
+## [Official page and Manual](https://gpsnmeajp.github.io/VirtualMotionTrackerDocument/)
+### [API Reference](https://gpsnmeajp.github.io/VirtualMotionTrackerDocument/api/)
+### [Sample Code](https://gpsnmeajp.github.io/VirtualMotionTrackerDocument/sample/)
+### [Download Binaly](https://gpsnmeajp.github.io/VirtualMotionTrackerDocument/download/)
 
 An easy-to-use virtual tracker driver for OpenVR. With your own device, your own software, and any.
 You can send pose (position and rotation) with OSC Protocol and use it as a virtual tracker on SteamVR.
