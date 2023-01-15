@@ -1041,7 +1041,7 @@ namespace VMTDriver {
         LogIfETrackedPropertyError(VRProperties()->SetBoolProperty(m_propertyContainer, Prop_HasVirtualDisplayComponent_Bool, false));
 
         //LogIfETrackedPropertyError(VRProperties()->SetStringProperty(m_propertyContainer, vmt_profile.json, "NO_SETTING")); //設定不可
-        LogIfETrackedPropertyError(VRProperties()->SetInt32Property(m_propertyContainer, Prop_ControllerHandSelectionPriority_Int32, 0));
+        LogIfETrackedPropertyError(VRProperties()->SetInt32Property(m_propertyContainer, Prop_ControllerHandSelectionPriority_Int32, Config::GetInstance()->GetPriority()));
 
         //コントローラロール登録
         if (m_controllerRole == ControllerRole::Left) {
@@ -1121,6 +1121,16 @@ namespace VMTDriver {
             LogIfEVRInputError(VRDriverInput()->CreateScalarComponent(m_propertyContainer, (std::string("/input/finger/middle/value")).c_str(), &TriggerComponent[4], EVRScalarType::VRScalarType_Absolute, EVRScalarUnits::VRScalarUnits_NormalizedOneSided));
             LogIfEVRInputError(VRDriverInput()->CreateScalarComponent(m_propertyContainer, (std::string("/input/finger/ring/value")).c_str(), &TriggerComponent[5], EVRScalarType::VRScalarType_Absolute, EVRScalarUnits::VRScalarUnits_NormalizedOneSided));
             LogIfEVRInputError(VRDriverInput()->CreateScalarComponent(m_propertyContainer, (std::string("/input/finger/pinky/value")).c_str(), &TriggerComponent[6], EVRScalarType::VRScalarType_Absolute, EVRScalarUnits::VRScalarUnits_NormalizedOneSided));
+
+            //互換アイコンにする
+            LogIfETrackedPropertyError(VRProperties()->SetStringProperty(m_propertyContainer, Prop_NamedIconPathDeviceSearching_String, "{vmt}/icons/Searching32x32_compatible.png"));
+            LogIfETrackedPropertyError(VRProperties()->SetStringProperty(m_propertyContainer, Prop_NamedIconPathDeviceSearchingAlert_String, "{vmt}/icons/SearchingAlert32x32_compatible.png"));
+            LogIfETrackedPropertyError(VRProperties()->SetStringProperty(m_propertyContainer, Prop_NamedIconPathDeviceReady_String, "{vmt}/icons/Ready32x32_compatible.png"));
+            LogIfETrackedPropertyError(VRProperties()->SetStringProperty(m_propertyContainer, Prop_NamedIconPathDeviceReadyAlert_String, "{vmt}/icons/ReadyAlert32x32_compatible.png"));
+            LogIfETrackedPropertyError(VRProperties()->SetStringProperty(m_propertyContainer, Prop_NamedIconPathDeviceNotReady_String, "{vmt}/icons/NotReady32x32_compatible.png"));
+            LogIfETrackedPropertyError(VRProperties()->SetStringProperty(m_propertyContainer, Prop_NamedIconPathDeviceStandby_String, "{vmt}/icons/Standby32x32_compatible.png"));
+            LogIfETrackedPropertyError(VRProperties()->SetStringProperty(m_propertyContainer, Prop_NamedIconPathDeviceStandbyAlert_String, "{vmt}/icons/StandbyAlert32x32_compatible.png"));
+            LogIfETrackedPropertyError(VRProperties()->SetStringProperty(m_propertyContainer, Prop_NamedIconPathDeviceAlertLow_String, "{vmt}/icons/AlertLow32x32_compatible.png"));
         }
 
         m_alreadyRegistered = true;

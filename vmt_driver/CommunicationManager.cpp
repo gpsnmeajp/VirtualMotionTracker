@@ -220,8 +220,9 @@ namespace VMTDriver {
 		const char* name = nullptr;
 		const char* value = nullptr;
 
+		std::string adr = "";
 		try {
-			string adr = m.AddressPattern();
+			adr = m.AddressPattern();
 			osc::ReceivedMessageArgumentStream args = m.ArgumentStream();
 			
 			//姿勢情報の受信
@@ -533,7 +534,7 @@ namespace VMTDriver {
 		}
 		catch (osc::Exception& e)
 		{
-			LogError("Exp: %s\n", e.what());
+			LogError("Exp: %s : %s\n", adr.c_str(), e.what());
 		}
 	}
 }

@@ -44,6 +44,7 @@ namespace VMTDriver {
 		bool m_AddControllerOnStartup{ false };
 		bool m_AddCompatibleControllerOnStartup{ false };
 		bool m_DiagLogOnStartup{ false };
+		int m_Priority{ 10 };
 
 		json LoadJson();
 		void SaveJson(json j);
@@ -72,5 +73,6 @@ namespace VMTDriver {
 		bool GetAddControllerOnStartup();
 		bool GetAddCompatibleControllerOnStartup();
 		bool GetDiagLogOnStartup();
+		int GetPriority();
 	};
 }

@@ -141,6 +141,10 @@ namespace VMTDriver {
 		{
 			j["DiagLogOnStartup"] = false;
 		}
+		if (!j.contains("Priority"))
+		{
+			j["Priority"] = 10;
+		}
 		return j;
 	}
 
@@ -200,6 +204,10 @@ namespace VMTDriver {
 			if (j.contains("DiagLogOnStartup"))
 			{
 				m_DiagLogOnStartup = j["DiagLogOnStartup"];
+			}
+			if (j.contains("Priority"))
+			{
+				m_Priority = j["Priority"];
 			}
 			SaveJson(j);
 		}
@@ -344,5 +352,11 @@ namespace VMTDriver {
 	bool Config::GetDiagLogOnStartup()
 	{
 		return m_DiagLogOnStartup;
+	}
+
+	//プライオリティを取得する
+	int Config::GetPriority()
+	{
+		return m_Priority;
 	}
 }

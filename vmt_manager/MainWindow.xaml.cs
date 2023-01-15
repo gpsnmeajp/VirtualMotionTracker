@@ -45,7 +45,7 @@ namespace vmt_manager
     /// </summary>
     public partial class MainWindow : Window
     {
-        const string Version = "VMT_014e";
+        const string Version = "VMT_014f";
         private DispatcherTimer dispatcherTimer;
         Random rnd;
         string title = "";
@@ -400,6 +400,7 @@ namespace vmt_manager
             }
         }
 
+        bool vibrationFlag = false;
         private void GenericTimer(object sender, EventArgs e)
         {
             try
@@ -455,6 +456,15 @@ namespace vmt_manager
                     else
                     {
                         CheckPositionTextBox.Background = new SolidColorBrush(Color.FromRgb(255, 100, 100));
+                    }
+
+                    if (VMT_0_PositionVibrationCheckBox.IsChecked.Value) {
+                        float vibration = vibrationFlag ? 0.005f : -0.005f;
+                        vibrationFlag = !vibrationFlag;
+                        osc.Send(new OscMessage("/VMT/Room/Driver",
+                            0, 1, 0f,
+                            (float)t1.position.X, (float)t1.position.Y, (float)(t1.position.Z + vibration),
+                            (float)t1.rotation.X, (float)t1.rotation.Y, (float)t1.rotation.Z, (float)t1.rotation.W));
                     }
                 }
                 var t2 = util.GetTransformBySerialNumberRaw("VMT_0");

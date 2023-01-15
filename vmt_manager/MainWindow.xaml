@@ -86,7 +86,7 @@
 					<Image DockPanel.Dock="Bottom" Source="Resources/VMTlogo.png" Margin="20,5,20,0"/>
 				</DockPanel>
 			</TabItem>
-			<TabItem Header="RoomSetup">
+			<TabItem Header="RoomSetup" Height="22" VerticalAlignment="Bottom">
 				<DockPanel Name="ControlDock" IsEnabled="False">
 					<TextBlock TextAlignment="Center" Text="Initial setup &amp; Operation check" DockPanel.Dock="Top" Background="#EEEEEE" />
 					<Grid VerticalAlignment="Top">
@@ -130,6 +130,7 @@
 									<TextBlock Text="Set Hand Position (Room)&#xA;(VMT__1, VMT__2)" TextAlignment="Center"/>
 								</Button>
 								<TextBlock Text="VMT_0 Joint Serial No" DockPanel.Dock="Top" Margin="1"/>
+								<CheckBox Content="VMT_0 Position Vibration" Name="VMT_0_PositionVibrationCheckBox"  DockPanel.Dock="Top" Margin="1"/>
 								<TextBox Name="JointSerialNoTextBox" Text="HMD" DockPanel.Dock="Top" Margin="1"/>
 								<Button DockPanel.Dock="Top" Click="CheckJointPositionButton" Margin="1">
 									<TextBlock Text="Check VMT__0 Position &#xA;(Try set JointPos=[0.1,0.0,-0.5] )" TextAlignment="Center"/>
