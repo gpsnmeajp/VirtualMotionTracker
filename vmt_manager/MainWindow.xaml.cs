@@ -45,7 +45,7 @@ namespace vmt_manager
     /// </summary>
     public partial class MainWindow : Window
     {
-        const string Version = "VMT_014f";
+        const string Version = "VMT_014g";
         private DispatcherTimer dispatcherTimer;
         Random rnd;
         string title = "";
@@ -214,6 +214,23 @@ namespace vmt_manager
                             this.Hide();
                             autosetup = true;
                             await Uninstall();
+                            Close();
+                            return;
+                        }
+                        if (args[1] == "setroommatrix")
+                        {
+                            this.Hide();
+                            autosetup = true;
+
+                            //最大30秒待つ
+                            for (int i = 0; i < 30; i++)
+                            {
+                                await Task.Delay(1000);
+                                if (SetRoomMatrixButtonName.IsEnabled == true) { break; }
+                            }
+
+                            SetRoomMatrixButton(null, null);
+                            await Task.Delay(3000);
                             Close();
                             return;
                         }

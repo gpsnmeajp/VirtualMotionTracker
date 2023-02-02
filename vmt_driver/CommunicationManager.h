@@ -26,7 +26,7 @@ SOFTWARE.
 
 //通信系の処理の管理、OSC情報の送受信を行う
 namespace VMTDriver {
-	const string Version{ "VMT_014f" };
+	const string Version{ "VMT_014g" };
 
 	class OSCReceiver : public osc::OscPacketListener {
 	private:
