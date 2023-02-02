@@ -45,7 +45,7 @@ namespace vmt_manager
     /// </summary>
     public partial class MainWindow : Window
     {
-        const string Version = "VMT_014g";
+        const string Version = "VMT_015";
         private DispatcherTimer dispatcherTimer;
         Random rnd;
         string title = "";
@@ -1510,6 +1510,17 @@ namespace vmt_manager
 
             }
         }
+        private void TrackerCompatibleButton(object sender, RoutedEventArgs e)
+        {
+            var index = GetInputIndex();
+            if (index.ok)
+            {
+                osc.Send(new OscMessage("/VMT/Room/Unity",
+                index.i, 7, 0f,
+                0f, 0f, 0f,
+                0f, 0f, 0f, 1f));
+            }
+        }
 
         private void LeftHandButton(object sender, RoutedEventArgs e)
         {
@@ -1649,6 +1660,16 @@ namespace vmt_manager
         private void DisableDiagLogOnStartupButton(object sender, RoutedEventArgs e)
         {
             osc.Send(new OscMessage("/VMT/Config", "DiagLogOnStartup", "false"));
+            System.Media.SystemSounds.Beep.Play();
+        }
+        private void EnableAlwaysCompatibleButton(object sender, RoutedEventArgs e)
+        {
+            osc.Send(new OscMessage("/VMT/Config", "AlwaysCompatible", "true"));
+            System.Media.SystemSounds.Beep.Play();
+        }
+        private void DisableAlwaysCompatibleButton(object sender, RoutedEventArgs e)
+        {
+            osc.Send(new OscMessage("/VMT/Config", "AlwaysCompatible", "false"));
             System.Media.SystemSounds.Beep.Play();
         }
 

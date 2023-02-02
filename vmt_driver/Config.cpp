@@ -145,6 +145,10 @@ namespace VMTDriver {
 		{
 			j["Priority"] = 10;
 		}
+		if (!j.contains("AlwaysCompatible"))
+		{
+			j["AlwaysCompatible"] = false;
+		}
 		return j;
 	}
 
@@ -208,6 +212,10 @@ namespace VMTDriver {
 			if (j.contains("Priority"))
 			{
 				m_Priority = j["Priority"];
+			}
+			if (j.contains("AlwaysCompatible"))
+			{
+				m_AlwaysCompatible = j["AlwaysCompatible"];
 			}
 			SaveJson(j);
 		}
@@ -358,5 +366,10 @@ namespace VMTDriver {
 	int Config::GetPriority()
 	{
 		return m_Priority;
+	}
+	//常時互換モードを取得する
+	bool Config::GetAlwaysCompatible()
+	{
+		return m_AlwaysCompatible;
 	}
 }

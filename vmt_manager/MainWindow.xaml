@@ -4,14 +4,14 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:vmt_manager"
-		Width="550"
+		Width="650"
 		Height="800"
         mc:Ignorable="d"
         Title="VMT Manager" Loaded="Window_Loaded" Closed="Window_Closed" ResizeMode="NoResize">
 	<DockPanel LastChildFill="True" Name="AllDockPanel">
 		<StatusBar DockPanel.Dock="Bottom" Name="StatusBar">
 			<StatusBarItem>
-				<DockPanel Width="550">
+				<DockPanel Width="650">
 					<TextBlock Padding="2,0,0,0" Name="StatusBarTextBlock" Text="Virtual Motion Tracker" FontWeight="Bold" DockPanel.Dock="Top" />
 					<TextBlock Padding="2,0,0,0" Name="StatusBarDashboardAlertTextBlock" Text="Steam VR Dashboard is opening. Button, Finger does not working.&#xA;SteamVR ダッシュボードが開いています。ボタン操作・指姿勢は無効です。" Background="Red" Foreground="White" FontWeight="Bold" DockPanel.Dock="Top" />
 				</DockPanel>
@@ -200,6 +200,7 @@
 									<RowDefinition/>
 									<RowDefinition/>
 									<RowDefinition/>
+									<RowDefinition/>
 								</Grid.RowDefinitions>
 								<TextBlock Text="Optout Tracking Role" Grid.Row="0" Grid.Column="0"/>
 								<Button Content="ON" Click="EnableOptoutTrackingRoleButton" Grid.Row="0" Grid.Column="1" Margin="1"/>
@@ -228,6 +229,10 @@
 								<TextBlock Text="Diag Log On Startup" Grid.Row="6" Grid.Column="0"/>
 								<Button Content="ON" Click="EnableDiagLogOnStartupButton" Grid.Row="6" Grid.Column="1" Margin="1"/>
 								<Button Content="OFF" Click="DisableDiagLogOnStartupButton"  Grid.Row="6" Grid.Column="2" Margin="1"/>
+
+								<TextBlock Text="Always Compatible" Grid.Row="7" Grid.Column="0"/>
+								<Button Content="ON" Click="EnableAlwaysCompatibleButton" Grid.Row="7" Grid.Column="1" Margin="1"/>
+								<Button Content="OFF" Click="DisableAlwaysCompatibleButton"  Grid.Row="7" Grid.Column="2" Margin="1"/>
 							</Grid>
 						</GroupBox>
 						<GroupBox Header="Tracking Overrides" DockPanel.Dock="Top" Margin="0,10,0,0">
@@ -263,7 +268,7 @@ If you want to override button, axis, fingers by VMT, Please set "Target device"
 							<DockPanel>
 								<GroupBox Header="Device registration (Only once each devices in one VR Session.)" DockPanel.Dock="Top">
 									<StackPanel>
-										<UniformGrid Columns="7" Rows="1">
+										<UniformGrid Columns="8" Rows="1">
 											<Button Margin="1" Click="DisableButton">
 												<TextBlock Text="[0]&#xa;Disable" TextAlignment="Center"/>
 											</Button>
@@ -285,8 +290,11 @@ If you want to override button, axis, fingers by VMT, Please set "Target device"
 											<Button Margin="1" Click="RightHandCompatibleButton">
 												<TextBlock Text="[6] Right&#xa;Compatible" TextAlignment="Center"/>
 											</Button>
+											<Button Margin="1" Click="TrackerCompatibleButton">
+												<TextBlock Text="[7] Tracker&#xa;Compatible" TextAlignment="Center"/>
+											</Button>
 										</UniformGrid>
-										<UniformGrid Columns="7" Rows="1">
+										<UniformGrid Columns="8" Rows="1">
 												<TextBlock Text="┗"/>
 											<TextBlock Text=""/>
 											<TextBlock Text="VMT"/>

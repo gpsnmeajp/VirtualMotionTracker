@@ -505,15 +505,21 @@ namespace VMTDriver {
                 m_CompatibleMode = false;
                 break;
             case 5://Compatible(Knuckles) Controller Left
-                LogInfo("RegisterToVRSystem: %s", "ETrackedDeviceClass::TrackedDeviceClass_Controller (Left)");
+                LogInfo("RegisterToVRSystem: %s", "ETrackedDeviceClass::TrackedDeviceClass_Controller (Left) [Compatible]");
                 m_controllerRole = ControllerRole::Left;
                 m_deviceClass = ETrackedDeviceClass::TrackedDeviceClass_Controller;
                 m_CompatibleMode = true;
                 break;
             case 6://Compatible(Knuckles) Controller Right
-                LogInfo("RegisterToVRSystem: %s", "ETrackedDeviceClass::TrackedDeviceClass_Controller (Right)");
+                LogInfo("RegisterToVRSystem: %s", "ETrackedDeviceClass::TrackedDeviceClass_Controller (Right) [Compatible]");
                 m_controllerRole = ControllerRole::Right;
                 m_deviceClass = ETrackedDeviceClass::TrackedDeviceClass_Controller;
+                m_CompatibleMode = true;
+                break;
+            case 7://Compatible Tracker
+                LogInfo("RegisterToVRSystem: %s", "ETrackedDeviceClass::TrackedDeviceClass_GenericTracker [Compatible]");
+                m_controllerRole = ControllerRole::None;
+                m_deviceClass = ETrackedDeviceClass::TrackedDeviceClass_GenericTracker;
                 m_CompatibleMode = true;
                 break;
             default:
@@ -521,6 +527,12 @@ namespace VMTDriver {
                 m_deviceClass = ETrackedDeviceClass::TrackedDeviceClass_Invalid;
                 return; //中止
             }
+
+            if (Config::GetInstance()->GetAlwaysCompatible()) {
+                LogError("AlwaysCompatible: %s", "true");
+                m_CompatibleMode = true;
+            }
+
             m_registrationInProgress = true;
             LogIfFalse(VRServerDriverHost()->TrackedDeviceAdded(m_serial.c_str(), m_deviceClass, this));
         }
@@ -1001,8 +1013,11 @@ namespace VMTDriver {
         RegisteredDeviceType_String += m_serial.c_str();
         LogIfETrackedPropertyError(VRProperties()->SetStringProperty(m_propertyContainer, Prop_RegisteredDeviceType_String, RegisteredDeviceType_String.c_str()));
 
-        if (m_CompatibleMode) {
+        if (m_CompatibleMode && (m_deviceClass == ETrackedDeviceClass::TrackedDeviceClass_Controller)) {
             LogIfETrackedPropertyError(VRProperties()->SetStringProperty(m_propertyContainer, Prop_InputProfilePath_String, "{vmt}/input/vmt_compatible_profile.json")); //Knuckles互換モード
+        }
+        else if (m_CompatibleMode && (m_deviceClass == ETrackedDeviceClass::TrackedDeviceClass_GenericTracker)) {
+            LogIfETrackedPropertyError(VRProperties()->SetStringProperty(m_propertyContainer, Prop_InputProfilePath_String, "{htc}/input/vive_tracker_profile.json")); //Tracker互換モード
         }
         else {
             LogIfETrackedPropertyError(VRProperties()->SetStringProperty(m_propertyContainer, Prop_InputProfilePath_String, "{vmt}/input/vmt_profile.json")); //VMTモード
@@ -1088,7 +1103,7 @@ namespace VMTDriver {
         LogIfEVRInputError(VRDriverInput()->CreateHapticComponent(m_propertyContainer, "/output/haptic", &HapticComponent));
 
         //互換用のコンポーネントミラーリングを登録
-        if (m_CompatibleMode) {
+        if (m_CompatibleMode && (m_deviceClass == ETrackedDeviceClass::TrackedDeviceClass_Controller)) {
             LogIfEVRInputError(VRDriverInput()->CreateBooleanComponent(m_propertyContainer, (std::string("/input/system/click")).c_str(), &ButtonComponent[0]));
             LogIfEVRInputError(VRDriverInput()->CreateBooleanComponent(m_propertyContainer, (std::string("/input/system/touch")).c_str(), &ButtonTouchComponent[0]));
 
@@ -1121,7 +1136,16 @@ namespace VMTDriver {
             LogIfEVRInputError(VRDriverInput()->CreateScalarComponent(m_propertyContainer, (std::string("/input/finger/middle/value")).c_str(), &TriggerComponent[4], EVRScalarType::VRScalarType_Absolute, EVRScalarUnits::VRScalarUnits_NormalizedOneSided));
             LogIfEVRInputError(VRDriverInput()->CreateScalarComponent(m_propertyContainer, (std::string("/input/finger/ring/value")).c_str(), &TriggerComponent[5], EVRScalarType::VRScalarType_Absolute, EVRScalarUnits::VRScalarUnits_NormalizedOneSided));
             LogIfEVRInputError(VRDriverInput()->CreateScalarComponent(m_propertyContainer, (std::string("/input/finger/pinky/value")).c_str(), &TriggerComponent[6], EVRScalarType::VRScalarType_Absolute, EVRScalarUnits::VRScalarUnits_NormalizedOneSided));
-
+        }
+        //互換用のコンポーネントミラーリングを登録
+        if (m_CompatibleMode && (m_deviceClass == ETrackedDeviceClass::TrackedDeviceClass_GenericTracker)) {
+            LogIfEVRInputError(VRDriverInput()->CreateBooleanComponent(m_propertyContainer, (std::string("/input/power/click")).c_str(), &ButtonComponent[0]));
+            LogIfEVRInputError(VRDriverInput()->CreateBooleanComponent(m_propertyContainer, (std::string("/input/trigger/click")).c_str(), &ButtonComponent[1]));
+            LogIfEVRInputError(VRDriverInput()->CreateBooleanComponent(m_propertyContainer, (std::string("/input/grip/click")).c_str(), &ButtonComponent[2]));
+            LogIfEVRInputError(VRDriverInput()->CreateBooleanComponent(m_propertyContainer, (std::string("/input/application_menu/click")).c_str(), &ButtonComponent[3]));
+            LogIfEVRInputError(VRDriverInput()->CreateBooleanComponent(m_propertyContainer, (std::string("/input/thumb/click")).c_str(), &ButtonComponent[4]));
+        }
+        if (m_CompatibleMode) {
             //互換アイコンにする
             LogIfETrackedPropertyError(VRProperties()->SetStringProperty(m_propertyContainer, Prop_NamedIconPathDeviceSearching_String, "{vmt}/icons/Searching32x32_compatible.png"));
             LogIfETrackedPropertyError(VRProperties()->SetStringProperty(m_propertyContainer, Prop_NamedIconPathDeviceSearchingAlert_String, "{vmt}/icons/SearchingAlert32x32_compatible.png"));
